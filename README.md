@@ -80,3 +80,30 @@ Detailed guide:
 - This page is only as accurate as `betting-state.md`.
 - Keep update timestamps visible.
 - Do not publish claims that are not in the source data.
+
+## Optional market-context scaffold
+
+This repo now supports optional context signals from recommendation rows without changing canonical decision authority.
+
+- Hook config: `config/market-context-hooks.json`
+- Payload outputs:
+  - `market_context`
+  - `market_context_hooks_config`
+  - `daily_decision_summary.market_context_notes` (when context signals exist)
+
+Supported optional recommendation-log columns:
+
+- `market_leader_price`
+- `market_leader_movement`
+- `injury_confirmation_flag`
+- `lineup_confirmation_flag`
+- `rest_disadvantage_flag`
+- `travel_disadvantage_flag`
+- `market_context_source`
+- `context_timestamp`
+- `context_verification_status`
+- `context_stale_flag`
+
+Guardrail:
+- Hook mode defaults to `advisory_only`; no mandatory dependency on context signals.
+- If context is absent, output behavior remains unchanged.

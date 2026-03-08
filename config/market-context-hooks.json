@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "mode": "advisory_only",
+  "stale_after_hours": 18,
+  "confidence_modifiers": {
+    "market_leader_confirmed": 0.04,
+    "lineup_or_injury_uncertain": -0.06,
+    "rest_or_travel_disadvantage": -0.03,
+    "stale_context_signal": -0.03,
+    "unverified_context_signal": -0.04
+  },
+  "required_for_application": {
+    "verification_status": [
+      "verified",
+      "confirmed"
+    ],
+    "stale_flag_must_be_false": true
+  }
+}

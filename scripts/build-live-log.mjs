@@ -4,6 +4,7 @@ import path from 'node:path';
 const DEFAULT_SOURCE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md';
 const DEFAULT_OUT = path.resolve(process.cwd(), 'public', 'data.json');
 const DEFAULT_PASSED_GRADES = '/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json';
+const DEFAULT_MARKET_CONTEXT_HOOKS = path.resolve(process.cwd(), 'config', 'market-context-hooks.json');
 
 const sourcePath = process.argv[2] || DEFAULT_SOURCE;
 const outPath = process.argv[3] || DEFAULT_OUT;
@@ -131,6 +132,42 @@ function readPassedGradesCache() {
   }
 }
 
+function readMarketContextHooksConfig() {
+  const defaults = {
+    enabled: true,
+    mode: 'advisory_only',
+    stale_after_hours: 18,
+    confidence_modifiers: {
+      market_leader_confirmed: 0.04,
+      lineup_or_injury_uncertain: -0.06,
+      rest_or_travel_disadvantage: -0.03,
+      stale_context_signal: -0.03,
+      unverified_context_signal: -0.04,
+    },
+    required_for_application: {
+      verification_status: ['verified', 'confirmed'],
+      stale_flag_must_be_false: true,
+    },
+  };
+  try {
+    const parsed = JSON.parse(fs.readFileSync(DEFAULT_MARKET_CONTEXT_HOOKS, 'utf8'));
+    return {
+      ...defaults,
+      ...parsed,
+      confidence_modifiers: {
+        ...defaults.confidence_modifiers,
+        ...(parsed?.confidence_modifiers || {}),
+      },
+      required_for_application: {
+        ...defaults.required_for_application,
+        ...(parsed?.required_for_application || {}),
+      },
+    };
+  } catch {
+    return defaults;
+  }
+}
+
 function normalizeDecision(text) {
   return String(text || '').trim().toLowerCase();
 }
@@ -163,6 +200,201 @@ function splitReasonCodes(text) {
 function parseDateFromLastUpdated(lastUpdated) {
   const match = String(lastUpdated || '').match(/(\d{4}-\d{2}-\d{2})/);
   return match ? match[1] : null;
+}
+
+function parseTimestampMs(input) {
+  const value = String(input || '').trim();
+  if (!value) return null;
+  const parsed = Date.parse(value);
+  if (Number.isFinite(parsed)) return parsed;
+  const dateOnly = value.match(/(\d{4}-\d{2}-\d{2})/);
+  if (dateOnly) {
+    const fallback = Date.parse(`${dateOnly[1]}T00:00:00Z`);
+    return Number.isFinite(fallback) ? fallback : null;
+  }
+  return null;
+}
+
+function parseBooleanLike(value) {
+  const raw = String(value ?? '').trim().toLowerCase();
+  if (!raw) return null;
+  if (['true', '1', 'yes', 'y', 'on', 'confirmed', 'verified', 'active'].includes(raw)) return true;
+  if (['false', '0', 'no', 'n', 'off', 'unconfirmed', 'unverified', 'inactive'].includes(raw)) return false;
+  return null;
+}
+
+function normalizeVerificationStatus(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return null;
+  if (['verified', 'confirm', 'confirmed', 'ok'].includes(raw)) return 'verified';
+  if (['unverified', 'unknown', 'pending', 'unclear'].includes(raw)) return 'unverified';
+  if (['stale', 'expired'].includes(raw)) return 'stale';
+  return raw;
+}
+
+function parseMarketContextFromRecommendationRow(row, staleAfterHours) {
+  const get = (...keys) => {
+    for (const key of keys) {
+      if (row[key] !== undefined && row[key] !== null && String(row[key]).trim() !== '') return row[key];
+    }
+    return null;
+  };
+
+  const marketLeaderPrice = get('market_leader_price', 'Market Leader Price');
+  const marketLeaderMovement = get('market_leader_movement', 'Market Leader Movement');
+  const injuryFlag = parseBooleanLike(get('injury_confirmation_flag', 'Injury Confirmation Flag'));
+  const lineupFlag = parseBooleanLike(get('lineup_confirmation_flag', 'Lineup Confirmation Flag'));
+  const restFlag = parseBooleanLike(get('rest_disadvantage_flag', 'Rest Disadvantage Flag'));
+  const travelFlag = parseBooleanLike(get('travel_disadvantage_flag', 'Travel Disadvantage Flag'));
+  const source = get('market_context_source', 'Market Context Source');
+  const contextTimestamp = get('context_timestamp', 'Context Timestamp');
+  const verificationStatus = normalizeVerificationStatus(get('context_verification_status', 'Context Verification Status'));
+  const staleFlagRaw = parseBooleanLike(get('context_stale_flag', 'Context Stale Flag'));
+
+  const hasAnySignal = [
+    marketLeaderPrice,
+    marketLeaderMovement,
+    injuryFlag,
+    lineupFlag,
+    restFlag,
+    travelFlag,
+    source,
+    contextTimestamp,
+    verificationStatus,
+    staleFlagRaw,
+  ].some((value) => value !== null);
+
+  if (!hasAnySignal) return null;
+
+  const contextTsMs = parseTimestampMs(contextTimestamp);
+  const recTsMs = parseTimestampMs(row.timestamp_ct);
+  const staleByTime =
+    contextTsMs !== null && recTsMs !== null
+      ? ((recTsMs - contextTsMs) / (1000 * 60 * 60)) > staleAfterHours
+      : null;
+  const staleFlag = staleFlagRaw !== null ? staleFlagRaw : staleByTime;
+
+  return {
+    rec_id: row.rec_id || null,
+    sport: row.sport || null,
+    market: row.market || null,
+    selection: row.selection || null,
+    market_leader_price: marketLeaderPrice,
+    market_leader_movement: marketLeaderMovement,
+    injury_confirmation_flag: injuryFlag,
+    lineup_confirmation_flag: lineupFlag,
+    rest_disadvantage_flag: restFlag,
+    travel_disadvantage_flag: travelFlag,
+    market_context_source: source,
+    context_timestamp: contextTimestamp || null,
+    context_verification_status: verificationStatus,
+    context_stale_flag: staleFlag,
+  };
+}
+
+function computeMarketContextAudit({ recommendationRows, targetDate, config }) {
+  const rowsForDate = recommendationRows.filter((row) => {
+    if (!targetDate) return true;
+    return String(row.timestamp_ct || '').includes(targetDate);
+  });
+  const signals = rowsForDate
+    .map((row) => parseMarketContextFromRecommendationRow(row, config.stale_after_hours))
+    .filter(Boolean);
+
+  if (signals.length === 0) {
+    return {
+      enabled: Boolean(config.enabled),
+      mode: config.mode,
+      total_signals_observed: 0,
+      applied_signal_count: 0,
+      stale_signals_count: 0,
+      unverified_signals_count: 0,
+      by_source: {},
+      confidence_modifier_suggested_avg: null,
+      decision_notes: [],
+      sample_signals: [],
+    };
+  }
+
+  const requiredStatuses = new Set(
+    (config.required_for_application?.verification_status || [])
+      .map((value) => normalizeVerificationStatus(value))
+      .filter(Boolean)
+  );
+
+  let appliedSignalCount = 0;
+  let staleSignalsCount = 0;
+  let unverifiedSignalsCount = 0;
+  let modifierTotal = 0;
+  const bySource = {};
+  let leaderConfirmedCount = 0;
+  let uncertaintyCount = 0;
+
+  for (const signal of signals) {
+    const source = signal.market_context_source || 'unknown';
+    bySource[source] = (bySource[source] || 0) + 1;
+
+    const isStale = signal.context_stale_flag === true;
+    const isVerified =
+      requiredStatuses.size === 0
+        ? true
+        : requiredStatuses.has(signal.context_verification_status);
+
+    if (isStale) staleSignalsCount += 1;
+    if (!isVerified) unverifiedSignalsCount += 1;
+
+    const shouldApply =
+      Boolean(config.enabled)
+      && isVerified
+      && (
+        config.required_for_application?.stale_flag_must_be_false === true
+          ? signal.context_stale_flag !== true
+          : true
+      );
+
+    if (!shouldApply) continue;
+    appliedSignalCount += 1;
+
+    let modifier = 0;
+    if (signal.market_leader_movement) {
+      modifier += config.confidence_modifiers.market_leader_confirmed || 0;
+      leaderConfirmedCount += 1;
+    }
+    if (signal.injury_confirmation_flag === false || signal.lineup_confirmation_flag === false) {
+      modifier += config.confidence_modifiers.lineup_or_injury_uncertain || 0;
+      uncertaintyCount += 1;
+    }
+    if (signal.rest_disadvantage_flag === true || signal.travel_disadvantage_flag === true) {
+      modifier += config.confidence_modifiers.rest_or_travel_disadvantage || 0;
+      uncertaintyCount += 1;
+    }
+    if (signal.context_stale_flag === true) {
+      modifier += config.confidence_modifiers.stale_context_signal || 0;
+    }
+    if (!isVerified) {
+      modifier += config.confidence_modifiers.unverified_context_signal || 0;
+    }
+    modifierTotal += modifier;
+  }
+
+  const decisionNotes = [];
+  if (leaderConfirmedCount > 0) decisionNotes.push('Market-leader movement confirmed on selected markets.');
+  if (uncertaintyCount > 0) decisionNotes.push('Lineup/injury/rest-travel context lowered confidence on select markets.');
+  if (staleSignalsCount > 0) decisionNotes.push('Context signal stale — ignored where verification requirements were not met.');
+  if (unverifiedSignalsCount > 0) decisionNotes.push('Unverified context signals were logged but not applied.');
+
+  return {
+    enabled: Boolean(config.enabled),
+    mode: config.mode,
+    total_signals_observed: signals.length,
+    applied_signal_count: appliedSignalCount,
+    stale_signals_count: staleSignalsCount,
+    unverified_signals_count: unverifiedSignalsCount,
+    by_source: bySource,
+    confidence_modifier_suggested_avg: appliedSignalCount > 0 ? round2(modifierTotal / appliedSignalCount) : null,
+    decision_notes: decisionNotes,
+    sample_signals: signals.slice(0, 5),
+  };
 }
 
 function round2(n) {
@@ -665,6 +897,7 @@ function computeSitAccountabilitySummaryFromPassedTracker(passedOpportunityTrack
 function buildPayload(markdown) {
   const lastUpdatedCt = parseLastUpdated(markdown);
   const targetDate = parseDateFromLastUpdated(lastUpdatedCt);
+  const marketContextHooksConfig = readMarketContextHooksConfig();
   const currentStatus = parseBulletMap(extractSection(markdown, 'Current Status'));
   const lifetimeStats = parseBulletMap(extractSection(markdown, 'Lifetime Stats'));
   const rejectionSummary = parseBulletMap(extractSection(markdown, 'Daily Rejection Summary'));
@@ -725,6 +958,14 @@ function buildPayload(markdown) {
     decisionQuality,
     rejectedOpportunities,
   });
+  const marketContextAudit = computeMarketContextAudit({
+    recommendationRows,
+    targetDate,
+    config: marketContextHooksConfig,
+  });
+  if ((marketContextAudit.decision_notes || []).length > 0) {
+    dailyDecisionSummary.market_context_notes = marketContextAudit.decision_notes;
+  }
   const passedOpportunityTracker = computePassedOpportunityTracker({
     recommendationRows,
     targetDate,
@@ -755,6 +996,13 @@ function buildPayload(markdown) {
     reliability_index: reliabilityIndex,
     daily_summary: { ...dailySummary, ...dailyDecisionSummary },
     daily_decision_summary: dailyDecisionSummary,
+    market_context: marketContextAudit,
+    market_context_hooks_config: {
+      mode: marketContextHooksConfig.mode,
+      stale_after_hours: marketContextHooksConfig.stale_after_hours,
+      confidence_modifiers: marketContextHooksConfig.confidence_modifiers,
+      required_for_application: marketContextHooksConfig.required_for_application,
+    },
     sit_accountability_summary: sitAccountabilitySummary,
     passed_opportunity_tracker: passedOpportunityTracker,
     edge_distribution_transparency: edgeDistributionTransparency,
