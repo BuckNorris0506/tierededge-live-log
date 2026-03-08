@@ -25,10 +25,8 @@ if [[ -n "${LIVE_LOG_DEPLOY_REPO:-}" ]]; then
     cd "$ROOT_DIR"
   fi
 
-  git add public/data.json public/standalone.html
-  if [[ "$LIVE_LOG_DEPLOY_REPO" != "$ROOT_DIR" ]]; then
-    git add .
-  fi
+  # Auto-sync mode: stage all repo changes (tracked/untracked/deletions).
+  git add -A
   if ! git diff --cached --quiet; then
     git commit -m "Update live bet log $(date -u +%Y-%m-%dT%H:%M:%SZ)"
     git push
