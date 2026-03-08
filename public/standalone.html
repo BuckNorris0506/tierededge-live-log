@@ -302,7 +302,7 @@ li {
   </footer>
 
   <script>window.__LIVE_DATA__ = {
-  "generated_at_utc": "2026-03-08T17:41:28.771Z",
+  "generated_at_utc": "2026-03-08T17:42:03.422Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-07 23:00 CT",
@@ -340,7 +340,15 @@ li {
     "exposure_cap_reached": "2",
     "breaker_active": "0"
   },
-  "sit_accountability": {},
+  "sit_accountability": {
+    "Avoided Losses (count)": "9",
+    "Missed Winners (count)": "8",
+    "Net P/L If Followed All Sits": "-$6.30",
+    "Net EV Rejected": "+0.8 units",
+    "Passed Bets W-L If Bet": "8-9",
+    "Money Saved By Sitting": "+$6.30",
+    "Sit Decision Win Rate If Bet": "47.1%"
+  },
   "scanner_statistics": {},
   "market_confidence": {},
   "canonical_decision_engine": {},
@@ -380,17 +388,17 @@ li {
     "final_daily_verdict": "Selective action: 3 bet(s), 6 sit decision(s)."
   },
   "sit_accountability_summary": {
-    "source": "insufficient_data",
-    "passed_bets_graded": 0,
-    "passed_bets_record_if_bet": null,
-    "passed_bets_wins_if_bet": 0,
-    "passed_bets_losses_if_bet": 0,
+    "source": "sit_accountability_fields",
+    "passed_bets_graded": 17,
+    "passed_bets_record_if_bet": "8-9",
+    "passed_bets_wins_if_bet": 8,
+    "passed_bets_losses_if_bet": 9,
     "passed_bets_pushes_if_bet": 0,
-    "passed_bets_win_rate_if_bet": null,
-    "money_saved_by_sitting": 0,
+    "passed_bets_win_rate_if_bet": 47.06,
+    "money_saved_by_sitting": 6.3,
     "missed_profit_by_sitting": 0,
-    "net_counterfactual_pl_if_bet": null,
-    "net_ev_rejected": null
+    "net_counterfactual_pl_if_bet": -6.3,
+    "net_ev_rejected": 0.8
   },
   "edge_distribution_transparency": {
     "buckets": {
@@ -433,7 +441,7 @@ li {
     "positive_clv_rate": 100,
     "avg_clv": 7.36,
     "avg_edge_placed": null,
-    "rejected_ev_total": 0.13,
+    "rejected_ev_total": 0.8,
     "avoided_negative_ev": 0,
     "bet_quality_rate": 100,
     "sit_quality_rate": 83.33,
