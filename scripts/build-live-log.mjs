@@ -182,6 +182,88 @@ function resolveRecommendationLogPath(markdown, sourcePath) {
   return null;
 }
 
+function normalizeKeyPart(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/[^\w\s.+-]/g, '');
+}
+
+function buildBetIdentity(row) {
+  return [
+    normalizeKeyPart(row.Sport || row.sport),
+    normalizeKeyPart(row.Market || row.market),
+    normalizeKeyPart(row.Bet || row.selection || row['Selection']),
+    normalizeKeyPart(row.Book || row.book || row.source_book),
+  ].join('|');
+}
+
+function dedupeStalePendingBetLog(betLog) {
+  const hasGradedByIdentity = new Set();
+  for (const row of betLog) {
+    const result = normalizeDecision(row.Result || row.result);
+    if (result && result !== 'pending') {
+      hasGradedByIdentity.add(buildBetIdentity(row));
+    }
+  }
+  return betLog.filter((row) => {
+    const result = normalizeDecision(row.Result || row.result);
+    if (result !== 'pending') return true;
+    const id = buildBetIdentity(row);
+    return !hasGradedByIdentity.has(id);
+  });
+}
+
+function computePassedOpportunityTracker({ recommendationRows, targetDate }) {
+  const sitRows = recommendationRows
+    .filter((row) => normalizeDecision(row.decision) === 'sit')
+    .filter((row) => {
+      if (!targetDate) return true;
+      return String(row.timestamp_ct || '').includes(targetDate);
+    });
+
+  const entries = sitRows.map((row) => {
+    const sport = row.sport || 'Unknown';
+    const selection = row.selection || row.market || 'Unknown selection';
+    const edge = parsePercent(row.edge_pct);
+    const edgeText = edge !== null ? `${edge}%` : 'N/A';
+    const odds = row.recommended_odds_us || row.odds_us || 'N/A';
+    const result = normalizeDecision(row.counterfactual_result || row.if_bet_result || row.result);
+    const status = result || 'ungraded';
+    const readable = status === 'ungraded'
+      ? 'awaiting grading'
+      : (status === 'loss' ? 'they lost' : (status === 'win' ? 'they won' : status));
+
+    const sentence = `We passed on ${selection} (${sport}) at +EV ${edgeText} (${odds}). Outcome: ${readable}.`;
+
+    return {
+      timestamp_ct: row.timestamp_ct || null,
+      sport,
+      selection,
+      edge_percent: edge,
+      odds_us: odds,
+      outcome_if_bet: status,
+      narrative: sentence,
+      rejection_reason: row.rejection_reason || null,
+      counterfactual_pl: parseAsNumber(row.counterfactual_pl || row.if_bet_pl || row.counterfactual_p_l),
+    };
+  });
+
+  const graded = entries.filter((e) => e.outcome_if_bet !== 'ungraded');
+  const wins = graded.filter((e) => e.outcome_if_bet === 'win').length;
+  const losses = graded.filter((e) => e.outcome_if_bet === 'loss').length;
+  const pushes = graded.filter((e) => e.outcome_if_bet === 'push').length;
+
+  return {
+    total_passed_opportunities: entries.length,
+    graded_count: graded.length,
+    ungraded_count: Math.max(0, entries.length - graded.length),
+    record_if_bet: graded.length > 0 ? `${wins}-${losses}${pushes > 0 ? `-${pushes}` : ''}` : null,
+    entries,
+  };
+}
+
 const SUPPORTED_SIT_REASON_CODES = [
   'no_edge',
   'weak_consensus',
@@ -545,7 +627,8 @@ function buildPayload(markdown) {
   const weeklyRunningTotals = parseBulletMap(extractSection(markdown, 'Weekly Running Totals'));
 
   const todaysBetsRaw = parseTable(extractSection(markdown, "Today's Bets"));
-  const betLog = parseTable(extractSection(markdown, 'Bet Log (All Graded Bets)'));
+  const betLogRaw = parseTable(extractSection(markdown, 'Bet Log (All Graded Bets)'));
+  const betLog = dedupeStalePendingBetLog(betLogRaw);
   const rejectedOpportunities = parseTable(
     extractFirstSection(markdown, ['Rejected Opportunities (Today)', 'Rejected Opportunities'])
   );
@@ -588,6 +671,10 @@ function buildPayload(markdown) {
     sitAccountability,
     rejectedOpportunities,
   });
+  const passedOpportunityTracker = computePassedOpportunityTracker({
+    recommendationRows,
+    targetDate,
+  });
 
   return {
     generated_at_utc: new Date().toISOString(),
@@ -607,6 +694,7 @@ function buildPayload(markdown) {
     daily_summary: { ...dailySummary, ...dailyDecisionSummary },
     daily_decision_summary: dailyDecisionSummary,
     sit_accountability_summary: sitAccountabilitySummary,
+    passed_opportunity_tracker: passedOpportunityTracker,
     edge_distribution_transparency: edgeDistributionTransparency,
     market_type_reliability_index: marketTypeReliabilityIndex,
     sit_reason_code_standard: sitReasonCodeStandard,

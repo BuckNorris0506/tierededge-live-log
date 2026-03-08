@@ -186,6 +186,31 @@ function renderRejectionSummary(id, summary) {
   }
 }
 
+function renderPassedOpportunityTracker(id, tracker) {
+  const list = document.getElementById(id);
+  list.innerHTML = '';
+  if (!tracker) {
+    list.appendChild(el('li', '', 'No tracker data'));
+    return;
+  }
+
+  list.appendChild(el('li', '', `Total passed opportunities: ${tracker.total_passed_opportunities ?? 0}`));
+  list.appendChild(el('li', '', `Graded: ${tracker.graded_count ?? 0} | Ungraded: ${tracker.ungraded_count ?? 0}`));
+  if (tracker.record_if_bet) {
+    list.appendChild(el('li', '', `Record if bet: ${tracker.record_if_bet}`));
+  }
+
+  const entries = tracker.entries || [];
+  if (entries.length === 0) {
+    list.appendChild(el('li', '', 'No passed-opportunity rows available yet.'));
+    return;
+  }
+
+  for (const row of entries.slice(0, 12)) {
+    list.appendChild(el('li', '', row.narrative || `${row.selection || 'Selection'}: ${row.outcome_if_bet || 'ungraded'}`));
+  }
+}
+
 (async () => {
   try {
     const data = await loadData();
@@ -199,6 +224,7 @@ function renderRejectionSummary(id, summary) {
     renderRejectionSummary('reject-list', data.daily_rejection_summary);
     renderList('sit-accountability-list', data.sit_accountability);
     renderList('sit-accountability-summary-list', data.sit_accountability_summary);
+    renderPassedOpportunityTracker('passed-opportunity-tracker-list', data.passed_opportunity_tracker);
     renderList('scanner-stats-list', data.scanner_statistics);
     renderList('market-confidence-list', data.market_confidence);
     renderList('canonical-decision-engine-list', data.canonical_decision_engine);
