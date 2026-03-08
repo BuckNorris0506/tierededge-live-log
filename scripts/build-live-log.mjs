@@ -385,7 +385,10 @@ function computeDecisionQuality({
   const recPlacedRows = recRowsForDate.filter((row) => normalizeDecision(row.decision) === 'bet');
   const recSitRows = recRowsForDate.filter((row) => normalizeDecision(row.decision) === 'sit');
 
-  const placedBetsCount = recPlacedRows.length > 0 ? recPlacedRows.length : tierPlacedBets.length;
+  const placedBetsCount =
+    recRowsForDate.length > 0
+      ? recPlacedRows.length
+      : tierPlacedBets.length;
   const rejectedFromSummary = parseAsNumber(rejectionSummary['Total Rejected']) || 0;
   const useSummaryRejectionMode = recSitRows.length === 0 && rejectedFromSummary > rejectedOpportunities.length;
   const rejectedPlaysCount =

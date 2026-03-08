@@ -207,7 +207,7 @@ li {
     </section>
 
     <section class="panel">
-      <h2>Today&apos;s Bets</h2>
+      <h2>Latest Bets Snapshot</h2>
       <div class="table-wrap">
         <table id="today-table"></table>
       </div>
@@ -321,7 +321,7 @@ li {
   </footer>
 
   <script>window.__LIVE_DATA__ = {
-  "generated_at_utc": "2026-03-08T21:14:14.772Z",
+  "generated_at_utc": "2026-03-08T21:19:02.155Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-07 23:00 CT",
@@ -377,7 +377,7 @@ li {
   "daily_summary": {
     "games_scanned": null,
     "edges_detected": null,
-    "bets_placed": 3,
+    "bets_placed": 0,
     "sits": 6,
     "strongest_edge_found": null,
     "strongest_edge_rejected": null,
@@ -388,12 +388,12 @@ li {
       "no_edge (4)",
       "low_confidence (2)"
     ],
-    "final_daily_verdict": "Selective action: 3 bet(s), 6 sit decision(s)."
+    "final_daily_verdict": "Markets were tight. 6 sit decision(s) preserved discipline."
   },
   "daily_decision_summary": {
     "games_scanned": null,
     "edges_detected": null,
-    "bets_placed": 3,
+    "bets_placed": 0,
     "sits": 6,
     "strongest_edge_found": null,
     "strongest_edge_rejected": null,
@@ -404,7 +404,7 @@ li {
       "no_edge (4)",
       "low_confidence (2)"
     ],
-    "final_daily_verdict": "Selective action: 3 bet(s), 6 sit decision(s)."
+    "final_daily_verdict": "Markets were tight. 6 sit decision(s) preserved discipline."
   },
   "sit_accountability_summary": {
     "source": "passed_opportunity_tracker",
@@ -538,9 +538,9 @@ li {
     "ROI": "+12.1% | Avg CLV: +3.6%"
   },
   "decision_quality": {
-    "placed_bets_count": 3,
+    "placed_bets_count": 0,
     "rejected_plays_count": 6,
-    "high_quality_bet_decisions": 3,
+    "high_quality_bet_decisions": 0,
     "high_quality_sit_decisions": 5,
     "positive_clv_bets_count": 5,
     "positive_clv_rate": 100,
@@ -548,11 +548,11 @@ li {
     "avg_edge_placed": null,
     "rejected_ev_total": 0.8,
     "avoided_negative_ev": 0,
-    "bet_quality_rate": 100,
+    "bet_quality_rate": null,
     "sit_quality_rate": 83.33,
     "sit_decision_quality_count": 5,
-    "decision_quality_rate": 88.89,
-    "total_decisions": 9,
+    "decision_quality_rate": 83.33,
+    "total_decisions": 6,
     "largest_edge_rejected": 3.3,
     "rejected_by_reason": {
       "no_edge": 4,
@@ -945,7 +945,7 @@ li {
     "pending_count": 1,
     "graded_bet_count": 17,
     "rejected_opportunities_count": 0,
-    "decision_quality_rate": 88.89,
+    "decision_quality_rate": 83.33,
     "redacted_pending": false
   }
 }
@@ -1153,6 +1153,7 @@ function renderTodaysScan(id, data) {
   const scanner = data.scanner_statistics || {};
   const dq = data.decision_quality || {};
   const rows = [
+    ['Snapshot Date (CT)', data.last_updated_ct],
     ['Markets Scanned', summary.games_scanned ?? scanner['Games Scanned']],
     ['Edges Detected', summary.edges_detected ?? scanner['Edges Detected']],
     ['Bets Placed', summary.bets_placed ?? dq.placed_bets_count],

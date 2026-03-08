@@ -200,6 +200,7 @@ function renderTodaysScan(id, data) {
   const scanner = data.scanner_statistics || {};
   const dq = data.decision_quality || {};
   const rows = [
+    ['Snapshot Date (CT)', data.last_updated_ct],
     ['Markets Scanned', summary.games_scanned ?? scanner['Games Scanned']],
     ['Edges Detected', summary.edges_detected ?? scanner['Edges Detected']],
     ['Bets Placed', summary.bets_placed ?? dq.placed_bets_count],
