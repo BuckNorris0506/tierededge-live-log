@@ -1,0 +1,30 @@
+#!/bin/zsh
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT_DIR"
+
+node scripts/build-live-log.mjs
+node scripts/build-standalone.mjs
+
+echo "Live log data rebuilt (including standalone page)."
+
+# Optional deploy sync: set LIVE_LOG_DEPLOY_REPO to a local git repo path
+if [[ -n "${LIVE_LOG_DEPLOY_REPO:-}" ]]; then
+  if [[ ! -d "$LIVE_LOG_DEPLOY_REPO/.git" ]]; then
+    echo "LIVE_LOG_DEPLOY_REPO is set but is not a git repo: $LIVE_LOG_DEPLOY_REPO"
+    exit 1
+  fi
+
+  rsync -a --delete "$ROOT_DIR/public/" "$LIVE_LOG_DEPLOY_REPO/"
+  cd "$LIVE_LOG_DEPLOY_REPO"
+
+  git add .
+  if ! git diff --cached --quiet; then
+    git commit -m "Update live bet log $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    git push
+    echo "Synced and pushed live log to: $LIVE_LOG_DEPLOY_REPO"
+  else
+    echo "No content changes to push."
+  fi
+fi
