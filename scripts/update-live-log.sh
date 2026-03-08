@@ -16,10 +16,19 @@ if [[ -n "${LIVE_LOG_DEPLOY_REPO:-}" ]]; then
     exit 1
   fi
 
-  rsync -a --delete "$ROOT_DIR/public/" "$LIVE_LOG_DEPLOY_REPO/"
-  cd "$LIVE_LOG_DEPLOY_REPO"
+  if [[ "$LIVE_LOG_DEPLOY_REPO" != "$ROOT_DIR" ]]; then
+    # External deploy repo mode: publish public site files to repo root.
+    rsync -a --delete "$ROOT_DIR/public/" "$LIVE_LOG_DEPLOY_REPO/"
+    cd "$LIVE_LOG_DEPLOY_REPO"
+  else
+    # In-place mode: keep project files and only commit regenerated public artifacts.
+    cd "$ROOT_DIR"
+  fi
 
-  git add .
+  git add public/data.json public/standalone.html
+  if [[ "$LIVE_LOG_DEPLOY_REPO" != "$ROOT_DIR" ]]; then
+    git add .
+  fi
   if ! git diff --cached --quiet; then
     git commit -m "Update live bet log $(date -u +%Y-%m-%dT%H:%M:%SZ)"
     git push
