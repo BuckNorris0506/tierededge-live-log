@@ -459,13 +459,9 @@ function dedupeStalePendingBetLog(betLog) {
   });
 }
 
-function computePassedOpportunityTracker({ recommendationRows, targetDate, gradesCache }) {
+function computePassedOpportunityTracker({ recommendationRows, gradesCache }) {
   const sitRows = recommendationRows
-    .filter((row) => normalizeDecision(row.decision) === 'sit')
-    .filter((row) => {
-      if (!targetDate) return true;
-      return String(row.timestamp_ct || '').includes(targetDate);
-    });
+    .filter((row) => normalizeDecision(row.decision) === 'sit');
 
   const entries = sitRows.map((row) => {
     const recId = row.rec_id || null;
@@ -968,7 +964,6 @@ function buildPayload(markdown) {
   }
   const passedOpportunityTracker = computePassedOpportunityTracker({
     recommendationRows,
-    targetDate,
     gradesCache: passedGradesCache,
   });
   const sitAccountabilitySummary =
