@@ -3,162 +3,57 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TieredEdge Decision Audit Log</title>
-  <meta name="description" content="Public decision audit log powered from betting-state.md" />
+  <title>TieredEdge Decision Console</title>
+  <meta name="description" content="TieredEdge disciplined decision console." />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <header class="top">
     <div class="shell top-inner">
       <div>
-        <p class="kicker">PUBLIC TRANSPARENCY LOG</p>
-        <h1>TieredEdge Decision Audit Log</h1>
-        <p class="subhead">Public transparency for bets, sits, CLV, and decision quality. Most betting tools show bets. TieredEdge also shows what was rejected.</p>
+        <p class="kicker">DECISION ENGINE</p>
+        <h1>TieredEdge Decision Console</h1>
+        <p class="subhead">Disciplined daily decisions with integrity gating.</p>
       </div>
       <div class="meta" id="meta"></div>
     </div>
   </header>
 
   <main class="shell">
-    <section class="cards" id="cards"></section>
-
-    <section class="panel" id="freshness-section">
-      <h2>Data Freshness</h2>
-      <ul id="freshness-list"></ul>
-    </section>
-
-    <section class="panel" id="todays-scan-section">
-      <h2>Today&apos;s Scan</h2>
-      <ul id="todays-scan-list"></ul>
-    </section>
-
-    <section class="panel split featured" id="sit-accountability-section">
-      <article>
-        <h2>Sit Accountability</h2>
-        <ul id="sit-accountability-list"></ul>
-      </article>
-      <article>
-        <h2>Sit Accountability Summary</h2>
-        <ul id="sit-accountability-summary-list"></ul>
-      </article>
-    </section>
-
-    <section class="panel">
-      <h2>Decision Quality</h2>
-      <ul id="decision-quality-list"></ul>
-    </section>
-
-    <section class="panel" id="execution-quality-section">
-      <h2>Execution Quality</h2>
-      <ul id="execution-list"></ul>
-    </section>
-
-    <section class="panel split" id="today-and-rejected-section">
-      <article>
-        <h2>Today&apos;s Bets</h2>
-        <div class="table-wrap">
-          <table id="today-table"></table>
-        </div>
-      </article>
-      <article>
-        <h2>Rejected Opportunities (Today)</h2>
-        <div class="table-wrap">
-          <table id="rejected-table"></table>
-        </div>
-      </article>
-    </section>
-
-    <section class="panel split" id="distribution-section">
-      <article id="daily-rejection-summary-section">
-        <h2>Daily Rejection Summary</h2>
-        <div class="range-controls" data-range-group="audit-range">
-          <button type="button" class="range-btn" data-range="today">Today</button>
-          <button type="button" class="range-btn" data-range="last_7">Last 7</button>
-          <button type="button" class="range-btn" data-range="all_time">All-time</button>
-        </div>
-        <ul id="reject-list"></ul>
-      </article>
-      <article id="edge-distribution-transparency-section">
-        <h2>Edge Distribution</h2>
-        <ul id="edge-distribution-transparency-list"></ul>
-      </article>
-    </section>
-
-    <section class="panel split" id="market-distribution-section">
-      <article id="market-type-reliability-section">
-        <h2>Market Type Reliability</h2>
-        <ul id="market-type-reliability-list"></ul>
-      </article>
-      <article id="scanner-statistics-section">
-        <h2>Scanner Statistics</h2>
-        <ul id="scanner-stats-list"></ul>
-      </article>
-    </section>
-
-    <section class="panel split" id="governance-section">
-      <article id="market-confidence-section">
-        <h2>Market Confidence</h2>
-        <ul id="market-confidence-list"></ul>
-      </article>
-      <article id="drawdown-governor-section">
-        <h2>Drawdown Governor</h2>
-        <ul id="drawdown-governor-list"></ul>
-      </article>
-    </section>
-
-    <section class="panel split" id="integrity-section">
-      <article id="reliability-index-section">
-        <h2>Reliability Index</h2>
-        <ul id="reliability-index-list"></ul>
-      </article>
-      <article id="expectation-framing-section">
-        <h2>Expectation Framing</h2>
-        <ul id="expectation-framing-list"></ul>
-      </article>
-    </section>
-
-    <section class="panel split" id="engine-rule-section">
-      <article>
-        <h2>Decision Engine</h2>
-        <ul id="canonical-decision-engine-list"></ul>
-      </article>
-      <article id="rule-ledger-pointer-section">
-        <h2>Rule Ledger Pointer</h2>
-        <ul id="rule-ledger-pointer-list"></ul>
-      </article>
-    </section>
-
-    <section class="panel split">
-      <article>
-        <h2>Daily Summary</h2>
-        <ul id="daily-summary-list"></ul>
-      </article>
-      <article>
-        <h2>Passed Opportunity Tracker</h2>
-        <div class="range-controls" data-range-group="audit-range">
-          <button type="button" class="range-btn" data-range="today">Today</button>
-          <button type="button" class="range-btn" data-range="last_7">Last 7</button>
-          <button type="button" class="range-btn" data-range="all_time">All-time</button>
-        </div>
-        <ul id="passed-opportunity-tracker-list"></ul>
-      </article>
-    </section>
-
-    <section class="panel">
-      <h2>Bet Log (Recent 50)</h2>
+    <section class="panel featured" id="today-decision-section">
+      <h2>Today&apos;s Decision</h2>
+      <ul id="today-decision-list"></ul>
       <div class="table-wrap">
-        <table id="log-table"></table>
+        <table id="today-bets-table"></table>
+      </div>
+      <div class="table-wrap">
+        <table id="today-sits-table"></table>
       </div>
     </section>
 
-    <section class="panel" id="weekly-totals-section">
-      <h2>Weekly Totals</h2>
-      <ul id="weekly-list"></ul>
+    <section class="panel" id="system-health-section">
+      <h2>System Health</h2>
+      <ul id="system-health-list"></ul>
+    </section>
+
+    <section class="panel" id="execution-section">
+      <h2>Execution</h2>
+      <ul id="execution-console-list"></ul>
+    </section>
+
+    <section class="panel" id="accountability-section">
+      <h2>Accountability</h2>
+      <div class="range-controls">
+        <button type="button" class="range-btn" data-range="today">Today</button>
+        <button type="button" class="range-btn" data-range="last_7">Last 7</button>
+        <button type="button" class="range-btn" data-range="all_time">All-time</button>
+      </div>
+      <ul id="accountability-list"></ul>
     </section>
   </main>
 
   <footer class="shell foot">
-    <p>Methodology: This dashboard is generated from append-only state and recommendation logs. It reports selections and rejections for process audit, not betting advice.</p>
+    <p>Methodology: decisions are blocked when integrity checks fail.</p>
   </footer>
 
   <script src="./app.js"></script>

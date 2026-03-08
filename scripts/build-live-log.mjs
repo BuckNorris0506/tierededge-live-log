@@ -5,6 +5,7 @@ const DEFAULT_SOURCE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-s
 const DEFAULT_OUT = path.resolve(process.cwd(), 'public', 'data.json');
 const DEFAULT_PASSED_GRADES = '/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json';
 const DEFAULT_MARKET_CONTEXT_HOOKS = path.resolve(process.cwd(), 'config', 'market-context-hooks.json');
+const DATA_FRESHNESS_MAX_HOURS = 36;
 
 const sourcePath = process.argv[2] || DEFAULT_SOURCE;
 const outPath = process.argv[3] || DEFAULT_OUT;
@@ -660,6 +661,141 @@ function computeDataFreshness({ recommendationRows, gradesCache, generatedAtUtc 
   };
 }
 
+function mapEdgeToTier(edgePercent) {
+  if (!Number.isFinite(edgePercent)) return null;
+  if (edgePercent >= 6) return 'T1';
+  if (edgePercent >= 4) return 'T2';
+  if (edgePercent >= 2) return 'T3';
+  return null;
+}
+
+function computeIntegrityGate({
+  recommendationRows,
+  betLog,
+  lastUpdatedCt,
+  dataFreshness,
+  generatedAtUtc,
+}) {
+  const recIdSet = new Set();
+  const duplicateRecIds = [];
+  const recDays = new Set();
+  for (const row of recommendationRows) {
+    const recId = String(row.rec_id || '').trim();
+    if (recId) {
+      if (recIdSet.has(recId)) duplicateRecIds.push(recId);
+      recIdSet.add(recId);
+    }
+    const day = parseDateFromLastUpdated(row.timestamp_ct);
+    if (day) recDays.add(day);
+  }
+
+  const scanDays = new Set();
+  for (const row of betLog) {
+    const day = String(row.Date || '').trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(day)) scanDays.add(day);
+  }
+  const lastUpdatedDay = parseDateFromLastUpdated(lastUpdatedCt);
+  if (lastUpdatedDay) scanDays.add(lastUpdatedDay);
+
+  const missingScanDays = [...scanDays].filter((day) => !recDays.has(day)).sort();
+  const recommendationRowMs = parseTimestampMs(dataFreshness.recommendation_log_last_row_time);
+  const generatedMs = parseTimestampMs(generatedAtUtc);
+  const freshnessHours =
+    Number.isFinite(recommendationRowMs) && Number.isFinite(generatedMs)
+      ? (generatedMs - recommendationRowMs) / (1000 * 60 * 60)
+      : null;
+  const freshnessPass = Number.isFinite(freshnessHours) ? freshnessHours <= DATA_FRESHNESS_MAX_HOURS : false;
+  const ledgerComplete = duplicateRecIds.length === 0 && missingScanDays.length === 0;
+  const pass = freshnessPass && ledgerComplete;
+
+  const reasons = [];
+  if (!freshnessPass) reasons.push('data_freshness_fail');
+  if (duplicateRecIds.length > 0) reasons.push('duplicate_rec_id');
+  if (missingScanDays.length > 0) reasons.push('missing_scan_days');
+
+  return {
+    pass,
+    checks: {
+      data_freshness: freshnessPass ? 'pass' : 'fail',
+      ledger_integrity: ledgerComplete ? 'pass' : 'fail',
+      decision_engine_status: pass ? 'pass' : 'blocked',
+      duplicate_rec_id_count: duplicateRecIds.length,
+      missing_scan_days_count: missingScanDays.length,
+    },
+    diagnostics: {
+      freshness_hours_since_last_recommendation: round2(freshnessHours),
+      missing_scan_days: missingScanDays,
+      duplicate_rec_ids: duplicateRecIds,
+    },
+    reasons,
+  };
+}
+
+function computeTodayDecisionConsole({
+  recommendationRows,
+  targetDate,
+  todaysBets,
+  integrityGate,
+}) {
+  const recRowsForDate = recommendationRows.filter((row) => {
+    if (!targetDate) return true;
+    return String(row.timestamp_ct || '').includes(targetDate);
+  });
+
+  const sourceRows = recRowsForDate.length > 0
+    ? recRowsForDate
+    : todaysBets.map((row, idx) => ({
+        rec_id: `fallback-bet-${idx + 1}`,
+        selection: row.Bet || row.selection || 'Unknown',
+        market: row.Market || 'Unknown',
+        edge_pct: null,
+        kelly_stake: row.Stake || null,
+        decision: 'BET',
+        rejection_reason: null,
+      }));
+
+  const bets = sourceRows
+    .filter((row) => normalizeDecision(row.decision) === 'bet')
+    .map((row) => {
+      const edge = parsePercent(row.edge_pct);
+      return {
+        rec_id: row.rec_id || null,
+        selection: row.selection || row.bet || row.Bet || 'Unknown',
+        market: row.market || row.Market || 'Unknown',
+        edge_percent: edge,
+        tier: mapEdgeToTier(edge),
+        stake: row.kelly_stake || row.Stake || 'N/A',
+        reason: 'edge above threshold, confidence gate passed',
+      };
+    });
+
+  const sits = sourceRows
+    .filter((row) => normalizeDecision(row.decision) === 'sit')
+    .map((row) => ({
+      rec_id: row.rec_id || null,
+      label: `${row.sport || 'Market'} ${row.market || ''}`.trim(),
+      reason: row.rejection_reason || 'no_edge',
+    }));
+
+  const verdict = bets.length > 0
+    ? `BET ${bets.length} opportunity(ies).`
+    : 'NO BETS TODAY';
+  const noBetsReason = bets.length === 0
+    ? (sits.length > 0 ? 'No edges above threshold.' : 'No recommendations for current scan window.')
+    : null;
+
+  return {
+    blocked: integrityGate.pass !== true,
+    verdict,
+    no_bets_reason: noBetsReason,
+    bets,
+    sits,
+    next_action: integrityGate.pass === true
+      ? (bets.length > 0 ? 'Review bet list and execute within exposure limits.' : 'SIT and wait for next scan.')
+      : 'Resolve system health failures before acting on recommendations.',
+  };
+}
+
 function computeDecisionQuality({
   lastUpdatedCt,
   currentStatus,
@@ -1052,6 +1188,19 @@ function buildPayload(markdown) {
     gradesCache: passedGradesCache,
     generatedAtUtc,
   });
+  const integrityGate = computeIntegrityGate({
+    recommendationRows,
+    betLog,
+    lastUpdatedCt,
+    dataFreshness,
+    generatedAtUtc,
+  });
+  const todayDecisionConsole = computeTodayDecisionConsole({
+    recommendationRows,
+    targetDate,
+    todaysBets,
+    integrityGate,
+  });
   const openExposure = currentStatus['Daily Exposure Used'] || null;
   const dailyVerdict = dailyDecisionSummary.final_daily_verdict || null;
 
@@ -1091,6 +1240,28 @@ function buildPayload(markdown) {
     execution_quality: executionQuality,
     weekly_running_totals: weeklyRunningTotals,
     data_freshness: dataFreshness,
+    integrity_gate: integrityGate,
+    decision_console: {
+      today: todayDecisionConsole,
+      system_health: {
+        data_freshness: integrityGate.checks.data_freshness,
+        ledger_integrity: integrityGate.checks.ledger_integrity,
+        decision_engine_status: integrityGate.checks.decision_engine_status,
+      },
+      execution: {
+        bankroll: currentStatus.Bankroll || null,
+        open_exposure: openExposure,
+        daily_exposure_used: currentStatus['Daily Exposure Used'] || null,
+        circuit_breaker: currentStatus['Circuit Breaker'] || null,
+      },
+      accountability: {
+        pending_bets_count: pendingBets.filter((item) => String(item).toLowerCase() !== 'none').length,
+        positive_clv_rate: decisionQuality.positive_clv_rate,
+        avg_clv: decisionQuality.avg_clv,
+        recent_results: lifetimeStats['Win Rate'] || null,
+        sit_accountability: sitAccountabilitySummary,
+      },
+    },
     open_exposure: openExposure,
     daily_verdict: dailyVerdict,
     normalized: {
