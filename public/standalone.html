@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TieredEdge Live Bet Log</title>
+  <meta name="description" content="Live public bet log powered from betting-state.md" />
+  <style>
+:root {
+  --bg: #f2efe9;
+  --panel: #ffffff;
+  --ink: #10100f;
+  --muted: #5d5953;
+  --line: #d8d0c5;
+  --accent: #19674e;
+  --accent-2: #0d4f3b;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at 90% 10%, #e1efe8 0%, transparent 35%), var(--bg);
+}
+
+.shell {
+  width: min(1100px, calc(100% - 28px));
+  margin: 0 auto;
+}
+
+.top {
+  border-bottom: 1px solid var(--line);
+  background: #f8f6f2;
+}
+
+.top-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 12px;
+  padding: 20px 0;
+}
+
+.kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+h1 {
+  margin: 6px 0 0;
+  font-size: clamp(30px, 4vw, 48px);
+}
+
+.meta {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: right;
+}
+
+main {
+  padding: 16px 0 30px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 12px;
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.card p {
+  margin: 8px 0 0;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #ece7de;
+  white-space: nowrap;
+}
+
+th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+
+ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+li {
+  margin-bottom: 8px;
+}
+
+.split {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.foot {
+  padding: 12px 0 30px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .split { grid-template-columns: 1fr; }
+  .top-inner { align-items: start; flex-direction: column; }
+  .meta { text-align: left; }
+}
+
+</style>
+</head>
+<body>
+  <header class="top">
+    <div class="shell top-inner">
+      <div>
+        <p class="kicker">PUBLIC TRANSPARENCY LOG</p>
+        <h1>TieredEdge Live Bet Log</h1>
+      </div>
+      <div class="meta" id="meta"></div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="cards" id="cards"></section>
+
+    <section class="panel">
+      <h2>Decision Quality</h2>
+      <ul id="decision-quality-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>Today&apos;s Bets</h2>
+      <div class="table-wrap">
+        <table id="today-table"></table>
+      </div>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Pending Bets</h2>
+        <ul id="pending-list"></ul>
+      </article>
+      <article>
+        <h2>Daily Rejection Summary</h2>
+        <ul id="reject-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Sit Accountability</h2>
+        <ul id="sit-accountability-list"></ul>
+      </article>
+      <article>
+        <h2>Scanner Statistics</h2>
+        <ul id="scanner-stats-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Market Confidence</h2>
+        <ul id="market-confidence-list"></ul>
+      </article>
+      <article>
+        <h2>Decision Engine</h2>
+        <ul id="canonical-decision-engine-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Drawdown Governor</h2>
+        <ul id="drawdown-governor-list"></ul>
+      </article>
+      <article>
+        <h2>Edge Distribution</h2>
+        <ul id="edge-distribution-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Reliability Index</h2>
+        <ul id="reliability-index-list"></ul>
+      </article>
+      <article>
+        <h2>Daily Summary</h2>
+        <ul id="daily-summary-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Expectation Framing</h2>
+      <ul id="expectation-framing-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>Rejected Opportunities (Today)</h2>
+      <div class="table-wrap">
+        <table id="rejected-table"></table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Bet Log (Recent 50)</h2>
+      <div class="table-wrap">
+        <table id="log-table"></table>
+      </div>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Execution Quality</h2>
+        <ul id="execution-list"></ul>
+      </article>
+      <article>
+        <h2>Weekly Totals</h2>
+        <ul id="weekly-list"></ul>
+      </article>
+    </section>
+  </main>
+
+  <footer class="shell foot">
+    <p>This page is generated from state data and is for transparency only. Not betting advice.</p>
+  </footer>
+
+  <script>window.__LIVE_DATA__ = {
+  "generated_at_utc": "2026-03-08T06:26:42.856Z",
+  "source_file": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Quant-Agent-Upgrade-v1.2/betting-state.md",
+  "schema": "v1.2",
+  "last_updated_ct": "2026-03-06 21:30 CT",
+  "current_status": {
+    "Bankroll": "$1,219.43",
+    "All-Time High": "$1,219.43",
+    "Phase": "GROWTH ($250-$1500)",
+    "Circuit Breaker": "OFF",
+    "breaker_active": "false",
+    "bets_remaining": "0",
+    "trigger_peak": "N/A",
+    "trigger_date": "N/A",
+    "System Start Date": "2026-02-28",
+    "Total Deposited": "$1,200.00 ($100 initial + $100 March + $1,000 reload)",
+    "Bets This Week": "15",
+    "Daily Exposure Used": "3.9%",
+    "Operating Mode": "pro",
+    "Process Score (7d)": "78",
+    "Data Verification Compliance (7d)": "100%",
+    "Exposure Compliance (7d)": "100%",
+    "Sit Discipline Rate (7d)": "71%"
+  },
+  "lifetime_stats": {
+    "Total Bets": "15",
+    "Win Rate": "40.0% (6-9)",
+    "Overall ROI": "+9.6%",
+    "Average CLV": "+3.6%"
+  },
+  "daily_rejection_summary": {
+    "Total Markets Checked": "24",
+    "Total Rejected": "17",
+    "no_edge": "11",
+    "low_confidence": "3",
+    "stale_or_unverified_odds": "1",
+    "exposure_cap_reached": "2",
+    "breaker_active": "0"
+  },
+  "sit_accountability": {
+    "Avoided Losses (count)": "9",
+    "Missed Winners (count)": "8",
+    "Net P/L If Followed All Sits": "-$6.30",
+    "Net EV Rejected": "+0.8 units"
+  },
+  "scanner_statistics": {
+    "Games Scanned": "24",
+    "Edges Detected": "4",
+    "Bets Placed": "3",
+    "Sits Issued": "17",
+    "Largest Edge Detected": "+4.0%",
+    "Largest Edge Bet": "+4.0%",
+    "Largest Edge Rejected": "+1.6%"
+  },
+  "market_confidence": {
+    "avg_market_confidence": "0.69",
+    "high_confidence_markets_count": "8",
+    "medium_confidence_markets_count": "11",
+    "low_confidence_markets_count": "5",
+    "confidence_weighted_edge": "+2.1%",
+    "low_confidence_sit_rate": "100.0%"
+  },
+  "canonical_decision_engine": {
+    "decision_engine_version": "v1.2-canonical",
+    "decision_records_evaluated": "24",
+    "pass_all_gates_count": "3",
+    "fail_any_gate_count": "21",
+    "most_common_fail_gate": "edge_threshold",
+    "decision_consistency_rate": "95.8%"
+  },
+  "drawdown_governor": {
+    "current_drawdown_pct": "0.0%",
+    "governor_state": "NORMAL",
+    "stake_multiplier": "1.00",
+    "recovery_target_bankroll": "$1,219.43",
+    "governor_bets_to_reset": "0"
+  },
+  "edge_distribution": {
+    "edge_lt_0_count": "0",
+    "edge_0_to_2_count": "17",
+    "edge_2_to_4_count": "3",
+    "edge_4_to_6_count": "4",
+    "edge_6_plus_count": "0",
+    "placed_edge_p50": "+3.1%",
+    "placed_edge_p75": "+3.8%",
+    "placed_edge_p90": "+4.0%"
+  },
+  "reliability_index": {
+    "reliability_index_7d": "92",
+    "scan_uptime_7d": "97.0%",
+    "on_time_scan_rate_7d": "100.0%",
+    "stale_odds_incidents_7d": "1",
+    "message_delivery_failures_7d": "0",
+    "state_write_failures_7d": "0"
+  },
+  "daily_summary": {
+    "summary_date": "2026-03-06",
+    "markets_scanned": "24",
+    "recommendations_issued": "3",
+    "sits_issued": "17",
+    "realized_pl_today": "+$13.99",
+    "realized_roi_today": "+17.5%",
+    "net_ev_generated_today": "+1.7",
+    "top_edge_segment_today": "CBB spreads"
+  },
+  "expectation_framing": {
+    "expected_win_rate_range": "46-54%",
+    "expected_roi_range": "+2.0%-+6.0%",
+    "expected_drawdown_range": "10-30%",
+    "variance_context": "Short-term outcomes can diverge from edge and CLV due to normal variance.",
+    "process_target_statement": "Prioritize repeatable +EV decisions and positive CLV over daily P/L swings."
+  },
+  "rejected_opportunities": [
+    {
+      "Timestamp (CT)": "08:33",
+      "Sport": "NBA",
+      "Event": "MIN @ ORL",
+      "Market": "Spread ORL +6.5",
+      "Book": "FanDuel",
+      "Odds (US)": "-110",
+      "Implied Prob (de-vig)": "49.2%",
+      "True Prob": "49.8%",
+      "Edge %": "+0.6%",
+      "Decision": "SIT",
+      "Sit Reason": "Edge below +2.0% minimum"
+    },
+    {
+      "Timestamp (CT)": "08:34",
+      "Sport": "NBA",
+      "Event": "ATL @ PHI",
+      "Market": "Spread ATL -6.5",
+      "Book": "FanDuel",
+      "Odds (US)": "-114",
+      "Implied Prob (de-vig)": "51.2%",
+      "True Prob": "52.1%",
+      "Edge %": "+0.9%",
+      "Decision": "SIT",
+      "Sit Reason": "Edge below +2.0% minimum"
+    },
+    {
+      "Timestamp (CT)": "08:36",
+      "Sport": "NHL",
+      "Event": "BOS @ WSH",
+      "Market": "Moneyline BOS -126",
+      "Book": "FanDuel",
+      "Odds (US)": "-126",
+      "Implied Prob (de-vig)": "54.5%",
+      "True Prob": "55.2%",
+      "Edge %": "+0.7%",
+      "Decision": "SIT",
+      "Sit Reason": "Edge below +2.0% minimum"
+    }
+  ],
+  "execution_quality": {
+    "Avg Slippage (last 25 bets)": "0.9 cents",
+    "Avg Slippage (implied prob delta)": "0.3 pp",
+    "Execution Warning": "OFF"
+  },
+  "weekly_running_totals": {
+    "Bets": "7 | W: 3 | L: 4 | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0",
+    "ROI": "+8.1% | Avg CLV: +3.6%"
+  },
+  "decision_quality": {
+    "placed_bets_count": 3,
+    "rejected_plays_count": 3,
+    "high_quality_bet_decisions": 3,
+    "high_quality_sit_decisions": 0,
+    "positive_clv_bets_count": 5,
+    "positive_clv_rate": 100,
+    "avg_clv": 7.36,
+    "avg_edge_placed": null,
+    "rejected_ev_total": 0.8,
+    "avoided_negative_ev": 0,
+    "bet_quality_rate": 100,
+    "sit_quality_rate": 0,
+    "decision_quality_rate": 50,
+    "total_decisions": 6,
+    "rejected_by_reason": {
+      "edge_below_20_minimum": 3
+    }
+  },
+  "pending_bets": [
+    "Lakers -9.5 (-110) | $47.00 @ FanDuel | NBA | March 6"
+  ],
+  "todays_bets": [
+    {
+      "#": "1",
+      "Timestamp (CT)": "14:30",
+      "Sport": "NBA",
+      "Market": "Spread",
+      "Bet": "Lakers -9.5",
+      "Odds (US)": "-110",
+      "Odds (Dec)": "1.91",
+      "Book": "FanDuel",
+      "Stake": "$47.00",
+      "Tier": "T2",
+      "Result": "PENDING",
+      "P/L": "-",
+      "CLV": "-"
+    },
+    {
+      "#": "2",
+      "Timestamp (CT)": "14:30",
+      "Sport": "CBB",
+      "Market": "Spread",
+      "Bet": "Omaha -3.5",
+      "Odds (US)": "-106",
+      "Odds (Dec)": "1.94",
+      "Book": "FanDuel",
+      "Stake": "$14.00",
+      "Tier": "T3",
+      "Result": "WIN",
+      "P/L": "+$13.21",
+      "CLV": "-"
+    },
+    {
+      "#": "3",
+      "Timestamp (CT)": "14:30",
+      "Sport": "CBB",
+      "Market": "Spread",
+      "Bet": "St. John's -4.5",
+      "Odds (US)": "-102",
+      "Odds (Dec)": "1.98",
+      "Book": "FanDuel",
+      "Stake": "$11.00",
+      "Tier": "T3",
+      "Result": "WIN",
+      "P/L": "+$10.78",
+      "CLV": "-"
+    },
+    {
+      "#": "4",
+      "Timestamp (CT)": "14:30",
+      "Sport": "CBB",
+      "Market": "Parlay",
+      "Bet": "StJ/Bradley/KentSt",
+      "Odds (US)": "+740",
+      "Odds (Dec)": "8.40",
+      "Book": "DraftKings",
+      "Stake": "$10.00",
+      "Tier": "FUN",
+      "Result": "LOSS",
+      "P/L": "-$10.00",
+      "CLV": "-"
+    }
+  ],
+  "bet_log": [
+    {
+      "Date": "2026-03-03",
+      "Timestamp (CT)": "18:00",
+      "Sport": "CBB",
+      "Market": "Spread",
+      "Bet": "Tennessee -8.5",
+      "Odds (US)": "-110",
+      "Odds (Dec)": "1.91",
+      "Book": "FanDuel",
+      "Stake": "$1.00",
+      "Tier": "T3",
+      "Result": "WIN",
+      "P/L": "+$0.91",
+      "CLV": "+4.8%",
+      "Bankroll": "$203.66"
+    },
+    {
+      "Date": "2026-03-03",
+      "Timestamp (CT)": "18:00",
+      "Sport": "NBA",
+      "Market": "Spread",
+      "Bet": "Detroit Pistons -1.5",
+      "Odds (US)": "-105",
+      "Odds (Dec)": "1.95",
+      "Book": "FanDuel",
+      "Stake": "$1.00",
+      "Tier": "T3",
+      "Result": "LOSS",
+      "P/L": "-$1.00",
+      "CLV": "+1.2%",
+      "Bankroll": "$202.66"
+    },
+    {
+      "Date": "2026-03-03",
+      "Timestamp (CT)": "18:00",
+      "Sport": "NBA",
+      "Market": "Spread",
+      "Bet": "San Antonio Spurs -7.5",
+      "Odds (US)": "-110",
+      "Odds (Dec)": "1.91",
+      "Book": "FanDuel",
+      "Stake": "$10.00",
+      "Tier": "T3",
+      "Result": "WIN",
+      "P/L": "+$9.09",
+      "CLV": "N/A",
+      "Bankroll": "$211.75"
+    },
+    {
+      "Date": "2026-03-04",
+      "Timestamp (CT)": "18:00",
+      "Sport": "CBB",
+      "Market": "Spread",
+      "Bet": "Villanova -2.5",
+      "Odds (US)": "-112",
+      "Odds (Dec)": "1.89",
+      "Book": "FanDuel",
+      "Stake": "$1.50",
+      "Tier": "T3",
+      "Result": "WIN",
+      "P/L": "+$1.34",
+      "CLV": "+4.8%",
+      "Bankroll": "$212.79"
+    },
+    {
+      "Date": "2026-03-04",
+      "Timestamp (CT)": "18:00",
+      "Sport": "NBA",
+      "Market": "Spread",
+      "Bet": "OKC Thunder -4.5",
+      "Odds (US)": "-105",
+      "Odds (Dec)": "1.95",
+      "Book": "FanDuel",
+      "Stake": "$3.00",
+      "Tier": "T3",
+      "Result": "CASHED OUT",
+      "P/L": "-$0.30",
+      "CLV": "N/A",
+      "Bankroll": "$212.49"
+    },
+    {
+      "Date": "2026-03-04",
+      "Timestamp (CT)": "18:00",
+      "Sport": "NBA",
+      "Market": "Spread",
+      "Bet": "OKC Thunder -4.5 (+25% boost)",
+      "Odds (US)": "-108",
+      "Odds (Dec)": "1.93",
+      "Book": "FanDuel",
+      "Stake": "$3.00",
+      "Tier": "T3",
+      "Result": "LOSS",
+      "P/L": "-$3.00",
+      "CLV": "N/A",
+      "Bankroll": "$209.49"
+    },
+    {
+      "Date": "2026-03-04",
+      "Timestamp (CT)": "18:00",
+      "Sport": "NHL",
+      "Market": "ML",
+      "Bet": "Philadelphia Flyers ML",
+      "Odds (US)": "+105",
+      "Odds (Dec)": "2.05",
+      "Book": "BetMGM",
+      "Stake": "$1.00",
+      "Tier": "T3",
+      "Result": "LOSS",
+      "P/L": "-$1.00",
+      "CLV": "-",
+      "Bankroll": "$208.49"
+    },
+    {
+      "Date": "2026-03-04",
+      "Timestamp (CT)": "18:00",
+      "Sport": "MMA",
+      "Market": "ML",
+      "Bet": "Charles Oliveira ML",
+      "Odds (US)": "+190",
+      "Odds (Dec)": "2.90",
+      "Book": "BetMGM",
+      "Stake": "$1.50",
+      "Tier": "T3",
+      "Result": "PENDING",
+      "P/L": "-",
+      "CLV": "-",
+      "Bankroll": "$206.99"
+    },
+    {
+      "Date": "2026-03-04",
+      "Timestamp (CT)": "18:00",
+      "Sport": "MMA",
+      "Market": "ML",
+      "Bet": "Cody Garbrandt ML",
+      "Odds (US)": "+130",
+      "Odds (Dec)": "2.30",
+      "Book": "DraftKings",
+      "Stake": "$1.00",
+      "Tier": "T3",
+      "Result": "PENDING",
+      "P/L": "-",
+      "CLV": "-",
+      "Bankroll": "$205.99"
+    },
+    {
+      "Date": "2026-03-05",
+      "Timestamp (CT)": "18:00",
+      "Sport": "CBB",
+      "Market": "Spread",
+      "Bet": "James Madison -1.5",
+      "Odds (US)": "+113",
+      "Odds (Dec)": "2.13",
+      "Book": "DraftKings",
+      "Stake": "$1.65",
+      "Tier": "T3",
+      "Result": "LOSS",
+      "P/L": "-$1.65",
+      "CLV": "+1.0 pt",
+      "Bankroll": "$1,204.34"
+    },
+    {
+      "Date": "2026-03-05",
+      "Timestamp (CT)": "18:00",
+      "Sport": "CBB",
+      "Market": "Spread",
+      "Bet": "Portland U -1.5",
+      "Odds (US)": "-115",
+      "Odds (Dec)": "1.87",
+      "Book": "BetMGM",
+      "Stake": "$1.50",
+      "Tier": "T3",
+      "Result": "WIN",
+      "P/L": "+$1.30",
+      "CLV": "-",
+      "Bankroll": "$1,205.64"
+    },
+    {
+      "Date": "2026-03-05",
+      "Timestamp (CT)": "18:00",
+      "Sport": "CBB",
+      "Market": "Spread",
+      "Bet": "Memphis +5.5",
+      "Odds (US)": "-105",
+      "Odds (Dec)": "1.95",
+      "Book": "DraftKings",
+      "Stake": "$2.00",
+      "Tier": "T3",
+      "Result": "LOSS",
+      "P/L": "-$2.00",
+      "CLV": "-",
+      "Bankroll": "$1,203.64"
+    },
+    {
+      "Date": "2026-03-05",
+      "Timestamp (CT)": "18:00",
+      "Sport": "NBA",
+      "Market": "ML",
+      "Bet": "Sacramento Kings ML",
+      "Odds (US)": "+220",
+      "Odds (Dec)": "3.20",
+      "Book": "DraftKings",
+      "Stake": "$1.00",
+      "Tier": "T3",
+      "Result": "LOSS",
+      "P/L": "-$1.00",
+      "CLV": "+25% boost",
+      "Bankroll": "$1,202.64"
+    },
+    {
+      "Date": "2026-03-06",
+      "Timestamp (CT)": "14:30",
+      "Sport": "CBB",
+      "Market": "Spread",
+      "Bet": "Omaha -3.5",
+      "Odds (US)": "-106",
+      "Odds (Dec)": "1.94",
+      "Book": "FanDuel",
+      "Stake": "$14.00",
+      "Tier": "T3",
+      "Result": "WIN",
+      "P/L": "+$13.21",
+      "CLV": "-",
+      "Bankroll": "$1,215.85"
+    },
+    {
+      "Date": "2026-03-06",
+      "Timestamp (CT)": "14:30",
+      "Sport": "CBB",
+      "Market": "Spread",
+      "Bet": "St. John's -4.5",
+      "Odds (US)": "-102",
+      "Odds (Dec)": "1.98",
+      "Book": "FanDuel",
+      "Stake": "$11.00",
+      "Tier": "T3",
+      "Result": "WIN",
+      "P/L": "+$10.78",
+      "CLV": "-",
+      "Bankroll": "$1,219.43"
+    },
+    {
+      "Date": "2026-03-06",
+      "Timestamp (CT)": "14:30",
+      "Sport": "CBB",
+      "Market": "Parlay",
+      "Bet": "StJ/Bradley/KentSt",
+      "Odds (US)": "+740",
+      "Odds (Dec)": "8.40",
+      "Book": "DraftKings",
+      "Stake": "$10.00",
+      "Tier": "FUN",
+      "Result": "LOSS",
+      "P/L": "-$10.00",
+      "CLV": "-",
+      "Bankroll": "$1,219.43"
+    }
+  ],
+  "ledger": [
+    {
+      "Date": "2026-02-28",
+      "Type": "DEPOSIT",
+      "Amount": "$100.00",
+      "Key": "initial",
+      "Note": "Starting bankroll"
+    },
+    {
+      "Date": "2026-03-01",
+      "Type": "DEPOSIT",
+      "Amount": "$100.00",
+      "Key": "reload",
+      "Note": "March reload"
+    },
+    {
+      "Date": "2026-03-04",
+      "Type": "DEPOSIT",
+      "Amount": "$1,000.00",
+      "Key": "reload",
+      "Note": "Bankroll boost"
+    }
+  ],
+  "derived": {
+    "bankroll_numeric": 1219.43,
+    "roi_percent_numeric": 9.6,
+    "today_recommended_count": 4,
+    "pending_count": 1,
+    "graded_bet_count": 16,
+    "rejected_opportunities_count": 3,
+    "decision_quality_rate": 50,
+    "redacted_pending": false
+  }
+}
+;</script>
+<script>
+async function loadData() {
+  if (window.__LIVE_DATA__) {
+    return window.__LIVE_DATA__;
+  }
+  const res = await fetch('./data.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to load data.json');
+  return res.json();
+}
+
+function el(tag, cls, text) {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function parseNumber(value) {
+  if (value === null || value === undefined) return null;
+  const clean = String(value).replace(/[^0-9.-]/g, '');
+  if (!clean || clean === '-' || clean === '.' || clean === '-.') return null;
+  const n = Number(clean);
+  return Number.isFinite(n) ? n : null;
+}
+
+function qualityLabel(value, weakMax, decentMax) {
+  if (value === null) return 'n/a';
+  if (value < weakMax) return 'weak';
+  if (value <= decentMax) return 'decent';
+  return 'strong';
+}
+
+function renderCards(data) {
+  const root = document.getElementById('cards');
+  root.innerHTML = '';
+
+  const avgClv = parseNumber(data.lifetime_stats['Average CLV']);
+  const roi = parseNumber(data.lifetime_stats['Overall ROI']);
+  const totalBets = parseNumber(data.lifetime_stats['Total Bets']);
+
+  const clvQuality = qualityLabel(avgClv, 0.3, 1.0);
+  const roiQuality = qualityLabel(roi, 1.0, 4.0);
+  const sampleLabel = totalBets !== null && totalBets >= 200 ? 'stable' : 'provisional';
+
+  const cards = [
+    ['Bankroll', data.current_status['Bankroll'] || '-'],
+    ['Decision Quality Rate', data.decision_quality?.decision_quality_rate !== null && data.decision_quality?.decision_quality_rate !== undefined ? `${data.decision_quality.decision_quality_rate}%` : '-'],
+    ['Overall ROI', data.lifetime_stats['Overall ROI'] || '-'],
+    ['Average CLV', data.lifetime_stats['Average CLV'] || '-'],
+    ['Process Score', data.current_status['Process Score (7d)'] || '-'],
+    ['CLV Quality', `${clvQuality} (${sampleLabel})`],
+    ['ROI Quality', `${roiQuality} (${sampleLabel})`],
+  ];
+
+  for (const [label, value] of cards) {
+    const card = el('article', 'card');
+    card.appendChild(el('h3', '', label));
+    card.appendChild(el('p', '', value));
+    root.appendChild(card);
+  }
+}
+
+function renderDecisionQuality(id, dq) {
+  const list = document.getElementById(id);
+  list.innerHTML = '';
+  const rows = [
+    ['Decision Quality Rate', dq?.decision_quality_rate !== null && dq?.decision_quality_rate !== undefined ? `${dq.decision_quality_rate}%` : 'N/A'],
+    ['Bet Quality Rate', dq?.bet_quality_rate !== null && dq?.bet_quality_rate !== undefined ? `${dq.bet_quality_rate}%` : 'N/A'],
+    ['Sit Quality Rate', dq?.sit_quality_rate !== null && dq?.sit_quality_rate !== undefined ? `${dq.sit_quality_rate}%` : 'N/A'],
+    ['Positive CLV Rate', dq?.positive_clv_rate !== null && dq?.positive_clv_rate !== undefined ? `${dq.positive_clv_rate}%` : 'N/A'],
+    ['Average CLV', dq?.avg_clv !== null && dq?.avg_clv !== undefined ? `${dq.avg_clv}` : 'N/A'],
+    ['Average Edge (Placed)', dq?.avg_edge_placed !== null && dq?.avg_edge_placed !== undefined ? `${dq.avg_edge_placed}%` : 'N/A'],
+    ['Total Decisions Evaluated', dq?.total_decisions ?? 'N/A'],
+    ['High-Quality Bet Decisions', dq?.high_quality_bet_decisions ?? 'N/A'],
+    ['High-Quality Sit Decisions', dq?.high_quality_sit_decisions ?? 'N/A'],
+    ['Placed Bets Count', dq?.placed_bets_count ?? 'N/A'],
+    ['Rejected Plays Count', dq?.rejected_plays_count ?? 'N/A'],
+    ['Rejected EV Total', dq?.rejected_ev_total !== null && dq?.rejected_ev_total !== undefined ? `${dq.rejected_ev_total}` : 'N/A'],
+    ['Avoided Negative EV', dq?.avoided_negative_ev !== null && dq?.avoided_negative_ev !== undefined ? `${dq.avoided_negative_ev}` : 'N/A'],
+    ['Rejected By Reason', dq?.rejected_by_reason ? JSON.stringify(dq.rejected_by_reason) : 'N/A'],
+  ];
+  for (const [k, v] of rows) {
+    list.appendChild(el('li', '', `${k}: ${v}`));
+  }
+}
+
+function renderMeta(data) {
+  const meta = document.getElementById('meta');
+  meta.innerHTML = '';
+  meta.appendChild(el('div', '', `Schema: ${data.schema}`));
+  meta.appendChild(el('div', '', `Updated (CT): ${data.last_updated_ct}`));
+  meta.appendChild(el('div', '', `Generated (UTC): ${data.generated_at_utc}`));
+}
+
+function renderTable(id, rows, limit = null) {
+  const table = document.getElementById(id);
+  table.innerHTML = '';
+
+  if (!rows || rows.length === 0) {
+    const tr = el('tr');
+    const td = el('td', '', 'No data');
+    td.colSpan = 1;
+    tr.appendChild(td);
+    table.appendChild(tr);
+    return;
+  }
+
+  const headers = Object.keys(rows[0]);
+
+  const thead = el('thead');
+  const trh = el('tr');
+  for (const h of headers) trh.appendChild(el('th', '', h));
+  thead.appendChild(trh);
+
+  const tbody = el('tbody');
+  const dataRows = limit ? rows.slice(0, limit) : rows;
+
+  for (const row of dataRows) {
+    const tr = el('tr');
+    for (const h of headers) {
+      tr.appendChild(el('td', '', row[h]));
+    }
+    tbody.appendChild(tr);
+  }
+
+  table.appendChild(thead);
+  table.appendChild(tbody);
+}
+
+function renderList(id, mapOrList) {
+  const list = document.getElementById(id);
+  list.innerHTML = '';
+
+  if (Array.isArray(mapOrList)) {
+    if (mapOrList.length === 0) {
+      list.appendChild(el('li', '', 'None'));
+      return;
+    }
+    for (const item of mapOrList) {
+      list.appendChild(el('li', '', item));
+    }
+    return;
+  }
+
+  const entries = Object.entries(mapOrList || {});
+  if (entries.length === 0) {
+    list.appendChild(el('li', '', 'No data'));
+    return;
+  }
+
+  for (const [k, v] of entries) {
+    list.appendChild(el('li', '', `${k}: ${v}`));
+  }
+}
+
+function renderRejectionSummary(id, summary) {
+  const list = document.getElementById(id);
+  list.innerHTML = '';
+
+  const labelMap = {
+    'Total Markets Checked': 'Total markets checked',
+    'Total Rejected': 'Total rejected',
+    no_edge: 'No edge',
+    low_confidence: 'Low confidence',
+    stale_or_unverified_odds: 'Odds not verified',
+    exposure_cap_reached: 'Exposure cap reached',
+    breaker_active: 'Circuit breaker active',
+  };
+
+  const preferredOrder = [
+    'Total Markets Checked',
+    'Total Rejected',
+    'no_edge',
+    'low_confidence',
+    'stale_or_unverified_odds',
+    'exposure_cap_reached',
+    'breaker_active',
+  ];
+
+  for (const key of preferredOrder) {
+    if (!(key in (summary || {}))) continue;
+    const label = labelMap[key] || key;
+    list.appendChild(el('li', '', `${label}: ${summary[key]}`));
+  }
+}
+
+(async () => {
+  try {
+    const data = await loadData();
+    renderMeta(data);
+    renderCards(data);
+    renderDecisionQuality('decision-quality-list', data.decision_quality);
+    renderTable('today-table', data.todays_bets);
+    renderTable('log-table', data.bet_log, 50);
+    renderTable('rejected-table', data.rejected_opportunities, 50);
+    renderList('pending-list', data.pending_bets);
+    renderRejectionSummary('reject-list', data.daily_rejection_summary);
+    renderList('sit-accountability-list', data.sit_accountability);
+    renderList('scanner-stats-list', data.scanner_statistics);
+    renderList('market-confidence-list', data.market_confidence);
+    renderList('canonical-decision-engine-list', data.canonical_decision_engine);
+    renderList('drawdown-governor-list', data.drawdown_governor);
+    renderList('edge-distribution-list', data.edge_distribution);
+    renderList('reliability-index-list', data.reliability_index);
+    renderList('daily-summary-list', data.daily_summary);
+    renderList('expectation-framing-list', data.expectation_framing);
+    renderList('execution-list', data.execution_quality);
+    renderList('weekly-list', data.weekly_running_totals);
+  } catch (err) {
+    document.body.innerHTML = `<p style="padding:20px;font-family:sans-serif;">Failed to load live log: ${err.message}</p>`;
+  }
+})();
+
+</script>
+</body>
+</html>

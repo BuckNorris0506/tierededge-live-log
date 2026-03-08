@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TieredEdge Live Bet Log</title>
+  <meta name="description" content="Live public bet log powered from betting-state.md" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="shell top-inner">
+      <div>
+        <p class="kicker">PUBLIC TRANSPARENCY LOG</p>
+        <h1>TieredEdge Live Bet Log</h1>
+      </div>
+      <div class="meta" id="meta"></div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="cards" id="cards"></section>
+
+    <section class="panel">
+      <h2>Decision Quality</h2>
+      <ul id="decision-quality-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>Today&apos;s Bets</h2>
+      <div class="table-wrap">
+        <table id="today-table"></table>
+      </div>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Pending Bets</h2>
+        <ul id="pending-list"></ul>
+      </article>
+      <article>
+        <h2>Daily Rejection Summary</h2>
+        <ul id="reject-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Sit Accountability</h2>
+        <ul id="sit-accountability-list"></ul>
+      </article>
+      <article>
+        <h2>Scanner Statistics</h2>
+        <ul id="scanner-stats-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Market Confidence</h2>
+        <ul id="market-confidence-list"></ul>
+      </article>
+      <article>
+        <h2>Decision Engine</h2>
+        <ul id="canonical-decision-engine-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Drawdown Governor</h2>
+        <ul id="drawdown-governor-list"></ul>
+      </article>
+      <article>
+        <h2>Edge Distribution</h2>
+        <ul id="edge-distribution-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Reliability Index</h2>
+        <ul id="reliability-index-list"></ul>
+      </article>
+      <article>
+        <h2>Daily Summary</h2>
+        <ul id="daily-summary-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Expectation Framing</h2>
+      <ul id="expectation-framing-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>Rejected Opportunities (Today)</h2>
+      <div class="table-wrap">
+        <table id="rejected-table"></table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Bet Log (Recent 50)</h2>
+      <div class="table-wrap">
+        <table id="log-table"></table>
+      </div>
+    </section>
+
+    <section class="panel split">
+      <article>
+        <h2>Execution Quality</h2>
+        <ul id="execution-list"></ul>
+      </article>
+      <article>
+        <h2>Weekly Totals</h2>
+        <ul id="weekly-list"></ul>
+      </article>
+    </section>
+  </main>
+
+  <footer class="shell foot">
+    <p>This page is generated from state data and is for transparency only. Not betting advice.</p>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
