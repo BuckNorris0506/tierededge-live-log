@@ -3,6 +3,7 @@ import path from 'node:path';
 
 const DEFAULT_SOURCE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md';
 const DEFAULT_OUT = path.resolve(process.cwd(), 'public', 'data.json');
+const DEFAULT_PASSED_GRADES = '/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json';
 
 const sourcePath = process.argv[2] || DEFAULT_SOURCE;
 const outPath = process.argv[3] || DEFAULT_OUT;
@@ -122,6 +123,14 @@ function parseRecommendationRows(markdown) {
   return parseTable(markdown);
 }
 
+function readPassedGradesCache() {
+  try {
+    return JSON.parse(fs.readFileSync(DEFAULT_PASSED_GRADES, 'utf8'));
+  } catch {
+    return { entries: {} };
+  }
+}
+
 function normalizeDecision(text) {
   return String(text || '').trim().toLowerCase();
 }
@@ -218,7 +227,7 @@ function dedupeStalePendingBetLog(betLog) {
   });
 }
 
-function computePassedOpportunityTracker({ recommendationRows, targetDate }) {
+function computePassedOpportunityTracker({ recommendationRows, targetDate, gradesCache }) {
   const sitRows = recommendationRows
     .filter((row) => normalizeDecision(row.decision) === 'sit')
     .filter((row) => {
@@ -227,12 +236,19 @@ function computePassedOpportunityTracker({ recommendationRows, targetDate }) {
     });
 
   const entries = sitRows.map((row) => {
+    const recId = row.rec_id || null;
+    const graded = recId ? (gradesCache.entries?.[recId] || null) : null;
     const sport = row.sport || 'Unknown';
     const selection = row.selection || row.market || 'Unknown selection';
     const edge = parsePercent(row.edge_pct);
     const edgeText = edge !== null ? `${edge}%` : 'N/A';
     const odds = row.recommended_odds_us || row.odds_us || 'N/A';
-    const result = normalizeDecision(row.counterfactual_result || row.if_bet_result || row.result);
+    const result = normalizeDecision(
+      row.counterfactual_result
+      || row.if_bet_result
+      || row.result
+      || graded?.counterfactual_result
+    );
     const status = result || 'ungraded';
     const readable = status === 'ungraded'
       ? 'awaiting grading'
@@ -243,13 +259,20 @@ function computePassedOpportunityTracker({ recommendationRows, targetDate }) {
     return {
       timestamp_ct: row.timestamp_ct || null,
       sport,
+      rec_id: recId,
       selection,
       edge_percent: edge,
       odds_us: odds,
       outcome_if_bet: status,
       narrative: sentence,
       rejection_reason: row.rejection_reason || null,
-      counterfactual_pl: parseAsNumber(row.counterfactual_pl || row.if_bet_pl || row.counterfactual_p_l),
+      counterfactual_pl: parseAsNumber(
+        row.counterfactual_pl
+        || row.if_bet_pl
+        || row.counterfactual_p_l
+        || graded?.counterfactual_pl_unit
+      ),
+      event_label: graded?.event_label || null,
     };
   });
 
@@ -642,6 +665,7 @@ function buildPayload(markdown) {
     recLogPath && fs.existsSync(recLogPath)
       ? parseRecommendationRows(fs.readFileSync(recLogPath, 'utf8'))
       : [];
+  const passedGradesCache = readPassedGradesCache();
 
   const todaysBets = redactPending
     ? todaysBetsRaw.filter((row) => String(row.Result || '').toUpperCase() !== 'PENDING')
@@ -677,6 +701,7 @@ function buildPayload(markdown) {
   const passedOpportunityTracker = computePassedOpportunityTracker({
     recommendationRows,
     targetDate,
+    gradesCache: passedGradesCache,
   });
 
   return {
