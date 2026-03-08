@@ -177,6 +177,17 @@ function renderList(id, mapOrList) {
   }
 
   for (const [k, v] of entries) {
+    if (Array.isArray(v)) {
+      if (v.length === 0) {
+        list.appendChild(el('li', '', `${titleCaseFromKey(k)}: ${MISSING}`));
+        continue;
+      }
+      list.appendChild(el('li', '', `${titleCaseFromKey(k)}:`));
+      for (const item of v) {
+        list.appendChild(el('li', '', formatValue(item)));
+      }
+      continue;
+    }
     if (v && typeof v === 'object' && !Array.isArray(v)) {
       const subEntries = Object.entries(v);
       if (subEntries.length === 0) {
