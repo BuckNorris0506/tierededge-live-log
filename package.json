@@ -8,6 +8,7 @@
     "build:standalone": "node scripts/build-standalone.mjs",
     "build:all": "npm run build:data && npm run build:standalone",
     "append:rec": "node scripts/append-recommendation-row.mjs",
+    "import:rec-history": "node scripts/import-recommendation-history.mjs",
     "audit:rec-nightly": "node scripts/recommendation-log-nightly.mjs",
     "serve": "python3 -m http.server 8095 --directory public"
   }

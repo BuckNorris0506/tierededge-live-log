@@ -67,6 +67,20 @@ Machine-readable output:
 
 - `public/integrity/recommendation-log-integrity.json`
 
+One-time historical import (safe dry-run default):
+
+```bash
+cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
+npm run import:rec-history -- /absolute/path/to/history.csv --dry-run
+```
+
+Apply mode (append-only validation enforced):
+
+```bash
+cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
+npm run import:rec-history -- /absolute/path/to/history.csv --apply
+```
+
 ## Auto-update every 5 minutes (local cron)
 
 ```bash
