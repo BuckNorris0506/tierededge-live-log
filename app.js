@@ -14,6 +14,26 @@ function el(tag, cls, text) {
   return node;
 }
 
+const MISSING = '—';
+
+function isMissing(value) {
+  return value === null || value === undefined || value === '';
+}
+
+function formatValue(value) {
+  if (isMissing(value)) return MISSING;
+  if (typeof value === 'object') return MISSING;
+  return String(value);
+}
+
+function titleCaseFromKey(key) {
+  return String(key || '')
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 function parseNumber(value) {
   if (value === null || value === undefined) return null;
   const clean = String(value).replace(/[^0-9.-]/g, '');
@@ -65,23 +85,30 @@ function renderDecisionQuality(id, dq) {
   const list = document.getElementById(id);
   list.innerHTML = '';
   const rows = [
-    ['Decision Quality Rate', dq?.decision_quality_rate !== null && dq?.decision_quality_rate !== undefined ? `${dq.decision_quality_rate}%` : 'N/A'],
-    ['Bet Quality Rate', dq?.bet_quality_rate !== null && dq?.bet_quality_rate !== undefined ? `${dq.bet_quality_rate}%` : 'N/A'],
-    ['Sit Quality Rate', dq?.sit_quality_rate !== null && dq?.sit_quality_rate !== undefined ? `${dq.sit_quality_rate}%` : 'N/A'],
-    ['Positive CLV Rate', dq?.positive_clv_rate !== null && dq?.positive_clv_rate !== undefined ? `${dq.positive_clv_rate}%` : 'N/A'],
-    ['Average CLV', dq?.avg_clv !== null && dq?.avg_clv !== undefined ? `${dq.avg_clv}` : 'N/A'],
-    ['Average Edge (Placed)', dq?.avg_edge_placed !== null && dq?.avg_edge_placed !== undefined ? `${dq.avg_edge_placed}%` : 'N/A'],
-    ['Total Decisions Evaluated', dq?.total_decisions ?? 'N/A'],
-    ['High-Quality Bet Decisions', dq?.high_quality_bet_decisions ?? 'N/A'],
-    ['High-Quality Sit Decisions', dq?.high_quality_sit_decisions ?? 'N/A'],
-    ['Placed Bets Count', dq?.placed_bets_count ?? 'N/A'],
-    ['Rejected Plays Count', dq?.rejected_plays_count ?? 'N/A'],
-    ['Rejected EV Total', dq?.rejected_ev_total !== null && dq?.rejected_ev_total !== undefined ? `${dq.rejected_ev_total}` : 'N/A'],
-    ['Avoided Negative EV', dq?.avoided_negative_ev !== null && dq?.avoided_negative_ev !== undefined ? `${dq.avoided_negative_ev}` : 'N/A'],
-    ['Rejected By Reason', dq?.rejected_by_reason ? JSON.stringify(dq.rejected_by_reason) : 'N/A'],
+    ['Decision Quality Rate', dq?.decision_quality_rate !== null && dq?.decision_quality_rate !== undefined ? `${dq.decision_quality_rate}%` : MISSING],
+    ['Bet Quality Rate', dq?.bet_quality_rate !== null && dq?.bet_quality_rate !== undefined ? `${dq.bet_quality_rate}%` : MISSING],
+    ['Sit Quality Rate', dq?.sit_quality_rate !== null && dq?.sit_quality_rate !== undefined ? `${dq.sit_quality_rate}%` : MISSING],
+    ['Positive CLV Rate', dq?.positive_clv_rate !== null && dq?.positive_clv_rate !== undefined ? `${dq.positive_clv_rate}%` : MISSING],
+    ['Average CLV', dq?.avg_clv !== null && dq?.avg_clv !== undefined ? `${dq.avg_clv}` : MISSING],
+    ['Average Edge (Placed)', dq?.avg_edge_placed !== null && dq?.avg_edge_placed !== undefined ? `${dq.avg_edge_placed}%` : MISSING],
+    ['Total Decisions Evaluated', formatValue(dq?.total_decisions)],
+    ['High-Quality Bet Decisions', formatValue(dq?.high_quality_bet_decisions)],
+    ['High-Quality Sit Decisions', formatValue(dq?.high_quality_sit_decisions)],
+    ['Placed Bets Count', formatValue(dq?.placed_bets_count)],
+    ['Rejected Plays Count', formatValue(dq?.rejected_plays_count)],
+    ['Rejected EV Total', dq?.rejected_ev_total !== null && dq?.rejected_ev_total !== undefined ? `${dq.rejected_ev_total}` : MISSING],
+    ['Avoided Negative EV', dq?.avoided_negative_ev !== null && dq?.avoided_negative_ev !== undefined ? `${dq.avoided_negative_ev}` : MISSING],
   ];
   for (const [k, v] of rows) {
     list.appendChild(el('li', '', `${k}: ${v}`));
+  }
+  const reasons = dq?.rejected_by_reason || {};
+  const reasonEntries = Object.entries(reasons);
+  if (reasonEntries.length > 0) {
+    list.appendChild(el('li', '', 'Rejection Reasons:'));
+    for (const [reason, count] of reasonEntries) {
+      list.appendChild(el('li', '', `${titleCaseFromKey(reason)}: ${formatValue(count)}`));
+    }
   }
 }
 
@@ -119,7 +146,7 @@ function renderTable(id, rows, limit = null) {
   for (const row of dataRows) {
     const tr = el('tr');
     for (const h of headers) {
-      tr.appendChild(el('td', '', row[h]));
+      tr.appendChild(el('td', '', formatValue(row[h])));
     }
     tbody.appendChild(tr);
   }
@@ -138,7 +165,7 @@ function renderList(id, mapOrList) {
       return;
     }
     for (const item of mapOrList) {
-      list.appendChild(el('li', '', item));
+      list.appendChild(el('li', '', formatValue(item)));
     }
     return;
   }
@@ -150,8 +177,90 @@ function renderList(id, mapOrList) {
   }
 
   for (const [k, v] of entries) {
-    const value = (v && typeof v === 'object') ? JSON.stringify(v) : v;
-    list.appendChild(el('li', '', `${k}: ${value}`));
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      const subEntries = Object.entries(v);
+      if (subEntries.length === 0) {
+        list.appendChild(el('li', '', `${titleCaseFromKey(k)}: ${MISSING}`));
+        continue;
+      }
+      list.appendChild(el('li', '', `${titleCaseFromKey(k)}:`));
+      for (const [sk, sv] of subEntries) {
+        list.appendChild(el('li', '', `${titleCaseFromKey(sk)}: ${formatValue(sv)}`));
+      }
+      continue;
+    }
+    list.appendChild(el('li', '', `${titleCaseFromKey(k)}: ${formatValue(v)}`));
+  }
+}
+
+function renderTodaysScan(id, data) {
+  const list = document.getElementById(id);
+  list.innerHTML = '';
+  const summary = data.daily_decision_summary || data.daily_summary || {};
+  const scanner = data.scanner_statistics || {};
+  const dq = data.decision_quality || {};
+  const rows = [
+    ['Markets Scanned', summary.games_scanned ?? scanner['Games Scanned']],
+    ['Edges Detected', summary.edges_detected ?? scanner['Edges Detected']],
+    ['Bets Placed', summary.bets_placed ?? dq.placed_bets_count],
+    ['Sit Decisions', summary.sits ?? dq.rejected_plays_count],
+    ['Strongest Edge Found', summary.strongest_edge_found ?? scanner['Largest Edge Detected']],
+    ['Largest Edge Rejected', summary.largest_edge_rejected ?? summary.strongest_edge_rejected ?? scanner['Largest Edge Rejected']],
+    ['Final Daily Verdict', summary.final_daily_verdict],
+  ];
+
+  for (const [label, value] of rows) {
+    list.appendChild(el('li', '', `${label}: ${formatValue(value)}`));
+  }
+}
+
+function renderSitAccountability(id, sit, summary) {
+  const list = document.getElementById(id);
+  list.innerHTML = '';
+  const rows = [
+    ['Avoided Losses (count)', sit?.['Avoided Losses (count)']],
+    ['Missed Winners (count)', sit?.['Missed Winners (count)']],
+    ['Net P/L if all sits were followed', sit?.['Net P/L If Followed All Sits']],
+    ['Net EV rejected', sit?.['Net EV Rejected']],
+    ['Passed Bets W-L if bet', sit?.['Passed Bets W-L If Bet'] ?? summary?.passed_bets_record_if_bet],
+    ['Sit Decision Win Rate if bet', sit?.['Sit Decision Win Rate If Bet'] ?? (summary?.passed_bets_win_rate_if_bet !== null && summary?.passed_bets_win_rate_if_bet !== undefined ? `${summary.passed_bets_win_rate_if_bet}%` : null)],
+    ['Money Saved By Sitting', sit?.['Money Saved By Sitting'] ?? (summary?.money_saved_by_sitting !== null && summary?.money_saved_by_sitting !== undefined ? `$${summary.money_saved_by_sitting}` : null)],
+  ];
+  for (const [label, value] of rows) {
+    list.appendChild(el('li', '', `${label}: ${formatValue(value)}`));
+  }
+}
+
+function renderEdgeDistributionTransparency(id, payload) {
+  const list = document.getElementById(id);
+  list.innerHTML = '';
+  const buckets = payload?.buckets || {};
+  const bucketRows = [
+    ['0-1% edge', buckets.edge_0_1 ?? 0],
+    ['1-2% edge', buckets.edge_1_2 ?? 0],
+    ['2-3% edge', buckets.edge_2_3 ?? 0],
+    ['3-4% edge', buckets.edge_3_4 ?? 0],
+    ['4-5% edge', buckets.edge_4_5 ?? 0],
+    ['5%+ edge', buckets.edge_5_plus ?? 0],
+  ];
+  for (const [label, value] of bucketRows) {
+    list.appendChild(el('li', '', `${label}: ${formatValue(value)}`));
+  }
+
+  const bySport = Object.entries(payload?.by_sport || {});
+  if (bySport.length > 0) {
+    list.appendChild(el('li', '', 'Edges By Sport:'));
+    for (const [sport, count] of bySport) {
+      list.appendChild(el('li', '', `${sport}: ${formatValue(count)}`));
+    }
+  }
+
+  const byMarket = Object.entries(payload?.by_market_type || {});
+  if (byMarket.length > 0) {
+    list.appendChild(el('li', '', 'Edges By Market Type:'));
+    for (const [market, count] of byMarket) {
+      list.appendChild(el('li', '', `${market}: ${formatValue(count)}`));
+    }
   }
 }
 
@@ -216,13 +325,14 @@ function renderPassedOpportunityTracker(id, tracker) {
     const data = await loadData();
     renderMeta(data);
     renderCards(data);
+    renderTodaysScan('todays-scan-list', data);
     renderDecisionQuality('decision-quality-list', data.decision_quality);
     renderTable('today-table', data.todays_bets);
     renderTable('log-table', data.bet_log, 50);
     renderTable('rejected-table', data.rejected_opportunities, 50);
     renderList('pending-list', data.pending_bets);
     renderRejectionSummary('reject-list', data.daily_rejection_summary);
-    renderList('sit-accountability-list', data.sit_accountability);
+    renderSitAccountability('sit-accountability-list', data.sit_accountability, data.sit_accountability_summary);
     renderList('sit-accountability-summary-list', data.sit_accountability_summary);
     renderPassedOpportunityTracker('passed-opportunity-tracker-list', data.passed_opportunity_tracker);
     renderList('scanner-stats-list', data.scanner_statistics);
@@ -230,7 +340,7 @@ function renderPassedOpportunityTracker(id, tracker) {
     renderList('canonical-decision-engine-list', data.canonical_decision_engine);
     renderList('drawdown-governor-list', data.drawdown_governor);
     renderList('edge-distribution-list', data.edge_distribution);
-    renderList('edge-distribution-transparency-list', data.edge_distribution_transparency);
+    renderEdgeDistributionTransparency('edge-distribution-transparency-list', data.edge_distribution_transparency);
     renderList('market-type-reliability-list', data.market_type_reliability_index);
     renderList('reliability-index-list', data.reliability_index);
     renderList('daily-summary-list', data.daily_summary);
