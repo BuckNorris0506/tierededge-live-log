@@ -21,7 +21,8 @@ if [[ -n "${LIVE_LOG_DEPLOY_REPO:-}" ]]; then
     rsync -a --delete "$ROOT_DIR/public/" "$LIVE_LOG_DEPLOY_REPO/"
     cd "$LIVE_LOG_DEPLOY_REPO"
   else
-    # In-place mode: keep project files and only commit regenerated public artifacts.
+    # In-place mode: sync built public artifacts to repo root for GitHub Pages root deploy.
+    rsync -a "$ROOT_DIR/public/" "$ROOT_DIR/"
     cd "$ROOT_DIR"
   fi
 

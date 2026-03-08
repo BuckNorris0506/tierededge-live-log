@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-03-07T06:43:06.871Z",
+  "generated_at_utc": "2026-03-08T20:29:58.889Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
-  "last_updated_ct": "2026-03-07 00:00 CT",
+  "last_updated_ct": "2026-03-07 23:00 CT",
   "current_status": {
-    "Bankroll": "$1,262.16",
-    "All-Time High": "$1,219.43",
+    "Bankroll": "$1,261.96",
+    "All-Time High": "$1,262.16",
     "Phase": "GROWTH ($250-$1500)",
     "Circuit Breaker": "OFF",
     "breaker_active": "false",
@@ -23,9 +23,9 @@
     "Sit Discipline Rate (7d)": "71%"
   },
   "lifetime_stats": {
-    "Total Bets": "16",
-    "Win Rate": "43.8% (7-9)",
-    "Overall ROI": "+13.5%",
+    "Total Bets": "18",
+    "Win Rate": "44.4% (8-10)",
+    "Overall ROI": "+11.8%",
     "Average CLV": "+3.6%"
   },
   "daily_rejection_summary": {
@@ -37,18 +37,139 @@
     "exposure_cap_reached": "2",
     "breaker_active": "0"
   },
+  "sit_accountability": {
+    "Avoided Losses (count)": "9",
+    "Missed Winners (count)": "8",
+    "Net P/L If Followed All Sits": "-$6.30",
+    "Net EV Rejected": "+0.8 units",
+    "Passed Bets W-L If Bet": "8-9",
+    "Money Saved By Sitting": "+$6.30",
+    "Sit Decision Win Rate If Bet": "47.1%"
+  },
+  "scanner_statistics": {},
+  "market_confidence": {},
+  "canonical_decision_engine": {},
+  "drawdown_governor": {},
+  "edge_distribution": {},
+  "reliability_index": {},
+  "daily_summary": {
+    "games_scanned": null,
+    "edges_detected": null,
+    "bets_placed": 3,
+    "sits": 6,
+    "strongest_edge_found": null,
+    "strongest_edge_rejected": null,
+    "largest_edge_rejected_today": null,
+    "largest_edge_rejected_context": null,
+    "rejection_reason_for_largest_edge": null,
+    "top_rejection_reasons": [
+      "no_edge (4)",
+      "low_confidence (2)"
+    ],
+    "final_daily_verdict": "Selective action: 3 bet(s), 6 sit decision(s)."
+  },
+  "daily_decision_summary": {
+    "games_scanned": null,
+    "edges_detected": null,
+    "bets_placed": 3,
+    "sits": 6,
+    "strongest_edge_found": null,
+    "strongest_edge_rejected": null,
+    "largest_edge_rejected_today": null,
+    "largest_edge_rejected_context": null,
+    "rejection_reason_for_largest_edge": null,
+    "top_rejection_reasons": [
+      "no_edge (4)",
+      "low_confidence (2)"
+    ],
+    "final_daily_verdict": "Selective action: 3 bet(s), 6 sit decision(s)."
+  },
+  "sit_accountability_summary": {
+    "source": "sit_accountability_fields",
+    "passed_bets_graded": 17,
+    "passed_bets_record_if_bet": "8-9",
+    "passed_bets_wins_if_bet": 8,
+    "passed_bets_losses_if_bet": 9,
+    "passed_bets_pushes_if_bet": 0,
+    "passed_bets_win_rate_if_bet": 47.06,
+    "money_saved_by_sitting": 6.3,
+    "missed_profit_by_sitting": 0,
+    "net_counterfactual_pl_if_bet": -6.3,
+    "net_ev_rejected": 0.8
+  },
+  "edge_distribution_transparency": {
+    "buckets": {
+      "edge_0_1": 1,
+      "edge_1_2": 2,
+      "edge_2_3": 1,
+      "edge_3_4": 2,
+      "edge_4_5": 0,
+      "edge_5_plus": 0
+    },
+    "total_edges_observed": 6,
+    "by_sport": {
+      "NBA": 4,
+      "NHL": 2
+    },
+    "by_market_type": {
+      "ML": 6
+    }
+  },
+  "market_type_reliability_index": {},
+  "sit_reason_code_standard": {},
+  "rule_ledger_pointer": {},
+  "expectation_framing": {},
+  "rejected_opportunities": [],
   "execution_quality": {
     "Avg Slippage (last 25 bets)": "0.9 cents",
     "Avg Slippage (implied prob delta)": "0.3 pp",
     "Execution Warning": "OFF"
   },
   "weekly_running_totals": {
-    "Bets": "8 | W: 4 | L: 4 | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0",
-    "ROI": "+15.5% | Avg CLV: +3.6%"
+    "Bets": "10 | W: 5 | L: 5 | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0",
+    "ROI": "+12.1% | Avg CLV: +3.6%"
+  },
+  "decision_quality": {
+    "placed_bets_count": 3,
+    "rejected_plays_count": 6,
+    "high_quality_bet_decisions": 3,
+    "high_quality_sit_decisions": 5,
+    "positive_clv_bets_count": 5,
+    "positive_clv_rate": 100,
+    "avg_clv": 7.36,
+    "avg_edge_placed": null,
+    "rejected_ev_total": 0.8,
+    "avoided_negative_ev": 0,
+    "bet_quality_rate": 100,
+    "sit_quality_rate": 83.33,
+    "sit_decision_quality_count": 5,
+    "decision_quality_rate": 88.89,
+    "total_decisions": 9,
+    "largest_edge_rejected": 3.3,
+    "rejected_by_reason": {
+      "no_edge": 4,
+      "low_confidence": 2
+    },
+    "sit_reason_codes_supported": [
+      "no_edge",
+      "weak_consensus",
+      "limited_liquidity",
+      "high_volatility",
+      "market_confidence_too_low",
+      "exposure_cap",
+      "drawdown_governor",
+      "large_spread_instability",
+      "strategy_filter_reject",
+      "low_confidence",
+      "manual_override",
+      "market_quality_fail",
+      "stale_or_unverified_odds",
+      "exposure_cap_reached",
+      "breaker_active"
+    ]
   },
   "pending_bets": [
-    "Oliveira ML (+190) $1.50 @ BetMGM | UFC | March 7",
-    "Garbrandt ML (+130) $1.00 @ DraftKings | UFC | March 7"
+    "None"
   ],
   "todays_bets": [
     {
@@ -384,6 +505,38 @@
       "P/L": "+$42.73",
       "CLV": "-",
       "Bankroll": "$1,262.16"
+    },
+    {
+      "Date": "2026-03-07",
+      "Timestamp (CT)": "21:00",
+      "Sport": "UFC",
+      "Market": "ML",
+      "Bet": "Charles Oliveira ML",
+      "Odds (US)": "+190",
+      "Odds (Dec)": "2.90",
+      "Book": "BetMGM",
+      "Stake": "$1.50",
+      "Tier": "T3",
+      "Result": "LOSS",
+      "P/L": "-$1.50",
+      "CLV": "-",
+      "Bankroll": "$1,260.66"
+    },
+    {
+      "Date": "2026-03-07",
+      "Timestamp (CT)": "21:00",
+      "Sport": "UFC",
+      "Market": "ML",
+      "Bet": "Cody Garbrandt ML",
+      "Odds (US)": "+130",
+      "Odds (Dec)": "2.30",
+      "Book": "DraftKings",
+      "Stake": "$1.00",
+      "Tier": "T3",
+      "Result": "WIN",
+      "P/L": "+$1.30",
+      "CLV": "-",
+      "Bankroll": "$1,261.96"
     }
   ],
   "ledger": [
@@ -410,11 +563,13 @@
     }
   ],
   "derived": {
-    "bankroll_numeric": 1262.16,
-    "roi_percent_numeric": 13.5,
+    "bankroll_numeric": 1261.96,
+    "roi_percent_numeric": 11.8,
     "today_recommended_count": 4,
-    "pending_count": 2,
-    "graded_bet_count": 17,
+    "pending_count": 1,
+    "graded_bet_count": 19,
+    "rejected_opportunities_count": 0,
+    "decision_quality_rate": 88.89,
     "redacted_pending": false
   }
 }
