@@ -183,11 +183,14 @@ function resolveRecommendationLogPath(markdown, sourcePath) {
 }
 
 function normalizeKeyPart(value) {
-  return String(value || '')
+  let out = String(value || '')
     .trim()
     .toLowerCase()
     .replace(/\s+/g, ' ')
     .replace(/[^\w\s.+-]/g, '');
+  if (out === 'ufc') out = 'mma';
+  if (out.includes('mixed martial arts')) out = 'mma';
+  return out;
 }
 
 function buildBetIdentity(row) {
