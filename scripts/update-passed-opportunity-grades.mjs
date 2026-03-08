@@ -17,6 +17,74 @@ const SPORT_KEY_MAP = {
   EPL: 'soccer_epl',
 };
 
+const TEAM_ALIAS_BY_SPORT = {
+  NBA: {
+    ATL: ['atlanta hawks', 'hawks'],
+    BOS: ['boston celtics', 'celtics'],
+    BKN: ['brooklyn nets', 'nets'],
+    CHA: ['charlotte hornets', 'hornets'],
+    CHI: ['chicago bulls', 'bulls'],
+    CLE: ['cleveland cavaliers', 'cavaliers', 'cavs'],
+    DAL: ['dallas mavericks', 'mavericks', 'mavs'],
+    DEN: ['denver nuggets', 'nuggets'],
+    DET: ['detroit pistons', 'pistons'],
+    GSW: ['golden state warriors', 'warriors'],
+    HOU: ['houston rockets', 'rockets'],
+    IND: ['indiana pacers', 'pacers'],
+    LAC: ['los angeles clippers', 'clippers'],
+    LAL: ['los angeles lakers', 'lakers'],
+    MEM: ['memphis grizzlies', 'grizzlies'],
+    MIA: ['miami heat', 'heat'],
+    MIL: ['milwaukee bucks', 'bucks'],
+    MIN: ['minnesota timberwolves', 'timberwolves', 'wolves'],
+    NOP: ['new orleans pelicans', 'pelicans', 'pels'],
+    NYK: ['new york knicks', 'knicks'],
+    OKC: ['oklahoma city thunder', 'thunder'],
+    ORL: ['orlando magic', 'magic'],
+    PHI: ['philadelphia 76ers', '76ers', 'sixers'],
+    PHX: ['phoenix suns', 'suns'],
+    POR: ['portland trail blazers', 'trail blazers', 'blazers'],
+    SAC: ['sacramento kings', 'kings'],
+    SAS: ['san antonio spurs', 'spurs'],
+    TOR: ['toronto raptors', 'raptors'],
+    UTA: ['utah jazz', 'jazz'],
+    WAS: ['washington wizards', 'wizards'],
+  },
+  NHL: {
+    ANA: ['anaheim ducks', 'ducks'],
+    BOS: ['boston bruins', 'bruins'],
+    BUF: ['buffalo sabres', 'sabres'],
+    CAR: ['carolina hurricanes', 'hurricanes', 'canes'],
+    CBJ: ['columbus blue jackets', 'blue jackets', 'jackets'],
+    CGY: ['calgary flames', 'flames'],
+    CHI: ['chicago blackhawks', 'blackhawks', 'hawks'],
+    COL: ['colorado avalanche', 'avalanche', 'avs'],
+    DAL: ['dallas stars', 'stars'],
+    DET: ['detroit red wings', 'red wings'],
+    EDM: ['edmonton oilers', 'oilers'],
+    FLA: ['florida panthers', 'panthers'],
+    LAK: ['los angeles kings', 'kings'],
+    MIN: ['minnesota wild', 'wild'],
+    MTL: ['montreal canadiens', 'canadiens', 'habs'],
+    NSH: ['nashville predators', 'predators', 'preds'],
+    NJD: ['new jersey devils', 'devils'],
+    NYI: ['new york islanders', 'islanders'],
+    NYR: ['new york rangers', 'rangers'],
+    OTT: ['ottawa senators', 'senators', 'sens'],
+    PHI: ['philadelphia flyers', 'flyers'],
+    PIT: ['pittsburgh penguins', 'penguins', 'pens'],
+    SEA: ['seattle kraken', 'kraken'],
+    SJS: ['san jose sharks', 'sharks'],
+    STL: ['st. louis blues', 'st louis blues', 'blues'],
+    TBL: ['tampa bay lightning', 'lightning'],
+    TOR: ['toronto maple leafs', 'maple leafs', 'leafs'],
+    VAN: ['vancouver canucks', 'canucks'],
+    VGK: ['vegas golden knights', 'golden knights', 'knights'],
+    WPG: ['winnipeg jets', 'jets'],
+    WSH: ['washington capitals', 'capitals', 'caps'],
+  },
+};
+
 function parseTable(markdown) {
   const lines = markdown
     .split('\n')
@@ -43,6 +111,16 @@ function parseOddsApiKey(text) {
 
 function normalizeName(name) {
   return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function selectionCandidates(sport, selection) {
+  const raw = String(selection || '').trim();
+  if (!raw) return [];
+  const norm = normalizeName(raw);
+  const upper = raw.toUpperCase();
+  const sportAliases = TEAM_ALIAS_BY_SPORT[String(sport || '').trim().toUpperCase()] || {};
+  const aliases = sportAliases[upper] || [];
+  return Array.from(new Set([norm, ...aliases.map(normalizeName)]));
 }
 
 function toDecimalOdds(us) {
@@ -149,10 +227,10 @@ async function main() {
     if (!events || !Array.isArray(events)) continue;
 
     const selection = row.selection || '';
+    const candidates = selectionCandidates(row.sport, selection);
     const matched = events.filter((event) => {
       const names = [event.home_team, event.away_team].map(normalizeName);
-      const sel = normalizeName(selection);
-      return names.some((n) => n.includes(sel) || sel.includes(n));
+      return candidates.some((sel) => names.some((n) => n.includes(sel) || sel.includes(n)));
     });
     if (matched.length !== 1) continue;
 
@@ -169,7 +247,14 @@ async function main() {
       continue;
     }
 
-    const result = getCounterfactualResult(event, selection) || 'ungraded';
+    let result = 'ungraded';
+    for (const sel of candidates) {
+      const candidateResult = getCounterfactualResult(event, sel);
+      if (candidateResult) {
+        result = candidateResult;
+        break;
+      }
+    }
     const usOdds = Number(row.recommended_odds_us);
     const decOdds = toDecimalOdds(usOdds);
     let unitPl = null;
