@@ -356,7 +356,7 @@ li {
   </footer>
 
   <script>window.__LIVE_DATA__ = {
-  "generated_at_utc": "2026-03-08T22:40:47.456Z",
+  "generated_at_utc": "2026-03-08T22:41:17.238Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-07 23:00 CT",
@@ -642,8 +642,8 @@ li {
   },
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-07 01:11 AM",
-    "grading_cache_last_update": "2026-03-08T22:40:47.412Z",
-    "payload_build_time_utc": "2026-03-08T22:40:47.456Z"
+    "grading_cache_last_update": "2026-03-08T22:41:17.188Z",
+    "payload_build_time_utc": "2026-03-08T22:41:17.238Z"
   },
   "open_exposure": "3.9%",
   "daily_verdict": "Markets were tight. 6 sit decision(s) preserved discipline.",
@@ -1166,8 +1166,8 @@ function resolveCanonicalSitAccountability(data) {
   if (hasComputed) {
     return {
       source: 'computed',
-      avoided_losses: null,
-      missed_winners: null,
+      avoided_losses: summary.passed_bets_losses_if_bet,
+      missed_winners: summary.passed_bets_wins_if_bet,
       net_pl_if_followed_all_sits: summary.net_counterfactual_pl_if_bet,
       net_ev_rejected: summary.net_ev_rejected,
       passed_bets_record_if_bet: summary.passed_bets_record_if_bet,

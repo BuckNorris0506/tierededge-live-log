@@ -99,8 +99,8 @@ function resolveCanonicalSitAccountability(data) {
   if (hasComputed) {
     return {
       source: 'computed',
-      avoided_losses: null,
-      missed_winners: null,
+      avoided_losses: summary.passed_bets_losses_if_bet,
+      missed_winners: summary.passed_bets_wins_if_bet,
       net_pl_if_followed_all_sits: summary.net_counterfactual_pl_if_bet,
       net_ev_rejected: summary.net_ev_rejected,
       passed_bets_record_if_bet: summary.passed_bets_record_if_bet,
