@@ -136,6 +136,35 @@ function asNumber(v) {
   return Number.isFinite(n) ? n : null;
 }
 
+function parseIsoDatePrefix(text) {
+  const m = String(text || '').match(/(\d{4}-\d{2}-\d{2})/);
+  return m ? `${m[1]}T00:00:00Z` : null;
+}
+
+function toEpochMs(input) {
+  const t = Date.parse(String(input || ''));
+  return Number.isFinite(t) ? t : null;
+}
+
+function pickBestEvent(events, recTimestampCt) {
+  if (!Array.isArray(events) || events.length === 0) return null;
+  const recMs = toEpochMs(parseIsoDatePrefix(recTimestampCt));
+  const scored = events.map((event) => {
+    const evtMs = toEpochMs(event.commence_time || event.start_time);
+    const distance = recMs !== null && evtMs !== null ? Math.abs(evtMs - recMs) : Number.MAX_SAFE_INTEGER;
+    return {
+      event,
+      completedRank: event.completed === true ? 0 : 1,
+      distance,
+    };
+  });
+  scored.sort((a, b) => {
+    if (a.completedRank !== b.completedRank) return a.completedRank - b.completedRank;
+    return a.distance - b.distance;
+  });
+  return scored[0].event;
+}
+
 function parseScores(event) {
   // Supports multiple possible payload shapes.
   if (Array.isArray(event.scores) && event.scores.length >= 2) {
@@ -232,9 +261,8 @@ async function main() {
       const names = [event.home_team, event.away_team].map(normalizeName);
       return candidates.some((sel) => names.some((n) => n.includes(sel) || sel.includes(n)));
     });
-    if (matched.length !== 1) continue;
-
-    const event = matched[0];
+    const event = pickBestEvent(matched, row.timestamp_ct);
+    if (!event) continue;
     if (event.completed !== true) {
       entries[recId] = {
         ...(entries[recId] || {}),
