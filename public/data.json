@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-03-08T13:52:45.954Z",
-  "source_file": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Quant-Agent-Upgrade-v1.2/betting-state.md",
+  "generated_at_utc": "2026-03-08T13:57:15.647Z",
+  "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
-  "last_updated_ct": "2026-03-06 21:30 CT",
+  "last_updated_ct": "2026-03-07 23:00 CT",
   "current_status": {
-    "Bankroll": "$1,219.43",
-    "All-Time High": "$1,219.43",
+    "Bankroll": "$1,261.96",
+    "All-Time High": "$1,262.16",
     "Phase": "GROWTH ($250-$1500)",
     "Circuit Breaker": "OFF",
     "breaker_active": "false",
@@ -23,9 +23,9 @@
     "Sit Discipline Rate (7d)": "71%"
   },
   "lifetime_stats": {
-    "Total Bets": "15",
-    "Win Rate": "40.0% (6-9)",
-    "Overall ROI": "+9.6%",
+    "Total Bets": "18",
+    "Win Rate": "44.4% (8-10)",
+    "Overall ROI": "+11.8%",
     "Average CLV": "+3.6%"
   },
   "daily_rejection_summary": {
@@ -37,222 +37,97 @@
     "exposure_cap_reached": "2",
     "breaker_active": "0"
   },
-  "sit_accountability": {
-    "Avoided Losses (count)": "9",
-    "Missed Winners (count)": "8",
-    "Net P/L If Followed All Sits": "-$6.30",
-    "Net EV Rejected": "+0.8 units"
-  },
-  "scanner_statistics": {
-    "Games Scanned": "24",
-    "Edges Detected": "4",
-    "Bets Placed": "3",
-    "Sits Issued": "17",
-    "Largest Edge Detected": "+4.0%",
-    "Largest Edge Bet": "+4.0%",
-    "Largest Edge Rejected": "+1.6%"
-  },
-  "market_confidence": {
-    "avg_market_confidence": "0.69",
-    "high_confidence_markets_count": "8",
-    "medium_confidence_markets_count": "11",
-    "low_confidence_markets_count": "5",
-    "confidence_weighted_edge": "+2.1%",
-    "low_confidence_sit_rate": "100.0%"
-  },
-  "canonical_decision_engine": {
-    "decision_engine_version": "v1.2-canonical",
-    "decision_records_evaluated": "24",
-    "pass_all_gates_count": "3",
-    "fail_any_gate_count": "21",
-    "most_common_fail_gate": "edge_threshold",
-    "decision_consistency_rate": "95.8%"
-  },
-  "drawdown_governor": {
-    "current_drawdown_pct": "0.0%",
-    "governor_state": "NORMAL",
-    "stake_multiplier": "1.00",
-    "recovery_target_bankroll": "$1,219.43",
-    "governor_bets_to_reset": "0"
-  },
-  "edge_distribution": {
-    "edge_lt_0_count": "0",
-    "edge_0_to_2_count": "17",
-    "edge_2_to_4_count": "3",
-    "edge_4_to_6_count": "4",
-    "edge_6_plus_count": "0",
-    "placed_edge_p50": "+3.1%",
-    "placed_edge_p75": "+3.8%",
-    "placed_edge_p90": "+4.0%"
-  },
-  "reliability_index": {
-    "reliability_index_7d": "92",
-    "scan_uptime_7d": "97.0%",
-    "on_time_scan_rate_7d": "100.0%",
-    "stale_odds_incidents_7d": "1",
-    "message_delivery_failures_7d": "0",
-    "state_write_failures_7d": "0"
-  },
+  "sit_accountability": {},
+  "scanner_statistics": {},
+  "market_confidence": {},
+  "canonical_decision_engine": {},
+  "drawdown_governor": {},
+  "edge_distribution": {},
+  "reliability_index": {},
   "daily_summary": {
-    "summary_date": "2026-03-06",
-    "markets_scanned": "24",
-    "recommendations_issued": "3",
-    "sits_issued": "17",
-    "realized_pl_today": "+$13.99",
-    "realized_roi_today": "+17.5%",
-    "net_ev_generated_today": "+1.7",
-    "top_edge_segment_today": "CBB spreads",
-    "strongest_edge_found": "+4.0%",
-    "strongest_edge_rejected": "+1.6%",
-    "largest_edge_rejected_context": "NBA | Spread ATL -6.5 | FanDuel",
-    "rejection_reason_for_largest_edge": "Edge below +2.0% minimum",
-    "top_rejection_reasons": [
-      "no_edge (11)",
-      "low_confidence (3)",
-      "exposure_cap_reached (2)"
-    ],
-    "final_daily_verdict": "Selective action: 3 bet(s), 17 sit decision(s).",
-    "games_scanned": "24",
-    "edges_detected": "4",
+    "games_scanned": null,
+    "edges_detected": null,
     "bets_placed": 3,
-    "sits": 17,
-    "largest_edge_rejected_today": "0.9%"
+    "sits": 6,
+    "strongest_edge_found": null,
+    "strongest_edge_rejected": null,
+    "largest_edge_rejected_today": null,
+    "largest_edge_rejected_context": null,
+    "rejection_reason_for_largest_edge": null,
+    "top_rejection_reasons": [
+      "no_edge (4)",
+      "low_confidence (2)"
+    ],
+    "final_daily_verdict": "Selective action: 3 bet(s), 6 sit decision(s)."
   },
   "daily_decision_summary": {
-    "games_scanned": "24",
-    "edges_detected": "4",
+    "games_scanned": null,
+    "edges_detected": null,
     "bets_placed": 3,
-    "sits": 17,
-    "strongest_edge_found": "+4.0%",
-    "strongest_edge_rejected": "+1.6%",
-    "largest_edge_rejected_today": "0.9%",
-    "largest_edge_rejected_context": "NBA | Spread ATL -6.5 | FanDuel",
-    "rejection_reason_for_largest_edge": "Edge below +2.0% minimum",
+    "sits": 6,
+    "strongest_edge_found": null,
+    "strongest_edge_rejected": null,
+    "largest_edge_rejected_today": null,
+    "largest_edge_rejected_context": null,
+    "rejection_reason_for_largest_edge": null,
     "top_rejection_reasons": [
-      "no_edge (11)",
-      "low_confidence (3)",
-      "exposure_cap_reached (2)"
+      "no_edge (4)",
+      "low_confidence (2)"
     ],
-    "final_daily_verdict": "Selective action: 3 bet(s), 17 sit decision(s)."
+    "final_daily_verdict": "Selective action: 3 bet(s), 6 sit decision(s)."
   },
   "edge_distribution_transparency": {
     "buckets": {
-      "edge_0_1": 3,
-      "edge_1_2": 0,
-      "edge_2_3": 0,
-      "edge_3_4": 0,
+      "edge_0_1": 1,
+      "edge_1_2": 2,
+      "edge_2_3": 1,
+      "edge_3_4": 2,
       "edge_4_5": 0,
       "edge_5_plus": 0
     },
-    "total_edges_observed": 3,
+    "total_edges_observed": 6,
     "by_sport": {
-      "NBA": 2,
-      "NHL": 1
+      "NBA": 4,
+      "NHL": 2
     },
     "by_market_type": {
-      "Spread ORL +6.5": 1,
-      "Spread ATL -6.5": 1,
-      "Moneyline BOS -126": 1
+      "ML": 6
     }
   },
-  "market_type_reliability_index": {
-    "nba_spread_reliability": "82",
-    "nhl_ml_reliability": "68",
-    "cbb_small_conf_reliability": "52",
-    "player_props_reliability": "41",
-    "soccer_league_reliability": "EPL:74,Championship:59",
-    "reliability_last_reviewed": "2026-03-06"
-  },
-  "sit_reason_code_standard": {
-    "supported_reason_codes": "no_edge,weak_consensus,limited_liquidity,high_volatility,market_confidence_too_low,exposure_cap,drawdown_governor,large_spread_instability,strategy_filter_reject,low_confidence,manual_override,market_quality_fail,stale_or_unverified_odds,exposure_cap_reached,breaker_active",
-    "multi_reason_enabled": "true",
-    "notes": "Keep enum codes internal and render plain-English explanations externally."
-  },
-  "rule_ledger_pointer": {
-    "Path": "`memory/rule-ledger.md`",
-    "Active Rule Count": "9",
-    "Last Rule Review Date": "2026-03-06"
-  },
-  "expectation_framing": {
-    "expected_win_rate_range": "46-54%",
-    "expected_roi_range": "+2.0%-+6.0%",
-    "expected_drawdown_range": "10-30%",
-    "variance_context": "Short-term outcomes can diverge from edge and CLV due to normal variance.",
-    "process_target_statement": "Prioritize repeatable +EV decisions and positive CLV over daily P/L swings."
-  },
-  "rejected_opportunities": [
-    {
-      "Timestamp (CT)": "08:33",
-      "Sport": "NBA",
-      "Event": "MIN @ ORL",
-      "Market": "Spread ORL +6.5",
-      "Book": "FanDuel",
-      "Odds (US)": "-110",
-      "Implied Prob (de-vig)": "49.2%",
-      "True Prob": "49.8%",
-      "Edge %": "+0.6%",
-      "Decision": "SIT",
-      "Sit Reason": "Edge below +2.0% minimum"
-    },
-    {
-      "Timestamp (CT)": "08:34",
-      "Sport": "NBA",
-      "Event": "ATL @ PHI",
-      "Market": "Spread ATL -6.5",
-      "Book": "FanDuel",
-      "Odds (US)": "-114",
-      "Implied Prob (de-vig)": "51.2%",
-      "True Prob": "52.1%",
-      "Edge %": "+0.9%",
-      "Decision": "SIT",
-      "Sit Reason": "Edge below +2.0% minimum"
-    },
-    {
-      "Timestamp (CT)": "08:36",
-      "Sport": "NHL",
-      "Event": "BOS @ WSH",
-      "Market": "Moneyline BOS -126",
-      "Book": "FanDuel",
-      "Odds (US)": "-126",
-      "Implied Prob (de-vig)": "54.5%",
-      "True Prob": "55.2%",
-      "Edge %": "+0.7%",
-      "Decision": "SIT",
-      "Sit Reason": "Edge below +2.0% minimum"
-    }
-  ],
+  "market_type_reliability_index": {},
+  "sit_reason_code_standard": {},
+  "rule_ledger_pointer": {},
+  "expectation_framing": {},
+  "rejected_opportunities": [],
   "execution_quality": {
     "Avg Slippage (last 25 bets)": "0.9 cents",
     "Avg Slippage (implied prob delta)": "0.3 pp",
     "Execution Warning": "OFF"
   },
   "weekly_running_totals": {
-    "Bets": "7 | W: 3 | L: 4 | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0",
-    "ROI": "+8.1% | Avg CLV: +3.6%"
+    "Bets": "10 | W: 5 | L: 5 | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0",
+    "ROI": "+12.1% | Avg CLV: +3.6%"
   },
   "decision_quality": {
     "placed_bets_count": 3,
-    "rejected_plays_count": 17,
+    "rejected_plays_count": 6,
     "high_quality_bet_decisions": 3,
-    "high_quality_sit_decisions": 17,
+    "high_quality_sit_decisions": 5,
     "positive_clv_bets_count": 5,
     "positive_clv_rate": 100,
     "avg_clv": 7.36,
     "avg_edge_placed": null,
-    "rejected_ev_total": 0.8,
+    "rejected_ev_total": 0.13,
     "avoided_negative_ev": 0,
     "bet_quality_rate": 100,
-    "sit_quality_rate": 100,
-    "sit_decision_quality_count": 17,
-    "decision_quality_rate": 100,
-    "total_decisions": 20,
-    "largest_edge_rejected": null,
+    "sit_quality_rate": 83.33,
+    "sit_decision_quality_count": 5,
+    "decision_quality_rate": 88.89,
+    "total_decisions": 9,
+    "largest_edge_rejected": 3.3,
     "rejected_by_reason": {
-      "no_edge": 11,
-      "low_confidence": 3,
-      "stale_or_unverified_odds": 1,
-      "exposure_cap_reached": 2,
-      "breaker_active": 0
+      "no_edge": 4,
+      "low_confidence": 2
     },
     "sit_reason_codes_supported": [
       "no_edge",
@@ -273,7 +148,7 @@
     ]
   },
   "pending_bets": [
-    "Lakers -9.5 (-110) | $47.00 @ FanDuel | NBA | March 6"
+    "None"
   ],
   "todays_bets": [
     {
@@ -287,8 +162,8 @@
       "Book": "FanDuel",
       "Stake": "$47.00",
       "Tier": "T2",
-      "Result": "PENDING",
-      "P/L": "-",
+      "Result": "WIN",
+      "P/L": "+$42.73",
       "CLV": "-"
     },
     {
@@ -593,6 +468,54 @@
       "P/L": "-$10.00",
       "CLV": "-",
       "Bankroll": "$1,219.43"
+    },
+    {
+      "Date": "2026-03-06",
+      "Timestamp (CT)": "22:00",
+      "Sport": "NBA",
+      "Market": "Spread",
+      "Bet": "Lakers -9.5",
+      "Odds (US)": "-110",
+      "Odds (Dec)": "1.91",
+      "Book": "FanDuel",
+      "Stake": "$47.00",
+      "Tier": "T2",
+      "Result": "WIN",
+      "P/L": "+$42.73",
+      "CLV": "-",
+      "Bankroll": "$1,262.16"
+    },
+    {
+      "Date": "2026-03-07",
+      "Timestamp (CT)": "21:00",
+      "Sport": "UFC",
+      "Market": "ML",
+      "Bet": "Charles Oliveira ML",
+      "Odds (US)": "+190",
+      "Odds (Dec)": "2.90",
+      "Book": "BetMGM",
+      "Stake": "$1.50",
+      "Tier": "T3",
+      "Result": "LOSS",
+      "P/L": "-$1.50",
+      "CLV": "-",
+      "Bankroll": "$1,260.66"
+    },
+    {
+      "Date": "2026-03-07",
+      "Timestamp (CT)": "21:00",
+      "Sport": "UFC",
+      "Market": "ML",
+      "Bet": "Cody Garbrandt ML",
+      "Odds (US)": "+130",
+      "Odds (Dec)": "2.30",
+      "Book": "DraftKings",
+      "Stake": "$1.00",
+      "Tier": "T3",
+      "Result": "WIN",
+      "P/L": "+$1.30",
+      "CLV": "-",
+      "Bankroll": "$1,261.96"
     }
   ],
   "ledger": [
@@ -619,13 +542,13 @@
     }
   ],
   "derived": {
-    "bankroll_numeric": 1219.43,
-    "roi_percent_numeric": 9.6,
+    "bankroll_numeric": 1261.96,
+    "roi_percent_numeric": 11.8,
     "today_recommended_count": 4,
     "pending_count": 1,
-    "graded_bet_count": 16,
-    "rejected_opportunities_count": 3,
-    "decision_quality_rate": 100,
+    "graded_bet_count": 19,
+    "rejected_opportunities_count": 0,
+    "decision_quality_rate": 88.89,
     "redacted_pending": false
   }
 }
