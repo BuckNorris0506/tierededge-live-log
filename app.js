@@ -22,8 +22,30 @@ function isMissing(value) {
 
 function formatValue(value) {
   if (isMissing(value)) return MISSING;
+  if (Array.isArray(value)) {
+    if (value.length === 0) return MISSING;
+    return value.map((item) => formatValue(item)).join(', ');
+  }
   if (typeof value === 'object') return MISSING;
   return String(value);
+}
+
+function isMeaningfulValue(value) {
+  if (value === null || value === undefined) return false;
+  if (typeof value === 'string') {
+    const s = value.trim().toLowerCase();
+    return s !== '' && s !== '-' && s !== '—' && s !== 'n/a' && s !== 'none' && s !== 'no data';
+  }
+  if (typeof value === 'number') return Number.isFinite(value);
+  if (Array.isArray(value)) return value.some((item) => isMeaningfulValue(item));
+  if (typeof value === 'object') return Object.values(value).some((item) => isMeaningfulValue(item));
+  return true;
+}
+
+function toggleSection(sectionId, visible) {
+  const node = document.getElementById(sectionId);
+  if (!node) return;
+  node.classList.toggle('hidden', !visible);
 }
 
 function titleCaseFromKey(key) {
@@ -51,6 +73,7 @@ function qualityLabel(value, weakMax, decentMax) {
 
 function renderCards(data) {
   const root = document.getElementById('cards');
+  if (!root) return;
   root.innerHTML = '';
 
   const avgClv = parseNumber(data.lifetime_stats['Average CLV']);
@@ -83,6 +106,7 @@ function renderCards(data) {
 
 function renderDecisionQuality(id, dq) {
   const list = document.getElementById(id);
+  if (!list) return;
   list.innerHTML = '';
   const rows = [
     ['Decision Quality Rate', dq?.decision_quality_rate !== null && dq?.decision_quality_rate !== undefined ? `${dq.decision_quality_rate}%` : MISSING],
@@ -114,6 +138,7 @@ function renderDecisionQuality(id, dq) {
 
 function renderMeta(data) {
   const meta = document.getElementById('meta');
+  if (!meta) return;
   meta.innerHTML = '';
   meta.appendChild(el('div', '', `Schema: ${data.schema}`));
   meta.appendChild(el('div', '', `Updated (CT): ${data.last_updated_ct}`));
@@ -122,6 +147,7 @@ function renderMeta(data) {
 
 function renderTable(id, rows, limit = null) {
   const table = document.getElementById(id);
+  if (!table) return;
   table.innerHTML = '';
 
   if (!rows || rows.length === 0) {
@@ -157,6 +183,7 @@ function renderTable(id, rows, limit = null) {
 
 function renderList(id, mapOrList) {
   const list = document.getElementById(id);
+  if (!list) return;
   list.innerHTML = '';
 
   if (Array.isArray(mapOrList)) {
@@ -206,6 +233,7 @@ function renderList(id, mapOrList) {
 
 function renderTodaysScan(id, data) {
   const list = document.getElementById(id);
+  if (!list) return;
   list.innerHTML = '';
   const summary = data.daily_decision_summary || data.daily_summary || {};
   const scanner = data.scanner_statistics || {};
@@ -218,6 +246,7 @@ function renderTodaysScan(id, data) {
     ['Sit Decisions', summary.sits ?? dq.rejected_plays_count],
     ['Strongest Edge Found', summary.strongest_edge_found ?? scanner['Largest Edge Detected']],
     ['Largest Edge Rejected', summary.largest_edge_rejected ?? summary.strongest_edge_rejected ?? scanner['Largest Edge Rejected']],
+    ['Top Rejection Reasons', summary.top_rejection_reasons],
     ['Final Daily Verdict', summary.final_daily_verdict],
   ];
 
@@ -228,6 +257,7 @@ function renderTodaysScan(id, data) {
 
 function renderSitAccountability(id, sit, summary) {
   const list = document.getElementById(id);
+  if (!list) return;
   list.innerHTML = '';
   const rows = [
     ['Avoided Losses (count)', sit?.['Avoided Losses (count)']],
@@ -245,6 +275,7 @@ function renderSitAccountability(id, sit, summary) {
 
 function renderEdgeDistributionTransparency(id, payload) {
   const list = document.getElementById(id);
+  if (!list) return;
   list.innerHTML = '';
   const buckets = payload?.buckets || {};
   const bucketRows = [
@@ -278,6 +309,7 @@ function renderEdgeDistributionTransparency(id, payload) {
 
 function renderRejectionSummary(id, summary) {
   const list = document.getElementById(id);
+  if (!list) return;
   list.innerHTML = '';
 
   const labelMap = {
@@ -309,6 +341,7 @@ function renderRejectionSummary(id, summary) {
 
 function renderPassedOpportunityTracker(id, tracker) {
   const list = document.getElementById(id);
+  if (!list) return;
   list.innerHTML = '';
   if (!tracker) {
     list.appendChild(el('li', '', 'No tracker data'));
@@ -342,7 +375,6 @@ function renderPassedOpportunityTracker(id, tracker) {
     renderTable('today-table', data.todays_bets);
     renderTable('log-table', data.bet_log, 50);
     renderTable('rejected-table', data.rejected_opportunities, 50);
-    renderList('pending-list', data.pending_bets);
     renderRejectionSummary('reject-list', data.daily_rejection_summary);
     renderSitAccountability('sit-accountability-list', data.sit_accountability, data.sit_accountability_summary);
     renderList('sit-accountability-summary-list', data.sit_accountability_summary);
@@ -351,7 +383,6 @@ function renderPassedOpportunityTracker(id, tracker) {
     renderList('market-confidence-list', data.market_confidence);
     renderList('canonical-decision-engine-list', data.canonical_decision_engine);
     renderList('drawdown-governor-list', data.drawdown_governor);
-    renderList('edge-distribution-list', data.edge_distribution);
     renderEdgeDistributionTransparency('edge-distribution-transparency-list', data.edge_distribution_transparency);
     renderList('market-type-reliability-list', data.market_type_reliability_index);
     renderList('reliability-index-list', data.reliability_index);
@@ -360,6 +391,16 @@ function renderPassedOpportunityTracker(id, tracker) {
     renderList('rule-ledger-pointer-list', data.rule_ledger_pointer);
     renderList('execution-list', data.execution_quality);
     renderList('weekly-list', data.weekly_running_totals);
+
+    toggleSection('rule-ledger-pointer-section', isMeaningfulValue(data.rule_ledger_pointer));
+    toggleSection('expectation-framing-section', isMeaningfulValue(data.expectation_framing));
+    toggleSection('reliability-index-section', isMeaningfulValue(data.reliability_index));
+    toggleSection('market-confidence-section', isMeaningfulValue(data.market_confidence));
+    toggleSection('drawdown-governor-section', isMeaningfulValue(data.drawdown_governor));
+    toggleSection('governance-section', isMeaningfulValue(data.market_confidence) || isMeaningfulValue(data.drawdown_governor));
+    toggleSection('integrity-section', isMeaningfulValue(data.reliability_index) || isMeaningfulValue(data.expectation_framing));
+    toggleSection('engine-rule-section', isMeaningfulValue(data.canonical_decision_engine) || isMeaningfulValue(data.rule_ledger_pointer));
+    toggleSection('market-distribution-section', isMeaningfulValue(data.market_type_reliability_index) || isMeaningfulValue(data.scanner_statistics));
   } catch (err) {
     document.body.innerHTML = `<p style="padding:20px;font-family:sans-serif;">Failed to load live log: ${err.message}</p>`;
   }

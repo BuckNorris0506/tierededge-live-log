@@ -102,6 +102,11 @@ main {
   margin-bottom: 12px;
 }
 
+.featured {
+  border-color: #c5d7cf;
+  background: #f8fbf9;
+}
+
 h2 {
   margin: 0 0 10px;
   font-size: 18px;
@@ -145,6 +150,10 @@ li {
   display: grid;
   gap: 12px;
   grid-template-columns: 1fr 1fr;
+}
+
+.hidden {
+  display: none !important;
 }
 
 .foot {
