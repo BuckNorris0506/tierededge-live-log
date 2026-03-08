@@ -254,7 +254,8 @@ function computePassedOpportunityTracker({ recommendationRows, targetDate, grade
       ? 'awaiting grading'
       : (status === 'loss' ? 'they lost' : (status === 'win' ? 'they won' : status));
 
-    const sentence = `We passed on ${selection} (${sport}) at +EV ${edgeText} (${odds}). Outcome: ${readable}.`;
+    const context = graded?.event_label ? ` in ${graded.event_label}` : ` (${sport})`;
+    const sentence = `We passed on ${selection}${context} at +EV ${edgeText} (${odds}). Outcome: ${readable}.`;
 
     return {
       timestamp_ct: row.timestamp_ct || null,
@@ -631,6 +632,33 @@ function computeSitAccountabilitySummary({ sitAccountability, rejectedOpportunit
   };
 }
 
+function computeSitAccountabilitySummaryFromPassedTracker(passedOpportunityTracker) {
+  const entries = (passedOpportunityTracker?.entries || [])
+    .filter((entry) => normalizeDecision(entry.outcome_if_bet) !== 'ungraded');
+  const graded = entries.length;
+  const wins = entries.filter((entry) => normalizeDecision(entry.outcome_if_bet) === 'win').length;
+  const losses = entries.filter((entry) => normalizeDecision(entry.outcome_if_bet) === 'loss').length;
+  const pushes = entries.filter((entry) => normalizeDecision(entry.outcome_if_bet) === 'push').length;
+  const netCounterfactualPl = entries.reduce((acc, entry) => acc + (parseAsNumber(entry.counterfactual_pl) || 0), 0);
+  const sitDecisionWinRateIfBet = safeRate(wins, graded);
+  const moneySavedBySitting = netCounterfactualPl < 0 ? Math.abs(netCounterfactualPl) : 0;
+  const missedProfitBySitting = netCounterfactualPl > 0 ? netCounterfactualPl : 0;
+
+  return {
+    source: 'passed_opportunity_tracker',
+    passed_bets_graded: graded,
+    passed_bets_record_if_bet: graded > 0 ? `${wins}-${losses}${pushes > 0 ? `-${pushes}` : ''}` : null,
+    passed_bets_wins_if_bet: wins,
+    passed_bets_losses_if_bet: losses,
+    passed_bets_pushes_if_bet: pushes,
+    passed_bets_win_rate_if_bet: sitDecisionWinRateIfBet !== null ? round2(sitDecisionWinRateIfBet * 100) : null,
+    money_saved_by_sitting: round2(moneySavedBySitting),
+    missed_profit_by_sitting: round2(missedProfitBySitting),
+    net_counterfactual_pl_if_bet: round2(netCounterfactualPl),
+    net_ev_rejected: null,
+  };
+}
+
 function buildPayload(markdown) {
   const lastUpdatedCt = parseLastUpdated(markdown);
   const targetDate = parseDateFromLastUpdated(lastUpdatedCt);
@@ -694,15 +722,18 @@ function buildPayload(markdown) {
     decisionQuality,
     rejectedOpportunities,
   });
-  const sitAccountabilitySummary = computeSitAccountabilitySummary({
-    sitAccountability,
-    rejectedOpportunities,
-  });
   const passedOpportunityTracker = computePassedOpportunityTracker({
     recommendationRows,
     targetDate,
     gradesCache: passedGradesCache,
   });
+  const sitAccountabilitySummary =
+    (passedOpportunityTracker?.graded_count || 0) > 0
+      ? computeSitAccountabilitySummaryFromPassedTracker(passedOpportunityTracker)
+      : computeSitAccountabilitySummary({
+          sitAccountability,
+          rejectedOpportunities,
+        });
 
   return {
     generated_at_utc: new Date().toISOString(),
