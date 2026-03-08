@@ -44,6 +44,8 @@ function renderCards(data) {
   const cards = [
     ['Bankroll', data.current_status['Bankroll'] || '-'],
     ['Decision Quality Rate', data.decision_quality?.decision_quality_rate !== null && data.decision_quality?.decision_quality_rate !== undefined ? `${data.decision_quality.decision_quality_rate}%` : '-'],
+    ['Money Saved (Sits)', data.sit_accountability_summary?.money_saved_by_sitting !== null && data.sit_accountability_summary?.money_saved_by_sitting !== undefined ? `$${data.sit_accountability_summary.money_saved_by_sitting}` : '-'],
+    ['Passed Bets W-L (If Bet)', data.sit_accountability_summary?.passed_bets_record_if_bet || '-'],
     ['Overall ROI', data.lifetime_stats['Overall ROI'] || '-'],
     ['Average CLV', data.lifetime_stats['Average CLV'] || '-'],
     ['Process Score', data.current_status['Process Score (7d)'] || '-'],
@@ -196,6 +198,7 @@ function renderRejectionSummary(id, summary) {
     renderList('pending-list', data.pending_bets);
     renderRejectionSummary('reject-list', data.daily_rejection_summary);
     renderList('sit-accountability-list', data.sit_accountability);
+    renderList('sit-accountability-summary-list', data.sit_accountability_summary);
     renderList('scanner-stats-list', data.scanner_statistics);
     renderList('market-confidence-list', data.market_confidence);
     renderList('canonical-decision-engine-list', data.canonical_decision_engine);

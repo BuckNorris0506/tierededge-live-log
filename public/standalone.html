@@ -205,6 +205,13 @@ li {
         <ul id="sit-accountability-list"></ul>
       </article>
       <article>
+        <h2>Sit Accountability Summary</h2>
+        <ul id="sit-accountability-summary-list"></ul>
+      </article>
+    </section>
+
+    <section class="panel">
+      <article>
         <h2>Scanner Statistics</h2>
         <ul id="scanner-stats-list"></ul>
       </article>
@@ -295,7 +302,7 @@ li {
   </footer>
 
   <script>window.__LIVE_DATA__ = {
-  "generated_at_utc": "2026-03-08T13:57:15.647Z",
+  "generated_at_utc": "2026-03-08T17:41:28.771Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-07 23:00 CT",
@@ -371,6 +378,19 @@ li {
       "low_confidence (2)"
     ],
     "final_daily_verdict": "Selective action: 3 bet(s), 6 sit decision(s)."
+  },
+  "sit_accountability_summary": {
+    "source": "insufficient_data",
+    "passed_bets_graded": 0,
+    "passed_bets_record_if_bet": null,
+    "passed_bets_wins_if_bet": 0,
+    "passed_bets_losses_if_bet": 0,
+    "passed_bets_pushes_if_bet": 0,
+    "passed_bets_win_rate_if_bet": null,
+    "money_saved_by_sitting": 0,
+    "missed_profit_by_sitting": 0,
+    "net_counterfactual_pl_if_bet": null,
+    "net_ev_rejected": null
   },
   "edge_distribution_transparency": {
     "buckets": {
@@ -896,6 +916,8 @@ function renderCards(data) {
   const cards = [
     ['Bankroll', data.current_status['Bankroll'] || '-'],
     ['Decision Quality Rate', data.decision_quality?.decision_quality_rate !== null && data.decision_quality?.decision_quality_rate !== undefined ? `${data.decision_quality.decision_quality_rate}%` : '-'],
+    ['Money Saved (Sits)', data.sit_accountability_summary?.money_saved_by_sitting !== null && data.sit_accountability_summary?.money_saved_by_sitting !== undefined ? `${data.sit_accountability_summary.money_saved_by_sitting}` : '-'],
+    ['Passed Bets W-L (If Bet)', data.sit_accountability_summary?.passed_bets_record_if_bet || '-'],
     ['Overall ROI', data.lifetime_stats['Overall ROI'] || '-'],
     ['Average CLV', data.lifetime_stats['Average CLV'] || '-'],
     ['Process Score', data.current_status['Process Score (7d)'] || '-'],
@@ -1048,6 +1070,7 @@ function renderRejectionSummary(id, summary) {
     renderList('pending-list', data.pending_bets);
     renderRejectionSummary('reject-list', data.daily_rejection_summary);
     renderList('sit-accountability-list', data.sit_accountability);
+    renderList('sit-accountability-summary-list', data.sit_accountability_summary);
     renderList('scanner-stats-list', data.scanner_statistics);
     renderList('market-confidence-list', data.market_confidence);
     renderList('canonical-decision-engine-list', data.canonical_decision_engine);

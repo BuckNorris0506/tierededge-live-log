@@ -464,6 +464,65 @@ function computeDailyDecisionSummary({
   };
 }
 
+function computeSitAccountabilitySummary({ sitAccountability, rejectedOpportunities }) {
+  const avoidedLosses = parseAsNumber(sitAccountability['Avoided Losses (count)']);
+  const missedWinners = parseAsNumber(sitAccountability['Missed Winners (count)']);
+  const netIfFollowedAllSits = parseAsNumber(sitAccountability['Net P/L If Followed All Sits']);
+  const netEvRejected = parseAsNumber(sitAccountability['Net EV Rejected']);
+
+  let gradedFromTable = 0;
+  let winsFromTable = 0;
+  let lossesFromTable = 0;
+  let pushesFromTable = 0;
+  let counterfactualPlFromTable = 0;
+  let hasCounterfactualRows = false;
+
+  const resultKeys = ['If Bet Result', 'Counterfactual Result', 'Result'];
+  const plKeys = ['Counterfactual P/L', 'Counterfactual PL', 'If Bet P/L', 'P/L If Bet'];
+
+  for (const row of rejectedOpportunities) {
+    const resultRaw = resultKeys.map((k) => row[k]).find(Boolean);
+    const plRaw = plKeys.map((k) => row[k]).find(Boolean);
+    const result = normalizeDecision(resultRaw);
+    const pl = parseAsNumber(plRaw);
+
+    if (result || pl !== null) {
+      hasCounterfactualRows = true;
+      gradedFromTable += 1;
+    }
+
+    if (result === 'win') winsFromTable += 1;
+    if (result === 'loss') lossesFromTable += 1;
+    if (result === 'push') pushesFromTable += 1;
+    if (pl !== null) counterfactualPlFromTable += pl;
+  }
+
+  const hasManualLayer = avoidedLosses !== null || missedWinners !== null || netIfFollowedAllSits !== null;
+  const wins = hasCounterfactualRows ? winsFromTable : (missedWinners ?? 0);
+  const losses = hasCounterfactualRows ? lossesFromTable : (avoidedLosses ?? 0);
+  const pushes = hasCounterfactualRows ? pushesFromTable : 0;
+  const graded = hasCounterfactualRows ? gradedFromTable : ((wins || 0) + (losses || 0) + (pushes || 0));
+  const netCounterfactualPl = hasCounterfactualRows ? counterfactualPlFromTable : netIfFollowedAllSits;
+
+  const moneySavedBySitting = netCounterfactualPl !== null && netCounterfactualPl < 0 ? round2(Math.abs(netCounterfactualPl)) : 0;
+  const missedProfitBySitting = netCounterfactualPl !== null && netCounterfactualPl > 0 ? round2(netCounterfactualPl) : 0;
+  const sitDecisionWinRateIfBet = safeRate(wins, graded);
+
+  return {
+    source: hasCounterfactualRows ? 'rejected_opportunities_table' : (hasManualLayer ? 'sit_accountability_fields' : 'insufficient_data'),
+    passed_bets_graded: graded,
+    passed_bets_record_if_bet: graded > 0 ? `${wins}-${losses}${pushes > 0 ? `-${pushes}` : ''}` : null,
+    passed_bets_wins_if_bet: wins,
+    passed_bets_losses_if_bet: losses,
+    passed_bets_pushes_if_bet: pushes,
+    passed_bets_win_rate_if_bet: sitDecisionWinRateIfBet !== null ? round2(sitDecisionWinRateIfBet * 100) : null,
+    money_saved_by_sitting: round2(moneySavedBySitting),
+    missed_profit_by_sitting: round2(missedProfitBySitting),
+    net_counterfactual_pl_if_bet: round2(netCounterfactualPl),
+    net_ev_rejected: round2(netEvRejected),
+  };
+}
+
 function buildPayload(markdown) {
   const lastUpdatedCt = parseLastUpdated(markdown);
   const targetDate = parseDateFromLastUpdated(lastUpdatedCt);
@@ -525,6 +584,10 @@ function buildPayload(markdown) {
     decisionQuality,
     rejectedOpportunities,
   });
+  const sitAccountabilitySummary = computeSitAccountabilitySummary({
+    sitAccountability,
+    rejectedOpportunities,
+  });
 
   return {
     generated_at_utc: new Date().toISOString(),
@@ -543,6 +606,7 @@ function buildPayload(markdown) {
     reliability_index: reliabilityIndex,
     daily_summary: { ...dailySummary, ...dailyDecisionSummary },
     daily_decision_summary: dailyDecisionSummary,
+    sit_accountability_summary: sitAccountabilitySummary,
     edge_distribution_transparency: edgeDistributionTransparency,
     market_type_reliability_index: marketTypeReliabilityIndex,
     sit_reason_code_standard: sitReasonCodeStandard,
