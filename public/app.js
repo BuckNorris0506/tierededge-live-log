@@ -148,7 +148,8 @@ function renderList(id, mapOrList) {
   }
 
   for (const [k, v] of entries) {
-    list.appendChild(el('li', '', `${k}: ${v}`));
+    const value = (v && typeof v === 'object') ? JSON.stringify(v) : v;
+    list.appendChild(el('li', '', `${k}: ${value}`));
   }
 }
 
@@ -200,9 +201,12 @@ function renderRejectionSummary(id, summary) {
     renderList('canonical-decision-engine-list', data.canonical_decision_engine);
     renderList('drawdown-governor-list', data.drawdown_governor);
     renderList('edge-distribution-list', data.edge_distribution);
+    renderList('edge-distribution-transparency-list', data.edge_distribution_transparency);
+    renderList('market-type-reliability-list', data.market_type_reliability_index);
     renderList('reliability-index-list', data.reliability_index);
     renderList('daily-summary-list', data.daily_summary);
     renderList('expectation-framing-list', data.expectation_framing);
+    renderList('rule-ledger-pointer-list', data.rule_ledger_pointer);
     renderList('execution-list', data.execution_quality);
     renderList('weekly-list', data.weekly_running_totals);
   } catch (err) {

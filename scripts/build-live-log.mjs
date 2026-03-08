@@ -134,6 +134,23 @@ function normalizeReason(text) {
     .replace(/[^\w]/g, '');
 }
 
+function splitReasonCodes(text) {
+  const aliases = {
+    edge_below_20_minimum: 'no_edge',
+    edge_below_minimum_threshold: 'no_edge',
+    edge_below_threshold: 'no_edge',
+    data_confidence_below_required_threshold: 'low_confidence',
+    odds_data_could_not_be_verified: 'stale_or_unverified_odds',
+    daily_exposure_cap_reached: 'exposure_cap_reached',
+    circuit_breaker_risk_mode_active: 'breaker_active',
+  };
+  return String(text || '')
+    .split(/[|,;/]+/)
+    .map((part) => normalizeReason(part))
+    .map((reason) => aliases[reason] || reason)
+    .filter(Boolean);
+}
+
 function parseDateFromLastUpdated(lastUpdated) {
   const match = String(lastUpdated || '').match(/(\d{4}-\d{2}-\d{2})/);
   return match ? match[1] : null;
@@ -165,6 +182,78 @@ function resolveRecommendationLogPath(markdown, sourcePath) {
   return null;
 }
 
+const SUPPORTED_SIT_REASON_CODES = [
+  'no_edge',
+  'weak_consensus',
+  'limited_liquidity',
+  'high_volatility',
+  'market_confidence_too_low',
+  'exposure_cap',
+  'drawdown_governor',
+  'large_spread_instability',
+  'strategy_filter_reject',
+  'low_confidence',
+  'manual_override',
+  'market_quality_fail',
+  'stale_or_unverified_odds',
+  'exposure_cap_reached',
+  'breaker_active',
+];
+
+function computeEdgeDistributionTransparency({ recommendationRows, rejectedOpportunities, targetDate }) {
+  const inDate = recommendationRows.filter((row) => {
+    if (!targetDate) return true;
+    return String(row.timestamp_ct || '').includes(targetDate);
+  });
+  const candidateRows =
+    inDate.length > 0
+      ? inDate
+      : rejectedOpportunities.map((row) => ({
+        edge_pct: row['Edge %'] || row.edge_pct,
+        sport: row.Sport || row.sport || 'unknown',
+        market: row.Market || row.market || 'unknown',
+      }));
+
+  const edges = candidateRows
+    .map((row) => ({
+      edge: parsePercent(row.edge_pct),
+      sport: String(row.sport || 'unknown'),
+      market: String(row.market || 'unknown'),
+    }))
+    .filter((row) => row.edge !== null);
+
+  const buckets = {
+    edge_0_1: 0,
+    edge_1_2: 0,
+    edge_2_3: 0,
+    edge_3_4: 0,
+    edge_4_5: 0,
+    edge_5_plus: 0,
+  };
+  const bySport = {};
+  const byMarketType = {};
+
+  for (const row of edges) {
+    const e = row.edge;
+    if (e >= 0 && e < 1) buckets.edge_0_1 += 1;
+    else if (e >= 1 && e < 2) buckets.edge_1_2 += 1;
+    else if (e >= 2 && e < 3) buckets.edge_2_3 += 1;
+    else if (e >= 3 && e < 4) buckets.edge_3_4 += 1;
+    else if (e >= 4 && e < 5) buckets.edge_4_5 += 1;
+    else if (e >= 5) buckets.edge_5_plus += 1;
+
+    bySport[row.sport] = (bySport[row.sport] || 0) + 1;
+    byMarketType[row.market] = (byMarketType[row.market] || 0) + 1;
+  }
+
+  return {
+    buckets,
+    total_edges_observed: edges.length,
+    by_sport: bySport,
+    by_market_type: byMarketType,
+  };
+}
+
 function computeDecisionQuality({
   lastUpdatedCt,
   currentStatus,
@@ -176,13 +265,7 @@ function computeDecisionQuality({
   recommendationRows,
 }) {
   const targetDate = parseDateFromLastUpdated(lastUpdatedCt);
-  const allowedSitReasons = new Set([
-    'no_edge',
-    'low_confidence',
-    'stale_or_unverified_odds',
-    'exposure_cap_reached',
-    'breaker_active',
-  ]);
+  const allowedSitReasons = new Set(SUPPORTED_SIT_REASON_CODES);
 
   const tierPlacedBets = todaysBets.filter((row) => /^T[123]$/i.test(String(row.Tier || '').trim()));
 
@@ -195,10 +278,13 @@ function computeDecisionQuality({
 
   const placedBetsCount = recPlacedRows.length > 0 ? recPlacedRows.length : tierPlacedBets.length;
   const rejectedFromSummary = parseAsNumber(rejectionSummary['Total Rejected']) || 0;
+  const useSummaryRejectionMode = recSitRows.length === 0 && rejectedFromSummary > rejectedOpportunities.length;
   const rejectedPlaysCount =
     recSitRows.length > 0
       ? recSitRows.length
-      : (rejectedOpportunities.length > 0 ? rejectedOpportunities.length : rejectedFromSummary);
+      : (useSummaryRejectionMode
+        ? rejectedFromSummary
+        : (rejectedOpportunities.length > 0 ? rejectedOpportunities.length : rejectedFromSummary));
 
   const clvTierBets = betLog.filter((row) => /^T[123]$/i.test(String(row.Tier || '').trim()));
   const clvValues = clvTierBets.map((row) => parseClvValue(row.CLV)).filter((n) => n !== null);
@@ -237,12 +323,12 @@ function computeDecisionQuality({
   let sitQualityRows = [];
   if (recSitRows.length > 0) {
     sitQualityRows = recSitRows.map((row) => ({
-      reason: normalizeReason(row.rejection_reason),
+      reasons: splitReasonCodes(row.rejection_reason),
       edge: parsePercent(row.edge_pct),
     }));
-  } else if (rejectedOpportunities.length > 0) {
+  } else if (!useSummaryRejectionMode && rejectedOpportunities.length > 0) {
     sitQualityRows = rejectedOpportunities.map((row) => ({
-      reason: normalizeReason(row['Sit Reason'] || row.reason || row.rejection_reason),
+      reasons: splitReasonCodes(row['Sit Reason'] || row.reason || row.rejection_reason),
       edge: parsePercent(row['Edge %'] || row.edge_pct),
     }));
   }
@@ -250,8 +336,9 @@ function computeDecisionQuality({
   let highQualitySitDecisions = 0;
   if (sitQualityRows.length > 0) {
     highQualitySitDecisions = sitQualityRows.filter((row) => {
-      if (!allowedSitReasons.has(row.reason)) return false;
-      if (row.reason === 'no_edge' && row.edge !== null) return row.edge < 2.0;
+      if (!row.reasons.length) return false;
+      if (!row.reasons.every((r) => allowedSitReasons.has(r))) return false;
+      if (row.reasons.includes('no_edge') && row.edge !== null) return row.edge < 2.0;
       return true;
     }).length;
   } else {
@@ -269,8 +356,9 @@ function computeDecisionQuality({
 
   const rejectedByReason = {};
   for (const row of sitQualityRows) {
-    if (!row.reason) continue;
-    rejectedByReason[row.reason] = (rejectedByReason[row.reason] || 0) + 1;
+    for (const reason of row.reasons) {
+      rejectedByReason[reason] = (rejectedByReason[reason] || 0) + 1;
+    }
   }
   if (Object.keys(rejectedByReason).length === 0) {
     for (const k of ['no_edge', 'low_confidence', 'stale_or_unverified_odds', 'exposure_cap_reached', 'breaker_active']) {
@@ -296,6 +384,14 @@ function computeDecisionQuality({
   const sitQualityRate = safeRate(highQualitySitDecisions, rejectedPlaysCount);
   const decisionQualityRate = safeRate(highQualityBetDecisions + highQualitySitDecisions, totalDecisions);
 
+  const largestEdgeRejected = sitQualityRows.length > 0
+    ? sitQualityRows.reduce((best, row) => {
+      if (row.edge === null) return best;
+      if (best === null || row.edge > best) return row.edge;
+      return best;
+    }, null)
+    : null;
+
   return {
     placed_bets_count: placedBetsCount,
     rejected_plays_count: rejectedPlaysCount,
@@ -309,13 +405,68 @@ function computeDecisionQuality({
     avoided_negative_ev: round2(avoidedNegativeEv),
     bet_quality_rate: betQualityRate !== null ? round2(betQualityRate * 100) : null,
     sit_quality_rate: sitQualityRate !== null ? round2(sitQualityRate * 100) : null,
+    sit_decision_quality_count: highQualitySitDecisions,
     decision_quality_rate: decisionQualityRate !== null ? round2(decisionQualityRate * 100) : null,
     total_decisions: totalDecisions,
+    largest_edge_rejected: round2(largestEdgeRejected),
     rejected_by_reason: rejectedByReason,
+    sit_reason_codes_supported: SUPPORTED_SIT_REASON_CODES,
+  };
+}
+
+function computeDailyDecisionSummary({
+  scannerStats,
+  decisionQuality,
+  rejectedOpportunities,
+}) {
+  const largestDetected = scannerStats['Largest Edge Detected'] || null;
+  const largestRejectedStat = scannerStats['Largest Edge Rejected'] || null;
+  let largestRejectedRow = null;
+  for (const row of rejectedOpportunities) {
+    const edge = parsePercent(row['Edge %'] || row.edge_pct);
+    if (edge === null) continue;
+    if (!largestRejectedRow || edge > largestRejectedRow.edge) {
+      largestRejectedRow = {
+        edge,
+        sport: row.Sport || row.sport || 'unknown',
+        market: row.Market || row.market || 'unknown',
+        book: row.Book || row.book || 'unknown',
+        reason: row['Sit Reason'] || row.reason || row.rejection_reason || 'unknown',
+      };
+    }
+  }
+
+  const topReasons = Object.entries(decisionQuality.rejected_by_reason || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([reason, count]) => `${reason} (${count})`);
+
+  const bets = decisionQuality.placed_bets_count || 0;
+  const sits = decisionQuality.rejected_plays_count || 0;
+  const verdict = bets > 0
+    ? `Selective action: ${bets} bet(s), ${sits} sit decision(s).`
+    : `Markets were tight. ${sits} sit decision(s) preserved discipline.`;
+
+  return {
+    games_scanned: scannerStats['Games Scanned'] || null,
+    edges_detected: scannerStats['Edges Detected'] || null,
+    bets_placed: bets,
+    sits,
+    strongest_edge_found: largestDetected,
+    strongest_edge_rejected: largestRejectedStat || (largestRejectedRow ? `${largestRejectedRow.edge}%` : null),
+    largest_edge_rejected_today: largestRejectedRow ? `${largestRejectedRow.edge}%` : null,
+    largest_edge_rejected_context: largestRejectedRow
+      ? `${largestRejectedRow.sport} | ${largestRejectedRow.market} | ${largestRejectedRow.book}`
+      : null,
+    rejection_reason_for_largest_edge: largestRejectedRow ? largestRejectedRow.reason : null,
+    top_rejection_reasons: topReasons,
+    final_daily_verdict: verdict,
   };
 }
 
 function buildPayload(markdown) {
+  const lastUpdatedCt = parseLastUpdated(markdown);
+  const targetDate = parseDateFromLastUpdated(lastUpdatedCt);
   const currentStatus = parseBulletMap(extractSection(markdown, 'Current Status'));
   const lifetimeStats = parseBulletMap(extractSection(markdown, 'Lifetime Stats'));
   const rejectionSummary = parseBulletMap(extractSection(markdown, 'Daily Rejection Summary'));
@@ -327,6 +478,9 @@ function buildPayload(markdown) {
   const edgeDistribution = parseBulletMap(extractSection(markdown, 'Edge Distribution'));
   const reliabilityIndex = parseBulletMap(extractSection(markdown, 'Reliability Index'));
   const dailySummary = parseBulletMap(extractSection(markdown, 'Daily Summary'));
+  const marketTypeReliabilityIndex = parseBulletMap(extractSection(markdown, 'Market Type Reliability Index'));
+  const sitReasonCodeStandard = parseBulletMap(extractSection(markdown, 'Sit Reason Code Standard'));
+  const ruleLedgerPointer = parseBulletMap(extractSection(markdown, 'Rule Ledger Pointer'));
   const expectationFraming = parseBulletMap(extractSection(markdown, 'Expectation Framing'));
   const executionQuality = parseBulletMap(extractSection(markdown, 'Execution Quality (Slippage)'));
   const weeklyRunningTotals = parseBulletMap(extractSection(markdown, 'Weekly Running Totals'));
@@ -352,7 +506,7 @@ function buildPayload(markdown) {
   const bankrollValue = parseAsNumber(currentStatus.Bankroll);
   const roiValue = parseAsNumber(lifetimeStats['Overall ROI']);
   const decisionQuality = computeDecisionQuality({
-    lastUpdatedCt: parseLastUpdated(markdown),
+    lastUpdatedCt,
     currentStatus,
     betLog,
     todaysBets,
@@ -361,12 +515,22 @@ function buildPayload(markdown) {
     sitAccountability,
     recommendationRows,
   });
+  const edgeDistributionTransparency = computeEdgeDistributionTransparency({
+    recommendationRows,
+    rejectedOpportunities,
+    targetDate,
+  });
+  const dailyDecisionSummary = computeDailyDecisionSummary({
+    scannerStats,
+    decisionQuality,
+    rejectedOpportunities,
+  });
 
   return {
     generated_at_utc: new Date().toISOString(),
     source_file: sourcePath,
     schema: parseSchema(markdown),
-    last_updated_ct: parseLastUpdated(markdown),
+    last_updated_ct: lastUpdatedCt,
     current_status: currentStatus,
     lifetime_stats: lifetimeStats,
     daily_rejection_summary: rejectionSummary,
@@ -377,7 +541,12 @@ function buildPayload(markdown) {
     drawdown_governor: drawdownGovernor,
     edge_distribution: edgeDistribution,
     reliability_index: reliabilityIndex,
-    daily_summary: dailySummary,
+    daily_summary: { ...dailySummary, ...dailyDecisionSummary },
+    daily_decision_summary: dailyDecisionSummary,
+    edge_distribution_transparency: edgeDistributionTransparency,
+    market_type_reliability_index: marketTypeReliabilityIndex,
+    sit_reason_code_standard: sitReasonCodeStandard,
+    rule_ledger_pointer: ruleLedgerPointer,
     expectation_framing: expectationFraming,
     rejected_opportunities: rejectedOpportunities,
     execution_quality: executionQuality,

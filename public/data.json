@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-08T06:26:42.856Z",
+  "generated_at_utc": "2026-03-08T13:52:45.954Z",
   "source_file": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Quant-Agent-Upgrade-v1.2/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-06 21:30 CT",
@@ -101,7 +101,77 @@
     "realized_pl_today": "+$13.99",
     "realized_roi_today": "+17.5%",
     "net_ev_generated_today": "+1.7",
-    "top_edge_segment_today": "CBB spreads"
+    "top_edge_segment_today": "CBB spreads",
+    "strongest_edge_found": "+4.0%",
+    "strongest_edge_rejected": "+1.6%",
+    "largest_edge_rejected_context": "NBA | Spread ATL -6.5 | FanDuel",
+    "rejection_reason_for_largest_edge": "Edge below +2.0% minimum",
+    "top_rejection_reasons": [
+      "no_edge (11)",
+      "low_confidence (3)",
+      "exposure_cap_reached (2)"
+    ],
+    "final_daily_verdict": "Selective action: 3 bet(s), 17 sit decision(s).",
+    "games_scanned": "24",
+    "edges_detected": "4",
+    "bets_placed": 3,
+    "sits": 17,
+    "largest_edge_rejected_today": "0.9%"
+  },
+  "daily_decision_summary": {
+    "games_scanned": "24",
+    "edges_detected": "4",
+    "bets_placed": 3,
+    "sits": 17,
+    "strongest_edge_found": "+4.0%",
+    "strongest_edge_rejected": "+1.6%",
+    "largest_edge_rejected_today": "0.9%",
+    "largest_edge_rejected_context": "NBA | Spread ATL -6.5 | FanDuel",
+    "rejection_reason_for_largest_edge": "Edge below +2.0% minimum",
+    "top_rejection_reasons": [
+      "no_edge (11)",
+      "low_confidence (3)",
+      "exposure_cap_reached (2)"
+    ],
+    "final_daily_verdict": "Selective action: 3 bet(s), 17 sit decision(s)."
+  },
+  "edge_distribution_transparency": {
+    "buckets": {
+      "edge_0_1": 3,
+      "edge_1_2": 0,
+      "edge_2_3": 0,
+      "edge_3_4": 0,
+      "edge_4_5": 0,
+      "edge_5_plus": 0
+    },
+    "total_edges_observed": 3,
+    "by_sport": {
+      "NBA": 2,
+      "NHL": 1
+    },
+    "by_market_type": {
+      "Spread ORL +6.5": 1,
+      "Spread ATL -6.5": 1,
+      "Moneyline BOS -126": 1
+    }
+  },
+  "market_type_reliability_index": {
+    "nba_spread_reliability": "82",
+    "nhl_ml_reliability": "68",
+    "cbb_small_conf_reliability": "52",
+    "player_props_reliability": "41",
+    "soccer_league_reliability": "EPL:74,Championship:59",
+    "reliability_last_reviewed": "2026-03-06"
+  },
+  "sit_reason_code_standard": {
+    "supported_reason_codes": "no_edge,weak_consensus,limited_liquidity,high_volatility,market_confidence_too_low,exposure_cap,drawdown_governor,large_spread_instability,strategy_filter_reject,low_confidence,manual_override,market_quality_fail,stale_or_unverified_odds,exposure_cap_reached,breaker_active",
+    "multi_reason_enabled": "true",
+    "notes": "Keep enum codes internal and render plain-English explanations externally."
+  },
+  "rule_ledger_pointer": {
+    "Path": "`memory/rule-ledger.md`",
+    "Active Rule Count": "9",
+    "Last Rule Review Date": "2026-03-06"
   },
   "expectation_framing": {
     "expected_win_rate_range": "46-54%",
@@ -162,9 +232,9 @@
   },
   "decision_quality": {
     "placed_bets_count": 3,
-    "rejected_plays_count": 3,
+    "rejected_plays_count": 17,
     "high_quality_bet_decisions": 3,
-    "high_quality_sit_decisions": 0,
+    "high_quality_sit_decisions": 17,
     "positive_clv_bets_count": 5,
     "positive_clv_rate": 100,
     "avg_clv": 7.36,
@@ -172,12 +242,35 @@
     "rejected_ev_total": 0.8,
     "avoided_negative_ev": 0,
     "bet_quality_rate": 100,
-    "sit_quality_rate": 0,
-    "decision_quality_rate": 50,
-    "total_decisions": 6,
+    "sit_quality_rate": 100,
+    "sit_decision_quality_count": 17,
+    "decision_quality_rate": 100,
+    "total_decisions": 20,
+    "largest_edge_rejected": null,
     "rejected_by_reason": {
-      "edge_below_20_minimum": 3
-    }
+      "no_edge": 11,
+      "low_confidence": 3,
+      "stale_or_unverified_odds": 1,
+      "exposure_cap_reached": 2,
+      "breaker_active": 0
+    },
+    "sit_reason_codes_supported": [
+      "no_edge",
+      "weak_consensus",
+      "limited_liquidity",
+      "high_volatility",
+      "market_confidence_too_low",
+      "exposure_cap",
+      "drawdown_governor",
+      "large_spread_instability",
+      "strategy_filter_reject",
+      "low_confidence",
+      "manual_override",
+      "market_quality_fail",
+      "stale_or_unverified_odds",
+      "exposure_cap_reached",
+      "breaker_active"
+    ]
   },
   "pending_bets": [
     "Lakers -9.5 (-110) | $47.00 @ FanDuel | NBA | March 6"
@@ -532,7 +625,7 @@
     "pending_count": 1,
     "graded_bet_count": 16,
     "rejected_opportunities_count": 3,
-    "decision_quality_rate": 50,
+    "decision_quality_rate": 100,
     "redacted_pending": false
   }
 }
