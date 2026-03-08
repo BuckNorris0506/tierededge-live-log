@@ -202,6 +202,11 @@ function parseDateFromLastUpdated(lastUpdated) {
   return match ? match[1] : null;
 }
 
+function formatDateKeyFromMs(tsMs) {
+  if (!Number.isFinite(tsMs)) return null;
+  return new Date(tsMs).toISOString().slice(0, 10);
+}
+
 function parseTimestampMs(input) {
   const value = String(input || '').trim();
   if (!value) return null;
@@ -591,6 +596,70 @@ function computeEdgeDistributionTransparency({ recommendationRows, rejectedOppor
   };
 }
 
+function computeRejectionReasonRanges({ recommendationRows, targetDate }) {
+  const bucketDates = {
+    today: new Set(),
+    last_7: new Set(),
+    all_time: new Set(),
+  };
+  const out = {
+    today: { total_rejections: 0, by_reason: {}, top_rejection_reasons: [] },
+    last_7: { total_rejections: 0, by_reason: {}, top_rejection_reasons: [] },
+    all_time: { total_rejections: 0, by_reason: {}, top_rejection_reasons: [] },
+  };
+
+  const targetMs = parseTimestampMs(targetDate ? `${targetDate}T00:00:00Z` : null);
+  const sevenDayStartMs = Number.isFinite(targetMs) ? targetMs - (6 * 24 * 60 * 60 * 1000) : null;
+
+  const sitRows = recommendationRows.filter((row) => normalizeDecision(row.decision) === 'sit');
+  for (const row of sitRows) {
+    const rowMs = parseTimestampMs(row.timestamp_ct);
+    const rowDate = formatDateKeyFromMs(rowMs);
+    if (rowDate) bucketDates.all_time.add(rowDate);
+
+    const reasons = splitReasonCodes(row.rejection_reason);
+    const addReason = (bucketName, reason) => {
+      out[bucketName].by_reason[reason] = (out[bucketName].by_reason[reason] || 0) + 1;
+    };
+
+    for (const reason of reasons) {
+      addReason('all_time', reason);
+    }
+    out.all_time.total_rejections += 1;
+
+    if (targetDate && String(row.timestamp_ct || '').includes(targetDate)) {
+      if (rowDate) bucketDates.today.add(rowDate);
+      out.today.total_rejections += 1;
+      for (const reason of reasons) addReason('today', reason);
+    }
+
+    if (Number.isFinite(rowMs) && Number.isFinite(sevenDayStartMs) && rowMs >= sevenDayStartMs && rowMs <= (targetMs + 24 * 60 * 60 * 1000 - 1)) {
+      if (rowDate) bucketDates.last_7.add(rowDate);
+      out.last_7.total_rejections += 1;
+      for (const reason of reasons) addReason('last_7', reason);
+    }
+  }
+
+  for (const key of ['today', 'last_7', 'all_time']) {
+    out[key].top_rejection_reasons = Object.entries(out[key].by_reason)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([reason, count]) => `${reason} (${count})`);
+    out[key].days_covered = bucketDates[key].size;
+  }
+
+  return out;
+}
+
+function computeDataFreshness({ recommendationRows, gradesCache, generatedAtUtc }) {
+  const lastRecRow = recommendationRows.length > 0 ? recommendationRows[recommendationRows.length - 1] : null;
+  return {
+    recommendation_log_last_row_time: lastRecRow?.timestamp_ct || 'unknown',
+    grading_cache_last_update: gradesCache?.updated_at || 'unknown',
+    payload_build_time_utc: generatedAtUtc || new Date().toISOString(),
+  };
+}
+
 function computeDecisionQuality({
   lastUpdatedCt,
   currentStatus,
@@ -949,6 +1018,10 @@ function buildPayload(markdown) {
     rejectedOpportunities,
     targetDate,
   });
+  const rejectionReasonRanges = computeRejectionReasonRanges({
+    recommendationRows,
+    targetDate,
+  });
   const dailyDecisionSummary = computeDailyDecisionSummary({
     scannerStats,
     decisionQuality,
@@ -973,9 +1046,17 @@ function buildPayload(markdown) {
           sitAccountability,
           rejectedOpportunities,
         });
+  const generatedAtUtc = new Date().toISOString();
+  const dataFreshness = computeDataFreshness({
+    recommendationRows,
+    gradesCache: passedGradesCache,
+    generatedAtUtc,
+  });
+  const openExposure = currentStatus['Daily Exposure Used'] || null;
+  const dailyVerdict = dailyDecisionSummary.final_daily_verdict || null;
 
   return {
-    generated_at_utc: new Date().toISOString(),
+    generated_at_utc: generatedAtUtc,
     source_file: sourcePath,
     schema: parseSchema(markdown),
     last_updated_ct: lastUpdatedCt,
@@ -991,6 +1072,7 @@ function buildPayload(markdown) {
     reliability_index: reliabilityIndex,
     daily_summary: { ...dailySummary, ...dailyDecisionSummary },
     daily_decision_summary: dailyDecisionSummary,
+    rejection_reason_ranges: rejectionReasonRanges,
     market_context: marketContextAudit,
     market_context_hooks_config: {
       mode: marketContextHooksConfig.mode,
@@ -1008,6 +1090,14 @@ function buildPayload(markdown) {
     rejected_opportunities: rejectedOpportunities,
     execution_quality: executionQuality,
     weekly_running_totals: weeklyRunningTotals,
+    data_freshness: dataFreshness,
+    open_exposure: openExposure,
+    daily_verdict: dailyVerdict,
+    normalized: {
+      // Canonical aliases to reduce key-shape drift while preserving legacy fields.
+      open_exposure: openExposure,
+      daily_verdict: dailyVerdict,
+    },
     decision_quality: decisionQuality,
     pending_bets: pendingBets,
     todays_bets: todaysBets,

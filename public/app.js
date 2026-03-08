@@ -64,6 +64,73 @@ function parseNumber(value) {
   return Number.isFinite(n) ? n : null;
 }
 
+function parseDateKey(value) {
+  const m = String(value || '').match(/(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : null;
+}
+
+function resolveAnchorDateMs(data) {
+  const dateKey = parseDateKey(data?.last_updated_ct);
+  if (!dateKey) return null;
+  const ms = Date.parse(`${dateKey}T00:00:00Z`);
+  return Number.isFinite(ms) ? ms : null;
+}
+
+function inRange(dateMs, anchorMs, range) {
+  if (!Number.isFinite(dateMs) || !Number.isFinite(anchorMs)) return range === 'all_time';
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  const dayFloor = (ts) => {
+    const d = new Date(ts);
+    d.setUTCHours(0, 0, 0, 0);
+    return d.getTime();
+  };
+  const targetDay = dayFloor(dateMs);
+  const anchorDay = dayFloor(anchorMs);
+  if (range === 'today') return targetDay === anchorDay;
+  if (range === 'last_7') return targetDay >= (anchorDay - (6 * oneDayMs)) && targetDay <= anchorDay;
+  return true;
+}
+
+function resolveCanonicalSitAccountability(data) {
+  const summary = data?.sit_accountability_summary || {};
+  const manual = data?.sit_accountability || {};
+  const hasComputed = isMeaningfulValue(summary?.passed_bets_graded);
+
+  if (hasComputed) {
+    return {
+      source: 'computed',
+      avoided_losses: null,
+      missed_winners: null,
+      net_pl_if_followed_all_sits: summary.net_counterfactual_pl_if_bet,
+      net_ev_rejected: summary.net_ev_rejected,
+      passed_bets_record_if_bet: summary.passed_bets_record_if_bet,
+      passed_bets_win_rate_if_bet: summary.passed_bets_win_rate_if_bet,
+      money_saved_by_sitting: summary.money_saved_by_sitting,
+      passed_bets_graded: summary.passed_bets_graded,
+      passed_bets_wins_if_bet: summary.passed_bets_wins_if_bet,
+      passed_bets_losses_if_bet: summary.passed_bets_losses_if_bet,
+      passed_bets_pushes_if_bet: summary.passed_bets_pushes_if_bet,
+      missed_profit_by_sitting: summary.missed_profit_by_sitting,
+    };
+  }
+
+  return {
+    source: 'manual',
+    avoided_losses: manual['Avoided Losses (count)'],
+    missed_winners: manual['Missed Winners (count)'],
+    net_pl_if_followed_all_sits: manual['Net P/L If Followed All Sits'],
+    net_ev_rejected: manual['Net EV Rejected'],
+    passed_bets_record_if_bet: manual['Passed Bets W-L If Bet'],
+    passed_bets_win_rate_if_bet: parseNumber(manual['Sit Decision Win Rate If Bet']),
+    money_saved_by_sitting: manual['Money Saved By Sitting'],
+    passed_bets_graded: null,
+    passed_bets_wins_if_bet: null,
+    passed_bets_losses_if_bet: null,
+    passed_bets_pushes_if_bet: null,
+    missed_profit_by_sitting: null,
+  };
+}
+
 function qualityLabel(value, weakMax, decentMax) {
   if (value === null) return 'n/a';
   if (value < weakMax) return 'weak';
@@ -83,12 +150,14 @@ function renderCards(data) {
   const clvQuality = qualityLabel(avgClv, 0.3, 1.0);
   const roiQuality = qualityLabel(roi, 1.0, 4.0);
   const sampleLabel = totalBets !== null && totalBets >= 200 ? 'stable' : 'provisional';
+  const sit = resolveCanonicalSitAccountability(data);
 
   const cards = [
     ['Bankroll', data.current_status['Bankroll'] || '-'],
+    ['Open Exposure', data.normalized?.open_exposure || data.open_exposure || data.current_status['Daily Exposure Used'] || '-'],
     ['Decision Quality Rate', data.decision_quality?.decision_quality_rate !== null && data.decision_quality?.decision_quality_rate !== undefined ? `${data.decision_quality.decision_quality_rate}%` : '-'],
-    ['Money Saved (Sits)', data.sit_accountability_summary?.money_saved_by_sitting !== null && data.sit_accountability_summary?.money_saved_by_sitting !== undefined ? `$${data.sit_accountability_summary.money_saved_by_sitting}` : '-'],
-    ['Passed Bets W-L (If Bet)', data.sit_accountability_summary?.passed_bets_record_if_bet || '-'],
+    ['Money Saved (Sits)', sit?.money_saved_by_sitting !== null && sit?.money_saved_by_sitting !== undefined ? `$${sit.money_saved_by_sitting}` : '-'],
+    ['Passed Bets W-L (If Bet)', sit?.passed_bets_record_if_bet || '-'],
     ['Overall ROI', data.lifetime_stats['Overall ROI'] || '-'],
     ['Average CLV', data.lifetime_stats['Average CLV'] || '-'],
     ['Process Score', data.current_status['Process Score (7d)'] || '-'],
@@ -247,7 +316,7 @@ function renderTodaysScan(id, data) {
     ['Strongest Edge Found', summary.strongest_edge_found ?? scanner['Largest Edge Detected']],
     ['Largest Edge Rejected', summary.largest_edge_rejected ?? summary.strongest_edge_rejected ?? scanner['Largest Edge Rejected']],
     ['Top Rejection Reasons', summary.top_rejection_reasons],
-    ['Final Daily Verdict', summary.final_daily_verdict],
+    ['Final Daily Verdict', summary.final_daily_verdict ?? data.daily_verdict ?? data.normalized?.daily_verdict],
   ];
 
   for (const [label, value] of rows) {
@@ -255,40 +324,41 @@ function renderTodaysScan(id, data) {
   }
 }
 
-function renderSitAccountability(id, sit, summary) {
+function renderSitAccountability(id, canonicalSit) {
   const list = document.getElementById(id);
   if (!list) return;
   list.innerHTML = '';
   const rows = [
-    ['Avoided Losses (count)', sit?.['Avoided Losses (count)']],
-    ['Missed Winners (count)', sit?.['Missed Winners (count)']],
-    ['Net P/L if all sits were followed', sit?.['Net P/L If Followed All Sits']],
-    ['Net EV rejected', sit?.['Net EV Rejected']],
-    ['Passed Bets W-L if bet', sit?.['Passed Bets W-L If Bet'] ?? summary?.passed_bets_record_if_bet],
-    ['Sit Decision Win Rate if bet', sit?.['Sit Decision Win Rate If Bet'] ?? (summary?.passed_bets_win_rate_if_bet !== null && summary?.passed_bets_win_rate_if_bet !== undefined ? `${summary.passed_bets_win_rate_if_bet}%` : null)],
-    ['Money Saved By Sitting', sit?.['Money Saved By Sitting'] ?? (summary?.money_saved_by_sitting !== null && summary?.money_saved_by_sitting !== undefined ? `$${summary.money_saved_by_sitting}` : null)],
+    ['Source', canonicalSit?.source || 'unknown'],
+    ['Avoided Losses (count)', canonicalSit?.avoided_losses],
+    ['Missed Winners (count)', canonicalSit?.missed_winners],
+    ['Net P/L if all sits were followed', canonicalSit?.net_pl_if_followed_all_sits],
+    ['Net EV rejected', canonicalSit?.net_ev_rejected],
+    ['Passed Bets W-L if bet', canonicalSit?.passed_bets_record_if_bet],
+    ['Sit Decision Win Rate if bet', canonicalSit?.passed_bets_win_rate_if_bet !== null && canonicalSit?.passed_bets_win_rate_if_bet !== undefined ? `${canonicalSit.passed_bets_win_rate_if_bet}%` : null],
+    ['Money Saved By Sitting', canonicalSit?.money_saved_by_sitting !== null && canonicalSit?.money_saved_by_sitting !== undefined ? `$${canonicalSit.money_saved_by_sitting}` : null],
   ];
   for (const [label, value] of rows) {
     list.appendChild(el('li', '', `${label}: ${formatValue(value)}`));
   }
 }
 
-function renderSitAccountabilitySummary(id, summary) {
+function renderSitAccountabilitySummary(id, canonicalSit) {
   const list = document.getElementById(id);
   if (!list) return;
   list.innerHTML = '';
 
   const rows = [
-    ['Passed opportunities graded', summary?.passed_bets_graded],
-    ['Record if bet', summary?.passed_bets_record_if_bet],
-    ['Wins if bet', summary?.passed_bets_wins_if_bet],
-    ['Losses if bet', summary?.passed_bets_losses_if_bet],
-    ['Pushes if bet', summary?.passed_bets_pushes_if_bet],
-    ['Win rate if bet', summary?.passed_bets_win_rate_if_bet !== null && summary?.passed_bets_win_rate_if_bet !== undefined ? `${summary.passed_bets_win_rate_if_bet}%` : null],
-    ['Net counterfactual P/L if bet', summary?.net_counterfactual_pl_if_bet],
-    ['Money saved by sitting', summary?.money_saved_by_sitting],
-    ['Missed profit by sitting', summary?.missed_profit_by_sitting],
-    ['Net EV rejected', summary?.net_ev_rejected],
+    ['Passed opportunities graded', canonicalSit?.passed_bets_graded],
+    ['Record if bet', canonicalSit?.passed_bets_record_if_bet],
+    ['Wins if bet', canonicalSit?.passed_bets_wins_if_bet],
+    ['Losses if bet', canonicalSit?.passed_bets_losses_if_bet],
+    ['Pushes if bet', canonicalSit?.passed_bets_pushes_if_bet],
+    ['Win rate if bet', canonicalSit?.passed_bets_win_rate_if_bet !== null && canonicalSit?.passed_bets_win_rate_if_bet !== undefined ? `${canonicalSit.passed_bets_win_rate_if_bet}%` : null],
+    ['Net counterfactual P/L if bet', canonicalSit?.net_pl_if_followed_all_sits],
+    ['Money saved by sitting', canonicalSit?.money_saved_by_sitting],
+    ['Missed profit by sitting', canonicalSit?.missed_profit_by_sitting],
+    ['Net EV rejected', canonicalSit?.net_ev_rejected],
   ];
 
   for (const [label, value] of rows) {
@@ -330,11 +400,41 @@ function renderEdgeDistributionTransparency(id, payload) {
   }
 }
 
-function renderRejectionSummary(id, summary) {
+function renderDataFreshness(id, freshness) {
+  const list = document.getElementById(id);
+  if (!list) return;
+  list.innerHTML = '';
+  const rows = [
+    ['Recommendation log last row', freshness?.recommendation_log_last_row_time || 'unknown'],
+    ['Grading cache last update', freshness?.grading_cache_last_update || 'unknown'],
+    ['Payload build time (UTC)', freshness?.payload_build_time_utc || 'unknown'],
+  ];
+  for (const [label, value] of rows) {
+    list.appendChild(el('li', '', `${label}: ${formatValue(value)}`));
+  }
+}
+
+function renderRejectionSummaryRange(id, data, range) {
   const list = document.getElementById(id);
   if (!list) return;
   list.innerHTML = '';
 
+  const rangeData = data?.rejection_reason_ranges?.[range];
+  if (rangeData) {
+    list.appendChild(el('li', '', `Range: ${range === 'last_7' ? 'Last 7' : (range === 'all_time' ? 'All-time' : 'Today')}`));
+    list.appendChild(el('li', '', `Total rejected: ${formatValue(rangeData.total_rejections)}`));
+    const sortedReasons = Object.entries(rangeData.by_reason || {}).sort((a, b) => b[1] - a[1]);
+    if (sortedReasons.length > 0) {
+      for (const [reason, count] of sortedReasons) {
+        list.appendChild(el('li', '', `${titleCaseFromKey(reason)}: ${count}`));
+      }
+    } else {
+      list.appendChild(el('li', '', 'No rejection reasons in this range.'));
+    }
+    return;
+  }
+
+  const summary = data?.daily_rejection_summary || {};
   const labelMap = {
     'Total Markets Checked': 'Total markets checked',
     'Total Rejected': 'Total rejected',
@@ -356,13 +456,13 @@ function renderRejectionSummary(id, summary) {
   ];
 
   for (const key of preferredOrder) {
-    if (!(key in (summary || {}))) continue;
+    if (!(key in summary)) continue;
     const label = labelMap[key] || key;
     list.appendChild(el('li', '', `${label}: ${summary[key]}`));
   }
 }
 
-function renderPassedOpportunityTracker(id, tracker) {
+function renderPassedOpportunityTracker(id, tracker, data, range) {
   const list = document.getElementById(id);
   if (!list) return;
   list.innerHTML = '';
@@ -371,13 +471,24 @@ function renderPassedOpportunityTracker(id, tracker) {
     return;
   }
 
-  list.appendChild(el('li', '', `Total passed opportunities: ${tracker.total_passed_opportunities ?? 0}`));
-  list.appendChild(el('li', '', `Graded: ${tracker.graded_count ?? 0} | Ungraded: ${tracker.ungraded_count ?? 0}`));
-  if (tracker.record_if_bet) {
-    list.appendChild(el('li', '', `Record if bet: ${tracker.record_if_bet}`));
-  }
+  const anchorMs = resolveAnchorDateMs(data) ?? Date.now();
+  const entries = (tracker.entries || []).filter((row) => {
+    if (range === 'all_time') return true;
+    const rowMs = Date.parse(String(row.timestamp_ct || ''));
+    return inRange(rowMs, anchorMs, range);
+  });
 
-  const entries = tracker.entries || [];
+  const graded = entries.filter((row) => row.outcome_if_bet && row.outcome_if_bet !== 'ungraded');
+  const wins = graded.filter((row) => row.outcome_if_bet === 'win').length;
+  const losses = graded.filter((row) => row.outcome_if_bet === 'loss').length;
+  const pushes = graded.filter((row) => row.outcome_if_bet === 'push').length;
+  const record = graded.length > 0 ? `${wins}-${losses}${pushes > 0 ? `-${pushes}` : ''}` : null;
+
+  list.appendChild(el('li', '', `Range: ${range === 'last_7' ? 'Last 7' : (range === 'all_time' ? 'All-time' : 'Today')}`));
+  list.appendChild(el('li', '', `Total passed opportunities: ${entries.length}`));
+  list.appendChild(el('li', '', `Graded: ${graded.length} | Ungraded: ${Math.max(0, entries.length - graded.length)}`));
+  if (record) list.appendChild(el('li', '', `Record if bet: ${record}`));
+
   if (entries.length === 0) {
     list.appendChild(el('li', '', 'No passed-opportunity rows available yet.'));
     return;
@@ -391,17 +502,36 @@ function renderPassedOpportunityTracker(id, tracker) {
 (async () => {
   try {
     const data = await loadData();
+    const canonicalSit = resolveCanonicalSitAccountability(data);
+    let activeRange = 'all_time';
+
+    const renderRangeViews = () => {
+      renderRejectionSummaryRange('reject-list', data, activeRange);
+      renderPassedOpportunityTracker('passed-opportunity-tracker-list', data.passed_opportunity_tracker, data, activeRange);
+      const buttons = document.querySelectorAll('.range-btn');
+      buttons.forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.range === activeRange);
+      });
+    };
+
+    document.querySelectorAll('.range-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const nextRange = btn.dataset.range || 'all_time';
+        activeRange = nextRange;
+        renderRangeViews();
+      });
+    });
+
     renderMeta(data);
     renderCards(data);
+    renderDataFreshness('freshness-list', data.data_freshness);
     renderTodaysScan('todays-scan-list', data);
     renderDecisionQuality('decision-quality-list', data.decision_quality);
     renderTable('today-table', data.todays_bets);
     renderTable('log-table', data.bet_log, 50);
     renderTable('rejected-table', data.rejected_opportunities, 50);
-    renderRejectionSummary('reject-list', data.daily_rejection_summary);
-    renderSitAccountability('sit-accountability-list', data.sit_accountability, data.sit_accountability_summary);
-    renderSitAccountabilitySummary('sit-accountability-summary-list', data.sit_accountability_summary);
-    renderPassedOpportunityTracker('passed-opportunity-tracker-list', data.passed_opportunity_tracker);
+    renderSitAccountability('sit-accountability-list', canonicalSit);
+    renderSitAccountabilitySummary('sit-accountability-summary-list', canonicalSit);
     renderList('scanner-stats-list', data.scanner_statistics);
     renderList('market-confidence-list', data.market_confidence);
     renderList('canonical-decision-engine-list', data.canonical_decision_engine);
@@ -414,6 +544,7 @@ function renderPassedOpportunityTracker(id, tracker) {
     renderList('rule-ledger-pointer-list', data.rule_ledger_pointer);
     renderList('execution-list', data.execution_quality);
     renderList('weekly-list', data.weekly_running_totals);
+    renderRangeViews();
 
     toggleSection('rule-ledger-pointer-section', isMeaningfulValue(data.rule_ledger_pointer));
     toggleSection('expectation-framing-section', isMeaningfulValue(data.expectation_framing));

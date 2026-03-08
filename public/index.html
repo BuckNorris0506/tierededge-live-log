@@ -22,6 +22,11 @@
   <main class="shell">
     <section class="cards" id="cards"></section>
 
+    <section class="panel" id="freshness-section">
+      <h2>Data Freshness</h2>
+      <ul id="freshness-list"></ul>
+    </section>
+
     <section class="panel" id="todays-scan-section">
       <h2>Today&apos;s Scan</h2>
       <ul id="todays-scan-list"></ul>
@@ -66,6 +71,11 @@
     <section class="panel split" id="distribution-section">
       <article id="daily-rejection-summary-section">
         <h2>Daily Rejection Summary</h2>
+        <div class="range-controls" data-range-group="audit-range">
+          <button type="button" class="range-btn" data-range="today">Today</button>
+          <button type="button" class="range-btn" data-range="last_7">Last 7</button>
+          <button type="button" class="range-btn" data-range="all_time">All-time</button>
+        </div>
         <ul id="reject-list"></ul>
       </article>
       <article id="edge-distribution-transparency-section">
@@ -125,6 +135,11 @@
       </article>
       <article>
         <h2>Passed Opportunity Tracker</h2>
+        <div class="range-controls" data-range-group="audit-range">
+          <button type="button" class="range-btn" data-range="today">Today</button>
+          <button type="button" class="range-btn" data-range="last_7">Last 7</button>
+          <button type="button" class="range-btn" data-range="all_time">All-time</button>
+        </div>
         <ul id="passed-opportunity-tracker-list"></ul>
       </article>
     </section>

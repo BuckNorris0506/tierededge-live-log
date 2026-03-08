@@ -49,6 +49,24 @@ cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
 ./scripts/update-live-log.sh
 ```
 
+Append-only recommendation utility:
+
+```bash
+cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
+npm run append:rec -- '{"rec_id":"20260308-001","timestamp_ct":"2026-03-08 10:00 AM","sport":"NBA","market":"ML","selection":"BOS","source_book":"FanDuel","recommended_odds_us":"+110","recommended_odds_dec":"2.10","true_prob":"48.5%","implied_prob_fair":"47.6%","edge_pct":"1.9%","kelly_stake":"$0.00","decision":"SIT","rejection_reason":"no_edge","odds_quality":"live","injury_quality":"n/a","market_quality":"tight","confidence_total":"medium"}'
+```
+
+Nightly integrity + backfill pass:
+
+```bash
+cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
+npm run audit:rec-nightly
+```
+
+Machine-readable output:
+
+- `public/integrity/recommendation-log-integrity.json`
+
 ## Auto-update every 5 minutes (local cron)
 
 ```bash
@@ -80,6 +98,7 @@ Detailed guide:
 - This page is only as accurate as `betting-state.md`.
 - Keep update timestamps visible.
 - Do not publish claims that are not in the source data.
+- Recommendation log is treated as append-only historical ledger.
 
 ## Optional market-context scaffold
 

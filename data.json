@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-08T22:26:39.143Z",
+  "generated_at_utc": "2026-03-08T22:40:47.456Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-07 23:00 CT",
@@ -83,6 +83,44 @@
       "low_confidence (2)"
     ],
     "final_daily_verdict": "Markets were tight. 6 sit decision(s) preserved discipline."
+  },
+  "rejection_reason_ranges": {
+    "today": {
+      "total_rejections": 6,
+      "by_reason": {
+        "no_edge": 4,
+        "low_confidence": 2
+      },
+      "top_rejection_reasons": [
+        "no_edge (4)",
+        "low_confidence (2)"
+      ],
+      "days_covered": 1
+    },
+    "last_7": {
+      "total_rejections": 6,
+      "by_reason": {
+        "no_edge": 4,
+        "low_confidence": 2
+      },
+      "top_rejection_reasons": [
+        "no_edge (4)",
+        "low_confidence (2)"
+      ],
+      "days_covered": 1
+    },
+    "all_time": {
+      "total_rejections": 6,
+      "by_reason": {
+        "no_edge": 4,
+        "low_confidence": 2
+      },
+      "top_rejection_reasons": [
+        "no_edge (4)",
+        "low_confidence (2)"
+      ],
+      "days_covered": 1
+    }
   },
   "market_context": {
     "enabled": true,
@@ -244,6 +282,17 @@
   "weekly_running_totals": {
     "Bets": "10 | W: 5 | L: 5 | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0",
     "ROI": "+12.1% | Avg CLV: +3.6%"
+  },
+  "data_freshness": {
+    "recommendation_log_last_row_time": "2026-03-07 01:11 AM",
+    "grading_cache_last_update": "2026-03-08T22:40:47.412Z",
+    "payload_build_time_utc": "2026-03-08T22:40:47.456Z"
+  },
+  "open_exposure": "3.9%",
+  "daily_verdict": "Markets were tight. 6 sit decision(s) preserved discipline.",
+  "normalized": {
+    "open_exposure": "3.9%",
+    "daily_verdict": "Markets were tight. 6 sit decision(s) preserved discipline."
   },
   "decision_quality": {
     "placed_bets_count": 0,

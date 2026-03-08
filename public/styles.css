@@ -156,6 +156,28 @@ li {
   display: none !important;
 }
 
+.range-controls {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.range-btn {
+  border: 1px solid var(--line);
+  background: #f4f1eb;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.range-btn.active {
+  border-color: var(--accent);
+  background: #e7f3ee;
+  color: var(--accent-2);
+}
+
 .foot {
   padding: 12px 0 30px;
   color: var(--muted);

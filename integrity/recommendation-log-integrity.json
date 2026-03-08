@@ -1,0 +1,59 @@
+{
+  "started_at_utc": "2026-03-08T22:40:40.786Z",
+  "completed_at_utc": "2026-03-08T22:40:40.789Z",
+  "source_files": {
+    "recommendation_log": "/Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md",
+    "betting_state": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md"
+  },
+  "checks": {
+    "required_columns_present": true,
+    "missing_required_columns": [],
+    "rec_id_unique": true,
+    "duplicate_rec_ids": [],
+    "timestamps_valid": true,
+    "bad_timestamp_rows": [],
+    "scan_days_detected": [
+      "2026-03-03",
+      "2026-03-04",
+      "2026-03-05",
+      "2026-03-06",
+      "2026-03-07"
+    ],
+    "rec_days_present": [
+      "2026-03-07"
+    ],
+    "missing_scan_days": [
+      "2026-03-03",
+      "2026-03-04",
+      "2026-03-05",
+      "2026-03-06"
+    ],
+    "last_updated_day": "2026-03-07"
+  },
+  "backfill": {
+    "days_backfilled": [],
+    "warnings": [
+      {
+        "day": "2026-03-03",
+        "code": "missing_day_unrecoverable",
+        "message": "Scan day detected but no reconstructable rejected-opportunity rows found."
+      },
+      {
+        "day": "2026-03-04",
+        "code": "missing_day_unrecoverable",
+        "message": "Scan day detected but no reconstructable rejected-opportunity rows found."
+      },
+      {
+        "day": "2026-03-05",
+        "code": "missing_day_unrecoverable",
+        "message": "Scan day detected but no reconstructable rejected-opportunity rows found."
+      },
+      {
+        "day": "2026-03-06",
+        "code": "missing_day_unrecoverable",
+        "message": "Scan day detected but no reconstructable rejected-opportunity rows found."
+      }
+    ]
+  },
+  "status": "ok"
+}
