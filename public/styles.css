@@ -18,7 +18,7 @@ body {
 }
 
 .shell {
-  width: min(1100px, calc(100% - 28px));
+  width: min(1160px, calc(100% - 28px));
   margin: 0 auto;
 }
 
@@ -45,7 +45,7 @@ body {
 
 h1 {
   margin: 6px 0 0;
-  font-size: clamp(30px, 4vw, 48px);
+  font-size: clamp(30px, 4vw, 46px);
 }
 
 .subhead {
@@ -60,6 +60,11 @@ h1 {
   font-size: 13px;
   color: var(--muted);
   text-align: right;
+  line-height: 1.4;
+}
+
+.meta .quiet {
+  opacity: 0.75;
 }
 
 main {
@@ -71,6 +76,10 @@ main {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 12px;
+}
+
+.cards.cards-support {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .card {
@@ -94,12 +103,35 @@ main {
   font-weight: 800;
 }
 
+.card-small p {
+  font-size: 19px;
+}
+
 .panel {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel);
   padding: 12px;
   margin-bottom: 12px;
+}
+
+.integrity {
+  background: #faf8f4;
+}
+
+.integrity h2 {
+  margin-bottom: 8px;
+}
+
+.integrity-copy {
+  margin: 0 0 6px;
+  color: #3f3b36;
+}
+
+.integrity-ts {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .featured {
@@ -137,6 +169,11 @@ th {
   color: var(--muted);
 }
 
+th.num-col,
+td.num-col {
+  text-align: right;
+}
+
 ul {
   margin: 0;
   padding-left: 18px;
@@ -150,10 +187,6 @@ li {
   display: grid;
   gap: 12px;
   grid-template-columns: 1fr 1fr;
-}
-
-.hidden {
-  display: none !important;
 }
 
 .range-controls {
@@ -178,15 +211,47 @@ li {
   color: var(--accent-2);
 }
 
+.diagnostics details {
+  border-radius: 8px;
+}
+
+.diagnostics summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #2b2a28;
+  margin-bottom: 10px;
+}
+
+.diag-note {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .foot {
   padding: 12px 0 30px;
   color: var(--muted);
   font-size: 12px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cards.cards-support { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .split { grid-template-columns: 1fr; }
-  .top-inner { align-items: start; flex-direction: column; }
-  .meta { text-align: left; }
+}
+
+@media (max-width: 700px) {
+  .cards,
+  .cards.cards-support {
+    grid-template-columns: 1fr;
+  }
+
+  .top-inner {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .meta {
+    text-align: left;
+  }
 }
