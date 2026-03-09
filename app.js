@@ -74,19 +74,24 @@ function renderTable(tableId, rows, columns, emptyText) {
 }
 
 function renderTodayDecision(data) {
-  const decision = data?.decision_console?.today || {};
-  const gate = data?.integrity_gate || { pass: false, reasons: ['integrity_unknown'] };
+  const decision = data?.decision_renderers?.dashboard_model?.today
+    || data?.decision_console?.today
+    || {};
+  const gate = data?.decision_payload_v1?.system_health
+    || data?.integrity_gate
+    || { pass: false, reasons: ['integrity_unknown'] };
 
   const rows = [];
-  if (gate.pass !== true) {
+  if (decision.blocked === true || gate.pass !== true) {
     rows.push(['Status', 'BLOCKED']);
-    rows.push(['Reason', 'Integrity gate failed']);
-    rows.push(['Checks', (gate.reasons || []).join(', ')]);
-    rows.push(['Next action', decision.next_action || 'Resolve integrity warnings']);
+    rows.push(['Reason', decision.why || 'Integrity gate failed']);
+    rows.push(['Checks', (data?.decision_payload_v1?.blocked?.reason_codes || gate.reasons || []).join(', ') || 'integrity_failure']);
+    rows.push(['Next action', decision.what_to_do_now || 'Resolve integrity warnings']);
   } else {
     rows.push(['Status', decision.verdict || 'NO DECISION']);
-    if (decision.no_bets_reason) rows.push(['Reason', decision.no_bets_reason]);
-    rows.push(['Next action', decision.next_action || 'Review decisions']);
+    if (decision.why) rows.push(['Reason', decision.why]);
+    rows.push(['Next action', decision.what_to_do_now || 'Review decisions']);
+    if (decision.threshold_reminder) rows.push(['Threshold reminder', decision.threshold_reminder]);
   }
 
   renderRows('today-decision-list', rows);
@@ -110,7 +115,10 @@ function renderTodayDecision(data) {
 }
 
 function renderSystemHealth(data) {
-  const health = data?.decision_console?.system_health || {};
+  const health = data?.decision_renderers?.dashboard_model?.system_health
+    || data?.decision_payload_v1?.system_health
+    || data?.decision_console?.system_health
+    || {};
   const freshness = data?.data_freshness || {};
   const rows = [
     ['Data Freshness', health.data_freshness || 'fail'],
@@ -124,7 +132,10 @@ function renderSystemHealth(data) {
 }
 
 function renderExecution(data) {
-  const exec = data?.decision_console?.execution || {};
+  const exec = data?.decision_renderers?.dashboard_model?.execution
+    || data?.decision_payload_v1?.execution_state
+    || data?.decision_console?.execution
+    || {};
   const rows = [
     ['Bankroll', exec.bankroll || data?.current_status?.Bankroll || MISSING],
     ['Open Exposure', exec.open_exposure || data?.open_exposure || MISSING],
@@ -145,7 +156,10 @@ function inRange(dateText, anchorDate, range) {
 }
 
 function renderAccountability(data, range) {
-  const accountability = data?.decision_console?.accountability || {};
+  const accountability = data?.decision_renderers?.dashboard_model?.accountability
+    || data?.decision_payload_v1?.accountability_summary
+    || data?.decision_console?.accountability
+    || {};
   const anchorKey = String(data?.last_updated_ct || '').match(/(\d{4}-\d{2}-\d{2})/);
   const anchorDate = anchorKey ? Date.parse(`${anchorKey[1]}T00:00:00Z`) : Date.now();
 

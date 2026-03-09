@@ -12,6 +12,10 @@ node scripts/build-live-log.mjs
 node scripts/build-standalone.mjs
 
 echo "Live log data rebuilt (including standalone page)."
+if [[ -f "$ROOT_DIR/public/decision-terminal.txt" ]]; then
+  echo ""
+  cat "$ROOT_DIR/public/decision-terminal.txt"
+fi
 
 # Optional deploy sync: set LIVE_LOG_DEPLOY_REPO to a local git repo path
 if [[ -n "${LIVE_LOG_DEPLOY_REPO:-}" ]]; then

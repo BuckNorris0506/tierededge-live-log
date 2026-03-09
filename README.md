@@ -6,6 +6,10 @@ This project publishes your `betting-state.md` as a public transparency page.
 - Reads: `~/.openclaw/workspace/memory/betting-state.md`
 - Builds: `public/data.json`
 - Renders: `public/index.html`
+- Standard decision outputs:
+  - `public/data.json -> decision_payload_v1` (canonical)
+  - `public/decision-terminal.txt` (terminal renderer)
+  - `public/decision-whatsapp.txt` (WhatsApp renderer)
 
 ## Quick start
 

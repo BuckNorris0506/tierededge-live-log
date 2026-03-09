@@ -796,6 +796,174 @@ function computeTodayDecisionConsole({
   };
 }
 
+function buildCanonicalDecisionPayload({
+  generatedAtUtc,
+  integrityGate,
+  todayDecisionConsole,
+  executionState,
+  accountabilitySummary,
+}) {
+  const blocked = integrityGate.pass !== true;
+  const hasBets = (todayDecisionConsole.bets || []).length > 0;
+  const messageType = blocked ? 'BLOCKED' : (hasBets ? 'BET' : 'SIT');
+  const thresholdReminder = 'Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.';
+  const why =
+    messageType === 'BLOCKED'
+      ? `Integrity gate failed: ${(integrityGate.reasons || []).join(', ')}`
+      : (messageType === 'BET'
+        ? 'Edge above threshold with confidence/risk gates passed.'
+        : (todayDecisionConsole.no_bets_reason || 'No edges above threshold.'));
+
+  return {
+    schema: 'decision_payload_v1',
+    generated_at_utc: generatedAtUtc,
+    message_type: messageType,
+    verdict: messageType,
+    what_to_do_now: todayDecisionConsole.next_action,
+    why,
+    threshold_reminder: thresholdReminder,
+    system_health: {
+      data_freshness: integrityGate.checks.data_freshness,
+      ledger_integrity: integrityGate.checks.ledger_integrity,
+      decision_engine_status: integrityGate.checks.decision_engine_status,
+      pass: integrityGate.pass,
+    },
+    execution_state: executionState,
+    accountability_summary: accountabilitySummary,
+    bets: blocked ? [] : (todayDecisionConsole.bets || []),
+    sits: blocked ? [] : (todayDecisionConsole.sits || []),
+    blocked: blocked
+      ? {
+          reason_codes: integrityGate.reasons,
+          diagnostics: integrityGate.diagnostics,
+          action_to_avoid: 'Do not place bets from this scan.',
+          recovery_required: 'Restore freshness + ledger integrity before decisions resume.',
+        }
+      : null,
+  };
+}
+
+function healthPassLabel(pass) {
+  return pass ? 'PASS' : 'FAIL';
+}
+
+function formatPercentValue(value) {
+  if (value === null || value === undefined || value === '') return '—';
+  return `${value}%`;
+}
+
+function formatTerminalDecisionMessage(payload) {
+  const lines = [];
+  const health = payload.system_health || {};
+  const blocked = payload.message_type === 'BLOCKED';
+
+  lines.push('TIEREDGE DECISION');
+  lines.push(`Verdict: ${payload.verdict}`);
+  lines.push(`What to do now: ${payload.what_to_do_now || '—'}`);
+  lines.push(`Why: ${payload.why || '—'}`);
+  lines.push(`System health: ${healthPassLabel(health.pass === true)}`);
+  lines.push(
+    `Checks: data=${health.data_freshness || 'fail'}, ledger=${health.ledger_integrity || 'fail'}, engine=${health.decision_engine_status || 'blocked'}`
+  );
+
+  if (blocked) {
+    const block = payload.blocked || {};
+    lines.push(`Block reason: ${(block.reason_codes || []).join(', ') || 'integrity_failure'}`);
+    lines.push(`Avoid: ${block.action_to_avoid || 'Do not place bets from this scan.'}`);
+    lines.push(`Recovery: ${block.recovery_required || 'Restore system health before decisions resume.'}`);
+  } else if (payload.message_type === 'BET') {
+    lines.push('Bets:');
+    for (const bet of payload.bets || []) {
+      lines.push(
+        `- ${bet.selection || 'Unknown'} | ${bet.market || 'Unknown'} | edge ${formatPercentValue(bet.edge_percent)} | ${bet.tier || '—'} | stake ${bet.stake || '—'} | ${bet.reason || '—'}`
+      );
+    }
+  } else {
+    lines.push('SIT');
+    for (const sit of payload.sits || []) {
+      lines.push(`- ${sit.label || 'Market'}: ${sit.reason || 'No qualifying edge.'}`);
+    }
+    lines.push(`Threshold reminder: ${payload.threshold_reminder || 'No trustworthy edge -> SIT.'}`);
+  }
+
+  const execution = payload.execution_state || {};
+  lines.push(
+    `Execution: bankroll=${execution.bankroll || '—'} | open_exposure=${execution.open_exposure || '—'} | daily_exposure=${execution.daily_exposure_used || '—'} | breaker=${execution.circuit_breaker || '—'}`
+  );
+
+  const acc = payload.accountability_summary || {};
+  lines.push(
+    `Accountability: pending=${acc.pending_bets_count ?? '—'} | positive_clv_rate=${formatPercentValue(acc.positive_clv_rate)} | avg_clv=${acc.avg_clv ?? '—'} | recent_results=${acc.recent_results || '—'}`
+  );
+
+  return `${lines.join('\n')}\n`;
+}
+
+function formatWhatsAppDecisionMessage(payload) {
+  const health = payload.system_health || {};
+  const blocked = payload.message_type === 'BLOCKED';
+  const lines = [];
+
+  lines.push(`*TIEREDGE ${payload.verdict}*`);
+  lines.push(`What now: ${payload.what_to_do_now || '—'}`);
+  lines.push(`Why: ${payload.why || '—'}`);
+  lines.push(
+    `Health: ${healthPassLabel(health.pass === true)} (data ${health.data_freshness || 'fail'}, ledger ${health.ledger_integrity || 'fail'}, engine ${health.decision_engine_status || 'blocked'})`
+  );
+
+  if (blocked) {
+    const block = payload.blocked || {};
+    lines.push(`BLOCKED reason: ${(block.reason_codes || []).join(', ') || 'integrity_failure'}`);
+    lines.push(`Do NOT: ${block.action_to_avoid || 'Place bets from this scan.'}`);
+    lines.push(`Recover: ${block.recovery_required || 'Restore system health before decisions resume.'}`);
+  } else if (payload.message_type === 'BET') {
+    lines.push('*BETS*');
+    for (const bet of payload.bets || []) {
+      lines.push(
+        `- ${bet.selection || 'Unknown'} ${bet.market || ''} | edge ${formatPercentValue(bet.edge_percent)} | ${bet.tier || '—'} | stake ${bet.stake || '—'}`
+      );
+      lines.push(`  reason: ${bet.reason || '—'}`);
+    }
+  } else {
+    lines.push('*SIT*');
+    for (const sit of payload.sits || []) {
+      lines.push(`- ${sit.label || 'Market'}: ${sit.reason || 'No qualifying edge.'}`);
+    }
+    lines.push(`Threshold: ${payload.threshold_reminder || 'No trustworthy edge -> SIT.'}`);
+  }
+
+  const execution = payload.execution_state || {};
+  lines.push(
+    `Execution: bankroll ${execution.bankroll || '—'}, exposure ${execution.open_exposure || '—'}, daily ${execution.daily_exposure_used || '—'}, breaker ${execution.circuit_breaker || '—'}`
+  );
+
+  const acc = payload.accountability_summary || {};
+  lines.push(
+    `Accountability: pending ${acc.pending_bets_count ?? '—'}, +CLV ${formatPercentValue(acc.positive_clv_rate)}, avg CLV ${acc.avg_clv ?? '—'}, results ${acc.recent_results || '—'}`
+  );
+
+  return `${lines.join('\n')}\n`;
+}
+
+function buildDashboardDecisionModel(payload) {
+  const blocked = payload.message_type === 'BLOCKED';
+  return {
+    today: {
+      verdict: payload.verdict,
+      blocked,
+      why: payload.why,
+      what_to_do_now: payload.what_to_do_now,
+      threshold_reminder: payload.threshold_reminder || null,
+      bets: blocked ? [] : (payload.bets || []),
+      sits: blocked ? [] : (payload.sits || []),
+      blocked_info: blocked ? payload.blocked : null,
+    },
+    system_health: payload.system_health || {},
+    execution: payload.execution_state || {},
+    accountability: payload.accountability_summary || {},
+  };
+}
+
 function computeDecisionQuality({
   lastUpdatedCt,
   currentStatus,
@@ -1203,6 +1371,29 @@ function buildPayload(markdown) {
   });
   const openExposure = currentStatus['Daily Exposure Used'] || null;
   const dailyVerdict = dailyDecisionSummary.final_daily_verdict || null;
+  const executionState = {
+    bankroll: currentStatus.Bankroll || null,
+    open_exposure: openExposure,
+    daily_exposure_used: currentStatus['Daily Exposure Used'] || null,
+    circuit_breaker: currentStatus['Circuit Breaker'] || null,
+  };
+  const accountabilitySummary = {
+    pending_bets_count: pendingBets.filter((item) => String(item).toLowerCase() !== 'none').length,
+    positive_clv_rate: decisionQuality.positive_clv_rate,
+    avg_clv: decisionQuality.avg_clv,
+    recent_results: lifetimeStats['Win Rate'] || null,
+    sit_accountability: sitAccountabilitySummary,
+  };
+  const canonicalDecisionPayload = buildCanonicalDecisionPayload({
+    generatedAtUtc,
+    integrityGate,
+    todayDecisionConsole,
+    executionState,
+    accountabilitySummary,
+  });
+  const decisionTerminalText = formatTerminalDecisionMessage(canonicalDecisionPayload);
+  const decisionWhatsAppText = formatWhatsAppDecisionMessage(canonicalDecisionPayload);
+  const decisionDashboardModel = buildDashboardDecisionModel(canonicalDecisionPayload);
 
   return {
     generated_at_utc: generatedAtUtc,
@@ -1241,26 +1432,15 @@ function buildPayload(markdown) {
     weekly_running_totals: weeklyRunningTotals,
     data_freshness: dataFreshness,
     integrity_gate: integrityGate,
+    decision_payload_v1: canonicalDecisionPayload,
+    decision_renderers: {
+      terminal_text: decisionTerminalText,
+      whatsapp_text: decisionWhatsAppText,
+      dashboard_model: decisionDashboardModel,
+    },
     decision_console: {
-      today: todayDecisionConsole,
-      system_health: {
-        data_freshness: integrityGate.checks.data_freshness,
-        ledger_integrity: integrityGate.checks.ledger_integrity,
-        decision_engine_status: integrityGate.checks.decision_engine_status,
-      },
-      execution: {
-        bankroll: currentStatus.Bankroll || null,
-        open_exposure: openExposure,
-        daily_exposure_used: currentStatus['Daily Exposure Used'] || null,
-        circuit_breaker: currentStatus['Circuit Breaker'] || null,
-      },
-      accountability: {
-        pending_bets_count: pendingBets.filter((item) => String(item).toLowerCase() !== 'none').length,
-        positive_clv_rate: decisionQuality.positive_clv_rate,
-        avg_clv: decisionQuality.avg_clv,
-        recent_results: lifetimeStats['Win Rate'] || null,
-        sit_accountability: sitAccountabilitySummary,
-      },
+      // Backward-compatible alias; canonical dashboard mapping is decision_renderers.dashboard_model.
+      ...decisionDashboardModel,
     },
     open_exposure: openExposure,
     daily_verdict: dailyVerdict,
@@ -1296,6 +1476,14 @@ const payload = buildPayload(markdown);
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+
+const outDir = path.dirname(outPath);
+if (payload?.decision_renderers?.terminal_text) {
+  fs.writeFileSync(path.join(outDir, 'decision-terminal.txt'), payload.decision_renderers.terminal_text, 'utf8');
+}
+if (payload?.decision_renderers?.whatsapp_text) {
+  fs.writeFileSync(path.join(outDir, 'decision-whatsapp.txt'), payload.decision_renderers.whatsapp_text, 'utf8');
+}
 
 console.log(`Built public data: ${outPath}`);
 console.log(`Schema: ${payload.schema} | Last Updated (CT): ${payload.last_updated_ct}`);

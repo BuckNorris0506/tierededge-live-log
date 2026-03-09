@@ -251,7 +251,7 @@ li {
   </footer>
 
   <script>window.__LIVE_DATA__ = {
-  "generated_at_utc": "2026-03-08T23:44:58.732Z",
+  "generated_at_utc": "2026-03-09T01:54:58.804Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-07 23:00 CT",
@@ -537,8 +537,8 @@ li {
   },
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-07 01:11 AM",
-    "grading_cache_last_update": "2026-03-08T23:44:58.687Z",
-    "payload_build_time_utc": "2026-03-08T23:44:58.732Z"
+    "grading_cache_last_update": "2026-03-09T01:54:58.756Z",
+    "payload_build_time_utc": "2026-03-09T01:54:58.804Z"
   },
   "integrity_gate": {
     "pass": false,
@@ -550,7 +550,7 @@ li {
       "missing_scan_days_count": 4
     },
     "diagnostics": {
-      "freshness_hours_since_last_recommendation": 40.57,
+      "freshness_hours_since_last_recommendation": 42.73,
       "missing_scan_days": [
         "2026-03-03",
         "2026-03-04",
@@ -564,50 +564,163 @@ li {
       "missing_scan_days"
     ]
   },
+  "decision_payload_v1": {
+    "schema": "decision_payload_v1",
+    "generated_at_utc": "2026-03-09T01:54:58.804Z",
+    "message_type": "BLOCKED",
+    "verdict": "BLOCKED",
+    "what_to_do_now": "Resolve system health failures before acting on recommendations.",
+    "why": "Integrity gate failed: data_freshness_fail, missing_scan_days",
+    "threshold_reminder": "Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.",
+    "system_health": {
+      "data_freshness": "fail",
+      "ledger_integrity": "fail",
+      "decision_engine_status": "blocked",
+      "pass": false
+    },
+    "execution_state": {
+      "bankroll": "$1,261.96",
+      "open_exposure": "3.9%",
+      "daily_exposure_used": "3.9%",
+      "circuit_breaker": "OFF"
+    },
+    "accountability_summary": {
+      "pending_bets_count": 0,
+      "positive_clv_rate": 100,
+      "avg_clv": 7.36,
+      "recent_results": "44.4% (8-10)",
+      "sit_accountability": {
+        "source": "passed_opportunity_tracker",
+        "passed_bets_graded": 6,
+        "passed_bets_record_if_bet": "2-4",
+        "passed_bets_wins_if_bet": 2,
+        "passed_bets_losses_if_bet": 4,
+        "passed_bets_pushes_if_bet": 0,
+        "passed_bets_win_rate_if_bet": 33.33,
+        "money_saved_by_sitting": 0,
+        "missed_profit_by_sitting": 4.25,
+        "net_counterfactual_pl_if_bet": 4.25,
+        "net_ev_rejected": null
+      }
+    },
+    "bets": [],
+    "sits": [],
+    "blocked": {
+      "reason_codes": [
+        "data_freshness_fail",
+        "missing_scan_days"
+      ],
+      "diagnostics": {
+        "freshness_hours_since_last_recommendation": 42.73,
+        "missing_scan_days": [
+          "2026-03-03",
+          "2026-03-04",
+          "2026-03-05",
+          "2026-03-06"
+        ],
+        "duplicate_rec_ids": []
+      },
+      "action_to_avoid": "Do not place bets from this scan.",
+      "recovery_required": "Restore freshness + ledger integrity before decisions resume."
+    }
+  },
+  "decision_renderers": {
+    "terminal_text": "TIEREDGE DECISION\nVerdict: BLOCKED\nWhat to do now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: data_freshness_fail, missing_scan_days\nSystem health: FAIL\nChecks: data=fail, ledger=fail, engine=blocked\nBlock reason: data_freshness_fail, missing_scan_days\nAvoid: Do not place bets from this scan.\nRecovery: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll=$1,261.96 | open_exposure=3.9% | daily_exposure=3.9% | breaker=OFF\nAccountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=44.4% (8-10)\n",
+    "whatsapp_text": "*TIEREDGE BLOCKED*\nWhat now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: data_freshness_fail, missing_scan_days\nHealth: FAIL (data fail, ledger fail, engine blocked)\nBLOCKED reason: data_freshness_fail, missing_scan_days\nDo NOT: Do not place bets from this scan.\nRecover: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll $1,261.96, exposure 3.9%, daily 3.9%, breaker OFF\nAccountability: pending 0, +CLV 100%, avg CLV 7.36, results 44.4% (8-10)\n",
+    "dashboard_model": {
+      "today": {
+        "verdict": "BLOCKED",
+        "blocked": true,
+        "why": "Integrity gate failed: data_freshness_fail, missing_scan_days",
+        "what_to_do_now": "Resolve system health failures before acting on recommendations.",
+        "threshold_reminder": "Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.",
+        "bets": [],
+        "sits": [],
+        "blocked_info": {
+          "reason_codes": [
+            "data_freshness_fail",
+            "missing_scan_days"
+          ],
+          "diagnostics": {
+            "freshness_hours_since_last_recommendation": 42.73,
+            "missing_scan_days": [
+              "2026-03-03",
+              "2026-03-04",
+              "2026-03-05",
+              "2026-03-06"
+            ],
+            "duplicate_rec_ids": []
+          },
+          "action_to_avoid": "Do not place bets from this scan.",
+          "recovery_required": "Restore freshness + ledger integrity before decisions resume."
+        }
+      },
+      "system_health": {
+        "data_freshness": "fail",
+        "ledger_integrity": "fail",
+        "decision_engine_status": "blocked",
+        "pass": false
+      },
+      "execution": {
+        "bankroll": "$1,261.96",
+        "open_exposure": "3.9%",
+        "daily_exposure_used": "3.9%",
+        "circuit_breaker": "OFF"
+      },
+      "accountability": {
+        "pending_bets_count": 0,
+        "positive_clv_rate": 100,
+        "avg_clv": 7.36,
+        "recent_results": "44.4% (8-10)",
+        "sit_accountability": {
+          "source": "passed_opportunity_tracker",
+          "passed_bets_graded": 6,
+          "passed_bets_record_if_bet": "2-4",
+          "passed_bets_wins_if_bet": 2,
+          "passed_bets_losses_if_bet": 4,
+          "passed_bets_pushes_if_bet": 0,
+          "passed_bets_win_rate_if_bet": 33.33,
+          "money_saved_by_sitting": 0,
+          "missed_profit_by_sitting": 4.25,
+          "net_counterfactual_pl_if_bet": 4.25,
+          "net_ev_rejected": null
+        }
+      }
+    }
+  },
   "decision_console": {
     "today": {
+      "verdict": "BLOCKED",
       "blocked": true,
-      "verdict": "NO BETS TODAY",
-      "no_bets_reason": "No edges above threshold.",
+      "why": "Integrity gate failed: data_freshness_fail, missing_scan_days",
+      "what_to_do_now": "Resolve system health failures before acting on recommendations.",
+      "threshold_reminder": "Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.",
       "bets": [],
-      "sits": [
-        {
-          "rec_id": "20260307-001",
-          "label": "NBA ML",
-          "reason": "no_edge"
+      "sits": [],
+      "blocked_info": {
+        "reason_codes": [
+          "data_freshness_fail",
+          "missing_scan_days"
+        ],
+        "diagnostics": {
+          "freshness_hours_since_last_recommendation": 42.73,
+          "missing_scan_days": [
+            "2026-03-03",
+            "2026-03-04",
+            "2026-03-05",
+            "2026-03-06"
+          ],
+          "duplicate_rec_ids": []
         },
-        {
-          "rec_id": "20260307-002",
-          "label": "NBA ML",
-          "reason": "no_edge"
-        },
-        {
-          "rec_id": "20260307-003",
-          "label": "NBA ML",
-          "reason": "no_edge"
-        },
-        {
-          "rec_id": "20260307-004",
-          "label": "NBA ML",
-          "reason": "low_confidence"
-        },
-        {
-          "rec_id": "20260307-005",
-          "label": "NHL ML",
-          "reason": "no_edge"
-        },
-        {
-          "rec_id": "20260307-006",
-          "label": "NHL ML",
-          "reason": "low_confidence"
-        }
-      ],
-      "next_action": "Resolve system health failures before acting on recommendations."
+        "action_to_avoid": "Do not place bets from this scan.",
+        "recovery_required": "Restore freshness + ledger integrity before decisions resume."
+      }
     },
     "system_health": {
       "data_freshness": "fail",
       "ledger_integrity": "fail",
-      "decision_engine_status": "blocked"
+      "decision_engine_status": "blocked",
+      "pass": false
     },
     "execution": {
       "bankroll": "$1,261.96",
@@ -1131,19 +1244,24 @@ function renderTable(tableId, rows, columns, emptyText) {
 }
 
 function renderTodayDecision(data) {
-  const decision = data?.decision_console?.today || {};
-  const gate = data?.integrity_gate || { pass: false, reasons: ['integrity_unknown'] };
+  const decision = data?.decision_renderers?.dashboard_model?.today
+    || data?.decision_console?.today
+    || {};
+  const gate = data?.decision_payload_v1?.system_health
+    || data?.integrity_gate
+    || { pass: false, reasons: ['integrity_unknown'] };
 
   const rows = [];
-  if (gate.pass !== true) {
+  if (decision.blocked === true || gate.pass !== true) {
     rows.push(['Status', 'BLOCKED']);
-    rows.push(['Reason', 'Integrity gate failed']);
-    rows.push(['Checks', (gate.reasons || []).join(', ')]);
-    rows.push(['Next action', decision.next_action || 'Resolve integrity warnings']);
+    rows.push(['Reason', decision.why || 'Integrity gate failed']);
+    rows.push(['Checks', (data?.decision_payload_v1?.blocked?.reason_codes || gate.reasons || []).join(', ') || 'integrity_failure']);
+    rows.push(['Next action', decision.what_to_do_now || 'Resolve integrity warnings']);
   } else {
     rows.push(['Status', decision.verdict || 'NO DECISION']);
-    if (decision.no_bets_reason) rows.push(['Reason', decision.no_bets_reason]);
-    rows.push(['Next action', decision.next_action || 'Review decisions']);
+    if (decision.why) rows.push(['Reason', decision.why]);
+    rows.push(['Next action', decision.what_to_do_now || 'Review decisions']);
+    if (decision.threshold_reminder) rows.push(['Threshold reminder', decision.threshold_reminder]);
   }
 
   renderRows('today-decision-list', rows);
@@ -1167,7 +1285,10 @@ function renderTodayDecision(data) {
 }
 
 function renderSystemHealth(data) {
-  const health = data?.decision_console?.system_health || {};
+  const health = data?.decision_renderers?.dashboard_model?.system_health
+    || data?.decision_payload_v1?.system_health
+    || data?.decision_console?.system_health
+    || {};
   const freshness = data?.data_freshness || {};
   const rows = [
     ['Data Freshness', health.data_freshness || 'fail'],
@@ -1181,7 +1302,10 @@ function renderSystemHealth(data) {
 }
 
 function renderExecution(data) {
-  const exec = data?.decision_console?.execution || {};
+  const exec = data?.decision_renderers?.dashboard_model?.execution
+    || data?.decision_payload_v1?.execution_state
+    || data?.decision_console?.execution
+    || {};
   const rows = [
     ['Bankroll', exec.bankroll || data?.current_status?.Bankroll || MISSING],
     ['Open Exposure', exec.open_exposure || data?.open_exposure || MISSING],
@@ -1202,7 +1326,10 @@ function inRange(dateText, anchorDate, range) {
 }
 
 function renderAccountability(data, range) {
-  const accountability = data?.decision_console?.accountability || {};
+  const accountability = data?.decision_renderers?.dashboard_model?.accountability
+    || data?.decision_payload_v1?.accountability_summary
+    || data?.decision_console?.accountability
+    || {};
   const anchorKey = String(data?.last_updated_ct || '').match(/(\d{4}-\d{2}-\d{2})/);
   const anchorDate = anchorKey ? Date.parse(`${anchorKey[1]}T00:00:00Z`) : Date.now();
 
