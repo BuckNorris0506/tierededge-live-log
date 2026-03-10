@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-10T12:18:14.860Z",
+  "generated_at_utc": "2026-03-10T12:21:52.707Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-10 06:05 CT",
@@ -1043,8 +1043,8 @@
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-10 06:05 AM",
-    "grading_cache_last_update": "2026-03-10T12:18:14.835Z",
-    "payload_build_time_utc": "2026-03-10T12:18:14.860Z"
+    "grading_cache_last_update": "2026-03-10T12:21:52.674Z",
+    "payload_build_time_utc": "2026-03-10T12:21:52.707Z"
   },
   "integrity_gate": {
     "pass": false,
@@ -1056,7 +1056,7 @@
       "missing_scan_days_count": 4
     },
     "diagnostics": {
-      "freshness_hours_since_last_recommendation": 1.22,
+      "freshness_hours_since_last_recommendation": 1.28,
       "missing_scan_days": [
         "2026-03-03",
         "2026-03-04",
@@ -1071,7 +1071,7 @@
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-10T12:18:14.860Z",
+    "generated_at_utc": "2026-03-10T12:21:52.707Z",
     "message_type": "BLOCKED",
     "verdict": "BLOCKED",
     "what_to_do_now": "Resolve system health failures before acting on recommendations.",
@@ -1115,7 +1115,7 @@
         "missing_scan_days"
       ],
       "diagnostics": {
-        "freshness_hours_since_last_recommendation": 1.22,
+        "freshness_hours_since_last_recommendation": 1.28,
         "missing_scan_days": [
           "2026-03-03",
           "2026-03-04",
@@ -1146,7 +1146,7 @@
             "missing_scan_days"
           ],
           "diagnostics": {
-            "freshness_hours_since_last_recommendation": 1.22,
+            "freshness_hours_since_last_recommendation": 1.28,
             "missing_scan_days": [
               "2026-03-03",
               "2026-03-04",
@@ -1206,7 +1206,7 @@
           "missing_scan_days"
         ],
         "diagnostics": {
-          "freshness_hours_since_last_recommendation": 1.22,
+          "freshness_hours_since_last_recommendation": 1.28,
           "missing_scan_days": [
             "2026-03-03",
             "2026-03-04",
