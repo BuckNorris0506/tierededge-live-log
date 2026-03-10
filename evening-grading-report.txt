@@ -1,0 +1,35 @@
+EVENING GRADING - 2026-03-10
+
+Bets Settled: 17
+
+UNITS
+Profit: +4.69u
+Total Staked: 8.81u
+ROI (Units): +53.23%
+
+EXPECTATION
+Expected Profit: N/A
+Actual Profit: +$59.21
+Variance: N/A
+EV Realization: N/A
+
+SIGNAL QUALITY
+Average CLV: +7.36%
+Positive CLV Rate: +100.00%
+Binomial p-value: 0.7510
+Confidence Level: +24.90%
+Sample Status: small sample (statistically inconclusive)
+
+EDGE QUALITY
+Avg Edge Detected: N/A
+Avg Edge at Placement: N/A
+Avg Edge at Close: N/A
+Edge Retention: N/A
+Market Efficiency Impact: N/A
+
+Bankroll: $1,261.96
+Peak: $1,262.16
+Drawdown: N/A
+
+System Status: Unknown
+Next Edge Scan: 08:00 CT

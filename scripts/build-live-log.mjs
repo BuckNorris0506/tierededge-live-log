@@ -413,6 +413,436 @@ function safeRate(num, den) {
   return num / den;
 }
 
+function toDecimalOddsFromBetRow(row) {
+  const dec = parseAsNumber(row['Odds (Dec)'] || row.odds_dec);
+  if (dec !== null && dec > 1) return dec;
+
+  const us = parseAsNumber(row['Odds (US)'] || row.odds_us);
+  if (us === null || us === 0) return null;
+  if (us > 0) return 1 + (us / 100);
+  return 1 + (100 / Math.abs(us));
+}
+
+function erfApprox(x) {
+  // Abramowitz and Stegun 7.1.26 approximation.
+  const sign = x < 0 ? -1 : 1;
+  const absX = Math.abs(x);
+  const t = 1 / (1 + 0.3275911 * absX);
+  const a1 = 0.254829592;
+  const a2 = -0.284496736;
+  const a3 = 1.421413741;
+  const a4 = -1.453152027;
+  const a5 = 1.061405429;
+  const poly = (((((a5 * t) + a4) * t + a3) * t + a2) * t + a1) * t;
+  const y = 1 - (poly * Math.exp(-(absX * absX)));
+  return sign * y;
+}
+
+function stdNormalCdf(z) {
+  if (!Number.isFinite(z)) return null;
+  return 0.5 * (1 + erfApprox(z / Math.SQRT2));
+}
+
+function classifySampleStatus(sampleSize, pValue) {
+  if (!Number.isFinite(sampleSize) || sampleSize < 30) return 'small sample (statistically inconclusive)';
+  if (pValue === null || pValue === undefined || !Number.isFinite(pValue)) return 'statistically inconclusive';
+  if (sampleSize >= 100 && pValue < 0.05) return 'meaningful evidence';
+  if (sampleSize >= 50 && pValue < 0.2) return 'emerging signal';
+  return 'statistically inconclusive';
+}
+
+function computeBinomialSummaryFromRows(rows) {
+  const outcomes = rows
+    .map((row) => ({
+      result: normalizeDecision(row.Result || row.result),
+      decimal_odds: toDecimalOddsFromBetRow(row),
+    }))
+    .filter((row) => row.result === 'win' || row.result === 'loss');
+
+  const n = outcomes.length;
+  const wins = outcomes.filter((row) => row.result === 'win').length;
+  const losses = outcomes.filter((row) => row.result === 'loss').length;
+  const impliedProbs = outcomes
+    .map((row) => (row.decimal_odds && row.decimal_odds > 1 ? (1 / row.decimal_odds) : null))
+    .filter((p) => p !== null);
+
+  // Approximation note: if per-bet break-even probabilities vary, we compress to p_bar.
+  const breakevenWinRate =
+    impliedProbs.length > 0
+      ? impliedProbs.reduce((a, b) => a + b, 0) / impliedProbs.length
+      : null;
+  const observedWinRate = n > 0 ? wins / n : null;
+
+  let pValue = null;
+  let confidenceLevel = null;
+  if (n > 0 && breakevenWinRate !== null) {
+    const variance = n * breakevenWinRate * (1 - breakevenWinRate);
+    if (variance > 0) {
+      const z = (wins - (n * breakevenWinRate)) / Math.sqrt(variance);
+      const cdf = stdNormalCdf(Math.abs(z));
+      if (cdf !== null) {
+        pValue = 2 * (1 - cdf);
+        if (pValue < 0) pValue = 0;
+        if (pValue > 1) pValue = 1;
+        confidenceLevel = 1 - pValue;
+      }
+    }
+  }
+
+  const sampleStatus = classifySampleStatus(n, pValue);
+  return {
+    total_settled_bets: n,
+    wins,
+    losses,
+    observed_win_rate: observedWinRate !== null ? round2(observedWinRate * 100) : null,
+    breakeven_win_rate: breakevenWinRate !== null ? round2(breakevenWinRate * 100) : null,
+    p_value: pValue !== null ? Number(pValue.toFixed(4)) : null,
+    confidence_level: confidenceLevel !== null ? round2(confidenceLevel * 100) : null,
+    sample_status: sampleStatus,
+  };
+}
+
+function computeRollingBinomialWindows(settledBets) {
+  const sorted = [...settledBets].sort((a, b) => {
+    const aTs = parseBetRowTimestampMs(a) || 0;
+    const bTs = parseBetRowTimestampMs(b) || 0;
+    return aTs - bTs;
+  });
+
+  const windows = [100, 200, 400];
+  const out = {};
+  for (const size of windows) {
+    const windowRows = sorted.slice(-size);
+    out[`rolling_${size}`] = computeBinomialSummaryFromRows(windowRows);
+  }
+  return out;
+}
+
+function parseBetRowTimestampMs(row) {
+  const datePart = String(row.Date || '').trim();
+  const timePart = String(row['Timestamp (CT)'] || row.timestamp_ct || '').trim();
+  if (!datePart) return null;
+
+  const hhmm = timePart.match(/^(\d{1,2}):(\d{2})$/);
+  if (hhmm) {
+    const hours = String(Number(hhmm[1])).padStart(2, '0');
+    const mins = hhmm[2];
+    return parseTimestampMs(`${datePart}T${hours}:${mins}:00Z`);
+  }
+
+  const ampm = timePart.match(/^(\d{1,2}):(\d{2})\s*([AP]M)$/i);
+  if (ampm) {
+    let hours = Number(ampm[1]);
+    const mins = ampm[2];
+    const marker = ampm[3].toUpperCase();
+    if (marker === 'PM' && hours < 12) hours += 12;
+    if (marker === 'AM' && hours === 12) hours = 0;
+    return parseTimestampMs(`${datePart}T${String(hours).padStart(2, '0')}:${mins}:00Z`);
+  }
+
+  return parseTimestampMs(`${datePart} ${timePart}`);
+}
+
+function parseEdgePercentFromRow(row, keys) {
+  for (const key of keys) {
+    const value = row[key];
+    if (value === null || value === undefined || value === '') continue;
+    const parsed = parsePercent(value);
+    if (parsed !== null) return parsed;
+  }
+  return null;
+}
+
+function buildRecommendationBetRowsByIdentity(recommendationRows) {
+  const byIdentity = {};
+  recommendationRows
+    .filter((row) => normalizeDecision(row.decision) === 'bet')
+    .forEach((row, idx) => {
+      const identity = buildBetIdentity({
+        Sport: row.sport,
+        Market: row.market,
+        Bet: row.selection,
+        Book: row.source_book,
+      });
+      if (!byIdentity[identity]) byIdentity[identity] = [];
+      byIdentity[identity].push({
+        idx,
+        row,
+        tsMs: parseTimestampMs(row.timestamp_ct),
+      });
+    });
+  return byIdentity;
+}
+
+function computeQuantPerformance({ betLog, recommendationRows, currentStatus, ledger }) {
+  const recByIdentity = buildRecommendationBetRowsByIdentity(recommendationRows);
+  const consumedRecIdx = new Set();
+  const quantBetRows = [];
+  const referenceBankrollFromLedger = (ledger || [])
+    .map((row) => parseAsNumber(row.Bankroll))
+    .find((value) => value !== null && value > 0);
+  const currentBankroll = parseAsNumber(currentStatus?.Bankroll);
+  const unitBaselineBankroll = referenceBankrollFromLedger || currentBankroll;
+  const unitSize = unitBaselineBankroll !== null ? round2(unitBaselineBankroll * 0.01) : null;
+
+  for (const bet of betLog) {
+    const result = normalizeDecision(bet.Result);
+    if (!result || result === 'pending') continue;
+
+    const identity = buildBetIdentity(bet);
+    const candidates = recByIdentity[identity] || [];
+    const betTsMs = parseBetRowTimestampMs(bet);
+
+    let chosen = null;
+    let chosenDistance = Number.MAX_SAFE_INTEGER;
+    for (const candidate of candidates) {
+      if (consumedRecIdx.has(candidate.idx)) continue;
+      const distance =
+        Number.isFinite(candidate.tsMs) && Number.isFinite(betTsMs)
+          ? Math.abs(candidate.tsMs - betTsMs)
+          : Number.MAX_SAFE_INTEGER;
+      if (!chosen || distance < chosenDistance) {
+        chosen = candidate;
+        chosenDistance = distance;
+      }
+    }
+    if (chosen) consumedRecIdx.add(chosen.idx);
+
+    const rec = chosen?.row || {};
+    const edgeAtDetection = parseEdgePercentFromRow(rec, ['edge_at_detection', 'edge_pct']);
+    const edgeAtPlacement = parseEdgePercentFromRow(rec, ['edge_at_placement', 'edge_pct']);
+    let edgeAtClose = parseEdgePercentFromRow(rec, ['edge_at_close']);
+    const clv = parseClvValue(bet.CLV);
+    if (edgeAtClose === null && edgeAtPlacement !== null && clv !== null) {
+      edgeAtClose = edgeAtPlacement - clv;
+    }
+
+    const stake = parseAsNumber(bet.Stake);
+    const edgeForEv = edgeAtPlacement !== null ? edgeAtPlacement : edgeAtDetection;
+    const expectedValue = stake !== null && edgeForEv !== null ? stake * (edgeForEv / 100) : null;
+    const actualProfit = parseAsNumber(bet['P/L']);
+    const stakeUnits = stake !== null && unitSize !== null && unitSize > 0 ? stake / unitSize : null;
+    const profitUnits = actualProfit !== null && unitSize !== null && unitSize > 0 ? actualProfit / unitSize : null;
+    const expectedValueUnits = expectedValue !== null && unitSize !== null && unitSize > 0 ? expectedValue / unitSize : null;
+
+    const edgeRetention =
+      edgeAtDetection !== null && edgeAtDetection !== 0 && edgeAtPlacement !== null
+        ? edgeAtPlacement / edgeAtDetection
+        : null;
+    const closingEdgeRetention =
+      edgeAtDetection !== null && edgeAtDetection !== 0 && edgeAtClose !== null
+        ? edgeAtClose / edgeAtDetection
+        : null;
+    const marketEfficiencyImpact = closingEdgeRetention !== null ? 1 - closingEdgeRetention : null;
+
+    quantBetRows.push({
+      date: bet.Date || null,
+      timestamp_ct: bet['Timestamp (CT)'] || null,
+      sport: bet.Sport || null,
+      market: bet.Market || null,
+      bet: bet.Bet || null,
+      book: bet.Book || null,
+      rec_id: rec.rec_id || null,
+      edge_at_detection: round2(edgeAtDetection),
+      edge_at_placement: round2(edgeAtPlacement),
+      edge_at_close: round2(edgeAtClose),
+      stake_units: round2(stakeUnits),
+      profit_units: round2(profitUnits),
+      expected_value: round2(expectedValue),
+      expected_value_units: round2(expectedValueUnits),
+      actual_profit: round2(actualProfit),
+      edge_retention: edgeRetention !== null ? round2(edgeRetention) : null,
+      closing_edge_retention: closingEdgeRetention !== null ? round2(closingEdgeRetention) : null,
+      market_efficiency_impact: marketEfficiencyImpact !== null ? round2(marketEfficiencyImpact) : null,
+      data_quality: {
+        has_detection: edgeAtDetection !== null,
+        has_placement: edgeAtPlacement !== null,
+        has_close: edgeAtClose !== null,
+      },
+    });
+  }
+
+  const evValues = quantBetRows.map((r) => r.expected_value).filter((n) => n !== null);
+  const evUnitValues = quantBetRows.map((r) => r.expected_value_units).filter((n) => n !== null);
+  const actualValues = quantBetRows.map((r) => r.actual_profit).filter((n) => n !== null);
+  const actualUnitValues = quantBetRows.map((r) => r.profit_units).filter((n) => n !== null);
+  const stakedUnitValues = quantBetRows.map((r) => r.stake_units).filter((n) => n !== null);
+  const detectionEdges = quantBetRows.map((r) => r.edge_at_detection).filter((n) => n !== null);
+  const placementEdges = quantBetRows.map((r) => r.edge_at_placement).filter((n) => n !== null);
+  const closeEdges = quantBetRows.map((r) => r.edge_at_close).filter((n) => n !== null);
+
+  const expectedProfit = evValues.length > 0 ? evValues.reduce((a, b) => a + b, 0) : null;
+  const actualProfit = actualValues.length > 0 ? actualValues.reduce((a, b) => a + b, 0) : null;
+  const variance =
+    expectedProfit !== null && actualProfit !== null
+      ? actualProfit - expectedProfit
+      : null;
+  const expectedProfitUnits = evUnitValues.length > 0 ? evUnitValues.reduce((a, b) => a + b, 0) : null;
+  const actualProfitUnits = actualUnitValues.length > 0 ? actualUnitValues.reduce((a, b) => a + b, 0) : null;
+  const varianceUnits =
+    expectedProfitUnits !== null && actualProfitUnits !== null
+      ? actualProfitUnits - expectedProfitUnits
+      : null;
+  const evRealizationRatio =
+    expectedProfit !== null && expectedProfit !== 0 && actualProfit !== null
+      ? actualProfit / expectedProfit
+      : null;
+  const totalStakedUnits = stakedUnitValues.length > 0 ? stakedUnitValues.reduce((a, b) => a + b, 0) : null;
+  const totalUnits = actualProfitUnits;
+  const averageUnitsPerBet =
+    totalStakedUnits !== null && quantBetRows.length > 0
+      ? totalStakedUnits / quantBetRows.length
+      : null;
+  const roiUnits =
+    totalUnits !== null && totalStakedUnits !== null && totalStakedUnits !== 0
+      ? (totalUnits / totalStakedUnits) * 100
+      : null;
+
+  const avgEdgeAtDetection =
+    detectionEdges.length > 0 ? detectionEdges.reduce((a, b) => a + b, 0) / detectionEdges.length : null;
+  const avgEdgeAtPlacement =
+    placementEdges.length > 0 ? placementEdges.reduce((a, b) => a + b, 0) / placementEdges.length : null;
+  const avgEdgeAtClose =
+    closeEdges.length > 0 ? closeEdges.reduce((a, b) => a + b, 0) / closeEdges.length : null;
+
+  const edgeRetention =
+    avgEdgeAtDetection !== null && avgEdgeAtDetection !== 0 && avgEdgeAtPlacement !== null
+      ? avgEdgeAtPlacement / avgEdgeAtDetection
+      : null;
+  const closingEdgeRetention =
+    avgEdgeAtDetection !== null && avgEdgeAtDetection !== 0 && avgEdgeAtClose !== null
+      ? avgEdgeAtClose / avgEdgeAtDetection
+      : null;
+  const marketEfficiencyImpact =
+    closingEdgeRetention !== null ? 1 - closingEdgeRetention : null;
+
+  let systemStatus = 'Unknown';
+  if (evRealizationRatio !== null) {
+    if (evRealizationRatio > 1.25) systemStatus = 'Running Hot';
+    else if (evRealizationRatio < 0.75) systemStatus = 'Running Cold';
+    else systemStatus = 'Stable';
+  }
+
+  const binomialLifetime = computeBinomialSummaryFromRows(betLog);
+  const binomialRolling = computeRollingBinomialWindows(betLog);
+
+  return {
+    settled_bets_evaluated: quantBetRows.length,
+    unit_size: unitSize,
+    unit_baseline_bankroll: unitBaselineBankroll !== null ? round2(unitBaselineBankroll) : null,
+    total_units: round2(totalUnits),
+    total_staked_units: round2(totalStakedUnits),
+    average_units_per_bet: round2(averageUnitsPerBet),
+    roi_units: round2(roiUnits),
+    expected_value: round2(expectedProfit),
+    expected_value_units: round2(expectedProfitUnits),
+    expected_profit: round2(expectedProfit),
+    expected_profit_units: round2(expectedProfitUnits),
+    actual_profit: round2(actualProfit),
+    actual_profit_units: round2(actualProfitUnits),
+    variance: round2(variance),
+    variance_units: round2(varianceUnits),
+    ev_realization_ratio: evRealizationRatio !== null ? round2(evRealizationRatio) : null,
+    observed_win_rate: binomialLifetime.observed_win_rate,
+    breakeven_win_rate: binomialLifetime.breakeven_win_rate,
+    p_value: binomialLifetime.p_value,
+    confidence_level: binomialLifetime.confidence_level,
+    sample_status: binomialLifetime.sample_status,
+    binomial_significance: {
+      lifetime: binomialLifetime,
+      rolling_windows: binomialRolling,
+      method: 'normal_approximation_with_effective_breakeven_rate',
+      assumptions: [
+        'Per-bet break-even rates are derived from recorded odds when available.',
+        'Mixed-odds sequences are compressed to an effective average break-even rate for p-value approximation.',
+        'Pushes are excluded from win/loss significance testing.',
+      ],
+    },
+    edge_at_detection: round2(avgEdgeAtDetection),
+    edge_at_placement: round2(avgEdgeAtPlacement),
+    edge_at_close: round2(avgEdgeAtClose),
+    edge_retention: edgeRetention !== null ? round2(edgeRetention) : null,
+    closing_edge_retention: closingEdgeRetention !== null ? round2(closingEdgeRetention) : null,
+    market_efficiency_impact: marketEfficiencyImpact !== null ? round2(marketEfficiencyImpact) : null,
+    system_status: systemStatus,
+    next_edge_scan_ct: '08:00',
+    per_bet: quantBetRows,
+  };
+}
+
+function formatMoneySigned(value) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return 'N/A';
+  const sign = value > 0 ? '+' : (value < 0 ? '-' : '');
+  return `${sign}$${Math.abs(value).toFixed(2)}`;
+}
+
+function formatPctSigned(value) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return 'N/A';
+  const sign = value > 0 ? '+' : '';
+  return `${sign}${value.toFixed(2)}%`;
+}
+
+function formatRatio(value) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return 'N/A';
+  return value.toFixed(2);
+}
+
+function formatUnits(value) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return 'N/A';
+  const sign = value > 0 ? '+' : (value < 0 ? '-' : '');
+  return `${sign}${Math.abs(value).toFixed(2)}u`;
+}
+
+function formatPValue(value) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return 'N/A';
+  return value.toFixed(4);
+}
+
+function formatEveningGradingReport({ generatedAtUtc, quantPerformance, currentStatus, decisionQuality }) {
+  const now = new Date(generatedAtUtc || Date.now());
+  const dateLabel = now.toISOString().slice(0, 10);
+  const drawdown = parsePercent(currentStatus['Drawdown from Peak']);
+
+  return [
+    `EVENING GRADING - ${dateLabel}`,
+    '',
+    `Bets Settled: ${quantPerformance.settled_bets_evaluated ?? 0}`,
+    '',
+    'UNITS',
+    `Profit: ${formatUnits(quantPerformance.total_units)}`,
+    `Total Staked: ${quantPerformance.total_staked_units !== null && quantPerformance.total_staked_units !== undefined ? `${quantPerformance.total_staked_units.toFixed(2)}u` : 'N/A'}`,
+    `ROI (Units): ${formatPctSigned(quantPerformance.roi_units)}`,
+    '',
+    'EXPECTATION',
+    `Expected Profit: ${formatMoneySigned(quantPerformance.expected_profit)}`,
+    `Actual Profit: ${formatMoneySigned(quantPerformance.actual_profit)}`,
+    `Variance: ${formatMoneySigned(quantPerformance.variance)}`,
+    `EV Realization: ${formatRatio(quantPerformance.ev_realization_ratio)}`,
+    '',
+    'SIGNAL QUALITY',
+    `Average CLV: ${formatPctSigned(decisionQuality?.avg_clv)}`,
+    `Positive CLV Rate: ${formatPctSigned(decisionQuality?.positive_clv_rate)}`,
+    `Binomial p-value: ${formatPValue(quantPerformance.p_value)}`,
+    `Confidence Level: ${formatPctSigned(quantPerformance.confidence_level)}`,
+    `Sample Status: ${quantPerformance.sample_status || 'N/A'}`,
+    '',
+    'EDGE QUALITY',
+    `Avg Edge Detected: ${formatPctSigned(quantPerformance.edge_at_detection)}`,
+    `Avg Edge at Placement: ${formatPctSigned(quantPerformance.edge_at_placement)}`,
+    `Avg Edge at Close: ${formatPctSigned(quantPerformance.edge_at_close)}`,
+    `Edge Retention: ${quantPerformance.edge_retention !== null ? `${(quantPerformance.edge_retention * 100).toFixed(1)}%` : 'N/A'}`,
+    `Market Efficiency Impact: ${quantPerformance.market_efficiency_impact !== null ? `${(quantPerformance.market_efficiency_impact * 100).toFixed(1)}%` : 'N/A'}`,
+    '',
+    `Bankroll: ${currentStatus.Bankroll || 'N/A'}`,
+    `Peak: ${currentStatus['All-Time High'] || 'N/A'}`,
+    `Drawdown: ${drawdown !== null ? `${drawdown}%` : 'N/A'}`,
+    '',
+    `System Status: ${quantPerformance.system_status || 'Unknown'}`,
+    `Next Edge Scan: ${quantPerformance.next_edge_scan_ct || '08:00'} CT`,
+    '',
+  ].join('\n');
+}
+
 function resolveRecommendationLogPath(markdown, sourcePath) {
   const pointer = parseBulletMap(extractSection(markdown, 'Recommendation Log Pointer'));
   const rawPath = String(pointer.Path || '').replace(/`/g, '').trim();
@@ -1003,6 +1433,7 @@ function computeDecisionQuality({
   const clvValues = clvTierBets.map((row) => parseClvValue(row.CLV)).filter((n) => n !== null);
   const positiveClvBetsCount = clvValues.filter((n) => n > 0).length;
   const positiveClvRate = safeRate(positiveClvBetsCount, clvValues.length);
+  const clvWinRate = positiveClvRate;
   const avgClv = clvValues.length > 0 ? clvValues.reduce((a, b) => a + b, 0) / clvValues.length : null;
 
   const edgeValuesPlaced = recPlacedRows
@@ -1111,6 +1542,8 @@ function computeDecisionQuality({
     high_quality_bet_decisions: highQualityBetDecisions,
     high_quality_sit_decisions: highQualitySitDecisions,
     positive_clv_bets_count: positiveClvBetsCount,
+    total_clv_bets_evaluated: clvValues.length,
+    clv_win_rate: clvWinRate !== null ? round2(clvWinRate * 100) : null,
     positive_clv_rate: positiveClvRate !== null ? round2(positiveClvRate * 100) : null,
     avg_clv: round2(avgClv),
     avg_edge_placed: round2(avgEdgePlaced),
@@ -1124,6 +1557,46 @@ function computeDecisionQuality({
     largest_edge_rejected: round2(largestEdgeRejected),
     rejected_by_reason: rejectedByReason,
     sit_reason_codes_supported: SUPPORTED_SIT_REASON_CODES,
+  };
+}
+
+function computeWeeklyPerformanceReview({
+  decisionQuality,
+  executionQuality,
+  quantPerformance,
+  sitAccountabilitySummary,
+  currentStatus,
+}) {
+  const profitFromBets = parseAsNumber(quantPerformance?.actual_profit);
+  const profitIfAllSitsBet = parseAsNumber(sitAccountabilitySummary?.net_counterfactual_pl_if_bet);
+  const decisionEdge =
+    profitFromBets !== null && profitIfAllSitsBet !== null
+      ? profitFromBets - profitIfAllSitsBet
+      : null;
+  const clvWinRate = parseAsNumber(decisionQuality?.clv_win_rate);
+  let clvInterpretation = null;
+  if (clvWinRate !== null) {
+    if (clvWinRate > 60) clvInterpretation = 'very_strong_signal';
+    else if (clvWinRate >= 55) clvInterpretation = 'strong_signal';
+    else if (clvWinRate >= 52) clvInterpretation = 'possible_edge';
+    else clvInterpretation = 'random_or_inconclusive';
+  }
+
+  return {
+    clv_metrics: {
+      average_clv: decisionQuality?.avg_clv ?? null,
+      positive_clv_rate: decisionQuality?.positive_clv_rate ?? null,
+      clv_win_rate: decisionQuality?.clv_win_rate ?? null,
+      clv_win_rate_interpretation: clvInterpretation,
+      total_bets_evaluated: decisionQuality?.total_clv_bets_evaluated ?? null,
+      execution_slippage: executionQuality?.['Avg Slippage (last 25 bets)'] || null,
+    },
+    decision_quality: {
+      profit_from_bets: round2(profitFromBets),
+      profit_if_all_sits_bet: round2(profitIfAllSitsBet),
+      decision_edge: round2(decisionEdge),
+      sit_discipline_rate: currentStatus?.['Sit Discipline Rate (7d)'] || null,
+    },
   };
 }
 
@@ -1343,6 +1816,12 @@ function buildPayload(markdown) {
     recommendationRows,
     gradesCache: passedGradesCache,
   });
+  const quantPerformance = computeQuantPerformance({
+    betLog,
+    recommendationRows,
+    currentStatus,
+    ledger,
+  });
   const sitAccountabilitySummary =
     (passedOpportunityTracker?.graded_count || 0) > 0
       ? computeSitAccountabilitySummaryFromPassedTracker(passedOpportunityTracker)
@@ -1350,6 +1829,13 @@ function buildPayload(markdown) {
           sitAccountability,
           rejectedOpportunities,
         });
+  const weeklyPerformanceReview = computeWeeklyPerformanceReview({
+    decisionQuality,
+    executionQuality,
+    quantPerformance,
+    sitAccountabilitySummary,
+    currentStatus,
+  });
   const generatedAtUtc = new Date().toISOString();
   const dataFreshness = computeDataFreshness({
     recommendationRows,
@@ -1393,6 +1879,12 @@ function buildPayload(markdown) {
   });
   const decisionTerminalText = formatTerminalDecisionMessage(canonicalDecisionPayload);
   const decisionWhatsAppText = formatWhatsAppDecisionMessage(canonicalDecisionPayload);
+  const eveningGradingReportText = formatEveningGradingReport({
+    generatedAtUtc,
+    quantPerformance,
+    currentStatus,
+    decisionQuality,
+  });
   const decisionDashboardModel = buildDashboardDecisionModel(canonicalDecisionPayload);
 
   return {
@@ -1430,12 +1922,42 @@ function buildPayload(markdown) {
     rejected_opportunities: rejectedOpportunities,
     execution_quality: executionQuality,
     weekly_running_totals: weeklyRunningTotals,
+    weekly_performance_review: weeklyPerformanceReview,
+    quant_performance: quantPerformance,
+    unit_size: quantPerformance.unit_size,
+    stake_units: quantPerformance.per_bet.map((row) => row.stake_units),
+    profit_units: quantPerformance.per_bet.map((row) => row.profit_units),
+    total_units: quantPerformance.total_units,
+    total_staked_units: quantPerformance.total_staked_units,
+    average_units_per_bet: quantPerformance.average_units_per_bet,
+    roi_units: quantPerformance.roi_units,
+    expected_value: quantPerformance.expected_value,
+    expected_value_units: quantPerformance.expected_value_units,
+    expected_profit: quantPerformance.expected_profit,
+    expected_profit_units: quantPerformance.expected_profit_units,
+    actual_profit: quantPerformance.actual_profit,
+    actual_profit_units: quantPerformance.actual_profit_units,
+    variance: quantPerformance.variance,
+    variance_units: quantPerformance.variance_units,
+    ev_realization_ratio: quantPerformance.ev_realization_ratio,
+    observed_win_rate: quantPerformance.observed_win_rate,
+    breakeven_win_rate: quantPerformance.breakeven_win_rate,
+    p_value: quantPerformance.p_value,
+    confidence_level: quantPerformance.confidence_level,
+    sample_status: quantPerformance.sample_status,
+    edge_at_detection: quantPerformance.edge_at_detection,
+    edge_at_placement: quantPerformance.edge_at_placement,
+    edge_at_close: quantPerformance.edge_at_close,
+    edge_retention: quantPerformance.edge_retention,
+    closing_edge_retention: quantPerformance.closing_edge_retention,
+    market_efficiency_impact: quantPerformance.market_efficiency_impact,
     data_freshness: dataFreshness,
     integrity_gate: integrityGate,
     decision_payload_v1: canonicalDecisionPayload,
     decision_renderers: {
       terminal_text: decisionTerminalText,
       whatsapp_text: decisionWhatsAppText,
+      evening_grading_report_text: eveningGradingReportText,
       dashboard_model: decisionDashboardModel,
     },
     decision_console: {
@@ -1462,6 +1984,19 @@ function buildPayload(markdown) {
       graded_bet_count: betLog.length,
       rejected_opportunities_count: rejectedOpportunities.length,
       decision_quality_rate: decisionQuality.decision_quality_rate,
+      expected_profit: quantPerformance.expected_profit,
+      expected_profit_units: quantPerformance.expected_profit_units,
+      actual_profit: quantPerformance.actual_profit,
+      actual_profit_units: quantPerformance.actual_profit_units,
+      variance: quantPerformance.variance,
+      variance_units: quantPerformance.variance_units,
+      ev_realization_ratio: quantPerformance.ev_realization_ratio,
+      total_units: quantPerformance.total_units,
+      total_staked_units: quantPerformance.total_staked_units,
+      roi_units: quantPerformance.roi_units,
+      p_value: quantPerformance.p_value,
+      confidence_level: quantPerformance.confidence_level,
+      sample_status: quantPerformance.sample_status,
       redacted_pending: redactPending,
     },
   };
@@ -1483,6 +2018,9 @@ if (payload?.decision_renderers?.terminal_text) {
 }
 if (payload?.decision_renderers?.whatsapp_text) {
   fs.writeFileSync(path.join(outDir, 'decision-whatsapp.txt'), payload.decision_renderers.whatsapp_text, 'utf8');
+}
+if (payload?.decision_renderers?.evening_grading_report_text) {
+  fs.writeFileSync(path.join(outDir, 'evening-grading-report.txt'), payload.decision_renderers.evening_grading_report_text, 'utf8');
 }
 
 console.log(`Built public data: ${outPath}`);

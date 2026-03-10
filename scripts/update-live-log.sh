@@ -16,6 +16,10 @@ if [[ -f "$ROOT_DIR/public/decision-terminal.txt" ]]; then
   echo ""
   cat "$ROOT_DIR/public/decision-terminal.txt"
 fi
+if [[ -f "$ROOT_DIR/public/evening-grading-report.txt" ]]; then
+  echo ""
+  cat "$ROOT_DIR/public/evening-grading-report.txt"
+fi
 
 # Optional deploy sync: set LIVE_LOG_DEPLOY_REPO to a local git repo path
 if [[ -n "${LIVE_LOG_DEPLOY_REPO:-}" ]]; then

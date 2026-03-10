@@ -276,11 +276,71 @@ function renderExecutionQuality(data) {
 
 function renderRecentTotals(data) {
   const totals = data.weekly_running_totals || {};
+  const review = data.weekly_performance_review || {};
+  const clv = review.clv_metrics || {};
+  const dq = review.decision_quality || {};
+  const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}$${Math.abs(n).toFixed(2)}`);
+  const asPct = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : ''}${n}%`);
   const rows = [
+    ['CLV Metrics • Average CLV', clv.average_clv !== null && clv.average_clv !== undefined ? `${clv.average_clv}%` : MISSING],
+    ['CLV Metrics • Positive CLV rate', asPct(clv.positive_clv_rate)],
+    ['CLV Metrics • CLV win rate', asPct(clv.clv_win_rate)],
+    ['CLV Metrics • CLV interpretation', clv.clv_win_rate_interpretation || MISSING],
+    ['CLV Metrics • Total bets evaluated', clv.total_bets_evaluated ?? MISSING],
+    ['CLV Metrics • Execution slippage', clv.execution_slippage || MISSING],
+    ['Decision Quality • Profit from bets', asMoney(dq.profit_from_bets)],
+    ['Decision Quality • Profit if all sits bet', asMoney(dq.profit_if_all_sits_bet)],
+    ['Decision Quality • Decision edge', asMoney(dq.decision_edge)],
+    ['Decision Quality • Sit discipline rate', dq.sit_discipline_rate || MISSING],
     ['Bets', totals.Bets],
     ['ROI', totals.ROI],
   ];
   renderRows('recent-totals-list', rows);
+}
+
+function renderQuantPerformance(data) {
+  const q = data.quant_performance || {};
+  const dq = data.decision_quality || {};
+  const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}$${Math.abs(n).toFixed(2)}`);
+  const asPct = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : ''}${n}%`);
+  const asRatio = (n) => (n === null || n === undefined ? MISSING : n.toFixed(2));
+  const asRet = (n) => (n === null || n === undefined ? MISSING : `${(n * 100).toFixed(1)}%`);
+  const asUnits = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}${Math.abs(n).toFixed(2)}u`);
+  const asUnitsUnsigned = (n) => (n === null || n === undefined ? MISSING : `${n.toFixed(2)}u`);
+  const asPValue = (n) => (n === null || n === undefined ? MISSING : n.toFixed(4));
+
+  const perfRows = [
+    ['Bets settled', q.settled_bets_evaluated],
+    ['Total units', asUnits(q.total_units)],
+    ['Total staked units', asUnitsUnsigned(q.total_staked_units)],
+    ['Average units per bet', asUnitsUnsigned(q.average_units_per_bet)],
+    ['ROI (units)', asPct(q.roi_units)],
+    ['Expected profit', asMoney(q.expected_profit)],
+    ['Expected profit (units)', asUnits(q.expected_profit_units)],
+    ['Actual profit', asMoney(q.actual_profit)],
+    ['Actual profit (units)', asUnits(q.actual_profit_units)],
+    ['Variance', asMoney(q.variance)],
+    ['Variance (units)', asUnits(q.variance_units)],
+    ['EV realization', asRatio(q.ev_realization_ratio)],
+  ];
+  renderRows('quant-performance-list', perfRows);
+
+  const edgeRows = [
+    ['Average CLV', asPct(dq.avg_clv)],
+    ['Positive CLV rate', asPct(dq.positive_clv_rate)],
+    ['Observed win rate', asPct(q.observed_win_rate)],
+    ['Breakeven win rate', asPct(q.breakeven_win_rate)],
+    ['Binomial p-value', asPValue(q.p_value)],
+    ['Confidence level', asPct(q.confidence_level)],
+    ['Sample status', q.sample_status || MISSING],
+    ['Avg edge detected', asPct(q.edge_at_detection)],
+    ['Avg edge at placement', asPct(q.edge_at_placement)],
+    ['Avg edge at close', asPct(q.edge_at_close)],
+    ['Edge retention', asRet(q.edge_retention)],
+    ['Closing edge retention', asRet(q.closing_edge_retention)],
+    ['Market efficiency impact', asRet(q.market_efficiency_impact)],
+  ];
+  renderRows('edge-quality-list', edgeRows);
 }
 
 function inRange(dateText, anchorDate, range) {
@@ -390,6 +450,7 @@ function renderDiagnostics(data) {
     renderDailyRejectionSummary(data);
     renderExecutionQuality(data);
     renderRecentTotals(data);
+    renderQuantPerformance(data);
     renderRejectedOpportunities(data);
     renderDiagnostics(data);
 
