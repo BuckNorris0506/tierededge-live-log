@@ -5,6 +5,7 @@ const DEFAULT_SOURCE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-s
 const DEFAULT_OUT = path.resolve(process.cwd(), 'public', 'data.json');
 const DEFAULT_PASSED_GRADES = '/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json';
 const DEFAULT_MARKET_CONTEXT_HOOKS = path.resolve(process.cwd(), 'config', 'market-context-hooks.json');
+const DEFAULT_CONTRIBUTION_LEDGER = path.resolve(process.cwd(), 'data', 'bankroll-contributions.csv');
 const DATA_FRESHNESS_MAX_HOURS = 36;
 
 const sourcePath = process.argv[2] || DEFAULT_SOURCE;
@@ -91,6 +92,77 @@ function parsePending(section) {
     .map((line) => line.trim())
     .filter((line) => line.startsWith('- '))
     .map((line) => line.slice(2).trim());
+}
+
+function parseCsvLine(line) {
+  const out = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i += 1) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        current += '"';
+        i += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+    if (ch === ',' && !inQuotes) {
+      out.push(current);
+      current = '';
+      continue;
+    }
+    current += ch;
+  }
+  out.push(current);
+  return out;
+}
+
+function readContributionLedger() {
+  const out = {
+    path: DEFAULT_CONTRIBUTION_LEDGER,
+    entries: [],
+  };
+  if (!fs.existsSync(DEFAULT_CONTRIBUTION_LEDGER)) return out;
+  const raw = fs.readFileSync(DEFAULT_CONTRIBUTION_LEDGER, 'utf8');
+  const lines = raw.split('\n').map((line) => line.trim()).filter(Boolean);
+  if (lines.length <= 1) return out;
+  const headers = parseCsvLine(lines[0]).map((h) => String(h || '').trim());
+  for (let i = 1; i < lines.length; i += 1) {
+    const parts = parseCsvLine(lines[i]);
+    if (parts.length < headers.length) continue;
+    const row = {};
+    for (let j = 0; j < headers.length; j += 1) {
+      row[headers[j]] = String(parts[j] || '').trim();
+    }
+    let realizedValues = [];
+    try {
+      const parsed = JSON.parse(row.realized_profit_values_used || '[]');
+      if (Array.isArray(parsed)) realizedValues = parsed.map((n) => round2(parseAsNumber(n))).filter((n) => n !== null);
+    } catch {
+      realizedValues = String(row.realized_profit_values_used || '')
+        .split(/[|;]/)
+        .map((n) => round2(parseAsNumber(n)))
+        .filter((n) => n !== null);
+    }
+    out.entries.push({
+      contribution_date: row.contribution_date || null,
+      effective_month: row.effective_month || null,
+      contribution_amount: round2(parseAsNumber(row.contribution_amount)),
+      basis_months_used: parseAsNumber(row.basis_months_used),
+      realized_profit_values_used: realizedValues,
+      rolling_average_profit: round2(parseAsNumber(row.rolling_average_profit)),
+      notes: row.notes || null,
+    });
+  }
+  out.entries.sort((a, b) => {
+    const left = parseTimestampMs(a.contribution_date || '') || 0;
+    const right = parseTimestampMs(b.contribution_date || '') || 0;
+    return left - right;
+  });
+  return out;
 }
 
 function parseSchema(markdown) {
@@ -206,6 +278,47 @@ function parseDateFromLastUpdated(lastUpdated) {
   return match ? match[1] : null;
 }
 
+function parseMonthKey(text) {
+  const match = String(text || '').match(/(\d{4})-(\d{2})/);
+  return match ? `${match[1]}-${match[2]}` : null;
+}
+
+function monthKeyFromDateKey(dateKey) {
+  const match = String(dateKey || '').match(/^(\d{4})-(\d{2})-\d{2}$/);
+  return match ? `${match[1]}-${match[2]}` : null;
+}
+
+function monthToIndex(monthKey) {
+  const match = String(monthKey || '').match(/^(\d{4})-(\d{2})$/);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  if (!Number.isFinite(year) || !Number.isFinite(month)) return null;
+  return (year * 12) + (month - 1);
+}
+
+function indexToMonth(index) {
+  if (!Number.isFinite(index)) return null;
+  const year = Math.floor(index / 12);
+  const month = (index % 12) + 1;
+  return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}`;
+}
+
+function listMonthsInclusive(startMonth, endMonth) {
+  const startIdx = monthToIndex(startMonth);
+  const endIdx = monthToIndex(endMonth);
+  if (!Number.isFinite(startIdx) || !Number.isFinite(endIdx) || startIdx > endIdx) return [];
+  const out = [];
+  for (let i = startIdx; i <= endIdx; i += 1) out.push(indexToMonth(i));
+  return out;
+}
+
+function previousMonth(monthKey) {
+  const idx = monthToIndex(monthKey);
+  if (!Number.isFinite(idx)) return null;
+  return indexToMonth(idx - 1);
+}
+
 function formatDateKeyFromMs(tsMs) {
   if (!Number.isFinite(tsMs)) return null;
   return new Date(tsMs).toISOString().slice(0, 10);
@@ -222,6 +335,134 @@ function parseTimestampMs(input) {
     return Number.isFinite(fallback) ? fallback : null;
   }
   return null;
+}
+
+function computeBankrollContributionPolicy({
+  betLog,
+  ledger,
+  contributionLedgerEntries,
+  currentStatus,
+  lastUpdatedCt,
+}) {
+  const realizedMonthlyProfitMap = {};
+  let realizedLifetimeProfit = 0;
+  for (const row of betLog) {
+    const result = normalizeDecision(row.Result);
+    if (!result || result === 'pending') continue;
+    const pl = parseAsNumber(row['P/L']);
+    if (pl === null) continue;
+    realizedLifetimeProfit += pl;
+    const monthKey = monthKeyFromDateKey(String(row.Date || '').trim());
+    if (!monthKey) continue;
+    realizedMonthlyProfitMap[monthKey] = (realizedMonthlyProfitMap[monthKey] || 0) + pl;
+  }
+
+  const ledgerEntries = Array.isArray(ledger) ? ledger : [];
+  const externalTypes = new Set(['DEPOSIT', 'CONTRIBUTION', 'RELOAD']);
+  let ledgerExternalContributions = 0;
+  let startingBankroll = null;
+  for (const row of ledgerEntries) {
+    const amount = parseAsNumber(row.Amount);
+    if (amount === null) continue;
+    if (startingBankroll === null) startingBankroll = amount;
+    const type = String(row.Type || '').trim().toUpperCase();
+    if (externalTypes.has(type)) ledgerExternalContributions += amount;
+  }
+
+  const policyContributionTotal = (contributionLedgerEntries || [])
+    .map((entry) => parseAsNumber(entry.contribution_amount))
+    .filter((n) => n !== null)
+    .reduce((a, b) => a + b, 0);
+  const totalExternalContributions =
+    policyContributionTotal > 0 ? policyContributionTotal : ledgerExternalContributions;
+
+  const currentBankroll = parseAsNumber(currentStatus?.Bankroll);
+  if (startingBankroll === null && currentBankroll !== null) {
+    startingBankroll = round2(currentBankroll - totalExternalContributions - realizedLifetimeProfit);
+  }
+
+  const anchorDate = parseDateFromLastUpdated(lastUpdatedCt);
+  const anchorMonth = parseMonthKey(anchorDate);
+  const completedMonth = anchorMonth ? previousMonth(anchorMonth) : null;
+
+  const monthKeysFromBets = Object.keys(realizedMonthlyProfitMap).sort();
+  const monthKeysFromLedger = ledgerEntries
+    .map((row) => parseMonthKey(row.Date))
+    .filter(Boolean)
+    .sort();
+  const firstKnownMonth = monthKeysFromLedger[0] || monthKeysFromBets[0] || completedMonth;
+  const completedMonths = (firstKnownMonth && completedMonth)
+    ? listMonthsInclusive(firstKnownMonth, completedMonth)
+    : [];
+
+  const contributionBasisMonthCount = Math.min(3, completedMonths.length);
+  const contributionBasisMonthsUsed = contributionBasisMonthCount > 0
+    ? completedMonths.slice(-contributionBasisMonthCount)
+    : [];
+  const realizedProfitValuesUsed = contributionBasisMonthsUsed.map((monthKey) =>
+    round2(realizedMonthlyProfitMap[monthKey] || 0)
+  );
+  const rollingAverageRealizedProfit = realizedProfitValuesUsed.length > 0
+    ? round2(realizedProfitValuesUsed.reduce((a, b) => a + b, 0) / realizedProfitValuesUsed.length)
+    : 0;
+  const nextEstimatedContribution = round2(Math.max(0, rollingAverageRealizedProfit || 0));
+
+  const currentMonthRealizedProfit = anchorMonth ? round2(realizedMonthlyProfitMap[anchorMonth] || 0) : null;
+  const realizedMonthlyProfitExContributions = currentMonthRealizedProfit;
+  const contributionBasisProfit = realizedProfitValuesUsed.length > 0
+    ? round2(realizedProfitValuesUsed[realizedProfitValuesUsed.length - 1])
+    : null;
+
+  const lastContribution = (contributionLedgerEntries || []).length > 0
+    ? contributionLedgerEntries[contributionLedgerEntries.length - 1]
+    : null;
+
+  const bankrollGrowthFromContributions = round2(totalExternalContributions);
+  const bankrollGrowthFromBetting =
+    startingBankroll !== null && currentBankroll !== null
+      ? round2(currentBankroll - startingBankroll - totalExternalContributions)
+      : null;
+
+  let monthlyInterpretation = 'No monthly contribution scheduled based on non-positive rolling profit.';
+  if (nextEstimatedContribution > 0) {
+    monthlyInterpretation = 'Next monthly contribution is scheduled from rolling realized betting profit.';
+  }
+  if (currentMonthRealizedProfit !== null && nextEstimatedContribution > 0) {
+    const absProfit = Math.abs(currentMonthRealizedProfit);
+    const absContribution = Math.abs(nextEstimatedContribution);
+    if (absProfit > absContribution) monthlyInterpretation = 'Bankroll growth this month came primarily from betting profit.';
+    if (absContribution > absProfit) monthlyInterpretation = 'Bankroll growth this month came primarily from external contribution.';
+  }
+
+  return {
+    contribution_ledger_path: DEFAULT_CONTRIBUTION_LEDGER,
+    contribution_ledger_entries: contributionLedgerEntries || [],
+    starting_bankroll: round2(startingBankroll),
+    current_bankroll: round2(currentBankroll),
+    total_external_contributions: round2(totalExternalContributions),
+    total_external_contributions_from_ledger: round2(ledgerExternalContributions),
+    total_policy_contributions_recorded: round2(policyContributionTotal),
+    realized_betting_profit_lifetime: round2(realizedLifetimeProfit),
+    bankroll_growth_from_betting: bankrollGrowthFromBetting,
+    bankroll_growth_from_contributions: bankrollGrowthFromContributions,
+    realized_monthly_profit: currentMonthRealizedProfit,
+    realized_monthly_profit_ex_contributions: realizedMonthlyProfitExContributions,
+    contribution_basis_profit: contributionBasisProfit,
+    realized_monthly_profit_map: Object.fromEntries(
+      Object.entries(realizedMonthlyProfitMap)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([k, v]) => [k, round2(v)])
+    ),
+    rolling_average_realized_profit: rollingAverageRealizedProfit,
+    next_estimated_contribution: nextEstimatedContribution,
+    contribution_basis_month_count: contributionBasisMonthCount,
+    contribution_basis_months_used: contributionBasisMonthsUsed,
+    realized_profit_values_used: realizedProfitValuesUsed,
+    last_contribution_amount: round2(parseAsNumber(lastContribution?.contribution_amount)),
+    last_contribution_date: lastContribution?.contribution_date || null,
+    last_contribution_effective_month: lastContribution?.effective_month || null,
+    monthly_interpretation: monthlyInterpretation,
+  };
 }
 
 function parseBooleanLike(value) {
@@ -801,7 +1042,13 @@ function formatPValue(value) {
   return value.toFixed(4);
 }
 
-function formatEveningGradingReport({ generatedAtUtc, quantPerformance, currentStatus, decisionQuality }) {
+function formatEveningGradingReport({
+  generatedAtUtc,
+  quantPerformance,
+  currentStatus,
+  decisionQuality,
+  bankrollContributionPolicy,
+}) {
   const now = new Date(generatedAtUtc || Date.now());
   const dateLabel = now.toISOString().slice(0, 10);
   const drawdown = parsePercent(currentStatus['Drawdown from Peak']);
@@ -835,6 +1082,14 @@ function formatEveningGradingReport({ generatedAtUtc, quantPerformance, currentS
     `Avg Edge at Close: ${formatPctSigned(quantPerformance.edge_at_close)}`,
     `Edge Retention: ${quantPerformance.edge_retention !== null ? `${(quantPerformance.edge_retention * 100).toFixed(1)}%` : 'N/A'}`,
     `Market Efficiency Impact: ${quantPerformance.market_efficiency_impact !== null ? `${(quantPerformance.market_efficiency_impact * 100).toFixed(1)}%` : 'N/A'}`,
+    '',
+    'BANKROLL CONTRIBUTION POLICY',
+    `Realized Monthly Profit: ${formatMoneySigned(bankrollContributionPolicy?.realized_monthly_profit)}`,
+    `Rolling Average Realized Profit: ${formatMoneySigned(bankrollContributionPolicy?.rolling_average_realized_profit)}`,
+    `Next Estimated Contribution: ${formatMoneySigned(bankrollContributionPolicy?.next_estimated_contribution)}`,
+    `Contribution Basis Months: ${(bankrollContributionPolicy?.contribution_basis_months_used || []).join(', ') || 'N/A'}`,
+    `Total External Contributions: ${formatMoneySigned(bankrollContributionPolicy?.total_external_contributions)}`,
+    `Interpretation: ${bankrollContributionPolicy?.monthly_interpretation || 'N/A'}`,
     '',
     `Bankroll: ${currentStatus.Bankroll || 'N/A'}`,
     `Peak: ${currentStatus['All-Time High'] || 'N/A'}`,
@@ -1578,6 +1833,7 @@ function computeWeeklyPerformanceReview({
   quantPerformance,
   sitAccountabilitySummary,
   currentStatus,
+  bankrollContributionPolicy,
 }) {
   const profitFromBets = parseAsNumber(quantPerformance?.actual_profit);
   const profitIfAllSitsBet = parseAsNumber(sitAccountabilitySummary?.net_counterfactual_pl_if_bet);
@@ -1608,6 +1864,14 @@ function computeWeeklyPerformanceReview({
       profit_if_all_sits_bet: round2(profitIfAllSitsBet),
       decision_edge: round2(decisionEdge),
       sit_discipline_rate: currentStatus?.['Sit Discipline Rate (7d)'] || null,
+    },
+    bankroll_contribution_policy: {
+      realized_monthly_profit: bankrollContributionPolicy?.realized_monthly_profit ?? null,
+      contribution_basis_month_count: bankrollContributionPolicy?.contribution_basis_month_count ?? null,
+      contribution_basis_months_used: bankrollContributionPolicy?.contribution_basis_months_used || [],
+      next_estimated_contribution: bankrollContributionPolicy?.next_estimated_contribution ?? null,
+      total_contributions_to_date: bankrollContributionPolicy?.total_external_contributions ?? null,
+      interpretation: bankrollContributionPolicy?.monthly_interpretation || null,
     },
   };
 }
@@ -1777,6 +2041,7 @@ function buildPayload(markdown) {
     extractFirstSection(markdown, ['Rejected Opportunities (Today)', 'Rejected Opportunities'])
   );
   const ledger = parseTable(extractSection(markdown, 'Ledger'));
+  const contributionLedger = readContributionLedger();
   const pendingBetsRaw = parsePending(extractSection(markdown, 'Pending Bets (awaiting result)'));
   const recLogPath = resolveRecommendationLogPath(markdown, sourcePath);
   const recommendationRows =
@@ -1834,6 +2099,13 @@ function buildPayload(markdown) {
     currentStatus,
     ledger,
   });
+  const bankrollContributionPolicy = computeBankrollContributionPolicy({
+    betLog,
+    ledger,
+    contributionLedgerEntries: contributionLedger.entries,
+    currentStatus,
+    lastUpdatedCt,
+  });
   const sitAccountabilitySummary =
     (passedOpportunityTracker?.graded_count || 0) > 0
       ? computeSitAccountabilitySummaryFromPassedTracker(passedOpportunityTracker)
@@ -1847,6 +2119,7 @@ function buildPayload(markdown) {
     quantPerformance,
     sitAccountabilitySummary,
     currentStatus,
+    bankrollContributionPolicy,
   });
   const generatedAtUtc = new Date().toISOString();
   const dataFreshness = computeDataFreshness({
@@ -1896,6 +2169,7 @@ function buildPayload(markdown) {
     quantPerformance,
     currentStatus,
     decisionQuality,
+    bankrollContributionPolicy,
   });
   const decisionDashboardModel = buildDashboardDecisionModel(canonicalDecisionPayload);
 
@@ -1935,6 +2209,9 @@ function buildPayload(markdown) {
     execution_quality: executionQuality,
     weekly_running_totals: weeklyRunningTotals,
     weekly_performance_review: weeklyPerformanceReview,
+    bankroll_contribution_policy: bankrollContributionPolicy,
+    bankroll_contribution_ledger: contributionLedger.entries,
+    bankroll_contribution_ledger_path: contributionLedger.path,
     quant_performance: quantPerformance,
     unit_size: quantPerformance.unit_size,
     stake_units: quantPerformance.per_bet.map((row) => row.stake_units),
@@ -1978,10 +2255,32 @@ function buildPayload(markdown) {
     },
     open_exposure: openExposure,
     daily_verdict: dailyVerdict,
+    starting_bankroll: bankrollContributionPolicy.starting_bankroll,
+    total_external_contributions: bankrollContributionPolicy.total_external_contributions,
+    realized_betting_profit_lifetime: bankrollContributionPolicy.realized_betting_profit_lifetime,
+    bankroll_growth_from_betting: bankrollContributionPolicy.bankroll_growth_from_betting,
+    bankroll_growth_from_contributions: bankrollContributionPolicy.bankroll_growth_from_contributions,
+    realized_monthly_profit: bankrollContributionPolicy.realized_monthly_profit,
+    rolling_average_realized_profit: bankrollContributionPolicy.rolling_average_realized_profit,
+    next_estimated_contribution: bankrollContributionPolicy.next_estimated_contribution,
+    contribution_basis_month_count: bankrollContributionPolicy.contribution_basis_month_count,
+    last_contribution_amount: bankrollContributionPolicy.last_contribution_amount,
+    last_contribution_date: bankrollContributionPolicy.last_contribution_date,
     normalized: {
       // Canonical aliases to reduce key-shape drift while preserving legacy fields.
       open_exposure: openExposure,
       daily_verdict: dailyVerdict,
+      starting_bankroll: bankrollContributionPolicy.starting_bankroll,
+      total_external_contributions: bankrollContributionPolicy.total_external_contributions,
+      realized_betting_profit_lifetime: bankrollContributionPolicy.realized_betting_profit_lifetime,
+      bankroll_growth_from_betting: bankrollContributionPolicy.bankroll_growth_from_betting,
+      bankroll_growth_from_contributions: bankrollContributionPolicy.bankroll_growth_from_contributions,
+      realized_monthly_profit: bankrollContributionPolicy.realized_monthly_profit,
+      rolling_average_realized_profit: bankrollContributionPolicy.rolling_average_realized_profit,
+      next_estimated_contribution: bankrollContributionPolicy.next_estimated_contribution,
+      contribution_basis_month_count: bankrollContributionPolicy.contribution_basis_month_count,
+      last_contribution_amount: bankrollContributionPolicy.last_contribution_amount,
+      last_contribution_date: bankrollContributionPolicy.last_contribution_date,
     },
     decision_quality: decisionQuality,
     pending_bets: pendingBets,
@@ -2010,6 +2309,17 @@ function buildPayload(markdown) {
       confidence_level: quantPerformance.confidence_level,
       sample_status: quantPerformance.sample_status,
       redacted_pending: redactPending,
+      starting_bankroll: bankrollContributionPolicy.starting_bankroll,
+      total_external_contributions: bankrollContributionPolicy.total_external_contributions,
+      realized_betting_profit_lifetime: bankrollContributionPolicy.realized_betting_profit_lifetime,
+      bankroll_growth_from_betting: bankrollContributionPolicy.bankroll_growth_from_betting,
+      bankroll_growth_from_contributions: bankrollContributionPolicy.bankroll_growth_from_contributions,
+      realized_monthly_profit: bankrollContributionPolicy.realized_monthly_profit,
+      rolling_average_realized_profit: bankrollContributionPolicy.rolling_average_realized_profit,
+      next_estimated_contribution: bankrollContributionPolicy.next_estimated_contribution,
+      contribution_basis_month_count: bankrollContributionPolicy.contribution_basis_month_count,
+      last_contribution_amount: bankrollContributionPolicy.last_contribution_amount,
+      last_contribution_date: bankrollContributionPolicy.last_contribution_date,
     },
   };
 }

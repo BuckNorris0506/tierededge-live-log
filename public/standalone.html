@@ -326,6 +326,17 @@ li {
       </section>
     </section>
 
+    <section class="split">
+      <section class="panel" id="bankroll-contribution-policy-section">
+        <h2>Bankroll Contribution Policy</h2>
+        <ul id="bankroll-contribution-policy-list"></ul>
+      </section>
+      <section class="panel" id="bankroll-composition-section">
+        <h2>Bankroll Composition</h2>
+        <ul id="bankroll-composition-list"></ul>
+      </section>
+    </section>
+
     <section class="panel" id="accountability-section">
       <h2>Accountability / History</h2>
       <div class="range-controls">
@@ -360,7 +371,7 @@ li {
   </footer>
 
   <script>window.__LIVE_DATA__ = {
-  "generated_at_utc": "2026-03-11T07:10:29.907Z",
+  "generated_at_utc": "2026-03-11T15:36:28.588Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-11 02:45 CT",
@@ -825,8 +836,51 @@ li {
       "profit_if_all_sits_bet": 5.65,
       "decision_edge": 63.08,
       "sit_discipline_rate": "71%"
+    },
+    "bankroll_contribution_policy": {
+      "realized_monthly_profit": 68.73,
+      "contribution_basis_month_count": 1,
+      "contribution_basis_months_used": [
+        "2026-02"
+      ],
+      "next_estimated_contribution": 0,
+      "total_contributions_to_date": 1200,
+      "interpretation": "No monthly contribution scheduled based on non-positive rolling profit."
     }
   },
+  "bankroll_contribution_policy": {
+    "contribution_ledger_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/bankroll-contributions.csv",
+    "contribution_ledger_entries": [],
+    "starting_bankroll": 100,
+    "current_bankroll": 1271.48,
+    "total_external_contributions": 1200,
+    "total_external_contributions_from_ledger": 1200,
+    "total_policy_contributions_recorded": 0,
+    "realized_betting_profit_lifetime": 68.73,
+    "bankroll_growth_from_betting": -28.52,
+    "bankroll_growth_from_contributions": 1200,
+    "realized_monthly_profit": 68.73,
+    "realized_monthly_profit_ex_contributions": 68.73,
+    "contribution_basis_profit": 0,
+    "realized_monthly_profit_map": {
+      "2026-03": 68.73
+    },
+    "rolling_average_realized_profit": 0,
+    "next_estimated_contribution": 0,
+    "contribution_basis_month_count": 1,
+    "contribution_basis_months_used": [
+      "2026-02"
+    ],
+    "realized_profit_values_used": [
+      0
+    ],
+    "last_contribution_amount": null,
+    "last_contribution_date": null,
+    "last_contribution_effective_month": null,
+    "monthly_interpretation": "No monthly contribution scheduled based on non-positive rolling profit."
+  },
+  "bankroll_contribution_ledger": [],
+  "bankroll_contribution_ledger_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/bankroll-contributions.csv",
   "quant_performance": {
     "settled_bets_evaluated": 18,
     "unit_size": 12.71,
@@ -1427,8 +1481,8 @@ li {
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-11 02:45 AM",
-    "grading_cache_last_update": "2026-03-11T07:10:29.820Z",
-    "payload_build_time_utc": "2026-03-11T07:10:29.907Z"
+    "grading_cache_last_update": "2026-03-11T15:36:28.557Z",
+    "payload_build_time_utc": "2026-03-11T15:36:28.588Z"
   },
   "integrity_gate": {
     "pass": true,
@@ -1440,7 +1494,7 @@ li {
       "missing_scan_days_count": 0
     },
     "diagnostics": {
-      "freshness_hours_since_last_recommendation": -0.58,
+      "freshness_hours_since_last_recommendation": 7.86,
       "first_recommendation_day": "2026-03-07",
       "ignored_pre_ledger_scan_days": [
         "2026-03-03",
@@ -1455,7 +1509,7 @@ li {
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-11T07:10:29.907Z",
+    "generated_at_utc": "2026-03-11T15:36:28.588Z",
     "message_type": "BET",
     "verdict": "BET",
     "what_to_do_now": "Review bet list and execute within exposure limits.",
@@ -1509,7 +1563,7 @@ li {
   "decision_renderers": {
     "terminal_text": "TIEREDGE DECISION\nVerdict: BET\nWhat to do now: Review bet list and execute within exposure limits.\nWhy: Edge above threshold with confidence/risk gates passed.\nSystem health: PASS\nChecks: data=pass, ledger=pass, engine=pass\nBets:\n- Spurs -3.5 | Spread | edge 3.3% | T3 | stake $10.06 | edge above threshold, confidence gate passed\nExecution: bankroll=$1,271.48 | open_exposure=0.8% | daily_exposure=0.8% | breaker=OFF\nAccountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=47.4% (9-10)\n",
     "whatsapp_text": "*TIEREDGE BET*\nWhat now: Review bet list and execute within exposure limits.\nWhy: Edge above threshold with confidence/risk gates passed.\nHealth: PASS (data pass, ledger pass, engine pass)\n*BETS*\n- Spurs -3.5 Spread | edge 3.3% | T3 | stake $10.06\n  reason: edge above threshold, confidence gate passed\nExecution: bankroll $1,271.48, exposure 0.8%, daily 0.8%, breaker OFF\nAccountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)\n",
-    "evening_grading_report_text": "EVENING GRADING - 2026-03-11\n\nBets Settled: 18\n\nUNITS\nProfit: +5.40u\nTotal Staked: 9.57u\nROI (Units): +56.43%\n\nEXPECTATION\nExpected Profit: +$0.33\nActual Profit: +$68.73\nVariance: +$68.40\nEV Realization: 208.27\n\nSIGNAL QUALITY\nAverage CLV: +7.36%\nPositive CLV Rate: +100.00%\nBinomial p-value: 0.5860\nConfidence Level: +41.40%\nSample Status: small sample (statistically inconclusive)\n\nEDGE QUALITY\nAvg Edge Detected: +3.30%\nAvg Edge at Placement: +3.30%\nAvg Edge at Close: N/A\nEdge Retention: 100.0%\nMarket Efficiency Impact: N/A\n\nBankroll: $1,271.48\nPeak: $1,262.16\nDrawdown: N/A\n\nSystem Status: Running Hot\nNext Edge Scan: 08:00 CT\n",
+    "evening_grading_report_text": "EVENING GRADING - 2026-03-11\n\nBets Settled: 18\n\nUNITS\nProfit: +5.40u\nTotal Staked: 9.57u\nROI (Units): +56.43%\n\nEXPECTATION\nExpected Profit: +$0.33\nActual Profit: +$68.73\nVariance: +$68.40\nEV Realization: 208.27\n\nSIGNAL QUALITY\nAverage CLV: +7.36%\nPositive CLV Rate: +100.00%\nBinomial p-value: 0.5860\nConfidence Level: +41.40%\nSample Status: small sample (statistically inconclusive)\n\nEDGE QUALITY\nAvg Edge Detected: +3.30%\nAvg Edge at Placement: +3.30%\nAvg Edge at Close: N/A\nEdge Retention: 100.0%\nMarket Efficiency Impact: N/A\n\nBANKROLL CONTRIBUTION POLICY\nRealized Monthly Profit: +$68.73\nRolling Average Realized Profit: $0.00\nNext Estimated Contribution: $0.00\nContribution Basis Months: 2026-02\nTotal External Contributions: +$1200.00\nInterpretation: No monthly contribution scheduled based on non-positive rolling profit.\n\nBankroll: $1,271.48\nPeak: $1,262.16\nDrawdown: N/A\n\nSystem Status: Running Hot\nNext Edge Scan: 08:00 CT\n",
     "dashboard_model": {
       "today": {
         "verdict": "BET",
@@ -1619,9 +1673,31 @@ li {
   },
   "open_exposure": "0.8%",
   "daily_verdict": "Selective action: 1 bet(s), 7 sit decision(s).",
+  "starting_bankroll": 100,
+  "total_external_contributions": 1200,
+  "realized_betting_profit_lifetime": 68.73,
+  "bankroll_growth_from_betting": -28.52,
+  "bankroll_growth_from_contributions": 1200,
+  "realized_monthly_profit": 68.73,
+  "rolling_average_realized_profit": 0,
+  "next_estimated_contribution": 0,
+  "contribution_basis_month_count": 1,
+  "last_contribution_amount": null,
+  "last_contribution_date": null,
   "normalized": {
     "open_exposure": "0.8%",
-    "daily_verdict": "Selective action: 1 bet(s), 7 sit decision(s)."
+    "daily_verdict": "Selective action: 1 bet(s), 7 sit decision(s).",
+    "starting_bankroll": 100,
+    "total_external_contributions": 1200,
+    "realized_betting_profit_lifetime": 68.73,
+    "bankroll_growth_from_betting": -28.52,
+    "bankroll_growth_from_contributions": 1200,
+    "realized_monthly_profit": 68.73,
+    "rolling_average_realized_profit": 0,
+    "next_estimated_contribution": 0,
+    "contribution_basis_month_count": 1,
+    "last_contribution_amount": null,
+    "last_contribution_date": null
   },
   "decision_quality": {
     "placed_bets_count": 1,
@@ -2021,7 +2097,18 @@ li {
     "p_value": 0.586,
     "confidence_level": 41.4,
     "sample_status": "small sample (statistically inconclusive)",
-    "redacted_pending": false
+    "redacted_pending": false,
+    "starting_bankroll": 100,
+    "total_external_contributions": 1200,
+    "realized_betting_profit_lifetime": 68.73,
+    "bankroll_growth_from_betting": -28.52,
+    "bankroll_growth_from_contributions": 1200,
+    "realized_monthly_profit": 68.73,
+    "rolling_average_realized_profit": 0,
+    "next_estimated_contribution": 0,
+    "contribution_basis_month_count": 1,
+    "last_contribution_amount": null,
+    "last_contribution_date": null
   }
 }
 ;</script>
@@ -2307,6 +2394,7 @@ function renderRecentTotals(data) {
   const review = data.weekly_performance_review || {};
   const clv = review.clv_metrics || {};
   const dq = review.decision_quality || {};
+  const policy = review.bankroll_contribution_policy || {};
   const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}${Math.abs(n).toFixed(2)}`);
   const asPct = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : ''}${n}%`);
   const rows = [
@@ -2320,6 +2408,10 @@ function renderRecentTotals(data) {
     ['Decision Quality • Profit if all sits bet', asMoney(dq.profit_if_all_sits_bet)],
     ['Decision Quality • Decision edge', asMoney(dq.decision_edge)],
     ['Decision Quality • Sit discipline rate', dq.sit_discipline_rate || MISSING],
+    ['Contribution Policy • Realized monthly profit', asMoney(policy.realized_monthly_profit)],
+    ['Contribution Policy • Basis months', (policy.contribution_basis_months_used || []).join(', ') || MISSING],
+    ['Contribution Policy • Next estimated contribution', asMoney(policy.next_estimated_contribution)],
+    ['Contribution Policy • Total contributions to date', asMoney(policy.total_contributions_to_date)],
     ['Bets', totals.Bets],
     ['ROI', totals.ROI],
   ];
@@ -2369,6 +2461,35 @@ function renderQuantPerformance(data) {
     ['Market efficiency impact', asRet(q.market_efficiency_impact)],
   ];
   renderRows('edge-quality-list', edgeRows);
+}
+
+function renderBankrollContribution(data) {
+  const policy = data.bankroll_contribution_policy || {};
+  const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}${Math.abs(n).toFixed(2)}`);
+  const basisMonths = (policy.contribution_basis_months_used || []).join(', ') || MISSING;
+  const profitValues = (policy.realized_profit_values_used || []).map((n) => `${n >= 0 ? '+' : '-'}${Math.abs(Number(n)).toFixed(2)}`).join(', ') || MISSING;
+
+  const policyRows = [
+    ['Last contribution', asMoney(policy.last_contribution_amount)],
+    ['Last contribution date', policy.last_contribution_date || MISSING],
+    ['Contribution basis months', basisMonths],
+    ['Realized profit values used', profitValues],
+    ['Rolling average realized profit', asMoney(policy.rolling_average_realized_profit)],
+    ['Next estimated contribution', asMoney(policy.next_estimated_contribution)],
+  ];
+  renderRows('bankroll-contribution-policy-list', policyRows);
+
+  const compositionRows = [
+    ['Starting bankroll', asMoney(policy.starting_bankroll)],
+    ['Total external contributions', asMoney(policy.total_external_contributions)],
+    ['Realized betting profit (lifetime)', asMoney(policy.realized_betting_profit_lifetime)],
+    ['Bankroll growth from betting', asMoney(policy.bankroll_growth_from_betting)],
+    ['Bankroll growth from contributions', asMoney(policy.bankroll_growth_from_contributions)],
+    ['Current bankroll', asMoney(policy.current_bankroll)],
+    ['Realized monthly profit', asMoney(policy.realized_monthly_profit_ex_contributions)],
+    ['Interpretation', policy.monthly_interpretation || MISSING],
+  ];
+  renderRows('bankroll-composition-list', compositionRows);
 }
 
 function inRange(dateText, anchorDate, range) {
@@ -2479,6 +2600,7 @@ function renderDiagnostics(data) {
     renderExecutionQuality(data);
     renderRecentTotals(data);
     renderQuantPerformance(data);
+    renderBankrollContribution(data);
     renderRejectedOpportunities(data);
     renderDiagnostics(data);
 

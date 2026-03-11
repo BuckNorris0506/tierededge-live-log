@@ -279,6 +279,7 @@ function renderRecentTotals(data) {
   const review = data.weekly_performance_review || {};
   const clv = review.clv_metrics || {};
   const dq = review.decision_quality || {};
+  const policy = review.bankroll_contribution_policy || {};
   const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}$${Math.abs(n).toFixed(2)}`);
   const asPct = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : ''}${n}%`);
   const rows = [
@@ -292,6 +293,10 @@ function renderRecentTotals(data) {
     ['Decision Quality • Profit if all sits bet', asMoney(dq.profit_if_all_sits_bet)],
     ['Decision Quality • Decision edge', asMoney(dq.decision_edge)],
     ['Decision Quality • Sit discipline rate', dq.sit_discipline_rate || MISSING],
+    ['Contribution Policy • Realized monthly profit', asMoney(policy.realized_monthly_profit)],
+    ['Contribution Policy • Basis months', (policy.contribution_basis_months_used || []).join(', ') || MISSING],
+    ['Contribution Policy • Next estimated contribution', asMoney(policy.next_estimated_contribution)],
+    ['Contribution Policy • Total contributions to date', asMoney(policy.total_contributions_to_date)],
     ['Bets', totals.Bets],
     ['ROI', totals.ROI],
   ];
@@ -341,6 +346,35 @@ function renderQuantPerformance(data) {
     ['Market efficiency impact', asRet(q.market_efficiency_impact)],
   ];
   renderRows('edge-quality-list', edgeRows);
+}
+
+function renderBankrollContribution(data) {
+  const policy = data.bankroll_contribution_policy || {};
+  const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}$${Math.abs(n).toFixed(2)}`);
+  const basisMonths = (policy.contribution_basis_months_used || []).join(', ') || MISSING;
+  const profitValues = (policy.realized_profit_values_used || []).map((n) => `${n >= 0 ? '+' : '-'}$${Math.abs(Number(n)).toFixed(2)}`).join(', ') || MISSING;
+
+  const policyRows = [
+    ['Last contribution', asMoney(policy.last_contribution_amount)],
+    ['Last contribution date', policy.last_contribution_date || MISSING],
+    ['Contribution basis months', basisMonths],
+    ['Realized profit values used', profitValues],
+    ['Rolling average realized profit', asMoney(policy.rolling_average_realized_profit)],
+    ['Next estimated contribution', asMoney(policy.next_estimated_contribution)],
+  ];
+  renderRows('bankroll-contribution-policy-list', policyRows);
+
+  const compositionRows = [
+    ['Starting bankroll', asMoney(policy.starting_bankroll)],
+    ['Total external contributions', asMoney(policy.total_external_contributions)],
+    ['Realized betting profit (lifetime)', asMoney(policy.realized_betting_profit_lifetime)],
+    ['Bankroll growth from betting', asMoney(policy.bankroll_growth_from_betting)],
+    ['Bankroll growth from contributions', asMoney(policy.bankroll_growth_from_contributions)],
+    ['Current bankroll', asMoney(policy.current_bankroll)],
+    ['Realized monthly profit', asMoney(policy.realized_monthly_profit_ex_contributions)],
+    ['Interpretation', policy.monthly_interpretation || MISSING],
+  ];
+  renderRows('bankroll-composition-list', compositionRows);
 }
 
 function inRange(dateText, anchorDate, range) {
@@ -451,6 +485,7 @@ function renderDiagnostics(data) {
     renderExecutionQuality(data);
     renderRecentTotals(data);
     renderQuantPerformance(data);
+    renderBankrollContribution(data);
     renderRejectedOpportunities(data);
     renderDiagnostics(data);
 

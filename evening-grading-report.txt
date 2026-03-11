@@ -27,6 +27,14 @@ Avg Edge at Close: N/A
 Edge Retention: 100.0%
 Market Efficiency Impact: N/A
 
+BANKROLL CONTRIBUTION POLICY
+Realized Monthly Profit: +$68.73
+Rolling Average Realized Profit: $0.00
+Next Estimated Contribution: $0.00
+Contribution Basis Months: 2026-02
+Total External Contributions: +$1200.00
+Interpretation: No monthly contribution scheduled based on non-positive rolling profit.
+
 Bankroll: $1,271.48
 Peak: $1,262.16
 Drawdown: N/A
