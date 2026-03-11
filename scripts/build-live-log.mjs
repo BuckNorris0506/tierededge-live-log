@@ -360,13 +360,18 @@ function computeBankrollContributionPolicy({
   const ledgerEntries = Array.isArray(ledger) ? ledger : [];
   const externalTypes = new Set(['DEPOSIT', 'CONTRIBUTION', 'RELOAD']);
   let ledgerExternalContributions = 0;
+  const ledgerExternalContributionsByMonth = {};
   let startingBankroll = null;
   for (const row of ledgerEntries) {
     const amount = parseAsNumber(row.Amount);
     if (amount === null) continue;
     if (startingBankroll === null) startingBankroll = amount;
     const type = String(row.Type || '').trim().toUpperCase();
-    if (externalTypes.has(type)) ledgerExternalContributions += amount;
+    if (externalTypes.has(type)) {
+      ledgerExternalContributions += amount;
+      const month = parseMonthKey(row.Date);
+      if (month) ledgerExternalContributionsByMonth[month] = (ledgerExternalContributionsByMonth[month] || 0) + amount;
+    }
   }
 
   const policyContributionTotal = (contributionLedgerEntries || [])
@@ -418,10 +423,40 @@ function computeBankrollContributionPolicy({
     : null;
 
   const bankrollGrowthFromContributions = round2(totalExternalContributions);
-  const bankrollGrowthFromBetting =
-    startingBankroll !== null && currentBankroll !== null
-      ? round2(currentBankroll - startingBankroll - totalExternalContributions)
+  const bankrollGrowthFromBetting = round2(realizedLifetimeProfit);
+  const strategyEquity =
+    startingBankroll !== null
+      ? round2(startingBankroll + bankrollGrowthFromBetting)
       : null;
+  const actualBankroll =
+    startingBankroll !== null
+      ? round2(startingBankroll + bankrollGrowthFromBetting + bankrollGrowthFromContributions)
+      : null;
+  const bankrollFormulaDiff =
+    currentBankroll !== null && actualBankroll !== null
+      ? round2(currentBankroll - actualBankroll)
+      : null;
+
+  const allMonthKeys = new Set([
+    ...Object.keys(realizedMonthlyProfitMap),
+    ...Object.keys(ledgerExternalContributionsByMonth),
+  ]);
+  if (firstKnownMonth) allMonthKeys.add(firstKnownMonth);
+  if (anchorMonth) allMonthKeys.add(anchorMonth);
+  const sortedMonthKeys = [...allMonthKeys].sort();
+
+  let runningRealized = 0;
+  let runningContrib = 0;
+  const strategyEquityByMonth = {};
+  const actualBankrollByMonth = {};
+  for (const month of sortedMonthKeys) {
+    runningRealized += (realizedMonthlyProfitMap[month] || 0);
+    runningContrib += (ledgerExternalContributionsByMonth[month] || 0);
+    if (startingBankroll !== null) {
+      strategyEquityByMonth[month] = round2(startingBankroll + runningRealized);
+      actualBankrollByMonth[month] = round2(startingBankroll + runningRealized + runningContrib);
+    }
+  }
 
   let monthlyInterpretation = 'No monthly contribution scheduled based on non-positive rolling profit.';
   if (nextEstimatedContribution > 0) {
@@ -439,12 +474,16 @@ function computeBankrollContributionPolicy({
     contribution_ledger_entries: contributionLedgerEntries || [],
     starting_bankroll: round2(startingBankroll),
     current_bankroll: round2(currentBankroll),
+    reported_current_bankroll: round2(currentBankroll),
+    actual_bankroll: actualBankroll,
+    strategy_equity: strategyEquity,
     total_external_contributions: round2(totalExternalContributions),
     total_external_contributions_from_ledger: round2(ledgerExternalContributions),
     total_policy_contributions_recorded: round2(policyContributionTotal),
     realized_betting_profit_lifetime: round2(realizedLifetimeProfit),
     bankroll_growth_from_betting: bankrollGrowthFromBetting,
     bankroll_growth_from_contributions: bankrollGrowthFromContributions,
+    bankroll_formula_difference: bankrollFormulaDiff,
     realized_monthly_profit: currentMonthRealizedProfit,
     realized_monthly_profit_ex_contributions: realizedMonthlyProfitExContributions,
     contribution_basis_profit: contributionBasisProfit,
@@ -453,6 +492,13 @@ function computeBankrollContributionPolicy({
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([k, v]) => [k, round2(v)])
     ),
+    external_contributions_monthly_map: Object.fromEntries(
+      Object.entries(ledgerExternalContributionsByMonth)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([k, v]) => [k, round2(v)])
+    ),
+    strategy_equity_monthly_map: strategyEquityByMonth,
+    actual_bankroll_monthly_map: actualBankrollByMonth,
     rolling_average_realized_profit: rollingAverageRealizedProfit,
     next_estimated_contribution: nextEstimatedContribution,
     contribution_basis_month_count: contributionBasisMonthCount,
@@ -462,6 +508,11 @@ function computeBankrollContributionPolicy({
     last_contribution_date: lastContribution?.contribution_date || null,
     last_contribution_effective_month: lastContribution?.effective_month || null,
     monthly_interpretation: monthlyInterpretation,
+    notes: {
+      actual_bankroll_includes_external_contributions: true,
+      strategy_equity_excludes_external_contributions: true,
+      units_remain_primary_strategy_metric: true,
+    },
   };
 }
 
@@ -1090,6 +1141,14 @@ function formatEveningGradingReport({
     `Contribution Basis Months: ${(bankrollContributionPolicy?.contribution_basis_months_used || []).join(', ') || 'N/A'}`,
     `Total External Contributions: ${formatMoneySigned(bankrollContributionPolicy?.total_external_contributions)}`,
     `Interpretation: ${bankrollContributionPolicy?.monthly_interpretation || 'N/A'}`,
+    '',
+    'BANKROLL OVERVIEW',
+    `Actual Bankroll: ${formatMoneySigned(bankrollContributionPolicy?.actual_bankroll)}`,
+    `Strategy Equity: ${formatMoneySigned(bankrollContributionPolicy?.strategy_equity)}`,
+    `Total External Contributions: ${formatMoneySigned(bankrollContributionPolicy?.total_external_contributions)}`,
+    `Realized Betting Profit: ${formatMoneySigned(bankrollContributionPolicy?.realized_betting_profit_lifetime)}`,
+    'Note: Actual bankroll includes external contributions.',
+    'Note: Strategy equity excludes external contributions.',
     '',
     `Bankroll: ${currentStatus.Bankroll || 'N/A'}`,
     `Peak: ${currentStatus['All-Time High'] || 'N/A'}`,
@@ -1866,12 +1925,18 @@ function computeWeeklyPerformanceReview({
       sit_discipline_rate: currentStatus?.['Sit Discipline Rate (7d)'] || null,
     },
     bankroll_contribution_policy: {
+      actual_bankroll: bankrollContributionPolicy?.actual_bankroll ?? null,
+      strategy_equity: bankrollContributionPolicy?.strategy_equity ?? null,
+      realized_betting_profit_lifetime: bankrollContributionPolicy?.realized_betting_profit_lifetime ?? null,
+      bankroll_growth_from_betting: bankrollContributionPolicy?.bankroll_growth_from_betting ?? null,
+      bankroll_growth_from_contributions: bankrollContributionPolicy?.bankroll_growth_from_contributions ?? null,
       realized_monthly_profit: bankrollContributionPolicy?.realized_monthly_profit ?? null,
       contribution_basis_month_count: bankrollContributionPolicy?.contribution_basis_month_count ?? null,
       contribution_basis_months_used: bankrollContributionPolicy?.contribution_basis_months_used || [],
       next_estimated_contribution: bankrollContributionPolicy?.next_estimated_contribution ?? null,
       total_contributions_to_date: bankrollContributionPolicy?.total_external_contributions ?? null,
       interpretation: bankrollContributionPolicy?.monthly_interpretation || null,
+      contribution_adjusted_summary: 'Strategy equity isolates betting performance by excluding external contributions.',
     },
   };
 }
@@ -2256,6 +2321,8 @@ function buildPayload(markdown) {
     open_exposure: openExposure,
     daily_verdict: dailyVerdict,
     starting_bankroll: bankrollContributionPolicy.starting_bankroll,
+    actual_bankroll: bankrollContributionPolicy.actual_bankroll,
+    strategy_equity: bankrollContributionPolicy.strategy_equity,
     total_external_contributions: bankrollContributionPolicy.total_external_contributions,
     realized_betting_profit_lifetime: bankrollContributionPolicy.realized_betting_profit_lifetime,
     bankroll_growth_from_betting: bankrollContributionPolicy.bankroll_growth_from_betting,
@@ -2266,11 +2333,17 @@ function buildPayload(markdown) {
     contribution_basis_month_count: bankrollContributionPolicy.contribution_basis_month_count,
     last_contribution_amount: bankrollContributionPolicy.last_contribution_amount,
     last_contribution_date: bankrollContributionPolicy.last_contribution_date,
+    bankroll_trend_support: {
+      actual_bankroll_monthly_map: bankrollContributionPolicy.actual_bankroll_monthly_map || {},
+      strategy_equity_monthly_map: bankrollContributionPolicy.strategy_equity_monthly_map || {},
+    },
     normalized: {
       // Canonical aliases to reduce key-shape drift while preserving legacy fields.
       open_exposure: openExposure,
       daily_verdict: dailyVerdict,
       starting_bankroll: bankrollContributionPolicy.starting_bankroll,
+      actual_bankroll: bankrollContributionPolicy.actual_bankroll,
+      strategy_equity: bankrollContributionPolicy.strategy_equity,
       total_external_contributions: bankrollContributionPolicy.total_external_contributions,
       realized_betting_profit_lifetime: bankrollContributionPolicy.realized_betting_profit_lifetime,
       bankroll_growth_from_betting: bankrollContributionPolicy.bankroll_growth_from_betting,
@@ -2310,6 +2383,8 @@ function buildPayload(markdown) {
       sample_status: quantPerformance.sample_status,
       redacted_pending: redactPending,
       starting_bankroll: bankrollContributionPolicy.starting_bankroll,
+      actual_bankroll: bankrollContributionPolicy.actual_bankroll,
+      strategy_equity: bankrollContributionPolicy.strategy_equity,
       total_external_contributions: bankrollContributionPolicy.total_external_contributions,
       realized_betting_profit_lifetime: bankrollContributionPolicy.realized_betting_profit_lifetime,
       bankroll_growth_from_betting: bankrollContributionPolicy.bankroll_growth_from_betting,

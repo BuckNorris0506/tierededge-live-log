@@ -294,9 +294,13 @@ function renderRecentTotals(data) {
     ['Decision Quality • Decision edge', asMoney(dq.decision_edge)],
     ['Decision Quality • Sit discipline rate', dq.sit_discipline_rate || MISSING],
     ['Contribution Policy • Realized monthly profit', asMoney(policy.realized_monthly_profit)],
+    ['Contribution Policy • Actual bankroll', asMoney(policy.actual_bankroll)],
+    ['Contribution Policy • Strategy equity', asMoney(policy.strategy_equity)],
+    ['Contribution Policy • Realized betting profit (lifetime)', asMoney(policy.realized_betting_profit_lifetime)],
     ['Contribution Policy • Basis months', (policy.contribution_basis_months_used || []).join(', ') || MISSING],
     ['Contribution Policy • Next estimated contribution', asMoney(policy.next_estimated_contribution)],
     ['Contribution Policy • Total contributions to date', asMoney(policy.total_contributions_to_date)],
+    ['Contribution Policy • Summary', policy.contribution_adjusted_summary || MISSING],
     ['Bets', totals.Bets],
     ['ROI', totals.ROI],
   ];
@@ -365,13 +369,19 @@ function renderBankrollContribution(data) {
   renderRows('bankroll-contribution-policy-list', policyRows);
 
   const compositionRows = [
-    ['Starting bankroll', asMoney(policy.starting_bankroll)],
+    ['Actual bankroll', asMoney(policy.actual_bankroll)],
+    ['Reported bankroll (status source)', asMoney(policy.reported_current_bankroll)],
+    ['Bankroll reconciliation difference', asMoney(policy.bankroll_formula_difference)],
+    ['Strategy equity', asMoney(policy.strategy_equity)],
     ['Total external contributions', asMoney(policy.total_external_contributions)],
-    ['Realized betting profit (lifetime)', asMoney(policy.realized_betting_profit_lifetime)],
+    ['Realized betting profit', asMoney(policy.realized_betting_profit_lifetime)],
+    ['Starting bankroll', asMoney(policy.starting_bankroll)],
     ['Bankroll growth from betting', asMoney(policy.bankroll_growth_from_betting)],
     ['Bankroll growth from contributions', asMoney(policy.bankroll_growth_from_contributions)],
-    ['Current bankroll', asMoney(policy.current_bankroll)],
     ['Realized monthly profit', asMoney(policy.realized_monthly_profit_ex_contributions)],
+    ['Actual bankroll includes external contributions', 'Yes'],
+    ['Strategy equity excludes external contributions', 'Yes'],
+    ['Units remain primary strategy metric', 'Yes'],
     ['Interpretation', policy.monthly_interpretation || MISSING],
   ];
   renderRows('bankroll-composition-list', compositionRows);

@@ -35,6 +35,14 @@ Contribution Basis Months: 2026-02
 Total External Contributions: +$1200.00
 Interpretation: No monthly contribution scheduled based on non-positive rolling profit.
 
+BANKROLL OVERVIEW
+Actual Bankroll: +$1368.73
+Strategy Equity: +$168.73
+Total External Contributions: +$1200.00
+Realized Betting Profit: +$68.73
+Note: Actual bankroll includes external contributions.
+Note: Strategy equity excludes external contributions.
+
 Bankroll: $1,271.48
 Peak: $1,262.16
 Drawdown: N/A
