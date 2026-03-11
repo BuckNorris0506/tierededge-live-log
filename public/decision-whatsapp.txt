@@ -1,9 +1,9 @@
-*TIEREDGE BLOCKED*
-What now: Resolve system health failures before acting on recommendations.
-Why: Integrity gate failed: missing_scan_days
-Health: FAIL (data pass, ledger fail, engine blocked)
-BLOCKED reason: missing_scan_days
-Do NOT: Do not place bets from this scan.
-Recover: Restore freshness + ledger integrity before decisions resume.
+*TIEREDGE BET*
+What now: Review bet list and execute within exposure limits.
+Why: Edge above threshold with confidence/risk gates passed.
+Health: PASS (data pass, ledger pass, engine pass)
+*BETS*
+- Spurs -3.5 Spread | edge 3.3% | T3 | stake $10.06
+  reason: edge above threshold, confidence gate passed
 Execution: bankroll $1,271.48, exposure 0.8%, daily 0.8%, breaker OFF
 Accountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)

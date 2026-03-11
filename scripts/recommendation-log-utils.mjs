@@ -33,9 +33,11 @@ function parseTable(markdown) {
   const rows = [];
   for (let i = 2; i < lines.length; i += 1) {
     const parts = lines[i].split('|').map((s) => s.trim()).filter(Boolean);
-    if (parts.length !== headers.length) continue;
+    if (parts.length < headers.length) continue;
+    // Tolerate legacy rows with extra trailing notes columns.
+    const normalizedParts = parts.slice(0, headers.length);
     const row = {};
-    for (let j = 0; j < headers.length; j += 1) row[headers[j]] = parts[j];
+    for (let j = 0; j < headers.length; j += 1) row[headers[j]] = normalizedParts[j];
     rows.push(row);
   }
   return { headers, rows };

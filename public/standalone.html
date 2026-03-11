@@ -360,7 +360,7 @@ li {
   </footer>
 
   <script>window.__LIVE_DATA__ = {
-  "generated_at_utc": "2026-03-11T07:03:41.404Z",
+  "generated_at_utc": "2026-03-11T07:10:29.907Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-11 02:45 CT",
@@ -779,16 +779,23 @@ li {
   },
   "edge_distribution_transparency": {
     "buckets": {
-      "edge_0_1": 0,
-      "edge_1_2": 0,
-      "edge_2_3": 0,
-      "edge_3_4": 0,
+      "edge_0_1": 1,
+      "edge_1_2": 4,
+      "edge_2_3": 1,
+      "edge_3_4": 1,
       "edge_4_5": 0,
       "edge_5_plus": 0
     },
-    "total_edges_observed": 0,
-    "by_sport": {},
-    "by_market_type": {}
+    "total_edges_observed": 7,
+    "by_sport": {
+      "NBA": 2,
+      "NHL": 4,
+      "NCAAB": 1
+    },
+    "by_market_type": {
+      "Spread": 5,
+      "ML": 2
+    }
   },
   "market_type_reliability_index": {},
   "sit_reason_code_standard": {},
@@ -1419,47 +1426,46 @@ li {
   "closing_edge_retention": null,
   "market_efficiency_impact": null,
   "data_freshness": {
-    "recommendation_log_last_row_time": "2026-03-10 06:05 AM",
-    "grading_cache_last_update": "2026-03-11T07:03:41.338Z",
-    "payload_build_time_utc": "2026-03-11T07:03:41.404Z"
+    "recommendation_log_last_row_time": "2026-03-11 02:45 AM",
+    "grading_cache_last_update": "2026-03-11T07:10:29.820Z",
+    "payload_build_time_utc": "2026-03-11T07:10:29.907Z"
   },
   "integrity_gate": {
-    "pass": false,
+    "pass": true,
     "checks": {
       "data_freshness": "pass",
-      "ledger_integrity": "fail",
-      "decision_engine_status": "blocked",
+      "ledger_integrity": "pass",
+      "decision_engine_status": "pass",
       "duplicate_rec_id_count": 0,
-      "missing_scan_days_count": 5
+      "missing_scan_days_count": 0
     },
     "diagnostics": {
-      "freshness_hours_since_last_recommendation": 19.98,
-      "missing_scan_days": [
+      "freshness_hours_since_last_recommendation": -0.58,
+      "first_recommendation_day": "2026-03-07",
+      "ignored_pre_ledger_scan_days": [
         "2026-03-03",
         "2026-03-04",
         "2026-03-05",
-        "2026-03-06",
-        "2026-03-11"
+        "2026-03-06"
       ],
+      "missing_scan_days": [],
       "duplicate_rec_ids": []
     },
-    "reasons": [
-      "missing_scan_days"
-    ]
+    "reasons": []
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-11T07:03:41.404Z",
-    "message_type": "BLOCKED",
-    "verdict": "BLOCKED",
-    "what_to_do_now": "Resolve system health failures before acting on recommendations.",
-    "why": "Integrity gate failed: missing_scan_days",
+    "generated_at_utc": "2026-03-11T07:10:29.907Z",
+    "message_type": "BET",
+    "verdict": "BET",
+    "what_to_do_now": "Review bet list and execute within exposure limits.",
+    "why": "Edge above threshold with confidence/risk gates passed.",
     "threshold_reminder": "Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.",
     "system_health": {
       "data_freshness": "pass",
-      "ledger_integrity": "fail",
-      "decision_engine_status": "blocked",
-      "pass": false
+      "ledger_integrity": "pass",
+      "decision_engine_status": "pass",
+      "pass": true
     },
     "execution_state": {
       "bankroll": "$1,271.48",
@@ -1486,64 +1492,50 @@ li {
         "net_ev_rejected": null
       }
     },
-    "bets": [],
+    "bets": [
+      {
+        "rec_id": "20260310-001-GRADE",
+        "selection": "Spurs -3.5",
+        "market": "Spread",
+        "edge_percent": 3.3,
+        "tier": "T3",
+        "stake": "$10.06",
+        "reason": "edge above threshold, confidence gate passed"
+      }
+    ],
     "sits": [],
-    "blocked": {
-      "reason_codes": [
-        "missing_scan_days"
-      ],
-      "diagnostics": {
-        "freshness_hours_since_last_recommendation": 19.98,
-        "missing_scan_days": [
-          "2026-03-03",
-          "2026-03-04",
-          "2026-03-05",
-          "2026-03-06",
-          "2026-03-11"
-        ],
-        "duplicate_rec_ids": []
-      },
-      "action_to_avoid": "Do not place bets from this scan.",
-      "recovery_required": "Restore freshness + ledger integrity before decisions resume."
-    }
+    "blocked": null
   },
   "decision_renderers": {
-    "terminal_text": "TIEREDGE DECISION\nVerdict: BLOCKED\nWhat to do now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: missing_scan_days\nSystem health: FAIL\nChecks: data=pass, ledger=fail, engine=blocked\nBlock reason: missing_scan_days\nAvoid: Do not place bets from this scan.\nRecovery: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll=$1,271.48 | open_exposure=0.8% | daily_exposure=0.8% | breaker=OFF\nAccountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=47.4% (9-10)\n",
-    "whatsapp_text": "*TIEREDGE BLOCKED*\nWhat now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: missing_scan_days\nHealth: FAIL (data pass, ledger fail, engine blocked)\nBLOCKED reason: missing_scan_days\nDo NOT: Do not place bets from this scan.\nRecover: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll $1,271.48, exposure 0.8%, daily 0.8%, breaker OFF\nAccountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)\n",
+    "terminal_text": "TIEREDGE DECISION\nVerdict: BET\nWhat to do now: Review bet list and execute within exposure limits.\nWhy: Edge above threshold with confidence/risk gates passed.\nSystem health: PASS\nChecks: data=pass, ledger=pass, engine=pass\nBets:\n- Spurs -3.5 | Spread | edge 3.3% | T3 | stake $10.06 | edge above threshold, confidence gate passed\nExecution: bankroll=$1,271.48 | open_exposure=0.8% | daily_exposure=0.8% | breaker=OFF\nAccountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=47.4% (9-10)\n",
+    "whatsapp_text": "*TIEREDGE BET*\nWhat now: Review bet list and execute within exposure limits.\nWhy: Edge above threshold with confidence/risk gates passed.\nHealth: PASS (data pass, ledger pass, engine pass)\n*BETS*\n- Spurs -3.5 Spread | edge 3.3% | T3 | stake $10.06\n  reason: edge above threshold, confidence gate passed\nExecution: bankroll $1,271.48, exposure 0.8%, daily 0.8%, breaker OFF\nAccountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)\n",
     "evening_grading_report_text": "EVENING GRADING - 2026-03-11\n\nBets Settled: 18\n\nUNITS\nProfit: +5.40u\nTotal Staked: 9.57u\nROI (Units): +56.43%\n\nEXPECTATION\nExpected Profit: +$0.33\nActual Profit: +$68.73\nVariance: +$68.40\nEV Realization: 208.27\n\nSIGNAL QUALITY\nAverage CLV: +7.36%\nPositive CLV Rate: +100.00%\nBinomial p-value: 0.5860\nConfidence Level: +41.40%\nSample Status: small sample (statistically inconclusive)\n\nEDGE QUALITY\nAvg Edge Detected: +3.30%\nAvg Edge at Placement: +3.30%\nAvg Edge at Close: N/A\nEdge Retention: 100.0%\nMarket Efficiency Impact: N/A\n\nBankroll: $1,271.48\nPeak: $1,262.16\nDrawdown: N/A\n\nSystem Status: Running Hot\nNext Edge Scan: 08:00 CT\n",
     "dashboard_model": {
       "today": {
-        "verdict": "BLOCKED",
-        "blocked": true,
-        "why": "Integrity gate failed: missing_scan_days",
-        "what_to_do_now": "Resolve system health failures before acting on recommendations.",
+        "verdict": "BET",
+        "blocked": false,
+        "why": "Edge above threshold with confidence/risk gates passed.",
+        "what_to_do_now": "Review bet list and execute within exposure limits.",
         "threshold_reminder": "Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.",
-        "bets": [],
+        "bets": [
+          {
+            "rec_id": "20260310-001-GRADE",
+            "selection": "Spurs -3.5",
+            "market": "Spread",
+            "edge_percent": 3.3,
+            "tier": "T3",
+            "stake": "$10.06",
+            "reason": "edge above threshold, confidence gate passed"
+          }
+        ],
         "sits": [],
-        "blocked_info": {
-          "reason_codes": [
-            "missing_scan_days"
-          ],
-          "diagnostics": {
-            "freshness_hours_since_last_recommendation": 19.98,
-            "missing_scan_days": [
-              "2026-03-03",
-              "2026-03-04",
-              "2026-03-05",
-              "2026-03-06",
-              "2026-03-11"
-            ],
-            "duplicate_rec_ids": []
-          },
-          "action_to_avoid": "Do not place bets from this scan.",
-          "recovery_required": "Restore freshness + ledger integrity before decisions resume."
-        }
+        "blocked_info": null
       },
       "system_health": {
         "data_freshness": "pass",
-        "ledger_integrity": "fail",
-        "decision_engine_status": "blocked",
-        "pass": false
+        "ledger_integrity": "pass",
+        "decision_engine_status": "pass",
+        "pass": true
       },
       "execution": {
         "bankroll": "$1,271.48",
@@ -1574,37 +1566,30 @@ li {
   },
   "decision_console": {
     "today": {
-      "verdict": "BLOCKED",
-      "blocked": true,
-      "why": "Integrity gate failed: missing_scan_days",
-      "what_to_do_now": "Resolve system health failures before acting on recommendations.",
+      "verdict": "BET",
+      "blocked": false,
+      "why": "Edge above threshold with confidence/risk gates passed.",
+      "what_to_do_now": "Review bet list and execute within exposure limits.",
       "threshold_reminder": "Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.",
-      "bets": [],
+      "bets": [
+        {
+          "rec_id": "20260310-001-GRADE",
+          "selection": "Spurs -3.5",
+          "market": "Spread",
+          "edge_percent": 3.3,
+          "tier": "T3",
+          "stake": "$10.06",
+          "reason": "edge above threshold, confidence gate passed"
+        }
+      ],
       "sits": [],
-      "blocked_info": {
-        "reason_codes": [
-          "missing_scan_days"
-        ],
-        "diagnostics": {
-          "freshness_hours_since_last_recommendation": 19.98,
-          "missing_scan_days": [
-            "2026-03-03",
-            "2026-03-04",
-            "2026-03-05",
-            "2026-03-06",
-            "2026-03-11"
-          ],
-          "duplicate_rec_ids": []
-        },
-        "action_to_avoid": "Do not place bets from this scan.",
-        "recovery_required": "Restore freshness + ledger integrity before decisions resume."
-      }
+      "blocked_info": null
     },
     "system_health": {
       "data_freshness": "pass",
-      "ledger_integrity": "fail",
-      "decision_engine_status": "blocked",
-      "pass": false
+      "ledger_integrity": "pass",
+      "decision_engine_status": "pass",
+      "pass": true
     },
     "execution": {
       "bankroll": "$1,271.48",
@@ -1648,7 +1633,7 @@ li {
     "clv_win_rate": 100,
     "positive_clv_rate": 100,
     "avg_clv": 7.36,
-    "avg_edge_placed": null,
+    "avg_edge_placed": 3.3,
     "rejected_ev_total": 0.8,
     "avoided_negative_ev": 0,
     "bet_quality_rate": 100,

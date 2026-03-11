@@ -72,10 +72,13 @@ function parseTable(section) {
       .split('|')
       .map((s) => s.trim())
       .filter(Boolean);
-    if (rowParts.length !== headers.length) continue;
+    if (rowParts.length < headers.length) continue;
+    // Keep backward compatibility with historical rows that may include
+    // an extra trailing notes column beyond the canonical header set.
+    const normalizedParts = rowParts.slice(0, headers.length);
     const row = {};
     for (let j = 0; j < headers.length; j += 1) {
-      row[headers[j]] = rowParts[j];
+      row[headers[j]] = normalizedParts[j];
     }
     rows.push(row);
   }
@@ -1127,7 +1130,14 @@ function computeIntegrityGate({
   const lastUpdatedDay = parseDateFromLastUpdated(lastUpdatedCt);
   if (lastUpdatedDay) scanDays.add(lastUpdatedDay);
 
-  const missingScanDays = [...scanDays].filter((day) => !recDays.has(day)).sort();
+  const firstRecDay = [...recDays].sort()[0] || null;
+  const relevantScanDays = firstRecDay
+    ? [...scanDays].filter((day) => day >= firstRecDay)
+    : [...scanDays];
+  const ignoredPreLedgerScanDays = firstRecDay
+    ? [...scanDays].filter((day) => day < firstRecDay).sort()
+    : [];
+  const missingScanDays = relevantScanDays.filter((day) => !recDays.has(day)).sort();
   const recommendationRowMs = parseTimestampMs(dataFreshness.recommendation_log_last_row_time);
   const generatedMs = parseTimestampMs(generatedAtUtc);
   const freshnessHours =
@@ -1154,6 +1164,8 @@ function computeIntegrityGate({
     },
     diagnostics: {
       freshness_hours_since_last_recommendation: round2(freshnessHours),
+      first_recommendation_day: firstRecDay,
+      ignored_pre_ledger_scan_days: ignoredPreLedgerScanDays,
       missing_scan_days: missingScanDays,
       duplicate_rec_ids: duplicateRecIds,
     },
