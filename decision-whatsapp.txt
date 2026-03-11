@@ -5,5 +5,5 @@ Health: FAIL (data pass, ledger fail, engine blocked)
 BLOCKED reason: missing_scan_days
 Do NOT: Do not place bets from this scan.
 Recover: Restore freshness + ledger integrity before decisions resume.
-Execution: bankroll $1,261.96, exposure 0.8%, daily 0.8%, breaker OFF
-Accountability: pending 1, +CLV 100%, avg CLV 7.36, results 44.4% (8-10)
+Execution: bankroll $1,271.48, exposure 0.8%, daily 0.8%, breaker OFF
+Accountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)

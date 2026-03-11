@@ -1,10 +1,10 @@
 {
-  "generated_at_utc": "2026-03-10T12:21:52.707Z",
+  "generated_at_utc": "2026-03-11T07:03:41.404Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
-  "last_updated_ct": "2026-03-10 06:05 CT",
+  "last_updated_ct": "2026-03-11 02:45 CT",
   "current_status": {
-    "Bankroll": "$1,261.96",
+    "Bankroll": "$1,271.48",
     "All-Time High": "$1,262.16",
     "Phase": "GROWTH ($250-$1500)",
     "Circuit Breaker": "OFF",
@@ -14,7 +14,7 @@
     "trigger_date": "N/A",
     "System Start Date": "2026-02-28",
     "Total Deposited": "$1,200.00 ($100 initial + $100 March + $1,000 reload)",
-    "Bets This Week": "15",
+    "Bets This Week": "16",
     "Daily Exposure Used": "0.8%",
     "Operating Mode": "pro",
     "Process Score (7d)": "78",
@@ -23,8 +23,8 @@
     "Sit Discipline Rate (7d)": "71%"
   },
   "lifetime_stats": {
-    "Total Bets": "18",
-    "Win Rate": "44.4% (8-10)",
+    "Total Bets": "19",
+    "Win Rate": "47.4% (9-10)",
     "Overall ROI": "+11.8%",
     "Average CLV": "+3.6%"
   },
@@ -38,13 +38,13 @@
     "breaker_active": "0"
   },
   "sit_accountability": {
-    "Avoided Losses (count)": "9",
-    "Missed Winners (count)": "8",
+    "Avoided Losses (count)": "12",
+    "Missed Winners (count)": "11",
     "Net P/L If Followed All Sits": "-$6.30",
     "Net EV Rejected": "+0.8 units",
-    "Passed Bets W-L If Bet": "8-9",
+    "Passed Bets W-L If Bet": "11-12",
     "Money Saved By Sitting": "+$6.30",
-    "Sit Decision Win Rate If Bet": "47.1%"
+    "Sit Decision Win Rate If Bet": "47.8%"
   },
   "scanner_statistics": {},
   "market_confidence": {},
@@ -64,7 +64,8 @@
     "rejection_reason_for_largest_edge": null,
     "top_rejection_reasons": [
       "no_edge (6)",
-      "low_confidence (1)"
+      "low_confidence (1)",
+      "stale_or_unverified_odds (0)"
     ],
     "final_daily_verdict": "Selective action: 1 bet(s), 7 sit decision(s)."
   },
@@ -80,22 +81,17 @@
     "rejection_reason_for_largest_edge": null,
     "top_rejection_reasons": [
       "no_edge (6)",
-      "low_confidence (1)"
+      "low_confidence (1)",
+      "stale_or_unverified_odds (0)"
     ],
     "final_daily_verdict": "Selective action: 1 bet(s), 7 sit decision(s)."
   },
   "rejection_reason_ranges": {
     "today": {
-      "total_rejections": 7,
-      "by_reason": {
-        "low_confidence": 1,
-        "no_edge": 6
-      },
-      "top_rejection_reasons": [
-        "no_edge (6)",
-        "low_confidence (1)"
-      ],
-      "days_covered": 1
+      "total_rejections": 0,
+      "by_reason": {},
+      "top_rejection_reasons": [],
+      "days_covered": 0
     },
     "last_7": {
       "total_rejections": 19,
@@ -154,22 +150,22 @@
   },
   "sit_accountability_summary": {
     "source": "passed_opportunity_tracker",
-    "passed_bets_graded": 6,
-    "passed_bets_record_if_bet": "2-4",
-    "passed_bets_wins_if_bet": 2,
-    "passed_bets_losses_if_bet": 4,
+    "passed_bets_graded": 11,
+    "passed_bets_record_if_bet": "6-5",
+    "passed_bets_wins_if_bet": 6,
+    "passed_bets_losses_if_bet": 5,
     "passed_bets_pushes_if_bet": 0,
-    "passed_bets_win_rate_if_bet": 33.33,
+    "passed_bets_win_rate_if_bet": 54.55,
     "money_saved_by_sitting": 0,
-    "missed_profit_by_sitting": 4.25,
-    "net_counterfactual_pl_if_bet": 4.25,
+    "missed_profit_by_sitting": 5.65,
+    "net_counterfactual_pl_if_bet": 5.65,
     "net_ev_rejected": null
   },
   "passed_opportunity_tracker": {
     "total_passed_opportunities": 19,
-    "graded_count": 6,
-    "ungraded_count": 13,
-    "record_if_bet": "2-4",
+    "graded_count": 11,
+    "ungraded_count": 8,
+    "record_if_bet": "6-5",
     "entries": [
       {
         "timestamp_ct": "2026-03-07 01:11 AM",
@@ -256,11 +252,11 @@
         "selection": "Denver Nuggets +7.5",
         "edge_percent": 1.7,
         "odds_us": "-112",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Denver Nuggets +7.5 (NBA) at +EV 1.7% (-112). Outcome: awaiting grading.",
+        "outcome_if_bet": "loss",
+        "narrative": "We passed on Denver Nuggets +7.5 in Denver Nuggets @ Oklahoma City Thunder at +EV 1.7% (-112). Outcome: they lost.",
         "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
+        "counterfactual_pl": -1,
+        "event_label": "Denver Nuggets @ Oklahoma City Thunder"
       },
       {
         "timestamp_ct": "2026-03-09 06:00 AM",
@@ -295,11 +291,11 @@
         "selection": "Washington Capitals",
         "edge_percent": 0.8,
         "odds_us": "-196",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Washington Capitals (NHL) at +EV 0.8% (-196). Outcome: awaiting grading.",
+        "outcome_if_bet": "win",
+        "narrative": "We passed on Washington Capitals in Calgary Flames @ Washington Capitals at +EV 0.8% (-196). Outcome: they won.",
         "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
+        "counterfactual_pl": 0.510204081632653,
+        "event_label": "Calgary Flames @ Washington Capitals"
       },
       {
         "timestamp_ct": "2026-03-09 06:00 AM",
@@ -308,11 +304,11 @@
         "selection": "Ottawa Senators",
         "edge_percent": 0.9,
         "odds_us": "-220",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Ottawa Senators (NHL) at +EV 0.9% (-220). Outcome: awaiting grading.",
+        "outcome_if_bet": "win",
+        "narrative": "We passed on Ottawa Senators in Ottawa Senators @ Vancouver Canucks at +EV 0.9% (-220). Outcome: they won.",
         "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
+        "counterfactual_pl": 0.4545454545454546,
+        "event_label": "Ottawa Senators @ Vancouver Canucks"
       },
       {
         "timestamp_ct": "2026-03-09 06:00 AM",
@@ -360,11 +356,11 @@
         "selection": "Florida Panthers",
         "edge_percent": 1.7,
         "odds_us": "-130",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Florida Panthers (NHL) at +EV 1.7% (-130). Outcome: awaiting grading.",
+        "outcome_if_bet": "win",
+        "narrative": "We passed on Florida Panthers in Detroit Red Wings @ Florida Panthers at +EV 1.7% (-130). Outcome: they won.",
         "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
+        "counterfactual_pl": 0.7692307692307692,
+        "event_label": "Detroit Red Wings @ Florida Panthers"
       },
       {
         "timestamp_ct": "2026-03-10 06:05 AM",
@@ -386,11 +382,11 @@
         "selection": "Dallas Stars",
         "edge_percent": 1.5,
         "odds_us": "-150",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Dallas Stars (NHL) at +EV 1.5% (-150). Outcome: awaiting grading.",
+        "outcome_if_bet": "win",
+        "narrative": "We passed on Dallas Stars in Vegas Golden Knights @ Dallas Stars at +EV 1.5% (-150). Outcome: they won.",
         "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
+        "counterfactual_pl": 0.6666666666666665,
+        "event_label": "Vegas Golden Knights @ Dallas Stars"
       },
       {
         "timestamp_ct": "2026-03-10 06:05 AM",
@@ -422,23 +418,16 @@
   },
   "edge_distribution_transparency": {
     "buckets": {
-      "edge_0_1": 1,
-      "edge_1_2": 5,
-      "edge_2_3": 1,
-      "edge_3_4": 1,
+      "edge_0_1": 0,
+      "edge_1_2": 0,
+      "edge_2_3": 0,
+      "edge_3_4": 0,
       "edge_4_5": 0,
       "edge_5_plus": 0
     },
-    "total_edges_observed": 8,
-    "by_sport": {
-      "NBA": 3,
-      "NHL": 4,
-      "NCAAB": 1
-    },
-    "by_market_type": {
-      "Spread": 6,
-      "ML": 2
-    }
+    "total_edges_observed": 0,
+    "by_sport": {},
+    "by_market_type": {}
   },
   "market_type_reliability_index": {},
   "sit_reason_code_standard": {},
@@ -451,7 +440,7 @@
     "Execution Warning": "OFF"
   },
   "weekly_running_totals": {
-    "Bets": "11 | W: 5 | L: 5 | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0 | Pending: 1",
+    "Bets": "12 | W: 6 | L: 5 | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0 | Pending: 0",
     "ROI": "+12.1% | Avg CLV: +3.6%"
   },
   "weekly_performance_review": {
@@ -464,74 +453,74 @@
       "execution_slippage": "0.9 cents"
     },
     "decision_quality": {
-      "profit_from_bets": 59.21,
-      "profit_if_all_sits_bet": 4.25,
-      "decision_edge": 54.96,
+      "profit_from_bets": 68.73,
+      "profit_if_all_sits_bet": 5.65,
+      "decision_edge": 63.08,
       "sit_discipline_rate": "71%"
     }
   },
   "quant_performance": {
-    "settled_bets_evaluated": 17,
-    "unit_size": 12.62,
-    "unit_baseline_bankroll": 1261.96,
-    "total_units": 4.69,
-    "total_staked_units": 8.81,
-    "average_units_per_bet": 0.52,
-    "roi_units": 53.23,
-    "expected_value": null,
-    "expected_value_units": null,
-    "expected_profit": null,
-    "expected_profit_units": null,
-    "actual_profit": 59.21,
-    "actual_profit_units": 4.69,
-    "variance": null,
-    "variance_units": null,
-    "ev_realization_ratio": null,
-    "observed_win_rate": 50,
-    "breakeven_win_rate": 46.05,
-    "p_value": 0.751,
-    "confidence_level": 24.9,
+    "settled_bets_evaluated": 18,
+    "unit_size": 12.71,
+    "unit_baseline_bankroll": 1271.48,
+    "total_units": 5.4,
+    "total_staked_units": 9.57,
+    "average_units_per_bet": 0.53,
+    "roi_units": 56.43,
+    "expected_value": 0.33,
+    "expected_value_units": 0.03,
+    "expected_profit": 0.33,
+    "expected_profit_units": 0.03,
+    "actual_profit": 68.73,
+    "actual_profit_units": 5.4,
+    "variance": 68.4,
+    "variance_units": 5.37,
+    "ev_realization_ratio": 208.27,
+    "observed_win_rate": 52.94,
+    "breakeven_win_rate": 46.35,
+    "p_value": 0.586,
+    "confidence_level": 41.4,
     "sample_status": "small sample (statistically inconclusive)",
     "binomial_significance": {
       "lifetime": {
-        "total_settled_bets": 16,
-        "wins": 8,
+        "total_settled_bets": 17,
+        "wins": 9,
         "losses": 8,
-        "observed_win_rate": 50,
-        "breakeven_win_rate": 46.05,
-        "p_value": 0.751,
-        "confidence_level": 24.9,
+        "observed_win_rate": 52.94,
+        "breakeven_win_rate": 46.35,
+        "p_value": 0.586,
+        "confidence_level": 41.4,
         "sample_status": "small sample (statistically inconclusive)"
       },
       "rolling_windows": {
         "rolling_100": {
-          "total_settled_bets": 16,
-          "wins": 8,
+          "total_settled_bets": 17,
+          "wins": 9,
           "losses": 8,
-          "observed_win_rate": 50,
-          "breakeven_win_rate": 46.05,
-          "p_value": 0.751,
-          "confidence_level": 24.9,
+          "observed_win_rate": 52.94,
+          "breakeven_win_rate": 46.35,
+          "p_value": 0.586,
+          "confidence_level": 41.4,
           "sample_status": "small sample (statistically inconclusive)"
         },
         "rolling_200": {
-          "total_settled_bets": 16,
-          "wins": 8,
+          "total_settled_bets": 17,
+          "wins": 9,
           "losses": 8,
-          "observed_win_rate": 50,
-          "breakeven_win_rate": 46.05,
-          "p_value": 0.751,
-          "confidence_level": 24.9,
+          "observed_win_rate": 52.94,
+          "breakeven_win_rate": 46.35,
+          "p_value": 0.586,
+          "confidence_level": 41.4,
           "sample_status": "small sample (statistically inconclusive)"
         },
         "rolling_400": {
-          "total_settled_bets": 16,
-          "wins": 8,
+          "total_settled_bets": 17,
+          "wins": 9,
           "losses": 8,
-          "observed_win_rate": 50,
-          "breakeven_win_rate": 46.05,
-          "p_value": 0.751,
-          "confidence_level": 24.9,
+          "observed_win_rate": 52.94,
+          "breakeven_win_rate": 46.35,
+          "p_value": 0.586,
+          "confidence_level": 41.4,
           "sample_status": "small sample (statistically inconclusive)"
         }
       },
@@ -542,13 +531,13 @@
         "Pushes are excluded from win/loss significance testing."
       ]
     },
-    "edge_at_detection": null,
-    "edge_at_placement": null,
+    "edge_at_detection": 3.3,
+    "edge_at_placement": 3.3,
     "edge_at_close": null,
-    "edge_retention": null,
+    "edge_retention": 1,
     "closing_edge_retention": null,
     "market_efficiency_impact": null,
-    "system_status": "Unknown",
+    "system_status": "Running Hot",
     "next_edge_scan_ct": "08:00",
     "per_bet": [
       {
@@ -837,8 +826,8 @@
         "edge_at_detection": null,
         "edge_at_placement": null,
         "edge_at_close": null,
-        "stake_units": 1.11,
-        "profit_units": 1.05,
+        "stake_units": 1.1,
+        "profit_units": 1.04,
         "expected_value": null,
         "expected_value_units": null,
         "actual_profit": 13.21,
@@ -912,8 +901,8 @@
         "edge_at_detection": null,
         "edge_at_placement": null,
         "edge_at_close": null,
-        "stake_units": 3.72,
-        "profit_units": 3.39,
+        "stake_units": 3.7,
+        "profit_units": 3.36,
         "expected_value": null,
         "expected_value_units": null,
         "actual_profit": 42.73,
@@ -975,10 +964,35 @@
           "has_placement": false,
           "has_close": false
         }
+      },
+      {
+        "date": "2026-03-10",
+        "timestamp_ct": "06:05",
+        "sport": "NBA",
+        "market": "Spread",
+        "bet": "Spurs -3.5",
+        "book": "DraftKings",
+        "rec_id": "20260310-001",
+        "edge_at_detection": 3.3,
+        "edge_at_placement": 3.3,
+        "edge_at_close": null,
+        "stake_units": 0.79,
+        "profit_units": 0.75,
+        "expected_value": 0.33,
+        "expected_value_units": 0.03,
+        "actual_profit": 9.52,
+        "edge_retention": 1,
+        "closing_edge_retention": null,
+        "market_efficiency_impact": null,
+        "data_quality": {
+          "has_detection": true,
+          "has_placement": true,
+          "has_close": false
+        }
       }
     ]
   },
-  "unit_size": 12.62,
+  "unit_size": 12.71,
   "stake_units": [
     0.08,
     0.08,
@@ -991,12 +1005,13 @@
     0.12,
     0.16,
     0.08,
-    1.11,
+    1.1,
     0.87,
     0.79,
-    3.72,
+    3.7,
     0.12,
-    0.08
+    0.08,
+    0.79
   ],
   "profit_units": [
     0.07,
@@ -1010,41 +1025,42 @@
     0.1,
     -0.16,
     -0.08,
-    1.05,
+    1.04,
     0.85,
     -0.79,
-    3.39,
+    3.36,
     -0.12,
-    0.1
+    0.1,
+    0.75
   ],
-  "total_units": 4.69,
-  "total_staked_units": 8.81,
-  "average_units_per_bet": 0.52,
-  "roi_units": 53.23,
-  "expected_value": null,
-  "expected_value_units": null,
-  "expected_profit": null,
-  "expected_profit_units": null,
-  "actual_profit": 59.21,
-  "actual_profit_units": 4.69,
-  "variance": null,
-  "variance_units": null,
-  "ev_realization_ratio": null,
-  "observed_win_rate": 50,
-  "breakeven_win_rate": 46.05,
-  "p_value": 0.751,
-  "confidence_level": 24.9,
+  "total_units": 5.4,
+  "total_staked_units": 9.57,
+  "average_units_per_bet": 0.53,
+  "roi_units": 56.43,
+  "expected_value": 0.33,
+  "expected_value_units": 0.03,
+  "expected_profit": 0.33,
+  "expected_profit_units": 0.03,
+  "actual_profit": 68.73,
+  "actual_profit_units": 5.4,
+  "variance": 68.4,
+  "variance_units": 5.37,
+  "ev_realization_ratio": 208.27,
+  "observed_win_rate": 52.94,
+  "breakeven_win_rate": 46.35,
+  "p_value": 0.586,
+  "confidence_level": 41.4,
   "sample_status": "small sample (statistically inconclusive)",
-  "edge_at_detection": null,
-  "edge_at_placement": null,
+  "edge_at_detection": 3.3,
+  "edge_at_placement": 3.3,
   "edge_at_close": null,
-  "edge_retention": null,
+  "edge_retention": 1,
   "closing_edge_retention": null,
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-10 06:05 AM",
-    "grading_cache_last_update": "2026-03-10T12:21:52.674Z",
-    "payload_build_time_utc": "2026-03-10T12:21:52.707Z"
+    "grading_cache_last_update": "2026-03-11T07:03:41.338Z",
+    "payload_build_time_utc": "2026-03-11T07:03:41.404Z"
   },
   "integrity_gate": {
     "pass": false,
@@ -1053,15 +1069,16 @@
       "ledger_integrity": "fail",
       "decision_engine_status": "blocked",
       "duplicate_rec_id_count": 0,
-      "missing_scan_days_count": 4
+      "missing_scan_days_count": 5
     },
     "diagnostics": {
-      "freshness_hours_since_last_recommendation": 1.28,
+      "freshness_hours_since_last_recommendation": 19.98,
       "missing_scan_days": [
         "2026-03-03",
         "2026-03-04",
         "2026-03-05",
-        "2026-03-06"
+        "2026-03-06",
+        "2026-03-11"
       ],
       "duplicate_rec_ids": []
     },
@@ -1071,7 +1088,7 @@
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-10T12:21:52.707Z",
+    "generated_at_utc": "2026-03-11T07:03:41.404Z",
     "message_type": "BLOCKED",
     "verdict": "BLOCKED",
     "what_to_do_now": "Resolve system health failures before acting on recommendations.",
@@ -1084,27 +1101,27 @@
       "pass": false
     },
     "execution_state": {
-      "bankroll": "$1,261.96",
+      "bankroll": "$1,271.48",
       "open_exposure": "0.8%",
       "daily_exposure_used": "0.8%",
       "circuit_breaker": "OFF"
     },
     "accountability_summary": {
-      "pending_bets_count": 1,
+      "pending_bets_count": 0,
       "positive_clv_rate": 100,
       "avg_clv": 7.36,
-      "recent_results": "44.4% (8-10)",
+      "recent_results": "47.4% (9-10)",
       "sit_accountability": {
         "source": "passed_opportunity_tracker",
-        "passed_bets_graded": 6,
-        "passed_bets_record_if_bet": "2-4",
-        "passed_bets_wins_if_bet": 2,
-        "passed_bets_losses_if_bet": 4,
+        "passed_bets_graded": 11,
+        "passed_bets_record_if_bet": "6-5",
+        "passed_bets_wins_if_bet": 6,
+        "passed_bets_losses_if_bet": 5,
         "passed_bets_pushes_if_bet": 0,
-        "passed_bets_win_rate_if_bet": 33.33,
+        "passed_bets_win_rate_if_bet": 54.55,
         "money_saved_by_sitting": 0,
-        "missed_profit_by_sitting": 4.25,
-        "net_counterfactual_pl_if_bet": 4.25,
+        "missed_profit_by_sitting": 5.65,
+        "net_counterfactual_pl_if_bet": 5.65,
         "net_ev_rejected": null
       }
     },
@@ -1115,12 +1132,13 @@
         "missing_scan_days"
       ],
       "diagnostics": {
-        "freshness_hours_since_last_recommendation": 1.28,
+        "freshness_hours_since_last_recommendation": 19.98,
         "missing_scan_days": [
           "2026-03-03",
           "2026-03-04",
           "2026-03-05",
-          "2026-03-06"
+          "2026-03-06",
+          "2026-03-11"
         ],
         "duplicate_rec_ids": []
       },
@@ -1129,9 +1147,9 @@
     }
   },
   "decision_renderers": {
-    "terminal_text": "TIEREDGE DECISION\nVerdict: BLOCKED\nWhat to do now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: missing_scan_days\nSystem health: FAIL\nChecks: data=pass, ledger=fail, engine=blocked\nBlock reason: missing_scan_days\nAvoid: Do not place bets from this scan.\nRecovery: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll=$1,261.96 | open_exposure=0.8% | daily_exposure=0.8% | breaker=OFF\nAccountability: pending=1 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=44.4% (8-10)\n",
-    "whatsapp_text": "*TIEREDGE BLOCKED*\nWhat now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: missing_scan_days\nHealth: FAIL (data pass, ledger fail, engine blocked)\nBLOCKED reason: missing_scan_days\nDo NOT: Do not place bets from this scan.\nRecover: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll $1,261.96, exposure 0.8%, daily 0.8%, breaker OFF\nAccountability: pending 1, +CLV 100%, avg CLV 7.36, results 44.4% (8-10)\n",
-    "evening_grading_report_text": "EVENING GRADING - 2026-03-10\n\nBets Settled: 17\n\nUNITS\nProfit: +4.69u\nTotal Staked: 8.81u\nROI (Units): +53.23%\n\nEXPECTATION\nExpected Profit: N/A\nActual Profit: +$59.21\nVariance: N/A\nEV Realization: N/A\n\nSIGNAL QUALITY\nAverage CLV: +7.36%\nPositive CLV Rate: +100.00%\nBinomial p-value: 0.7510\nConfidence Level: +24.90%\nSample Status: small sample (statistically inconclusive)\n\nEDGE QUALITY\nAvg Edge Detected: N/A\nAvg Edge at Placement: N/A\nAvg Edge at Close: N/A\nEdge Retention: N/A\nMarket Efficiency Impact: N/A\n\nBankroll: $1,261.96\nPeak: $1,262.16\nDrawdown: N/A\n\nSystem Status: Unknown\nNext Edge Scan: 08:00 CT\n",
+    "terminal_text": "TIEREDGE DECISION\nVerdict: BLOCKED\nWhat to do now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: missing_scan_days\nSystem health: FAIL\nChecks: data=pass, ledger=fail, engine=blocked\nBlock reason: missing_scan_days\nAvoid: Do not place bets from this scan.\nRecovery: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll=$1,271.48 | open_exposure=0.8% | daily_exposure=0.8% | breaker=OFF\nAccountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=47.4% (9-10)\n",
+    "whatsapp_text": "*TIEREDGE BLOCKED*\nWhat now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: missing_scan_days\nHealth: FAIL (data pass, ledger fail, engine blocked)\nBLOCKED reason: missing_scan_days\nDo NOT: Do not place bets from this scan.\nRecover: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll $1,271.48, exposure 0.8%, daily 0.8%, breaker OFF\nAccountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)\n",
+    "evening_grading_report_text": "EVENING GRADING - 2026-03-11\n\nBets Settled: 18\n\nUNITS\nProfit: +5.40u\nTotal Staked: 9.57u\nROI (Units): +56.43%\n\nEXPECTATION\nExpected Profit: +$0.33\nActual Profit: +$68.73\nVariance: +$68.40\nEV Realization: 208.27\n\nSIGNAL QUALITY\nAverage CLV: +7.36%\nPositive CLV Rate: +100.00%\nBinomial p-value: 0.5860\nConfidence Level: +41.40%\nSample Status: small sample (statistically inconclusive)\n\nEDGE QUALITY\nAvg Edge Detected: +3.30%\nAvg Edge at Placement: +3.30%\nAvg Edge at Close: N/A\nEdge Retention: 100.0%\nMarket Efficiency Impact: N/A\n\nBankroll: $1,271.48\nPeak: $1,262.16\nDrawdown: N/A\n\nSystem Status: Running Hot\nNext Edge Scan: 08:00 CT\n",
     "dashboard_model": {
       "today": {
         "verdict": "BLOCKED",
@@ -1146,12 +1164,13 @@
             "missing_scan_days"
           ],
           "diagnostics": {
-            "freshness_hours_since_last_recommendation": 1.28,
+            "freshness_hours_since_last_recommendation": 19.98,
             "missing_scan_days": [
               "2026-03-03",
               "2026-03-04",
               "2026-03-05",
-              "2026-03-06"
+              "2026-03-06",
+              "2026-03-11"
             ],
             "duplicate_rec_ids": []
           },
@@ -1166,27 +1185,27 @@
         "pass": false
       },
       "execution": {
-        "bankroll": "$1,261.96",
+        "bankroll": "$1,271.48",
         "open_exposure": "0.8%",
         "daily_exposure_used": "0.8%",
         "circuit_breaker": "OFF"
       },
       "accountability": {
-        "pending_bets_count": 1,
+        "pending_bets_count": 0,
         "positive_clv_rate": 100,
         "avg_clv": 7.36,
-        "recent_results": "44.4% (8-10)",
+        "recent_results": "47.4% (9-10)",
         "sit_accountability": {
           "source": "passed_opportunity_tracker",
-          "passed_bets_graded": 6,
-          "passed_bets_record_if_bet": "2-4",
-          "passed_bets_wins_if_bet": 2,
-          "passed_bets_losses_if_bet": 4,
+          "passed_bets_graded": 11,
+          "passed_bets_record_if_bet": "6-5",
+          "passed_bets_wins_if_bet": 6,
+          "passed_bets_losses_if_bet": 5,
           "passed_bets_pushes_if_bet": 0,
-          "passed_bets_win_rate_if_bet": 33.33,
+          "passed_bets_win_rate_if_bet": 54.55,
           "money_saved_by_sitting": 0,
-          "missed_profit_by_sitting": 4.25,
-          "net_counterfactual_pl_if_bet": 4.25,
+          "missed_profit_by_sitting": 5.65,
+          "net_counterfactual_pl_if_bet": 5.65,
           "net_ev_rejected": null
         }
       }
@@ -1206,12 +1225,13 @@
           "missing_scan_days"
         ],
         "diagnostics": {
-          "freshness_hours_since_last_recommendation": 1.28,
+          "freshness_hours_since_last_recommendation": 19.98,
           "missing_scan_days": [
             "2026-03-03",
             "2026-03-04",
             "2026-03-05",
-            "2026-03-06"
+            "2026-03-06",
+            "2026-03-11"
           ],
           "duplicate_rec_ids": []
         },
@@ -1226,27 +1246,27 @@
       "pass": false
     },
     "execution": {
-      "bankroll": "$1,261.96",
+      "bankroll": "$1,271.48",
       "open_exposure": "0.8%",
       "daily_exposure_used": "0.8%",
       "circuit_breaker": "OFF"
     },
     "accountability": {
-      "pending_bets_count": 1,
+      "pending_bets_count": 0,
       "positive_clv_rate": 100,
       "avg_clv": 7.36,
-      "recent_results": "44.4% (8-10)",
+      "recent_results": "47.4% (9-10)",
       "sit_accountability": {
         "source": "passed_opportunity_tracker",
-        "passed_bets_graded": 6,
-        "passed_bets_record_if_bet": "2-4",
-        "passed_bets_wins_if_bet": 2,
-        "passed_bets_losses_if_bet": 4,
+        "passed_bets_graded": 11,
+        "passed_bets_record_if_bet": "6-5",
+        "passed_bets_wins_if_bet": 6,
+        "passed_bets_losses_if_bet": 5,
         "passed_bets_pushes_if_bet": 0,
-        "passed_bets_win_rate_if_bet": 33.33,
+        "passed_bets_win_rate_if_bet": 54.55,
         "money_saved_by_sitting": 0,
-        "missed_profit_by_sitting": 4.25,
-        "net_counterfactual_pl_if_bet": 4.25,
+        "missed_profit_by_sitting": 5.65,
+        "net_counterfactual_pl_if_bet": 5.65,
         "net_ev_rejected": null
       }
     }
@@ -1267,7 +1287,7 @@
     "clv_win_rate": 100,
     "positive_clv_rate": 100,
     "avg_clv": 7.36,
-    "avg_edge_placed": 3.3,
+    "avg_edge_placed": null,
     "rejected_ev_total": 0.8,
     "avoided_negative_ev": 0,
     "bet_quality_rate": 100,
@@ -1275,10 +1295,13 @@
     "sit_decision_quality_count": 7,
     "decision_quality_rate": 100,
     "total_decisions": 8,
-    "largest_edge_rejected": 2.2,
+    "largest_edge_rejected": null,
     "rejected_by_reason": {
+      "no_edge": 6,
       "low_confidence": 1,
-      "no_edge": 6
+      "stale_or_unverified_odds": 0,
+      "exposure_cap_reached": 0,
+      "breaker_active": 0
     },
     "sit_reason_codes_supported": [
       "no_edge",
@@ -1299,7 +1322,7 @@
     ]
   },
   "pending_bets": [
-    "Spurs -3.5 vs Celtics (NBA) | DraftKings | $10.00 | T3 | Placed: 2026-03-10 06:05 CT"
+    "None"
   ],
   "todays_bets": [
     {
@@ -1313,8 +1336,8 @@
       "Book": "DraftKings",
       "Stake": "$10.00",
       "Tier": "T3",
-      "Result": "PENDING",
-      "P/L": "-",
+      "Result": "WIN",
+      "P/L": "+$9.52",
       "CLV": "-"
     }
   ],
@@ -1602,10 +1625,10 @@
       "Book": "DraftKings",
       "Stake": "$10.00",
       "Tier": "T3",
-      "Result": "PENDING",
-      "P/L": "-",
+      "Result": "WIN",
+      "P/L": "+$9.52",
       "CLV": "-",
-      "Bankroll": "$1,261.96"
+      "Bankroll": "$1,271.48"
     }
   ],
   "ledger": [
@@ -1632,25 +1655,25 @@
     }
   ],
   "derived": {
-    "bankroll_numeric": 1261.96,
+    "bankroll_numeric": 1271.48,
     "roi_percent_numeric": 11.8,
     "today_recommended_count": 1,
     "pending_count": 1,
     "graded_bet_count": 18,
     "rejected_opportunities_count": 0,
     "decision_quality_rate": 100,
-    "expected_profit": null,
-    "expected_profit_units": null,
-    "actual_profit": 59.21,
-    "actual_profit_units": 4.69,
-    "variance": null,
-    "variance_units": null,
-    "ev_realization_ratio": null,
-    "total_units": 4.69,
-    "total_staked_units": 8.81,
-    "roi_units": 53.23,
-    "p_value": 0.751,
-    "confidence_level": 24.9,
+    "expected_profit": 0.33,
+    "expected_profit_units": 0.03,
+    "actual_profit": 68.73,
+    "actual_profit_units": 5.4,
+    "variance": 68.4,
+    "variance_units": 5.37,
+    "ev_realization_ratio": 208.27,
+    "total_units": 5.4,
+    "total_staked_units": 9.57,
+    "roi_units": 56.43,
+    "p_value": 0.586,
+    "confidence_level": 41.4,
     "sample_status": "small sample (statistically inconclusive)",
     "redacted_pending": false
   }

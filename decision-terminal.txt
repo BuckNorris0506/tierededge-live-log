@@ -7,5 +7,5 @@ Checks: data=pass, ledger=fail, engine=blocked
 Block reason: missing_scan_days
 Avoid: Do not place bets from this scan.
 Recovery: Restore freshness + ledger integrity before decisions resume.
-Execution: bankroll=$1,261.96 | open_exposure=0.8% | daily_exposure=0.8% | breaker=OFF
-Accountability: pending=1 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=44.4% (8-10)
+Execution: bankroll=$1,271.48 | open_exposure=0.8% | daily_exposure=0.8% | breaker=OFF
+Accountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=47.4% (9-10)
