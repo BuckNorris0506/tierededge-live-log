@@ -71,6 +71,20 @@ Machine-readable output:
 
 - `public/integrity/recommendation-log-integrity.json`
 
+Monthly bankroll contribution policy writer (append-only, idempotent by effective month):
+
+```bash
+cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
+npm run contribution:monthly
+```
+
+Append a manual contribution row (append-only validation):
+
+```bash
+cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
+npm run append:contribution -- --contribution-date 2026-05-01 --effective-month 2026-05 --contribution-amount 93.50 --basis-month-count 2 --basis-months-used 2026-03,2026-04 --realized-profit-values-used 57.00,130.00 --rolling-average-realized-profit 93.50 --entry-source auto_monthly_policy --notes "2-month rolling average contribution"
+```
+
 One-time historical import (safe dry-run default):
 
 ```bash
@@ -95,6 +109,12 @@ Add:
 
 ```cron
 */5 * * * * cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log && /usr/local/bin/node scripts/build-live-log.mjs >/tmp/tierededge-live-log.log 2>&1
+```
+
+Monthly append-only contribution automation (1st day of month, 00:07 local):
+
+```cron
+7 0 1 * * export LIVE_LOG_DEPLOY_REPO=/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log; cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log && /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-monthly-bankroll-contribution.sh >> /tmp/tierededge-monthly-contribution.log 2>&1
 ```
 
 ## Publish options

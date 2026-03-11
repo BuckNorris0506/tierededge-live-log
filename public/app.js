@@ -354,6 +354,7 @@ function renderQuantPerformance(data) {
 
 function renderBankrollContribution(data) {
   const policy = data.bankroll_contribution_policy || {};
+  const automation = data.bankroll_contribution_automation || {};
   const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}$${Math.abs(n).toFixed(2)}`);
   const basisMonths = (policy.contribution_basis_months_used || []).join(', ') || MISSING;
   const profitValues = (policy.realized_profit_values_used || []).map((n) => `${n >= 0 ? '+' : '-'}$${Math.abs(Number(n)).toFixed(2)}`).join(', ') || MISSING;
@@ -365,6 +366,11 @@ function renderBankrollContribution(data) {
     ['Realized profit values used', profitValues],
     ['Rolling average realized profit', asMoney(policy.rolling_average_realized_profit)],
     ['Next estimated contribution', asMoney(policy.next_estimated_contribution)],
+    ['Automation status', automation.status || MISSING],
+    ['Automation last run', automation.last_run_ct || MISSING],
+    ['Automation effective month', automation.effective_month || MISSING],
+    ['Automation reason', automation.reason || MISSING],
+    ['Next expected contribution cycle', automation.next_expected_cycle || MISSING],
   ];
   renderRows('bankroll-contribution-policy-list', policyRows);
 

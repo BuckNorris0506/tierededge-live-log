@@ -1,0 +1,8 @@
+{
+  "status": "skipped",
+  "reason": "not_first_day_of_month",
+  "last_run_ct": "2026-03-11T10:55:58",
+  "effective_month": "2026-03",
+  "appended": false,
+  "next_expected_cycle": "2026-04-01"
+}

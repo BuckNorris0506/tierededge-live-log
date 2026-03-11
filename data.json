@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-11T15:51:30.932Z",
+  "generated_at_utc": "2026-03-11T15:58:19.648Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-11 02:45 CT",
@@ -536,6 +536,14 @@
   },
   "bankroll_contribution_ledger": [],
   "bankroll_contribution_ledger_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/bankroll-contributions.csv",
+  "bankroll_contribution_automation": {
+    "status": "skipped",
+    "reason": "not_first_day_of_month",
+    "last_run_ct": "2026-03-11T10:55:58",
+    "effective_month": "2026-03",
+    "appended": false,
+    "next_expected_cycle": "2026-04-01"
+  },
   "quant_performance": {
     "settled_bets_evaluated": 18,
     "unit_size": 12.71,
@@ -1136,8 +1144,8 @@
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-11 02:45 AM",
-    "grading_cache_last_update": "2026-03-11T15:51:30.864Z",
-    "payload_build_time_utc": "2026-03-11T15:51:30.932Z"
+    "grading_cache_last_update": "2026-03-11T15:58:19.611Z",
+    "payload_build_time_utc": "2026-03-11T15:58:19.648Z"
   },
   "integrity_gate": {
     "pass": true,
@@ -1149,7 +1157,7 @@
       "missing_scan_days_count": 0
     },
     "diagnostics": {
-      "freshness_hours_since_last_recommendation": 8.11,
+      "freshness_hours_since_last_recommendation": 8.22,
       "first_recommendation_day": "2026-03-07",
       "ignored_pre_ledger_scan_days": [
         "2026-03-03",
@@ -1164,7 +1172,7 @@
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-11T15:51:30.932Z",
+    "generated_at_utc": "2026-03-11T15:58:19.648Z",
     "message_type": "BET",
     "verdict": "BET",
     "what_to_do_now": "Review bet list and execute within exposure limits.",

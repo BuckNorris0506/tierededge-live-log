@@ -8,6 +8,9 @@
     "build:standalone": "node scripts/build-standalone.mjs",
     "build:all": "npm run build:data && npm run build:standalone",
     "append:rec": "node scripts/append-recommendation-row.mjs",
+    "append:contribution": "node scripts/append-bankroll-contribution.mjs",
+    "contribution:monthly": "node scripts/monthly-bankroll-contribution.mjs",
+    "contribution:monthly:run": "./scripts/run-monthly-bankroll-contribution.sh",
     "import:rec-history": "node scripts/import-recommendation-history.mjs",
     "audit:rec-nightly": "node scripts/recommendation-log-nightly.mjs",
     "serve": "python3 -m http.server 8095 --directory public"

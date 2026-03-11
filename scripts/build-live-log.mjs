@@ -6,6 +6,7 @@ const DEFAULT_OUT = path.resolve(process.cwd(), 'public', 'data.json');
 const DEFAULT_PASSED_GRADES = '/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json';
 const DEFAULT_MARKET_CONTEXT_HOOKS = path.resolve(process.cwd(), 'config', 'market-context-hooks.json');
 const DEFAULT_CONTRIBUTION_LEDGER = path.resolve(process.cwd(), 'data', 'bankroll-contributions.csv');
+const DEFAULT_CONTRIBUTION_STATUS = path.resolve(process.cwd(), 'data', 'bankroll-contribution-status.json');
 const DATA_FRESHNESS_MAX_HOURS = 36;
 
 const sourcePath = process.argv[2] || DEFAULT_SOURCE;
@@ -138,6 +139,11 @@ function readContributionLedger() {
       row[headers[j]] = String(parts[j] || '').trim();
     }
     let realizedValues = [];
+    const basisMonthCount = parseAsNumber(row.basis_month_count ?? row.basis_months_used);
+    const basisMonthsUsed = String(row.basis_months_used || '')
+      .split(/[|,]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
     try {
       const parsed = JSON.parse(row.realized_profit_values_used || '[]');
       if (Array.isArray(parsed)) realizedValues = parsed.map((n) => round2(parseAsNumber(n))).filter((n) => n !== null);
@@ -151,9 +157,11 @@ function readContributionLedger() {
       contribution_date: row.contribution_date || null,
       effective_month: row.effective_month || null,
       contribution_amount: round2(parseAsNumber(row.contribution_amount)),
-      basis_months_used: parseAsNumber(row.basis_months_used),
+      basis_month_count: basisMonthCount,
+      basis_months_used: basisMonthsUsed,
       realized_profit_values_used: realizedValues,
-      rolling_average_profit: round2(parseAsNumber(row.rolling_average_profit)),
+      rolling_average_realized_profit: round2(parseAsNumber(row.rolling_average_realized_profit ?? row.rolling_average_profit)),
+      entry_source: row.entry_source || null,
       notes: row.notes || null,
     });
   }
@@ -163,6 +171,21 @@ function readContributionLedger() {
     return left - right;
   });
   return out;
+}
+
+function readContributionAutomationStatus() {
+  try {
+    return JSON.parse(fs.readFileSync(DEFAULT_CONTRIBUTION_STATUS, 'utf8'));
+  } catch {
+    return {
+      status: 'unknown',
+      reason: 'status_file_missing',
+      last_run_ct: null,
+      effective_month: null,
+      appended: false,
+      next_expected_cycle: null,
+    };
+  }
 }
 
 function parseSchema(markdown) {
@@ -2107,6 +2130,7 @@ function buildPayload(markdown) {
   );
   const ledger = parseTable(extractSection(markdown, 'Ledger'));
   const contributionLedger = readContributionLedger();
+  const contributionAutomationStatus = readContributionAutomationStatus();
   const pendingBetsRaw = parsePending(extractSection(markdown, 'Pending Bets (awaiting result)'));
   const recLogPath = resolveRecommendationLogPath(markdown, sourcePath);
   const recommendationRows =
@@ -2277,6 +2301,7 @@ function buildPayload(markdown) {
     bankroll_contribution_policy: bankrollContributionPolicy,
     bankroll_contribution_ledger: contributionLedger.entries,
     bankroll_contribution_ledger_path: contributionLedger.path,
+    bankroll_contribution_automation: contributionAutomationStatus,
     quant_performance: quantPerformance,
     unit_size: quantPerformance.unit_size,
     stake_units: quantPerformance.per_bet.map((row) => row.stake_units),

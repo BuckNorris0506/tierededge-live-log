@@ -371,7 +371,7 @@ li {
   </footer>
 
   <script>window.__LIVE_DATA__ = {
-  "generated_at_utc": "2026-03-11T15:51:30.932Z",
+  "generated_at_utc": "2026-03-11T15:58:19.648Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-11 02:45 CT",
@@ -908,6 +908,14 @@ li {
   },
   "bankroll_contribution_ledger": [],
   "bankroll_contribution_ledger_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/bankroll-contributions.csv",
+  "bankroll_contribution_automation": {
+    "status": "skipped",
+    "reason": "not_first_day_of_month",
+    "last_run_ct": "2026-03-11T10:55:58",
+    "effective_month": "2026-03",
+    "appended": false,
+    "next_expected_cycle": "2026-04-01"
+  },
   "quant_performance": {
     "settled_bets_evaluated": 18,
     "unit_size": 12.71,
@@ -1508,8 +1516,8 @@ li {
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-11 02:45 AM",
-    "grading_cache_last_update": "2026-03-11T15:51:30.864Z",
-    "payload_build_time_utc": "2026-03-11T15:51:30.932Z"
+    "grading_cache_last_update": "2026-03-11T15:58:19.611Z",
+    "payload_build_time_utc": "2026-03-11T15:58:19.648Z"
   },
   "integrity_gate": {
     "pass": true,
@@ -1521,7 +1529,7 @@ li {
       "missing_scan_days_count": 0
     },
     "diagnostics": {
-      "freshness_hours_since_last_recommendation": 8.11,
+      "freshness_hours_since_last_recommendation": 8.22,
       "first_recommendation_day": "2026-03-07",
       "ignored_pre_ledger_scan_days": [
         "2026-03-03",
@@ -1536,7 +1544,7 @@ li {
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-11T15:51:30.932Z",
+    "generated_at_utc": "2026-03-11T15:58:19.648Z",
     "message_type": "BET",
     "verdict": "BET",
     "what_to_do_now": "Review bet list and execute within exposure limits.",
@@ -2512,6 +2520,7 @@ function renderQuantPerformance(data) {
 
 function renderBankrollContribution(data) {
   const policy = data.bankroll_contribution_policy || {};
+  const automation = data.bankroll_contribution_automation || {};
   const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}${Math.abs(n).toFixed(2)}`);
   const basisMonths = (policy.contribution_basis_months_used || []).join(', ') || MISSING;
   const profitValues = (policy.realized_profit_values_used || []).map((n) => `${n >= 0 ? '+' : '-'}${Math.abs(Number(n)).toFixed(2)}`).join(', ') || MISSING;
@@ -2523,6 +2532,11 @@ function renderBankrollContribution(data) {
     ['Realized profit values used', profitValues],
     ['Rolling average realized profit', asMoney(policy.rolling_average_realized_profit)],
     ['Next estimated contribution', asMoney(policy.next_estimated_contribution)],
+    ['Automation status', automation.status || MISSING],
+    ['Automation last run', automation.last_run_ct || MISSING],
+    ['Automation effective month', automation.effective_month || MISSING],
+    ['Automation reason', automation.reason || MISSING],
+    ['Next expected contribution cycle', automation.next_expected_cycle || MISSING],
   ];
   renderRows('bankroll-contribution-policy-list', policyRows);
 

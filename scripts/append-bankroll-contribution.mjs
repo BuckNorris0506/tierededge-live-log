@@ -7,9 +7,11 @@ const REQUIRED_HEADERS = [
   'contribution_date',
   'effective_month',
   'contribution_amount',
+  'basis_month_count',
   'basis_months_used',
   'realized_profit_values_used',
-  'rolling_average_profit',
+  'rolling_average_realized_profit',
+  'entry_source',
   'notes',
 ];
 
@@ -97,8 +99,10 @@ async function main() {
   const effectiveMonth = parseArg('--effective-month');
   const contributionAmount = parseArg('--contribution-amount');
   const basisMonthsUsed = parseArg('--basis-months-used');
+  const basisMonthCount = parseArg('--basis-month-count');
   const realizedProfitValuesUsed = parseArg('--realized-profit-values-used');
-  const rollingAverageProfit = parseArg('--rolling-average-profit');
+  const rollingAverageRealizedProfit = parseArg('--rolling-average-realized-profit');
+  const entrySource = parseArg('--entry-source');
   const notes = parseArg('--notes');
 
   if (!validDate(contributionDate)) {
@@ -110,22 +114,22 @@ async function main() {
   if (parseNumber(contributionAmount) === null) {
     throw new Error('invalid contribution_amount');
   }
-  if (parseNumber(basisMonthsUsed) === null) {
-    throw new Error('invalid basis_months_used');
+  if (parseNumber(basisMonthCount) === null) {
+    throw new Error('invalid basis_month_count');
   }
-  if (parseNumber(rollingAverageProfit) === null) {
-    throw new Error('invalid rolling_average_profit');
+  if (parseNumber(rollingAverageRealizedProfit) === null) {
+    throw new Error('invalid rolling_average_realized_profit');
+  }
+  if (!entrySource) {
+    throw new Error('missing entry_source');
   }
 
   const { headers, rows } = await loadRows();
   const missing = REQUIRED_HEADERS.filter((h) => !headers.includes(h));
   if (missing.length > 0) throw new Error(`missing_required_headers:${missing.join(',')}`);
 
-  const duplicate = rows.find((row) =>
-    String(row.contribution_date).trim() === contributionDate
-    && String(row.effective_month).trim() === effectiveMonth
-  );
-  if (duplicate) throw new Error(`duplicate_entry:${contributionDate}:${effectiveMonth}`);
+  const duplicate = rows.find((row) => String(row.effective_month).trim() === effectiveMonth);
+  if (duplicate) throw new Error(`duplicate_effective_month:${effectiveMonth}`);
 
   const lastDate = rows.length > 0 ? String(rows[rows.length - 1].contribution_date || '').trim() : null;
   if (lastDate && contributionDate < lastDate) {
@@ -136,9 +140,11 @@ async function main() {
     contribution_date: contributionDate,
     effective_month: effectiveMonth,
     contribution_amount: parseNumber(contributionAmount).toFixed(2),
-    basis_months_used: String(Math.trunc(parseNumber(basisMonthsUsed))),
+    basis_month_count: String(Math.trunc(parseNumber(basisMonthCount))),
+    basis_months_used: basisMonthsUsed || '',
     realized_profit_values_used: realizedProfitValuesUsed || '[]',
-    rolling_average_profit: parseNumber(rollingAverageProfit).toFixed(2),
+    rolling_average_realized_profit: parseNumber(rollingAverageRealizedProfit).toFixed(2),
+    entry_source: entrySource,
     notes: notes || '',
   };
   const line = `${headers.map((h) => csvEscape(row[h] ?? '')).join(',')}\n`;
