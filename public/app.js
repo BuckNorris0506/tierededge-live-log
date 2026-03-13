@@ -58,6 +58,7 @@ function prettyReason(code) {
     stale_or_unverified_odds: 'Odds not verified',
     exposure_cap_reached: 'Exposure cap reached',
     breaker_active: 'Circuit breaker active',
+    bankroll_discontinuity: 'Bankroll continuity failed',
   };
   const normalized = String(code || '').trim().toLowerCase();
   if (map[normalized]) return map[normalized];
@@ -465,6 +466,7 @@ function renderDiagnostics(data) {
   const diagRows = [
     ['Data freshness', health.data_freshness],
     ['Ledger integrity', health.ledger_integrity],
+    ['Bankroll continuity', health.bankroll_continuity],
     ['Decision engine status', health.decision_engine_status],
     ['Recommendation log last row', freshness.recommendation_log_last_row_time],
     ['Grading cache last update', freshness.grading_cache_last_update],
@@ -478,6 +480,9 @@ function renderDiagnostics(data) {
       'Missing scan days': (integrity.diagnostics?.missing_scan_days || []).join(', ') || MISSING,
       'Duplicate rec IDs': (integrity.diagnostics?.duplicate_rec_ids || []).join(', ') || MISSING,
       'Freshness hours': integrity.diagnostics?.freshness_hours_since_last_recommendation ?? MISSING,
+      'Current bankroll': integrity.diagnostics?.bankroll_continuity?.current_bankroll ?? MISSING,
+      'Expected bankroll': integrity.diagnostics?.bankroll_continuity?.expected_bankroll ?? MISSING,
+      'Bankroll delta': integrity.diagnostics?.bankroll_continuity?.delta ?? MISSING,
       'Raw fail codes': (integrity.reasons || []).join(', ') || MISSING,
     },
   ];
@@ -485,7 +490,7 @@ function renderDiagnostics(data) {
   renderTable(
     'diagnostics-table',
     diagTableRows,
-    ['Missing scan days', 'Duplicate rec IDs', 'Freshness hours', 'Raw fail codes'],
+    ['Missing scan days', 'Duplicate rec IDs', 'Freshness hours', 'Current bankroll', 'Expected bankroll', 'Bankroll delta', 'Raw fail codes'],
     'No diagnostics available.'
   );
 }

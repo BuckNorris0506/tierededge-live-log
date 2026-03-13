@@ -8,6 +8,8 @@ const DEFAULT_MARKET_CONTEXT_HOOKS = path.resolve(process.cwd(), 'config', 'mark
 const DEFAULT_CONTRIBUTION_LEDGER = path.resolve(process.cwd(), 'data', 'bankroll-contributions.csv');
 const DEFAULT_CONTRIBUTION_STATUS = path.resolve(process.cwd(), 'data', 'bankroll-contribution-status.json');
 const DATA_FRESHNESS_MAX_HOURS = 36;
+const BANKROLL_CONTINUITY_MAX_DELTA_PCT = 0.1;
+const BANKROLL_CONTINUITY_MAX_DELTA_ABS = 25;
 
 const sourcePath = process.argv[2] || DEFAULT_SOURCE;
 const outPath = process.argv[3] || DEFAULT_OUT;
@@ -1439,9 +1441,83 @@ function mapEdgeToTier(edgePercent) {
   return null;
 }
 
+function computeBankrollContinuityCheck({ betLog, ledger, currentStatus, lastUpdatedCt }) {
+  const currentBankroll = parseAsNumber(currentStatus?.Bankroll);
+  if (currentBankroll === null) {
+    return {
+      pass: false,
+      reason: 'missing_current_bankroll',
+      current_bankroll: null,
+      expected_bankroll: null,
+      delta: null,
+      delta_pct: null,
+      anchor_bankroll: null,
+      anchor_date: null,
+      post_anchor_external_contributions: 0,
+      last_updated_day: parseDateFromLastUpdated(lastUpdatedCt),
+    };
+  }
+
+  const settledRows = (betLog || []).filter((row) => {
+    const result = normalizeDecision(row.Result || row.result);
+    return result && result !== 'pending';
+  });
+  const anchorRow = settledRows.length > 0 ? settledRows[settledRows.length - 1] : null;
+  const anchorBankroll = parseAsNumber(anchorRow?.Bankroll);
+  const anchorDate = String(anchorRow?.Date || '').trim() || null;
+  if (anchorBankroll === null || !anchorDate) {
+    return {
+      pass: true,
+      reason: 'insufficient_anchor_data',
+      current_bankroll: round2(currentBankroll),
+      expected_bankroll: null,
+      delta: null,
+      delta_pct: null,
+      anchor_bankroll: null,
+      anchor_date: null,
+      post_anchor_external_contributions: 0,
+      last_updated_day: parseDateFromLastUpdated(lastUpdatedCt),
+    };
+  }
+
+  const postAnchorExternalContributions = (ledger || []).reduce((sum, row) => {
+    const type = String(row.Type || '').trim().toUpperCase();
+    if (!['DEPOSIT', 'CONTRIBUTION', 'RELOAD'].includes(type)) return sum;
+    const date = String(row.Date || '').trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || date <= anchorDate) return sum;
+    const amount = parseAsNumber(row.Amount);
+    return amount === null ? sum : sum + amount;
+  }, 0);
+
+  const expectedBankroll = round2(anchorBankroll + postAnchorExternalContributions);
+  const delta = round2(currentBankroll - expectedBankroll);
+  const deltaPct =
+    expectedBankroll !== null && expectedBankroll !== 0
+      ? round2(Math.abs(delta) / expectedBankroll)
+      : null;
+  const pass =
+    expectedBankroll !== null
+    && Math.abs(delta) <= Math.max(BANKROLL_CONTINUITY_MAX_DELTA_ABS, expectedBankroll * BANKROLL_CONTINUITY_MAX_DELTA_PCT);
+
+  return {
+    pass,
+    reason: pass ? 'pass' : 'bankroll_discontinuity',
+    current_bankroll: round2(currentBankroll),
+    expected_bankroll: expectedBankroll,
+    delta,
+    delta_pct: deltaPct,
+    anchor_bankroll: round2(anchorBankroll),
+    anchor_date: anchorDate,
+    post_anchor_external_contributions: round2(postAnchorExternalContributions),
+    last_updated_day: parseDateFromLastUpdated(lastUpdatedCt),
+  };
+}
+
 function computeIntegrityGate({
   recommendationRows,
   betLog,
+  ledger,
+  currentStatus,
   lastUpdatedCt,
   dataFreshness,
   generatedAtUtc,
@@ -1482,19 +1558,27 @@ function computeIntegrityGate({
       ? (generatedMs - recommendationRowMs) / (1000 * 60 * 60)
       : null;
   const freshnessPass = Number.isFinite(freshnessHours) ? freshnessHours <= DATA_FRESHNESS_MAX_HOURS : false;
+  const bankrollContinuity = computeBankrollContinuityCheck({
+    betLog,
+    ledger,
+    currentStatus,
+    lastUpdatedCt,
+  });
   const ledgerComplete = duplicateRecIds.length === 0 && missingScanDays.length === 0;
-  const pass = freshnessPass && ledgerComplete;
+  const pass = freshnessPass && ledgerComplete && bankrollContinuity.pass;
 
   const reasons = [];
   if (!freshnessPass) reasons.push('data_freshness_fail');
   if (duplicateRecIds.length > 0) reasons.push('duplicate_rec_id');
   if (missingScanDays.length > 0) reasons.push('missing_scan_days');
+  if (!bankrollContinuity.pass) reasons.push('bankroll_discontinuity');
 
   return {
     pass,
     checks: {
       data_freshness: freshnessPass ? 'pass' : 'fail',
       ledger_integrity: ledgerComplete ? 'pass' : 'fail',
+      bankroll_continuity: bankrollContinuity.pass ? 'pass' : 'fail',
       decision_engine_status: pass ? 'pass' : 'blocked',
       duplicate_rec_id_count: duplicateRecIds.length,
       missing_scan_days_count: missingScanDays.length,
@@ -1505,6 +1589,7 @@ function computeIntegrityGate({
       ignored_pre_ledger_scan_days: ignoredPreLedgerScanDays,
       missing_scan_days: missingScanDays,
       duplicate_rec_ids: duplicateRecIds,
+      bankroll_continuity: bankrollContinuity,
     },
     reasons,
   };
@@ -2219,6 +2304,8 @@ function buildPayload(markdown) {
   const integrityGate = computeIntegrityGate({
     recommendationRows,
     betLog,
+    ledger,
+    currentStatus,
     lastUpdatedCt,
     dataFreshness,
     generatedAtUtc,

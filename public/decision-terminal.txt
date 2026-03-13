@@ -1,10 +1,11 @@
 TIEREDGE DECISION
-Verdict: BET
-What to do now: Review bet list and execute within exposure limits.
-Why: Edge above threshold with confidence/risk gates passed.
-System health: PASS
-Checks: data=pass, ledger=pass, engine=pass
-Bets:
-- Spurs -3.5 | Spread | edge 3.3% | T3 | stake $10.06 | edge above threshold, confidence gate passed
-Execution: bankroll=$1,271.48 | open_exposure=0.8% | daily_exposure=0.8% | breaker=OFF
+Verdict: BLOCKED
+What to do now: Resolve system health failures before acting on recommendations.
+Why: Integrity gate failed: data_freshness_fail
+System health: FAIL
+Checks: data=fail, ledger=pass, engine=blocked
+Block reason: data_freshness_fail
+Avoid: Do not place bets from this scan.
+Recovery: Restore freshness + ledger integrity before decisions resume.
+Execution: bankroll=$1,271.48 | open_exposure=0.0% (March 11 - no plays) | daily_exposure=0.0% (March 11 - no plays) | breaker=OFF
 Accountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=47.4% (9-10)
