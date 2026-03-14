@@ -1,23 +1,23 @@
 EVENING GRADING - 2026-03-14
 
-Bets Settled: 18
+Bets Settled: 20
 
 UNITS
-Profit: +5.40u
-Total Staked: 9.57u
-ROI (Units): +56.43%
+Profit: +9.49u
+Total Staked: 10.26u
+ROI (Units): +92.50%
 
 EXPECTATION
 Expected Profit: +$0.33
-Actual Profit: +$68.73
-Variance: +$68.40
-EV Realization: 208.27
+Actual Profit: +$126.13
+Variance: +$125.80
+EV Realization: 382.21
 
 SIGNAL QUALITY
 Average CLV: +7.36%
 Positive CLV Rate: +100.00%
-Binomial p-value: 0.5860
-Confidence Level: +41.40%
+Binomial p-value: 0.2087
+Confidence Level: +79.13%
 Sample Status: small sample (statistically inconclusive)
 
 EDGE QUALITY
@@ -28,7 +28,7 @@ Edge Retention: 100.0%
 Market Efficiency Impact: N/A
 
 BANKROLL CONTRIBUTION POLICY
-Realized Monthly Profit: +$68.73
+Realized Monthly Profit: +$126.13
 Rolling Average Realized Profit: $0.00
 Next Estimated Contribution: $0.00
 Contribution Basis Months: 2026-02
@@ -36,15 +36,15 @@ Total External Contributions: +$1200.00
 Interpretation: No monthly contribution scheduled based on non-positive rolling profit.
 
 BANKROLL OVERVIEW
-Actual Bankroll: +$1368.73
-Strategy Equity: +$168.73
+Actual Bankroll: +$1426.13
+Strategy Equity: +$226.13
 Total External Contributions: +$1200.00
-Realized Betting Profit: +$68.73
+Realized Betting Profit: +$126.13
 Note: Actual bankroll includes external contributions.
 Note: Strategy equity excludes external contributions.
 
-Bankroll: $1,271.48
-Peak: $1,271.48
+Bankroll: $1,328.88
+Peak: $1,328.88
 Drawdown: N/A
 
 System Status: Running Hot

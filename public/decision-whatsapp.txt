@@ -1,11 +1,11 @@
-*TIEREDGE SIT*
-What now: SIT and wait for next scan.
-Why: No edges above threshold.
-Health: PASS (data pass, ledger pass, engine pass)
-*SIT*
-- Today's slate: The latest scheduled scan found no qualifying edges.
-Threshold: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.
-Execution: bankroll $1,271.48, exposure 0.0% (March 12 - no plays), daily 0.0% (March 12 - no plays), breaker OFF
+*TIEREDGE BLOCKED*
+What now: Resolve system health failures before acting on recommendations.
+Why: Integrity gate failed: Scan history and recommendation log are out of sync.
+Health: FAIL (data pass, ledger fail, engine blocked)
+BLOCKED reason: Scan history and recommendation log are out of sync.
+Do NOT: Do not place bets from this scan.
+Recover: Restore freshness + ledger integrity before decisions resume.
+Execution: bankroll $1,328.88, exposure 0.0% (March 12 - no plays), daily 0.0% (March 12 - no plays), breaker OFF
 Accountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)
 Suppression Summary:
 - markets_scanned=6
