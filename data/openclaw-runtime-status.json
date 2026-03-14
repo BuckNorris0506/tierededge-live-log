@@ -1,0 +1,198 @@
+{
+  "generated_at_utc": "2026-03-14T03:54:52.819Z",
+  "jobs": {
+    "morning_edge_hunt": {
+      "id": "2766547c-e6a0-40ca-a680-972c7842579c",
+      "name": "morning-edge-hunt",
+      "enabled": true,
+      "schedule_expr": "0 6 * * *",
+      "schedule_tz": "America/Chicago",
+      "schedule_time_ct": "06:00",
+      "payload_message": "Use the tiered-edge skill only. Run a full morning edge hunt for today. Enforce exact thresholds: T1 >= +6%, T2 >= +4%, T3 >= +2%. Use de-vig before all edge math. Use baseline consensus-implied true-probability model (required) with capped adjustments. If odds are unverified, stale, or rate-limited, output exactly: CANNOT_VERIFY_ODDS — SIT. Output schema for ALL recommended plays must include: true probability, implied probability (de-vig), edge %, Kelly stake, source book, timestamp. Hard logic checks: (1) if edge >= +2.0% and all safety rails pass, it cannot be labeled no_edge; (2) if a play is rejected, include explicit reason code from: no_edge, low_confidence, stale_or_unverified_odds, exposure_cap_reached, breaker_active; (3) never output alternative threshold sets. Keep output concise for WhatsApp and avoid brittle file edits during this cron run. Presentation rule: For WhatsApp/user-facing text, NEVER display enum reason codes (no_edge, low_confidence, stale_or_unverified_odds, exposure_cap_reached, breaker_active). Use plain English only. Example: Reason: No edge at current price. Keep enum codes internal/log-only. Market coverage rule: scan all available markets/sports for edges (do not hard-limit search universe). Reporting rule: in WhatsApp output and public-post-ready summary, prioritize popular games first (NBA, NCAAB, NFL, NCAAF, NHL, MLB, UFC/MMA, major soccer). If verdict is SIT, include a \"Closest Misses (Popular Games)\" section with 3-6 near-miss examples, each with: matchup, market, de-vig implied %, true prob %, edge %, threshold gap, and plain-English sit reason. Keep obscure leagues in a short \"Other Markets Checked\" line unless they contain the top edge of the slate. Closest-miss selection rule: include only near-positive edges in the range +0.5% to +1.9% (strictly below T3). Exclude all negative-edge examples from Closest Misses. If no markets fall in +0.5% to +1.9%, output: \"No near-miss positive edges in the +0.5% to +1.9% window.\" Free-tier API guardrails: perform one full scan at 6:00 AM CT and avoid broad rescans in the same day unless explicitly requested by user. Reuse cached sport responses for 15 minutes (20 minutes for niche/low-liquidity sports). Prioritize popular leagues first in reporting. If remaining API quota is low (or likely low), stop broad expansion and continue with only highest-priority leagues; if verification cannot be completed safely under quota, output CANNOT_VERIFY_ODDS — SIT.",
+      "latest_finished": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1773399600012,
+        "run_at_ct": "2026-03-13 06:00 CT",
+        "date_key": "2026-03-13",
+        "summary": "*TIERED EDGE HUNT — March 13, 2026*\n\nBankroll: $1,271.48 | Phase: GROWTH | Daily Risk: $127.15\nScan: 6:05 AM CT\n\n**VERDICT: SIT** — No qualifying edges found\n\nMarkets checked: NBA (8 games), NCAAB (34 games), NHL (2 games)\nThresholds: T1 ≥+6% | T2 ≥+4% | T3 ≥+2%\n\n**Closest Misses (Popular Games):**\n\n• GW Revolutionaries @ Saint Louis Billikens\n  Saint Louis Billikens ML @ -238\n  True: 71.1% | Implied: 70.4% | Edge: +0.7%\n  1.3% short of T3 | Reason: No edge at current price\n\n• Oklahoma Sooners @ Arkansas Razorbacks\n  Arkansas Razorbacks ML @ -245\n  True: 71.6% | Implied: 71.0% | Edge: +0.6%\n  1.4% short of T3 | Reason: No edge at current price\n\nOther markets checked: NBA, NCAAB, NHL — all lines tight. No near-misses found in NBA or NHL.\n\n**Decision:** SIT. Markets efficient today with no edges clearing the +2% T3 threshold. Preserving capital for better opportunities.",
+        "session_id": "11d3dc18-5760-4ace-bccd-d3ee01803cbd",
+        "message_type": "SIT",
+        "has_actionable_bets": false,
+        "requires_state_sync": false,
+        "plain_reason": "The latest scheduled scan found no qualifying edges."
+      },
+      "latest_successful": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1773399600012,
+        "run_at_ct": "2026-03-13 06:00 CT",
+        "date_key": "2026-03-13",
+        "summary": "*TIERED EDGE HUNT — March 13, 2026*\n\nBankroll: $1,271.48 | Phase: GROWTH | Daily Risk: $127.15\nScan: 6:05 AM CT\n\n**VERDICT: SIT** — No qualifying edges found\n\nMarkets checked: NBA (8 games), NCAAB (34 games), NHL (2 games)\nThresholds: T1 ≥+6% | T2 ≥+4% | T3 ≥+2%\n\n**Closest Misses (Popular Games):**\n\n• GW Revolutionaries @ Saint Louis Billikens\n  Saint Louis Billikens ML @ -238\n  True: 71.1% | Implied: 70.4% | Edge: +0.7%\n  1.3% short of T3 | Reason: No edge at current price\n\n• Oklahoma Sooners @ Arkansas Razorbacks\n  Arkansas Razorbacks ML @ -245\n  True: 71.6% | Implied: 71.0% | Edge: +0.6%\n  1.4% short of T3 | Reason: No edge at current price\n\nOther markets checked: NBA, NCAAB, NHL — all lines tight. No near-misses found in NBA or NHL.\n\n**Decision:** SIT. Markets efficient today with no edges clearing the +2% T3 threshold. Preserving capital for better opportunities.",
+        "session_id": "11d3dc18-5760-4ace-bccd-d3ee01803cbd",
+        "message_type": "SIT",
+        "has_actionable_bets": false,
+        "requires_state_sync": false,
+        "plain_reason": "The latest scheduled scan found no qualifying edges."
+      }
+    },
+    "evening_grading": {
+      "id": "5b0143f3-19e8-403e-bc61-68675a9cf3fc",
+      "name": "evening-grading",
+      "enabled": true,
+      "schedule_expr": "0 23 * * *",
+      "schedule_tz": "America/Chicago",
+      "schedule_time_ct": "23:00",
+      "payload_message": "grade pending bets",
+      "latest_finished": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1773374400014,
+        "run_at_ct": "2026-03-12 23:00 CT",
+        "date_key": "2026-03-12",
+        "summary": "**EVENING GRADING — Thursday, March 12, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- Pending bets awaiting result: **0**\n\nAll recent positions have been settled. The last graded bet was **Spurs -3.5** on March 10 (WIN, +$9.52).\n\n**Current Bankroll Status:**\n- Bankroll: **$1,271.48**\n- All-Time High: **$1,262.16** \n- Circuit Breaker: **OFF**\n- Daily Exposure Used (March 12): **0.0%**\n\n**Grading Summary:**\nNo action required. No pending bets to grade. Bankroll remains at $1,271.48.\n\n**Note:** No qualifying edges were found during today's 6:04 AM scan (37+ markets checked, all SIT). No new bets were placed on March 12.",
+        "session_id": "895591e1-6320-4b03-9e4a-00d68b658948",
+        "requires_state_sync": false,
+        "plain_reason": "Latest grading run reported no state changes."
+      },
+      "latest_successful": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1773374400014,
+        "run_at_ct": "2026-03-12 23:00 CT",
+        "date_key": "2026-03-12",
+        "summary": "**EVENING GRADING — Thursday, March 12, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- Pending bets awaiting result: **0**\n\nAll recent positions have been settled. The last graded bet was **Spurs -3.5** on March 10 (WIN, +$9.52).\n\n**Current Bankroll Status:**\n- Bankroll: **$1,271.48**\n- All-Time High: **$1,262.16** \n- Circuit Breaker: **OFF**\n- Daily Exposure Used (March 12): **0.0%**\n\n**Grading Summary:**\nNo action required. No pending bets to grade. Bankroll remains at $1,271.48.\n\n**Note:** No qualifying edges were found during today's 6:04 AM scan (37+ markets checked, all SIT). No new bets were placed on March 12.",
+        "session_id": "895591e1-6320-4b03-9e4a-00d68b658948",
+        "requires_state_sync": false,
+        "plain_reason": "Latest grading run reported no state changes."
+      }
+    },
+    "friday_sgp": {
+      "id": "c0d2aaa2-f6cb-4bb2-a959-6ddb3b07e9c9",
+      "name": "friday-sgp",
+      "enabled": true,
+      "schedule_expr": "0 10 * * 5",
+      "schedule_tz": "America/Chicago",
+      "schedule_time_ct": "10:00",
+      "payload_message": "fun sgp hunt for TODAY only. Use only events commencing today in America/Chicago. Reject any settled, completed, in-progress, postponed, canceled, or prior-day games. If live odds cannot be verified for today's slate, return CANNOT_VERIFY_ODDS — SIT.",
+      "latest_finished": {
+        "status": "error",
+        "delivery_status": "unknown",
+        "error": "cron announce delivery failed",
+        "run_at_ms": 1773430168854,
+        "run_at_ct": "2026-03-13 14:29 CT",
+        "date_key": "2026-03-13",
+        "summary": "**FRIDAY FUN SGP HUNT — March 13, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API is currently blocked by network filtering (Gambling category). Cannot fetch real-time odds data required for any bet recommendations, including fun SGPs.\n\n**Network Details:**\n- URL: api.the-odds-api.com\n- Blocked by: Guest Network Policy (Securly DNS filtering)\n- Category: Gambling\n\n**Verdict:** No SGP can be constructed without verified odds per TieredEdge rules. Even fun SGPs require real-time data validation.\n\n**Recommendation:** Retry when connected to an unrestricted network, or manually verify odds through DraftKings mobile app if available.",
+        "session_id": "7e276a48-c2ac-41d6-b4ef-623091065d74",
+        "message_type": "BLOCKED",
+        "has_actionable_bets": false,
+        "requires_state_sync": false,
+        "plain_reason": "Odds could not be verified for the latest scheduled scan."
+      },
+      "latest_successful": null
+    },
+    "weekly_review": {
+      "id": "408793e1-ca62-49ea-89c8-d85aecd7da0d",
+      "name": "weekly-review",
+      "enabled": true,
+      "schedule_expr": "0 9 * * 1",
+      "schedule_tz": "America/Chicago",
+      "schedule_time_ct": "09:00",
+      "payload_message": "Run the weekly TieredEdge performance review. Read memory/betting-state.md. Analyze all bets from the past 7 days. Check drawdown status. Calculate CLV averages. Identify any leaks. Output full structured review.",
+      "latest_finished": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1773064800009,
+        "run_at_ct": "2026-03-09 09:00 CT",
+        "date_key": "2026-03-09",
+        "summary": "# TieredEdge Quant — Weekly Performance Review\n**Review Period:** March 3–9, 2026  \n**Generated:** Monday, March 9, 2026 at 9:00 AM CT\n\n---\n\n## Executive Summary\n\n| Metric | Value |\n|--------|-------|\n| **Current Bankroll** | $1,261.96 |\n| **Starting Bankroll (Week)** | $202.66 (post-reload position) |\n| **Weekly P/L** | +$59.30 |\n| **Weekly ROI** | +12.1% |\n| **Win Rate (Week)** | 50.0% (5-5) |\n| **Total Bets Placed** | 10 |\n| **Sit Decisions** | 17 |\n| **Sit Discipline Rate** | 71% |\n\n---\n\n## Bankroll & Drawdown Analysis\n\n| Metric | Value | Status |\n|--------|-------|--------|\n| All-Time High | $1,262.16 | — |\n| Current Drawdown | 0.02% ($0.20) | ✅ HEALTHY |\n| Circuit Breaker | OFF | — |\n| Phase | GROWTH ($250-$1,500) | — |\n\n**Assessment:** Near-zero drawdown from peak. System operating in normal growth phase. No risk reduction triggers activated.\n\n---\n\n## Weekly Bet Performance\n\n| Date | Bets | W | L | Net P/L | Notes |\n|------|------|---|---|---------|-------|\n| Mar 3 | 3 | 2 | 1 | +$9.00 | Strong start, CBB + NBA |\n| Mar 4 | 5 | 2 | 3 | -$2.96 | Mixed; OKC cashout minimized loss |\n| Mar 5 | 4 | 1 | 3 | -$3.35 | Rough day; JMU, Memphis, Kings L |\n| Mar 6 | 4 | 3 | 1 | +$56.72 | Breakout day; Lakers T2 max hit |\n| Mar 7 | 2 | 1 | 1 | -$0.20 | UFC split; Oliveira L, Garbrandt W |\n| **TOTAL** | **10** | **5** | **5** | **+$59.30** | — |\n\n---\n\n## CLV & Execution Quality\n\n| Metric | Value | Assessment |\n|--------|-------|------------|\n| Average CLV (Week) | +3.6% | ✅ POSITIVE — beating closing line |\n| Execution Slippage | 0.9 cents | ✅ EXCELLENT — minimal slippage |\n| Implied Prob Delta | 0.3 pp | ✅ TIGHT — sharp execution |\n\n**CLV by Notable Bet:**\n- Tennessee -8.5: +4.8% CLV ✅\n- Villanova -2.5: +4.8% CLV ✅\n- James Madison -1.5: +1.0 pt CLV ✅\n- Detroit Pistons -1.5: +1.2% CLV ✅\n\n---\n\n## Sit Accountability (Past 7 Days)\n\n| Metric | Value |\n|--------|-------|\n| Markets Checked | 32 |\n| Total Sits | 17 |\n| Avoided Losses (if bet) | 9 |\n| Missed Winners (if bet) | 8 |\n…",
+        "session_id": "ac25d53e-dc50-41c3-adc6-f1d8c4a0e64f",
+        "requires_state_sync": true,
+        "plain_reason": "Latest grading run implies bankroll or result updates."
+      },
+      "latest_successful": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1773064800009,
+        "run_at_ct": "2026-03-09 09:00 CT",
+        "date_key": "2026-03-09",
+        "summary": "# TieredEdge Quant — Weekly Performance Review\n**Review Period:** March 3–9, 2026  \n**Generated:** Monday, March 9, 2026 at 9:00 AM CT\n\n---\n\n## Executive Summary\n\n| Metric | Value |\n|--------|-------|\n| **Current Bankroll** | $1,261.96 |\n| **Starting Bankroll (Week)** | $202.66 (post-reload position) |\n| **Weekly P/L** | +$59.30 |\n| **Weekly ROI** | +12.1% |\n| **Win Rate (Week)** | 50.0% (5-5) |\n| **Total Bets Placed** | 10 |\n| **Sit Decisions** | 17 |\n| **Sit Discipline Rate** | 71% |\n\n---\n\n## Bankroll & Drawdown Analysis\n\n| Metric | Value | Status |\n|--------|-------|--------|\n| All-Time High | $1,262.16 | — |\n| Current Drawdown | 0.02% ($0.20) | ✅ HEALTHY |\n| Circuit Breaker | OFF | — |\n| Phase | GROWTH ($250-$1,500) | — |\n\n**Assessment:** Near-zero drawdown from peak. System operating in normal growth phase. No risk reduction triggers activated.\n\n---\n\n## Weekly Bet Performance\n\n| Date | Bets | W | L | Net P/L | Notes |\n|------|------|---|---|---------|-------|\n| Mar 3 | 3 | 2 | 1 | +$9.00 | Strong start, CBB + NBA |\n| Mar 4 | 5 | 2 | 3 | -$2.96 | Mixed; OKC cashout minimized loss |\n| Mar 5 | 4 | 1 | 3 | -$3.35 | Rough day; JMU, Memphis, Kings L |\n| Mar 6 | 4 | 3 | 1 | +$56.72 | Breakout day; Lakers T2 max hit |\n| Mar 7 | 2 | 1 | 1 | -$0.20 | UFC split; Oliveira L, Garbrandt W |\n| **TOTAL** | **10** | **5** | **5** | **+$59.30** | — |\n\n---\n\n## CLV & Execution Quality\n\n| Metric | Value | Assessment |\n|--------|-------|------------|\n| Average CLV (Week) | +3.6% | ✅ POSITIVE — beating closing line |\n| Execution Slippage | 0.9 cents | ✅ EXCELLENT — minimal slippage |\n| Implied Prob Delta | 0.3 pp | ✅ TIGHT — sharp execution |\n\n**CLV by Notable Bet:**\n- Tennessee -8.5: +4.8% CLV ✅\n- Villanova -2.5: +4.8% CLV ✅\n- James Madison -1.5: +1.0 pt CLV ✅\n- Detroit Pistons -1.5: +1.2% CLV ✅\n\n---\n\n## Sit Accountability (Past 7 Days)\n\n| Metric | Value |\n|--------|-------|\n| Markets Checked | 32 |\n| Total Sits | 17 |\n| Avoided Losses (if bet) | 9 |\n| Missed Winners (if bet) | 8 |\n…",
+        "session_id": "ac25d53e-dc50-41c3-adc6-f1d8c4a0e64f",
+        "requires_state_sync": true,
+        "plain_reason": "Latest grading run implies bankroll or result updates."
+      }
+    },
+    "monthly_reload": {
+      "id": "65bfb1b2-927e-4012-b617-a6e6725a28db",
+      "name": "monthly-reload",
+      "enabled": false,
+      "schedule_expr": "0 8 1 * *",
+      "schedule_tz": "America/Chicago",
+      "schedule_time_ct": "08:00",
+      "payload_message": "DISABLED. Do not modify bankroll from this cron job. Monthly bankroll contributions are handled by the append-only contribution policy automation in the live-log repo.",
+      "latest_finished": null,
+      "latest_successful": null
+    }
+  },
+  "latest_successful_hunt": {
+    "status": "ok",
+    "delivery_status": "delivered",
+    "error": null,
+    "run_at_ms": 1773399600012,
+    "run_at_ct": "2026-03-13 06:00 CT",
+    "date_key": "2026-03-13",
+    "summary": "*TIERED EDGE HUNT — March 13, 2026*\n\nBankroll: $1,271.48 | Phase: GROWTH | Daily Risk: $127.15\nScan: 6:05 AM CT\n\n**VERDICT: SIT** — No qualifying edges found\n\nMarkets checked: NBA (8 games), NCAAB (34 games), NHL (2 games)\nThresholds: T1 ≥+6% | T2 ≥+4% | T3 ≥+2%\n\n**Closest Misses (Popular Games):**\n\n• GW Revolutionaries @ Saint Louis Billikens\n  Saint Louis Billikens ML @ -238\n  True: 71.1% | Implied: 70.4% | Edge: +0.7%\n  1.3% short of T3 | Reason: No edge at current price\n\n• Oklahoma Sooners @ Arkansas Razorbacks\n  Arkansas Razorbacks ML @ -245\n  True: 71.6% | Implied: 71.0% | Edge: +0.6%\n  1.4% short of T3 | Reason: No edge at current price\n\nOther markets checked: NBA, NCAAB, NHL — all lines tight. No near-misses found in NBA or NHL.\n\n**Decision:** SIT. Markets efficient today with no edges clearing the +2% T3 threshold. Preserving capital for better opportunities.",
+    "session_id": "11d3dc18-5760-4ace-bccd-d3ee01803cbd",
+    "message_type": "SIT",
+    "has_actionable_bets": false,
+    "requires_state_sync": false,
+    "plain_reason": "The latest scheduled scan found no qualifying edges."
+  },
+  "latest_successful_grading": {
+    "status": "ok",
+    "delivery_status": "delivered",
+    "error": null,
+    "run_at_ms": 1773374400014,
+    "run_at_ct": "2026-03-12 23:00 CT",
+    "date_key": "2026-03-12",
+    "summary": "**EVENING GRADING — Thursday, March 12, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- Pending bets awaiting result: **0**\n\nAll recent positions have been settled. The last graded bet was **Spurs -3.5** on March 10 (WIN, +$9.52).\n\n**Current Bankroll Status:**\n- Bankroll: **$1,271.48**\n- All-Time High: **$1,262.16** \n- Circuit Breaker: **OFF**\n- Daily Exposure Used (March 12): **0.0%**\n\n**Grading Summary:**\nNo action required. No pending bets to grade. Bankroll remains at $1,271.48.\n\n**Note:** No qualifying edges were found during today's 6:04 AM scan (37+ markets checked, all SIT). No new bets were placed on March 12.",
+    "session_id": "895591e1-6320-4b03-9e4a-00d68b658948",
+    "requires_state_sync": false,
+    "plain_reason": "Latest grading run reported no state changes."
+  },
+  "next_edge_scan_ct": "06:00",
+  "freshness_anchor": {
+    "source": "latest_successful_hunt",
+    "timestamp_ct": "2026-03-13 06:00 CT",
+    "timestamp_ms": 1773399600012
+  },
+  "state_files": {
+    "betting_state": {
+      "path": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
+      "last_updated_ct": "2026-03-12 06:04 CT",
+      "file_mtime_ct": "2026-03-13 22:18 CT"
+    },
+    "recommendation_log": {
+      "path": "/Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md",
+      "file_mtime_ct": "2026-03-12 22:00 CT"
+    },
+    "passed_opportunity_grades": {
+      "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
+      "file_mtime_ct": "2026-03-13 22:25 CT"
+    }
+  },
+  "state_sync": {
+    "blocking_sync_gap": false,
+    "hunt_after_state": true,
+    "grading_after_state": true,
+    "latest_hunt_requires_state_sync": false,
+    "latest_grading_requires_state_sync": false
+  },
+  "warnings": []
+}

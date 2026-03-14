@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build:runtime": "node scripts/build-runtime-status.mjs",
     "build:data": "node scripts/build-live-log.mjs",
     "build:standalone": "node scripts/build-standalone.mjs",
-    "build:all": "npm run build:data && npm run build:standalone",
+    "build:all": "npm run build:runtime && npm run build:data && npm run build:standalone",
     "append:rec": "node scripts/append-recommendation-row.mjs",
     "append:contribution": "node scripts/append-bankroll-contribution.mjs",
     "contribution:monthly": "node scripts/monthly-bankroll-contribution.mjs",

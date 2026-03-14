@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { readRuntimeStatusSnapshot } from './openclaw-runtime-utils.mjs';
 
 const DEFAULT_SOURCE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md';
 const DEFAULT_OUT = path.resolve(process.cwd(), 'public', 'data.json');
@@ -188,6 +189,47 @@ function readContributionAutomationStatus() {
       next_expected_cycle: null,
     };
   }
+}
+
+function readRuntimeStatus() {
+  return readRuntimeStatusSnapshot() || {
+    jobs: {},
+    latest_successful_hunt: null,
+    latest_successful_grading: null,
+    next_edge_scan_ct: '06:00',
+    freshness_anchor: {
+      source: 'state_last_updated',
+      timestamp_ct: null,
+      timestamp_ms: null,
+    },
+    state_sync: {
+      blocking_sync_gap: false,
+    },
+    warnings: ['runtime_status_missing'],
+  };
+}
+
+function computeEffectiveLastUpdatedCt(lastUpdatedCt, runtimeStatus) {
+  const stateMs = parseTimestampMs(lastUpdatedCt);
+  const runtimeAnchorMs = parseTimestampMs(runtimeStatus?.freshness_anchor?.timestamp_ct);
+  if (
+    runtimeStatus?.state_sync?.blocking_sync_gap !== true
+    && Number.isFinite(runtimeAnchorMs)
+    && (!Number.isFinite(stateMs) || runtimeAnchorMs > stateMs)
+  ) {
+    return runtimeStatus.freshness_anchor.timestamp_ct;
+  }
+  return lastUpdatedCt;
+}
+
+function filterPlaceholderBetRows(rows) {
+  return (rows || []).filter((row) => {
+    const bet = String(row?.Bet || row?.bet || '').trim().toUpperCase();
+    const tier = String(row?.Tier || row?.tier || '').trim().toUpperCase();
+    if (bet === 'NO PLAYS') return false;
+    if (!bet && !tier) return false;
+    return true;
+  });
 }
 
 function parseSchema(markdown) {
@@ -894,7 +936,7 @@ function buildRecommendationBetRowsByIdentity(recommendationRows) {
   return byIdentity;
 }
 
-function computeQuantPerformance({ betLog, recommendationRows, currentStatus, ledger }) {
+function computeQuantPerformance({ betLog, recommendationRows, currentStatus, ledger, runtimeStatus }) {
   const recByIdentity = buildRecommendationBetRowsByIdentity(recommendationRows);
   const consumedRecIdx = new Set();
   const quantBetRows = [];
@@ -1085,7 +1127,7 @@ function computeQuantPerformance({ betLog, recommendationRows, currentStatus, le
     closing_edge_retention: closingEdgeRetention !== null ? round2(closingEdgeRetention) : null,
     market_efficiency_impact: marketEfficiencyImpact !== null ? round2(marketEfficiencyImpact) : null,
     system_status: systemStatus,
-    next_edge_scan_ct: '06:00',
+    next_edge_scan_ct: runtimeStatus?.next_edge_scan_ct || '06:00',
     per_bet: quantBetRows,
   };
 }
@@ -1424,12 +1466,41 @@ function computeRejectionReasonRanges({ recommendationRows, targetDate }) {
   return out;
 }
 
-function computeDataFreshness({ recommendationRows, gradesCache, generatedAtUtc }) {
+function computeDataFreshness({ recommendationRows, gradesCache, generatedAtUtc, runtimeStatus, lastUpdatedCt, effectiveLastUpdatedCt }) {
   const lastRecRow = recommendationRows.length > 0 ? recommendationRows[recommendationRows.length - 1] : null;
+  const candidateAnchors = [
+    {
+      source: 'runtime_freshness_anchor',
+      time: runtimeStatus?.freshness_anchor?.timestamp_ct || null,
+    },
+    {
+      source: 'state_last_updated',
+      time: effectiveLastUpdatedCt || lastUpdatedCt || null,
+    },
+    {
+      source: 'recommendation_log_last_row',
+      time: lastRecRow?.timestamp_ct || null,
+    },
+  ]
+    .map((anchor) => ({
+      ...anchor,
+      ts: parseTimestampMs(anchor.time),
+    }))
+    .filter((anchor) => Number.isFinite(anchor.ts))
+    .sort((a, b) => b.ts - a.ts);
+  const freshnessAnchor = candidateAnchors[0] || {
+    source: 'unknown',
+    time: 'unknown',
+    ts: null,
+  };
   return {
     recommendation_log_last_row_time: lastRecRow?.timestamp_ct || 'unknown',
     grading_cache_last_update: gradesCache?.updated_at || 'unknown',
     payload_build_time_utc: generatedAtUtc || new Date().toISOString(),
+    state_last_updated_time: lastUpdatedCt || 'unknown',
+    effective_last_updated_time: effectiveLastUpdatedCt || lastUpdatedCt || 'unknown',
+    freshness_anchor_source: freshnessAnchor.source,
+    freshness_anchor_time: freshnessAnchor.time,
   };
 }
 
@@ -1519,8 +1590,10 @@ function computeIntegrityGate({
   ledger,
   currentStatus,
   lastUpdatedCt,
+  effectiveLastUpdatedCt,
   dataFreshness,
   generatedAtUtc,
+  runtimeStatus,
 }) {
   const recIdSet = new Set();
   const duplicateRecIds = [];
@@ -1551,27 +1624,29 @@ function computeIntegrityGate({
     ? [...scanDays].filter((day) => day < firstRecDay).sort()
     : [];
   const missingScanDays = relevantScanDays.filter((day) => !recDays.has(day)).sort();
-  const recommendationRowMs = parseTimestampMs(dataFreshness.recommendation_log_last_row_time);
+  const freshnessAnchorMs = parseTimestampMs(dataFreshness.freshness_anchor_time);
   const generatedMs = parseTimestampMs(generatedAtUtc);
   const freshnessHours =
-    Number.isFinite(recommendationRowMs) && Number.isFinite(generatedMs)
-      ? (generatedMs - recommendationRowMs) / (1000 * 60 * 60)
+    Number.isFinite(freshnessAnchorMs) && Number.isFinite(generatedMs)
+      ? (generatedMs - freshnessAnchorMs) / (1000 * 60 * 60)
       : null;
   const freshnessPass = Number.isFinite(freshnessHours) ? freshnessHours <= DATA_FRESHNESS_MAX_HOURS : false;
   const bankrollContinuity = computeBankrollContinuityCheck({
     betLog,
     ledger,
     currentStatus,
-    lastUpdatedCt,
+    lastUpdatedCt: effectiveLastUpdatedCt || lastUpdatedCt,
   });
+  const stateSyncGap = runtimeStatus?.state_sync?.blocking_sync_gap === true;
   const ledgerComplete = duplicateRecIds.length === 0 && missingScanDays.length === 0;
-  const pass = freshnessPass && ledgerComplete && bankrollContinuity.pass;
+  const pass = freshnessPass && ledgerComplete && bankrollContinuity.pass && !stateSyncGap;
 
   const reasons = [];
   if (!freshnessPass) reasons.push('data_freshness_fail');
   if (duplicateRecIds.length > 0) reasons.push('duplicate_rec_id');
   if (missingScanDays.length > 0) reasons.push('missing_scan_days');
   if (!bankrollContinuity.pass) reasons.push('bankroll_discontinuity');
+  if (stateSyncGap) reasons.push('state_sync_gap');
 
   return {
     pass,
@@ -1579,17 +1654,21 @@ function computeIntegrityGate({
       data_freshness: freshnessPass ? 'pass' : 'fail',
       ledger_integrity: ledgerComplete ? 'pass' : 'fail',
       bankroll_continuity: bankrollContinuity.pass ? 'pass' : 'fail',
+      state_sync: stateSyncGap ? 'fail' : 'pass',
       decision_engine_status: pass ? 'pass' : 'blocked',
       duplicate_rec_id_count: duplicateRecIds.length,
       missing_scan_days_count: missingScanDays.length,
     },
     diagnostics: {
-      freshness_hours_since_last_recommendation: round2(freshnessHours),
+      freshness_hours_since_anchor: round2(freshnessHours),
+      freshness_anchor_source: dataFreshness.freshness_anchor_source,
+      freshness_anchor_time: dataFreshness.freshness_anchor_time,
       first_recommendation_day: firstRecDay,
       ignored_pre_ledger_scan_days: ignoredPreLedgerScanDays,
       missing_scan_days: missingScanDays,
       duplicate_rec_ids: duplicateRecIds,
       bankroll_continuity: bankrollContinuity,
+      runtime_status: runtimeStatus,
     },
     reasons,
   };
@@ -1600,6 +1679,7 @@ function computeTodayDecisionConsole({
   targetDate,
   todaysBets,
   integrityGate,
+  runtimeStatus,
 }) {
   const recRowsForDate = recommendationRows.filter((row) => {
     if (!targetDate) return true;
@@ -1640,6 +1720,17 @@ function computeTodayDecisionConsole({
       label: `${row.sport || 'Market'} ${row.market || ''}`.trim(),
       reason: row.rejection_reason || 'no_edge',
     }));
+
+  if (bets.length === 0 && sits.length === 0) {
+    const latestHunt = runtimeStatus?.latest_successful_hunt;
+    if (latestHunt?.date_key === targetDate && latestHunt?.message_type === 'SIT') {
+      sits.push({
+        rec_id: null,
+        label: "Today's slate",
+        reason: latestHunt.plain_reason || 'No qualifying edges found in the latest verified scan.',
+      });
+    }
+  }
 
   const verdict = bets.length > 0
     ? `BET ${bets.length} opportunity(ies).`
@@ -2187,7 +2278,9 @@ function computeSitAccountabilitySummaryFromPassedTracker(passedOpportunityTrack
 
 function buildPayload(markdown) {
   const lastUpdatedCt = parseLastUpdated(markdown);
-  const targetDate = parseDateFromLastUpdated(lastUpdatedCt);
+  const runtimeStatus = readRuntimeStatus();
+  const effectiveLastUpdatedCt = computeEffectiveLastUpdatedCt(lastUpdatedCt, runtimeStatus);
+  const targetDate = parseDateFromLastUpdated(effectiveLastUpdatedCt);
   const marketContextHooksConfig = readMarketContextHooksConfig();
   const currentStatus = parseBulletMap(extractSection(markdown, 'Current Status'));
   const lifetimeStats = parseBulletMap(extractSection(markdown, 'Lifetime Stats'));
@@ -2207,7 +2300,7 @@ function buildPayload(markdown) {
   const executionQuality = parseBulletMap(extractSection(markdown, 'Execution Quality (Slippage)'));
   const weeklyRunningTotals = parseBulletMap(extractSection(markdown, 'Weekly Running Totals'));
 
-  const todaysBetsRaw = parseTable(extractSection(markdown, "Today's Bets"));
+  const todaysBetsRaw = filterPlaceholderBetRows(parseTable(extractSection(markdown, "Today's Bets")));
   const betLogRaw = parseTable(extractSection(markdown, 'Bet Log (All Graded Bets)'));
   const betLog = dedupeStalePendingBetLog(betLogRaw);
   const rejectedOpportunities = parseTable(
@@ -2232,7 +2325,7 @@ function buildPayload(markdown) {
   const bankrollValue = parseAsNumber(currentStatus.Bankroll);
   const roiValue = parseAsNumber(lifetimeStats['Overall ROI']);
   const decisionQuality = computeDecisionQuality({
-    lastUpdatedCt,
+    lastUpdatedCt: effectiveLastUpdatedCt,
     currentStatus,
     betLog,
     todaysBets,
@@ -2272,13 +2365,14 @@ function buildPayload(markdown) {
     recommendationRows,
     currentStatus,
     ledger,
+    runtimeStatus,
   });
   const bankrollContributionPolicy = computeBankrollContributionPolicy({
     betLog,
     ledger,
     contributionLedgerEntries: contributionLedger.entries,
     currentStatus,
-    lastUpdatedCt,
+    lastUpdatedCt: effectiveLastUpdatedCt,
   });
   const sitAccountabilitySummary =
     (passedOpportunityTracker?.graded_count || 0) > 0
@@ -2300,6 +2394,9 @@ function buildPayload(markdown) {
     recommendationRows,
     gradesCache: passedGradesCache,
     generatedAtUtc,
+    runtimeStatus,
+    lastUpdatedCt,
+    effectiveLastUpdatedCt,
   });
   const integrityGate = computeIntegrityGate({
     recommendationRows,
@@ -2307,14 +2404,17 @@ function buildPayload(markdown) {
     ledger,
     currentStatus,
     lastUpdatedCt,
+    effectiveLastUpdatedCt,
     dataFreshness,
     generatedAtUtc,
+    runtimeStatus,
   });
   const todayDecisionConsole = computeTodayDecisionConsole({
     recommendationRows,
     targetDate,
     todaysBets,
     integrityGate,
+    runtimeStatus,
   });
   const openExposure = currentStatus['Daily Exposure Used'] || null;
   const dailyVerdict = dailyDecisionSummary.final_daily_verdict || null;
@@ -2353,7 +2453,9 @@ function buildPayload(markdown) {
     generated_at_utc: generatedAtUtc,
     source_file: sourcePath,
     schema: parseSchema(markdown),
-    last_updated_ct: lastUpdatedCt,
+    last_updated_ct: effectiveLastUpdatedCt,
+    state_last_updated_ct: lastUpdatedCt,
+    runtime_status: runtimeStatus,
     current_status: currentStatus,
     lifetime_stats: lifetimeStats,
     daily_rejection_summary: rejectionSummary,

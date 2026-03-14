@@ -96,9 +96,10 @@ function parseTable(markdown) {
   const rows = [];
   for (let i = 2; i < lines.length; i += 1) {
     const parts = lines[i].split('|').map((s) => s.trim()).filter(Boolean);
-    if (parts.length !== headers.length) continue;
+    if (parts.length < headers.length) continue;
+    const normalizedParts = parts.slice(0, headers.length);
     const row = {};
-    for (let j = 0; j < headers.length; j += 1) row[headers[j]] = parts[j];
+    for (let j = 0; j < headers.length; j += 1) row[headers[j]] = normalizedParts[j];
     rows.push(row);
   }
   return rows;
@@ -220,7 +221,7 @@ async function main() {
     fs.readFile(RECOMMENDATION_LOG, 'utf8'),
     fs.readFile(ODDS_CONFIG, 'utf8'),
   ]);
-  const apiKey = parseOddsApiKey(configRaw);
+  const apiKey = process.env.ODDS_API_KEY || parseOddsApiKey(configRaw);
   if (!apiKey) {
     console.log('No ODDS API key configured; skipping passed-opportunity grading.');
     return;
