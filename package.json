@@ -14,6 +14,7 @@
     "contribution:monthly:run": "./scripts/run-monthly-bankroll-contribution.sh",
     "import:rec-history": "node scripts/import-recommendation-history.mjs",
     "audit:rec-nightly": "node scripts/recommendation-log-nightly.mjs",
+    "audit:replay": "node scripts/replay-truth-validation.mjs",
     "serve": "python3 -m http.server 8095 --directory public"
   }
 }

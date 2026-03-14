@@ -8,6 +8,7 @@ export const OPENCLAW_PATHS = {
   bettingState: '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md',
   recommendationLog: '/Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md',
   passedOpportunityGrades: '/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json',
+  oddsApiConfig: '/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md',
 };
 
 export const DEFAULT_RUNTIME_STATUS_SNAPSHOT = path.resolve(process.cwd(), 'data', 'openclaw-runtime-status.json');
@@ -97,6 +98,19 @@ function extractDateKey(input) {
 function parseBettingStateLastUpdated(markdown) {
   const match = String(markdown || '').match(/^Last Updated:\s*(.+)$/m);
   return match ? match[1].trim() : null;
+}
+
+function parseOddsApiConfig(markdown) {
+  const apiKey = String(markdown || '').match(/^API_KEY=(.+)$/m)?.[1]?.trim() || null;
+  const baseUrl = String(markdown || '').match(/^BASE_URL=(.+)$/m)?.[1]?.trim() || null;
+  const freeTierScan = String(markdown || '').match(/One full scan at (\d{1,2}:\d{2})\s*AM CT/i)?.[1] || null;
+  return {
+    key_present: Boolean(apiKey),
+    key_suffix: apiKey ? apiKey.slice(-4) : null,
+    base_url: baseUrl,
+    free_tier_scan_ct: freeTierScan ? `${freeTierScan}` : null,
+    source_path: OPENCLAW_PATHS.oddsApiConfig,
+  };
 }
 
 function extractCronTimeCt(expr) {
@@ -222,12 +236,16 @@ function buildJobStatus(job, type) {
   };
 }
 
-function computeConfigWarnings(jobStatuses) {
+function computeConfigWarnings(jobStatuses, oddsApiConfig) {
   const warnings = [];
   const monthlyReload = jobStatuses.monthly_reload;
   if (monthlyReload?.enabled) warnings.push('monthly_reload_enabled');
   const morningHunt = jobStatuses.morning_edge_hunt;
   if (morningHunt?.payload_message && /8:00 AM CT/i.test(morningHunt.payload_message)) warnings.push('morning_hunt_prompt_schedule_drift');
+  if (oddsApiConfig?.free_tier_scan_ct && morningHunt?.schedule_time_ct && oddsApiConfig.free_tier_scan_ct !== morningHunt.schedule_time_ct) {
+    warnings.push('odds_config_scan_policy_drift');
+  }
+  if (oddsApiConfig?.key_present !== true) warnings.push('odds_api_key_missing');
   const fridaySgp = jobStatuses.friday_sgp;
   if (fridaySgp?.payload_message && !/today only/i.test(fridaySgp.payload_message)) warnings.push('friday_sgp_prompt_missing_today_guard');
   return warnings;
@@ -237,6 +255,7 @@ export function buildRuntimeStatus() {
   const jobs = readJsonSafe(OPENCLAW_PATHS.jobs, { jobs: [] })?.jobs || [];
   const byName = Object.fromEntries(jobs.map((job) => [job.name, job]));
   const bettingStateMarkdown = readTextSafe(OPENCLAW_PATHS.bettingState, '');
+  const oddsApiConfig = parseOddsApiConfig(readTextSafe(OPENCLAW_PATHS.oddsApiConfig, ''));
   const stateLastUpdatedCt = parseBettingStateLastUpdated(bettingStateMarkdown);
   const stateLastUpdatedMs = parseTimestampMs(stateLastUpdatedCt);
 
@@ -292,7 +311,7 @@ export function buildRuntimeStatus() {
     },
   };
 
-  const warnings = computeConfigWarnings(jobStatuses);
+  const warnings = computeConfigWarnings(jobStatuses, oddsApiConfig);
   if (blockingSyncGap) warnings.push('state_sync_gap');
 
   return {
@@ -301,6 +320,7 @@ export function buildRuntimeStatus() {
     latest_successful_hunt: latestHunt,
     latest_successful_grading: latestGrading,
     next_edge_scan_ct: jobStatuses.morning_edge_hunt?.schedule_time_ct || null,
+    odds_api_config: oddsApiConfig,
     freshness_anchor: freshnessAnchor,
     state_files: stateFiles,
     state_sync: {

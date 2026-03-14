@@ -1160,6 +1160,17 @@ function formatPValue(value) {
   return value.toFixed(4);
 }
 
+function explainIntegrityReason(code) {
+  const map = {
+    data_freshness_fail: 'Latest validated data is stale.',
+    duplicate_rec_id: 'Recommendation log integrity failed because duplicate IDs were found.',
+    missing_scan_days: 'Scan history and recommendation log are out of sync.',
+    bankroll_discontinuity: 'Bankroll continuity check failed.',
+    state_sync_gap: 'A successful run completed, but canonical state did not sync deterministically.',
+  };
+  return map[code] || code;
+}
+
 function formatEveningGradingReport({
   generatedAtUtc,
   quantPerformance,
@@ -1336,6 +1347,82 @@ function computePassedOpportunityTracker({ recommendationRows, gradesCache }) {
     ungraded_count: Math.max(0, entries.length - graded.length),
     record_if_bet: graded.length > 0 ? `${wins}-${losses}${pushes > 0 ? `-${pushes}` : ''}` : null,
     entries,
+  };
+}
+
+function computeModelSuppressionTrace({ recommendationRows, targetDate }) {
+  const rows = recommendationRows.filter((row) => {
+    if (!targetDate) return true;
+    return String(row.timestamp_ct || '').includes(targetDate);
+  });
+
+  const traceRows = rows.map((row) => {
+    const edge = parsePercent(row.edge_pct);
+    const impliedFair = parsePercent(row.implied_prob_fair);
+    const trueProb = parsePercent(row.true_prob);
+    const decision = normalizeDecision(row.decision);
+    const rejectionReason = splitReasonCodes(row.rejection_reason)[0] || null;
+    const thresholdGap = edge !== null ? round2(2 - edge) : null;
+    let suppressionStage = 'accepted';
+    if (decision === 'bet') suppressionStage = 'accepted';
+    else if (edge !== null && edge < 2) suppressionStage = 'threshold_shortfall';
+    else if (decision === 'sit' && rejectionReason === 'low_confidence') suppressionStage = 'confidence_gate';
+    else if (decision === 'sit') suppressionStage = rejectionReason || 'other_gate';
+
+    return {
+      rec_id: row.rec_id || null,
+      timestamp_ct: row.timestamp_ct || null,
+      sport: row.sport || null,
+      market: row.market || null,
+      selection: row.selection || null,
+      source_book: row.source_book || null,
+      raw_market_price_us: row.recommended_odds_us || null,
+      raw_market_price_dec: row.recommended_odds_dec || null,
+      de_vig_implied_probability: impliedFair,
+      consensus_baseline_probability: impliedFair,
+      true_probability_estimate: trueProb,
+      confidence_total: row.confidence_total || null,
+      final_edge_percent: edge,
+      threshold_gap_to_t3: thresholdGap !== null ? round2(Math.max(0, thresholdGap)) : null,
+      decision: decision || null,
+      rejection_reason: rejectionReason,
+      suppression_stage: suppressionStage,
+    };
+  });
+
+  const suspiciousRows = traceRows.filter((row) =>
+    row.decision === 'sit'
+    && row.final_edge_percent !== null
+    && row.final_edge_percent >= 2
+  );
+
+  const summary = {
+    total_candidates: traceRows.length,
+    bets_count: traceRows.filter((row) => row.decision === 'bet').length,
+    sits_count: traceRows.filter((row) => row.decision === 'sit').length,
+    near_miss_count: traceRows.filter((row) => row.final_edge_percent !== null && row.final_edge_percent >= 0.5 && row.final_edge_percent < 2).length,
+    sit_above_t3_count: suspiciousRows.length,
+    sit_above_t3_by_reason: suspiciousRows.reduce((acc, row) => {
+      const key = row.rejection_reason || 'unknown';
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {}),
+  };
+
+  const diagnosticNotes = [];
+  if (summary.total_candidates >= 20 && summary.near_miss_count === 0 && summary.bets_count === 0) {
+    diagnosticNotes.push('High-volume scan with zero bets and zero near-misses. Review whether the model is over-anchored or the input slate was genuinely efficient.');
+  }
+  if (summary.sit_above_t3_count > 0) {
+    diagnosticNotes.push('At least one candidate cleared the T3 edge threshold but still ended as SIT. Inspect confidence and quality gates before trusting the board-level SIT conclusion.');
+  }
+
+  return {
+    target_date: targetDate,
+    summary,
+    diagnostic_notes: diagnosticNotes,
+    sample_rows: traceRows.slice(0, 50),
+    suspicious_rows: suspiciousRows,
   };
 }
 
@@ -1764,7 +1851,7 @@ function buildCanonicalDecisionPayload({
   const thresholdReminder = 'Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.';
   const why =
     messageType === 'BLOCKED'
-      ? `Integrity gate failed: ${(integrityGate.reasons || []).join(', ')}`
+      ? `Integrity gate failed: ${(integrityGate.reasons || []).map(explainIntegrityReason).join(' ')}`
       : (messageType === 'BET'
         ? 'Edge above threshold with confidence/risk gates passed.'
         : (todayDecisionConsole.no_bets_reason || 'No edges above threshold.'));
@@ -1790,6 +1877,7 @@ function buildCanonicalDecisionPayload({
     blocked: blocked
       ? {
           reason_codes: integrityGate.reasons,
+          reason_text: (integrityGate.reasons || []).map(explainIntegrityReason),
           diagnostics: integrityGate.diagnostics,
           action_to_avoid: 'Do not place bets from this scan.',
           recovery_required: 'Restore freshness + ledger integrity before decisions resume.',
@@ -1823,7 +1911,7 @@ function formatTerminalDecisionMessage(payload) {
 
   if (blocked) {
     const block = payload.blocked || {};
-    lines.push(`Block reason: ${(block.reason_codes || []).join(', ') || 'integrity_failure'}`);
+    lines.push(`Block reason: ${(block.reason_text || block.reason_codes || []).join(' ') || 'integrity_failure'}`);
     lines.push(`Avoid: ${block.action_to_avoid || 'Do not place bets from this scan.'}`);
     lines.push(`Recovery: ${block.recovery_required || 'Restore system health before decisions resume.'}`);
   } else if (payload.message_type === 'BET') {
@@ -1868,7 +1956,7 @@ function formatWhatsAppDecisionMessage(payload) {
 
   if (blocked) {
     const block = payload.blocked || {};
-    lines.push(`BLOCKED reason: ${(block.reason_codes || []).join(', ') || 'integrity_failure'}`);
+    lines.push(`BLOCKED reason: ${(block.reason_text || block.reason_codes || []).join(' ') || 'integrity_failure'}`);
     lines.push(`Do NOT: ${block.action_to_avoid || 'Place bets from this scan.'}`);
     lines.push(`Recover: ${block.recovery_required || 'Restore system health before decisions resume.'}`);
   } else if (payload.message_type === 'BET') {
@@ -2360,6 +2448,10 @@ function buildPayload(markdown) {
     recommendationRows,
     gradesCache: passedGradesCache,
   });
+  const modelSuppressionTrace = computeModelSuppressionTrace({
+    recommendationRows,
+    targetDate,
+  });
   const quantPerformance = computeQuantPerformance({
     betLog,
     recommendationRows,
@@ -2478,6 +2570,7 @@ function buildPayload(markdown) {
     },
     sit_accountability_summary: sitAccountabilitySummary,
     passed_opportunity_tracker: passedOpportunityTracker,
+    model_suppression_trace: modelSuppressionTrace,
     edge_distribution_transparency: edgeDistributionTransparency,
     market_type_reliability_index: marketTypeReliabilityIndex,
     sit_reason_code_standard: sitReasonCodeStandard,
