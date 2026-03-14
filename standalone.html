@@ -371,13 +371,13 @@ li {
   </footer>
 
   <script>window.__LIVE_DATA__ = {
-  "generated_at_utc": "2026-03-13T03:00:38.986Z",
+  "generated_at_utc": "2026-03-14T03:24:20.198Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-12 06:04 CT",
   "current_status": {
     "Bankroll": "$1,271.48",
-    "All-Time High": "$1,262.16",
+    "All-Time High": "$1,271.48",
     "Phase": "GROWTH ($250-$1500)",
     "Circuit Breaker": "OFF",
     "breaker_active": "false",
@@ -2140,21 +2140,21 @@ li {
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-12 06:04 AM",
-    "grading_cache_last_update": "2026-03-13T03:00:37.484Z",
-    "payload_build_time_utc": "2026-03-13T03:00:38.986Z"
+    "grading_cache_last_update": "2026-03-14T03:24:20.053Z",
+    "payload_build_time_utc": "2026-03-14T03:24:20.198Z"
   },
   "integrity_gate": {
-    "pass": true,
+    "pass": false,
     "checks": {
-      "data_freshness": "pass",
+      "data_freshness": "fail",
       "ledger_integrity": "pass",
       "bankroll_continuity": "pass",
-      "decision_engine_status": "pass",
+      "decision_engine_status": "blocked",
       "duplicate_rec_id_count": 0,
       "missing_scan_days_count": 0
     },
     "diagnostics": {
-      "freshness_hours_since_last_recommendation": 15.94,
+      "freshness_hours_since_last_recommendation": 40.34,
       "first_recommendation_day": "2026-03-07",
       "ignored_pre_ledger_scan_days": [
         "2026-03-03",
@@ -2177,21 +2177,23 @@ li {
         "last_updated_day": "2026-03-12"
       }
     },
-    "reasons": []
+    "reasons": [
+      "data_freshness_fail"
+    ]
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-13T03:00:38.986Z",
-    "message_type": "SIT",
-    "verdict": "SIT",
-    "what_to_do_now": "SIT and wait for next scan.",
-    "why": "No edges above threshold.",
+    "generated_at_utc": "2026-03-14T03:24:20.198Z",
+    "message_type": "BLOCKED",
+    "verdict": "BLOCKED",
+    "what_to_do_now": "Resolve system health failures before acting on recommendations.",
+    "why": "Integrity gate failed: data_freshness_fail",
     "threshold_reminder": "Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.",
     "system_health": {
-      "data_freshness": "pass",
+      "data_freshness": "fail",
       "ledger_integrity": "pass",
-      "decision_engine_status": "pass",
-      "pass": true
+      "decision_engine_status": "blocked",
+      "pass": false
     },
     "execution_state": {
       "bankroll": "$1,271.48",
@@ -2219,91 +2221,89 @@ li {
       }
     },
     "bets": [],
-    "sits": [
-      {
-        "rec_id": "20260312-001",
-        "label": "NCAAB Spread",
-        "reason": "no_edge"
+    "sits": [],
+    "blocked": {
+      "reason_codes": [
+        "data_freshness_fail"
+      ],
+      "diagnostics": {
+        "freshness_hours_since_last_recommendation": 40.34,
+        "first_recommendation_day": "2026-03-07",
+        "ignored_pre_ledger_scan_days": [
+          "2026-03-03",
+          "2026-03-04",
+          "2026-03-05",
+          "2026-03-06"
+        ],
+        "missing_scan_days": [],
+        "duplicate_rec_ids": [],
+        "bankroll_continuity": {
+          "pass": true,
+          "reason": "pass",
+          "current_bankroll": 1271.48,
+          "expected_bankroll": 1271.48,
+          "delta": 0,
+          "delta_pct": 0,
+          "anchor_bankroll": 1271.48,
+          "anchor_date": "2026-03-10",
+          "post_anchor_external_contributions": 0,
+          "last_updated_day": "2026-03-12"
+        }
       },
-      {
-        "rec_id": "20260312-002",
-        "label": "NHL ML",
-        "reason": "no_edge"
-      },
-      {
-        "rec_id": "20260312-003",
-        "label": "NCAAB Spread",
-        "reason": "no_edge"
-      },
-      {
-        "rec_id": "20260312-004",
-        "label": "NHL ML",
-        "reason": "no_edge"
-      },
-      {
-        "rec_id": "20260312-005",
-        "label": "NHL ML",
-        "reason": "no_edge"
-      },
-      {
-        "rec_id": "20260312-006",
-        "label": "NCAAB Spread",
-        "reason": "no_edge"
-      }
-    ],
-    "blocked": null
+      "action_to_avoid": "Do not place bets from this scan.",
+      "recovery_required": "Restore freshness + ledger integrity before decisions resume."
+    }
   },
   "decision_renderers": {
-    "terminal_text": "TIEREDGE DECISION\nVerdict: SIT\nWhat to do now: SIT and wait for next scan.\nWhy: No edges above threshold.\nSystem health: PASS\nChecks: data=pass, ledger=pass, engine=pass\nSIT\n- NCAAB Spread: no_edge\n- NHL ML: no_edge\n- NCAAB Spread: no_edge\n- NHL ML: no_edge\n- NHL ML: no_edge\n- NCAAB Spread: no_edge\nThreshold reminder: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.\nExecution: bankroll=$1,271.48 | open_exposure=0.0% (March 12 - no plays) | daily_exposure=0.0% (March 12 - no plays) | breaker=OFF\nAccountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=47.4% (9-10)\n",
-    "whatsapp_text": "*TIEREDGE SIT*\nWhat now: SIT and wait for next scan.\nWhy: No edges above threshold.\nHealth: PASS (data pass, ledger pass, engine pass)\n*SIT*\n- NCAAB Spread: no_edge\n- NHL ML: no_edge\n- NCAAB Spread: no_edge\n- NHL ML: no_edge\n- NHL ML: no_edge\n- NCAAB Spread: no_edge\nThreshold: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.\nExecution: bankroll $1,271.48, exposure 0.0% (March 12 - no plays), daily 0.0% (March 12 - no plays), breaker OFF\nAccountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)\n",
-    "evening_grading_report_text": "EVENING GRADING - 2026-03-13\n\nBets Settled: 18\n\nUNITS\nProfit: +5.40u\nTotal Staked: 9.57u\nROI (Units): +56.43%\n\nEXPECTATION\nExpected Profit: +$0.33\nActual Profit: +$68.73\nVariance: +$68.40\nEV Realization: 208.27\n\nSIGNAL QUALITY\nAverage CLV: +7.36%\nPositive CLV Rate: +100.00%\nBinomial p-value: 0.5860\nConfidence Level: +41.40%\nSample Status: small sample (statistically inconclusive)\n\nEDGE QUALITY\nAvg Edge Detected: +3.30%\nAvg Edge at Placement: +3.30%\nAvg Edge at Close: N/A\nEdge Retention: 100.0%\nMarket Efficiency Impact: N/A\n\nBANKROLL CONTRIBUTION POLICY\nRealized Monthly Profit: +$68.73\nRolling Average Realized Profit: $0.00\nNext Estimated Contribution: $0.00\nContribution Basis Months: 2026-02\nTotal External Contributions: +$1200.00\nInterpretation: No monthly contribution scheduled based on non-positive rolling profit.\n\nBANKROLL OVERVIEW\nActual Bankroll: +$1368.73\nStrategy Equity: +$168.73\nTotal External Contributions: +$1200.00\nRealized Betting Profit: +$68.73\nNote: Actual bankroll includes external contributions.\nNote: Strategy equity excludes external contributions.\n\nBankroll: $1,271.48\nPeak: $1,262.16\nDrawdown: N/A\n\nSystem Status: Running Hot\nNext Edge Scan: 08:00 CT\n",
+    "terminal_text": "TIEREDGE DECISION\nVerdict: BLOCKED\nWhat to do now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: data_freshness_fail\nSystem health: FAIL\nChecks: data=fail, ledger=pass, engine=blocked\nBlock reason: data_freshness_fail\nAvoid: Do not place bets from this scan.\nRecovery: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll=$1,271.48 | open_exposure=0.0% (March 12 - no plays) | daily_exposure=0.0% (March 12 - no plays) | breaker=OFF\nAccountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=47.4% (9-10)\n",
+    "whatsapp_text": "*TIEREDGE BLOCKED*\nWhat now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: data_freshness_fail\nHealth: FAIL (data fail, ledger pass, engine blocked)\nBLOCKED reason: data_freshness_fail\nDo NOT: Do not place bets from this scan.\nRecover: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll $1,271.48, exposure 0.0% (March 12 - no plays), daily 0.0% (March 12 - no plays), breaker OFF\nAccountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)\n",
+    "evening_grading_report_text": "EVENING GRADING - 2026-03-14\n\nBets Settled: 18\n\nUNITS\nProfit: +5.40u\nTotal Staked: 9.57u\nROI (Units): +56.43%\n\nEXPECTATION\nExpected Profit: +$0.33\nActual Profit: +$68.73\nVariance: +$68.40\nEV Realization: 208.27\n\nSIGNAL QUALITY\nAverage CLV: +7.36%\nPositive CLV Rate: +100.00%\nBinomial p-value: 0.5860\nConfidence Level: +41.40%\nSample Status: small sample (statistically inconclusive)\n\nEDGE QUALITY\nAvg Edge Detected: +3.30%\nAvg Edge at Placement: +3.30%\nAvg Edge at Close: N/A\nEdge Retention: 100.0%\nMarket Efficiency Impact: N/A\n\nBANKROLL CONTRIBUTION POLICY\nRealized Monthly Profit: +$68.73\nRolling Average Realized Profit: $0.00\nNext Estimated Contribution: $0.00\nContribution Basis Months: 2026-02\nTotal External Contributions: +$1200.00\nInterpretation: No monthly contribution scheduled based on non-positive rolling profit.\n\nBANKROLL OVERVIEW\nActual Bankroll: +$1368.73\nStrategy Equity: +$168.73\nTotal External Contributions: +$1200.00\nRealized Betting Profit: +$68.73\nNote: Actual bankroll includes external contributions.\nNote: Strategy equity excludes external contributions.\n\nBankroll: $1,271.48\nPeak: $1,271.48\nDrawdown: N/A\n\nSystem Status: Running Hot\nNext Edge Scan: 08:00 CT\n",
     "dashboard_model": {
       "today": {
-        "verdict": "SIT",
-        "blocked": false,
-        "why": "No edges above threshold.",
-        "what_to_do_now": "SIT and wait for next scan.",
+        "verdict": "BLOCKED",
+        "blocked": true,
+        "why": "Integrity gate failed: data_freshness_fail",
+        "what_to_do_now": "Resolve system health failures before acting on recommendations.",
         "threshold_reminder": "Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.",
         "bets": [],
-        "sits": [
-          {
-            "rec_id": "20260312-001",
-            "label": "NCAAB Spread",
-            "reason": "no_edge"
+        "sits": [],
+        "blocked_info": {
+          "reason_codes": [
+            "data_freshness_fail"
+          ],
+          "diagnostics": {
+            "freshness_hours_since_last_recommendation": 40.34,
+            "first_recommendation_day": "2026-03-07",
+            "ignored_pre_ledger_scan_days": [
+              "2026-03-03",
+              "2026-03-04",
+              "2026-03-05",
+              "2026-03-06"
+            ],
+            "missing_scan_days": [],
+            "duplicate_rec_ids": [],
+            "bankroll_continuity": {
+              "pass": true,
+              "reason": "pass",
+              "current_bankroll": 1271.48,
+              "expected_bankroll": 1271.48,
+              "delta": 0,
+              "delta_pct": 0,
+              "anchor_bankroll": 1271.48,
+              "anchor_date": "2026-03-10",
+              "post_anchor_external_contributions": 0,
+              "last_updated_day": "2026-03-12"
+            }
           },
-          {
-            "rec_id": "20260312-002",
-            "label": "NHL ML",
-            "reason": "no_edge"
-          },
-          {
-            "rec_id": "20260312-003",
-            "label": "NCAAB Spread",
-            "reason": "no_edge"
-          },
-          {
-            "rec_id": "20260312-004",
-            "label": "NHL ML",
-            "reason": "no_edge"
-          },
-          {
-            "rec_id": "20260312-005",
-            "label": "NHL ML",
-            "reason": "no_edge"
-          },
-          {
-            "rec_id": "20260312-006",
-            "label": "NCAAB Spread",
-            "reason": "no_edge"
-          }
-        ],
-        "blocked_info": null
+          "action_to_avoid": "Do not place bets from this scan.",
+          "recovery_required": "Restore freshness + ledger integrity before decisions resume."
+        }
       },
       "system_health": {
-        "data_freshness": "pass",
+        "data_freshness": "fail",
         "ledger_integrity": "pass",
-        "decision_engine_status": "pass",
-        "pass": true
+        "decision_engine_status": "blocked",
+        "pass": false
       },
       "execution": {
         "bankroll": "$1,271.48",
@@ -2334,51 +2334,50 @@ li {
   },
   "decision_console": {
     "today": {
-      "verdict": "SIT",
-      "blocked": false,
-      "why": "No edges above threshold.",
-      "what_to_do_now": "SIT and wait for next scan.",
+      "verdict": "BLOCKED",
+      "blocked": true,
+      "why": "Integrity gate failed: data_freshness_fail",
+      "what_to_do_now": "Resolve system health failures before acting on recommendations.",
       "threshold_reminder": "Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.",
       "bets": [],
-      "sits": [
-        {
-          "rec_id": "20260312-001",
-          "label": "NCAAB Spread",
-          "reason": "no_edge"
+      "sits": [],
+      "blocked_info": {
+        "reason_codes": [
+          "data_freshness_fail"
+        ],
+        "diagnostics": {
+          "freshness_hours_since_last_recommendation": 40.34,
+          "first_recommendation_day": "2026-03-07",
+          "ignored_pre_ledger_scan_days": [
+            "2026-03-03",
+            "2026-03-04",
+            "2026-03-05",
+            "2026-03-06"
+          ],
+          "missing_scan_days": [],
+          "duplicate_rec_ids": [],
+          "bankroll_continuity": {
+            "pass": true,
+            "reason": "pass",
+            "current_bankroll": 1271.48,
+            "expected_bankroll": 1271.48,
+            "delta": 0,
+            "delta_pct": 0,
+            "anchor_bankroll": 1271.48,
+            "anchor_date": "2026-03-10",
+            "post_anchor_external_contributions": 0,
+            "last_updated_day": "2026-03-12"
+          }
         },
-        {
-          "rec_id": "20260312-002",
-          "label": "NHL ML",
-          "reason": "no_edge"
-        },
-        {
-          "rec_id": "20260312-003",
-          "label": "NCAAB Spread",
-          "reason": "no_edge"
-        },
-        {
-          "rec_id": "20260312-004",
-          "label": "NHL ML",
-          "reason": "no_edge"
-        },
-        {
-          "rec_id": "20260312-005",
-          "label": "NHL ML",
-          "reason": "no_edge"
-        },
-        {
-          "rec_id": "20260312-006",
-          "label": "NCAAB Spread",
-          "reason": "no_edge"
-        }
-      ],
-      "blocked_info": null
+        "action_to_avoid": "Do not place bets from this scan.",
+        "recovery_required": "Restore freshness + ledger integrity before decisions resume."
+      }
     },
     "system_health": {
-      "data_freshness": "pass",
+      "data_freshness": "fail",
       "ledger_integrity": "pass",
-      "decision_engine_status": "pass",
-      "pass": true
+      "decision_engine_status": "blocked",
+      "pass": false
     },
     "execution": {
       "bankroll": "$1,271.48",

@@ -1,14 +1,9 @@
-*TIEREDGE SIT*
-What now: SIT and wait for next scan.
-Why: No edges above threshold.
-Health: PASS (data pass, ledger pass, engine pass)
-*SIT*
-- NCAAB Spread: no_edge
-- NHL ML: no_edge
-- NCAAB Spread: no_edge
-- NHL ML: no_edge
-- NHL ML: no_edge
-- NCAAB Spread: no_edge
-Threshold: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.
+*TIEREDGE BLOCKED*
+What now: Resolve system health failures before acting on recommendations.
+Why: Integrity gate failed: data_freshness_fail
+Health: FAIL (data fail, ledger pass, engine blocked)
+BLOCKED reason: data_freshness_fail
+Do NOT: Do not place bets from this scan.
+Recover: Restore freshness + ledger integrity before decisions resume.
 Execution: bankroll $1,271.48, exposure 0.0% (March 12 - no plays), daily 0.0% (March 12 - no plays), breaker OFF
 Accountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)
