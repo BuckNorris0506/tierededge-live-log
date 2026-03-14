@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-14T03:24:20.198Z",
+  "generated_at_utc": "2026-03-14T03:25:02.039Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-12 06:04 CT",
@@ -1768,8 +1768,8 @@
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-12 06:04 AM",
-    "grading_cache_last_update": "2026-03-14T03:24:20.053Z",
-    "payload_build_time_utc": "2026-03-14T03:24:20.198Z"
+    "grading_cache_last_update": "2026-03-14T03:25:01.997Z",
+    "payload_build_time_utc": "2026-03-14T03:25:02.039Z"
   },
   "integrity_gate": {
     "pass": false,
@@ -1782,7 +1782,7 @@
       "missing_scan_days_count": 0
     },
     "diagnostics": {
-      "freshness_hours_since_last_recommendation": 40.34,
+      "freshness_hours_since_last_recommendation": 40.35,
       "first_recommendation_day": "2026-03-07",
       "ignored_pre_ledger_scan_days": [
         "2026-03-03",
@@ -1811,7 +1811,7 @@
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-14T03:24:20.198Z",
+    "generated_at_utc": "2026-03-14T03:25:02.039Z",
     "message_type": "BLOCKED",
     "verdict": "BLOCKED",
     "what_to_do_now": "Resolve system health failures before acting on recommendations.",
@@ -1855,7 +1855,7 @@
         "data_freshness_fail"
       ],
       "diagnostics": {
-        "freshness_hours_since_last_recommendation": 40.34,
+        "freshness_hours_since_last_recommendation": 40.35,
         "first_recommendation_day": "2026-03-07",
         "ignored_pre_ledger_scan_days": [
           "2026-03-03",
@@ -1900,7 +1900,7 @@
             "data_freshness_fail"
           ],
           "diagnostics": {
-            "freshness_hours_since_last_recommendation": 40.34,
+            "freshness_hours_since_last_recommendation": 40.35,
             "first_recommendation_day": "2026-03-07",
             "ignored_pre_ledger_scan_days": [
               "2026-03-03",
@@ -1974,7 +1974,7 @@
           "data_freshness_fail"
         ],
         "diagnostics": {
-          "freshness_hours_since_last_recommendation": 40.34,
+          "freshness_hours_since_last_recommendation": 40.35,
           "first_recommendation_day": "2026-03-07",
           "ignored_pre_ledger_scan_days": [
             "2026-03-03",

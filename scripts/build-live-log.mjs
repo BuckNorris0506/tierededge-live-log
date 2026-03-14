@@ -1180,7 +1180,7 @@ function formatEveningGradingReport({
     `Drawdown: ${drawdown !== null ? `${drawdown}%` : 'N/A'}`,
     '',
     `System Status: ${quantPerformance.system_status || 'Unknown'}`,
-    `Next Edge Scan: ${quantPerformance.next_edge_scan_ct || '08:00'} CT`,
+    `Next Edge Scan: ${quantPerformance.next_edge_scan_ct || '06:00'} CT`,
     '',
   ].join('\n');
 }
