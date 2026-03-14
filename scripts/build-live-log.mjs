@@ -424,12 +424,16 @@ function computeBankrollContributionPolicy({
 }) {
   const realizedMonthlyProfitMap = {};
   let realizedLifetimeProfit = 0;
+  let coreEdgeProfitLifetime = 0;
+  let funSgpProfitLifetime = 0;
   for (const row of betLog) {
     const result = normalizeDecision(row.Result);
     if (!result || result === 'pending') continue;
     const pl = parseAsNumber(row['P/L']);
     if (pl === null) continue;
     realizedLifetimeProfit += pl;
+    if (row.bet_class === 'EDGE_BET') coreEdgeProfitLifetime += pl;
+    if (row.bet_class === 'FUN_SGP') funSgpProfitLifetime += pl;
     const monthKey = monthKeyFromDateKey(String(row.Date || '').trim());
     if (!monthKey) continue;
     realizedMonthlyProfitMap[monthKey] = (realizedMonthlyProfitMap[monthKey] || 0) + pl;
@@ -506,6 +510,10 @@ function computeBankrollContributionPolicy({
     startingBankroll !== null
       ? round2(startingBankroll + bankrollGrowthFromBetting)
       : null;
+  const coreStrategyEquity =
+    startingBankroll !== null
+      ? round2(startingBankroll + coreEdgeProfitLifetime)
+      : null;
   const actualBankroll =
     startingBankroll !== null
       ? round2(startingBankroll + bankrollGrowthFromBetting + bankrollGrowthFromContributions)
@@ -555,10 +563,15 @@ function computeBankrollContributionPolicy({
     reported_current_bankroll: round2(currentBankroll),
     actual_bankroll: actualBankroll,
     strategy_equity: strategyEquity,
+    overall_strategy_equity: strategyEquity,
+    core_strategy_equity: round2(coreStrategyEquity),
     total_external_contributions: round2(totalExternalContributions),
     total_external_contributions_from_ledger: round2(ledgerExternalContributions),
     total_policy_contributions_recorded: round2(policyContributionTotal),
     realized_betting_profit_lifetime: round2(realizedLifetimeProfit),
+    overall_betting_profit_lifetime: round2(realizedLifetimeProfit),
+    core_edge_profit_lifetime: round2(coreEdgeProfitLifetime),
+    fun_sgp_profit_lifetime: round2(funSgpProfitLifetime),
     bankroll_growth_from_betting: bankrollGrowthFromBetting,
     bankroll_growth_from_contributions: bankrollGrowthFromContributions,
     bankroll_formula_difference: bankrollFormulaDiff,
@@ -958,7 +971,9 @@ function computeQuantPerformance({ betLog, recommendationRows, currentStatus, le
   const unitBaselineBankroll = referenceBankrollFromLedger || currentBankroll;
   const unitSize = unitBaselineBankroll !== null ? round2(unitBaselineBankroll * 0.01) : null;
 
-  for (const bet of betLog) {
+  const coreBetLog = (betLog || []).filter((row) => row.include_in_core_strategy_metrics !== false);
+
+  for (const bet of coreBetLog) {
     const result = normalizeDecision(bet.Result);
     if (!result || result === 'pending') continue;
 
@@ -1096,10 +1111,11 @@ function computeQuantPerformance({ betLog, recommendationRows, currentStatus, le
     else systemStatus = 'Stable';
   }
 
-  const binomialLifetime = computeBinomialSummaryFromRows(betLog);
-  const binomialRolling = computeRollingBinomialWindows(betLog);
+  const binomialLifetime = computeBinomialSummaryFromRows(coreBetLog);
+  const binomialRolling = computeRollingBinomialWindows(coreBetLog);
 
   return {
+    bet_class_scope: 'EDGE_BET',
     settled_bets_evaluated: quantBetRows.length,
     unit_size: unitSize,
     unit_baseline_bankroll: unitBaselineBankroll !== null ? round2(unitBaselineBankroll) : null,
@@ -1188,6 +1204,7 @@ function formatEveningGradingReport({
   currentStatus,
   decisionQuality,
   bankrollContributionPolicy,
+  bettingResultsSplit,
 }) {
   const now = new Date(generatedAtUtc || Date.now());
   const dateLabel = now.toISOString().slice(0, 10);
@@ -1198,7 +1215,20 @@ function formatEveningGradingReport({
     '',
     `Bets Settled: ${quantPerformance.settled_bets_evaluated ?? 0}`,
     '',
-    'UNITS',
+    'OVERALL BETTING RESULTS',
+    `Count: ${bettingResultsSplit?.overall?.count ?? 0}`,
+    `Profit/Loss: ${formatMoneySigned(bettingResultsSplit?.overall?.profit_loss)}`,
+    `Profit Units: ${formatUnits(bettingResultsSplit?.overall?.profit_units)}`,
+    `ROI: ${formatPctSigned(bettingResultsSplit?.overall?.roi)}`,
+    `Win Rate: ${formatPctSigned(bettingResultsSplit?.overall?.win_rate)}`,
+    '',
+    'FUN SGP RESULTS',
+    `Count: ${bettingResultsSplit?.fun_sgp?.count ?? 0}`,
+    `Profit/Loss: ${formatMoneySigned(bettingResultsSplit?.fun_sgp?.profit_loss)}`,
+    `Profit Units: ${formatUnits(bettingResultsSplit?.fun_sgp?.profit_units)}`,
+    `ROI: ${formatPctSigned(bettingResultsSplit?.fun_sgp?.roi)}`,
+    '',
+    'CORE TIEREDGE STRATEGY',
     `Profit: ${formatUnits(quantPerformance.total_units)}`,
     `Total Staked: ${quantPerformance.total_staked_units !== null && quantPerformance.total_staked_units !== undefined ? `${quantPerformance.total_staked_units.toFixed(2)}u` : 'N/A'}`,
     `ROI (Units): ${formatPctSigned(quantPerformance.roi_units)}`,
@@ -1233,11 +1263,13 @@ function formatEveningGradingReport({
     '',
     'BANKROLL OVERVIEW',
     `Actual Bankroll: ${formatMoneySigned(bankrollContributionPolicy?.actual_bankroll)}`,
-    `Strategy Equity: ${formatMoneySigned(bankrollContributionPolicy?.strategy_equity)}`,
+    `Overall Strategy Equity: ${formatMoneySigned(bankrollContributionPolicy?.overall_strategy_equity ?? bankrollContributionPolicy?.strategy_equity)}`,
+    `Core Strategy Equity: ${formatMoneySigned(bankrollContributionPolicy?.core_strategy_equity)}`,
     `Total External Contributions: ${formatMoneySigned(bankrollContributionPolicy?.total_external_contributions)}`,
     `Realized Betting Profit: ${formatMoneySigned(bankrollContributionPolicy?.realized_betting_profit_lifetime)}`,
     'Note: Actual bankroll includes external contributions.',
-    'Note: Strategy equity excludes external contributions.',
+    'Note: Overall strategy equity excludes external contributions but includes FUN_SGP.',
+    'Note: Core strategy equity excludes external contributions and FUN_SGP.',
     '',
     `Bankroll: ${currentStatus.Bankroll || 'N/A'}`,
     `Peak: ${currentStatus['All-Time High'] || 'N/A'}`,
@@ -1283,6 +1315,108 @@ function buildBetIdentity(row) {
     normalizeKeyPart(row.Bet || row.selection || row['Selection']),
     normalizeKeyPart(row.Book || row.book || row.source_book),
   ].join('|');
+}
+
+function classifyBetClass(row) {
+  const explicitClass = String(row['Bet Class'] || row.bet_class || '').trim().toUpperCase();
+  if (explicitClass) return explicitClass;
+
+  const tier = String(row.Tier || row.tier || '').trim().toUpperCase();
+  const market = String(row.Market || row.market || '').trim().toUpperCase();
+  const bet = String(row.Bet || row.bet || row.selection || '').trim().toUpperCase();
+
+  if (tier === 'FUN' || market === 'SGP' || market === 'PARLAY' || bet.includes('PARLAY')) return 'FUN_SGP';
+  if (/^T[123]$/.test(tier)) return 'EDGE_BET';
+  return 'MANUAL_OTHER';
+}
+
+function shouldIncludeInCoreStrategyMetrics(betClass) {
+  return betClass === 'EDGE_BET';
+}
+
+function shouldIncludeInActualBankroll(betClass) {
+  return ['EDGE_BET', 'FUN_SGP', 'MANUAL_OTHER'].includes(betClass);
+}
+
+function deriveParlayLegs(row, betClass) {
+  if (betClass !== 'FUN_SGP') return [];
+  const raw = String(row.Bet || row.bet || row.selection || '').trim();
+  if (!raw) return [];
+  return raw
+    .split(/\s*\/\s*/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+function normalizeBetRow(row, fallbackDate = null) {
+  const betClass = classifyBetClass(row);
+  const normalized = {
+    ...row,
+    Date: row.Date || fallbackDate || null,
+    bet_class: betClass,
+    bet_subtype: betClass === 'FUN_SGP' ? String(row.Market || row.market || 'SGP').trim().toUpperCase() : null,
+    include_in_core_strategy_metrics: shouldIncludeInCoreStrategyMetrics(betClass),
+    include_in_actual_bankroll: shouldIncludeInActualBankroll(betClass),
+    parlay_legs: deriveParlayLegs(row, betClass),
+  };
+  return normalized;
+}
+
+function filterSettledRows(rows) {
+  return (rows || []).filter((row) => {
+    const result = normalizeDecision(row.Result || row.result);
+    return result && result !== 'pending';
+  });
+}
+
+function computeBetClassSummary(rows) {
+  const settledRows = filterSettledRows(rows).filter((row) => row.include_in_actual_bankroll !== false);
+  const stakeValues = settledRows.map((row) => parseAsNumber(row.Stake)).filter((n) => n !== null);
+  const plValues = settledRows.map((row) => parseAsNumber(row['P/L'])).filter((n) => n !== null);
+  const decimalOdds = settledRows.map((row) => toDecimalOddsFromBetRow(row)).filter((n) => n !== null);
+  const wins = settledRows.filter((row) => normalizeDecision(row.Result) === 'win').length;
+  const losses = settledRows.filter((row) => normalizeDecision(row.Result) === 'loss').length;
+  const pushes = settledRows.filter((row) => normalizeDecision(row.Result) === 'push').length;
+  const totalStake = stakeValues.reduce((a, b) => a + b, 0);
+  const totalProfit = plValues.reduce((a, b) => a + b, 0);
+  const unitBase = totalStake > 0 && settledRows.length > 0
+    ? stakeValues.reduce((a, b) => a + b, 0) / settledRows.length
+    : null;
+  const totalStakedUnits =
+    unitBase !== null && unitBase > 0
+      ? totalStake / unitBase
+      : null;
+  const profitUnits =
+    unitBase !== null && unitBase > 0
+      ? totalProfit / unitBase
+      : null;
+  const roi =
+    totalStake > 0
+      ? (totalProfit / totalStake) * 100
+      : null;
+  const averageOdds =
+    decimalOdds.length > 0
+      ? decimalOdds.reduce((a, b) => a + b, 0) / decimalOdds.length
+      : null;
+  const winRate =
+    settledRows.length > 0
+      ? (wins / settledRows.length) * 100
+      : null;
+
+  return {
+    count: settledRows.length,
+    wins,
+    losses,
+    pushes,
+    total_stake: round2(totalStake),
+    total_staked_units: round2(totalStakedUnits),
+    profit_loss: round2(totalProfit),
+    profit_units: round2(profitUnits),
+    roi: round2(roi),
+    average_odds_decimal: round2(averageOdds),
+    average_odds_american: averageOdds !== null ? null : null,
+    win_rate: round2(winRate),
+  };
 }
 
 function dedupeStalePendingBetLog(betLog) {
@@ -2053,6 +2187,7 @@ function computeDecisionQuality({
 }) {
   const targetDate = parseDateFromLastUpdated(lastUpdatedCt);
   const allowedSitReasons = new Set(SUPPORTED_SIT_REASON_CODES);
+  const coreBetLog = (betLog || []).filter((row) => row.include_in_core_strategy_metrics !== false);
 
   const tierPlacedBets = todaysBets.filter((row) => /^T[123]$/i.test(String(row.Tier || '').trim()));
 
@@ -2076,7 +2211,7 @@ function computeDecisionQuality({
         ? rejectedFromSummary
         : (rejectedOpportunities.length > 0 ? rejectedOpportunities.length : rejectedFromSummary));
 
-  const clvTierBets = betLog.filter((row) => /^T[123]$/i.test(String(row.Tier || '').trim()));
+  const clvTierBets = coreBetLog.filter((row) => /^T[123]$/i.test(String(row.Tier || '').trim()));
   const clvValues = clvTierBets.map((row) => parseClvValue(row.CLV)).filter((n) => n !== null);
   const positiveClvBetsCount = clvValues.filter((n) => n > 0).length;
   const positiveClvRate = safeRate(positiveClvBetsCount, clvValues.length);
@@ -2207,6 +2342,27 @@ function computeDecisionQuality({
   };
 }
 
+function computeBettingResultsSplit({ betLog }) {
+  const overallRows = (betLog || []).filter((row) => row.include_in_actual_bankroll !== false);
+  const coreRows = overallRows.filter((row) => row.bet_class === 'EDGE_BET');
+  const funRows = overallRows.filter((row) => row.bet_class === 'FUN_SGP');
+
+  return {
+    overall: {
+      bet_class_scope: 'ALL_REAL_BETS',
+      ...computeBetClassSummary(overallRows),
+    },
+    core_strategy: {
+      bet_class_scope: 'EDGE_BET',
+      ...computeBetClassSummary(coreRows),
+    },
+    fun_sgp: {
+      bet_class_scope: 'FUN_SGP',
+      ...computeBetClassSummary(funRows),
+    },
+  };
+}
+
 function computeWeeklyPerformanceReview({
   decisionQuality,
   executionQuality,
@@ -2214,6 +2370,7 @@ function computeWeeklyPerformanceReview({
   sitAccountabilitySummary,
   currentStatus,
   bankrollContributionPolicy,
+  bettingResultsSplit,
 }) {
   const profitFromBets = parseAsNumber(quantPerformance?.actual_profit);
   const profitIfAllSitsBet = parseAsNumber(sitAccountabilitySummary?.net_counterfactual_pl_if_bet);
@@ -2245,10 +2402,26 @@ function computeWeeklyPerformanceReview({
       decision_edge: round2(decisionEdge),
       sit_discipline_rate: currentStatus?.['Sit Discipline Rate (7d)'] || null,
     },
+    overall_betting_results: {
+      ...bettingResultsSplit?.overall,
+      label: 'Overall results include FUN_SGP bets.',
+    },
+    core_strategy_results: {
+      ...bettingResultsSplit?.core_strategy,
+      label: 'Core strategy metrics exclude FUN_SGP bets.',
+    },
+    fun_sgp_results: {
+      ...bettingResultsSplit?.fun_sgp,
+      label: 'FUN_SGP results are included in bankroll truth, but excluded from core strategy validation.',
+    },
     bankroll_contribution_policy: {
       actual_bankroll: bankrollContributionPolicy?.actual_bankroll ?? null,
       strategy_equity: bankrollContributionPolicy?.strategy_equity ?? null,
+      overall_strategy_equity: bankrollContributionPolicy?.overall_strategy_equity ?? bankrollContributionPolicy?.strategy_equity ?? null,
+      core_strategy_equity: bankrollContributionPolicy?.core_strategy_equity ?? null,
       realized_betting_profit_lifetime: bankrollContributionPolicy?.realized_betting_profit_lifetime ?? null,
+      core_edge_profit_lifetime: bankrollContributionPolicy?.core_edge_profit_lifetime ?? null,
+      fun_sgp_profit_lifetime: bankrollContributionPolicy?.fun_sgp_profit_lifetime ?? null,
       bankroll_growth_from_betting: bankrollContributionPolicy?.bankroll_growth_from_betting ?? null,
       bankroll_growth_from_contributions: bankrollContributionPolicy?.bankroll_growth_from_contributions ?? null,
       realized_monthly_profit: bankrollContributionPolicy?.realized_monthly_profit ?? null,
@@ -2424,7 +2597,7 @@ function buildPayload(markdown) {
 
   const todaysBetsRaw = filterPlaceholderBetRows(parseTable(extractSection(markdown, "Today's Bets")));
   const betLogRaw = parseTable(extractSection(markdown, 'Bet Log (All Graded Bets)'));
-  const betLog = dedupeStalePendingBetLog(betLogRaw);
+  const betLog = dedupeStalePendingBetLog(betLogRaw).map((row) => normalizeBetRow(row));
   const rejectedOpportunities = parseTable(
     extractFirstSection(markdown, ['Rejected Opportunities (Today)', 'Rejected Opportunities'])
   );
@@ -2442,9 +2615,10 @@ function buildPayload(markdown) {
   const suppressionTargetDate = resolveSuppressionTargetDate(candidateMarketRows, targetDate);
   const passedGradesCache = readPassedGradesCache();
 
+  const todaysBetsNormalized = todaysBetsRaw.map((row) => normalizeBetRow(row, targetDate));
   const todaysBets = redactPending
-    ? todaysBetsRaw.filter((row) => String(row.Result || '').toUpperCase() !== 'PENDING')
-    : todaysBetsRaw;
+    ? todaysBetsNormalized.filter((row) => String(row.Result || '').toUpperCase() !== 'PENDING')
+    : todaysBetsNormalized;
   const pendingBets = redactPending ? [] : pendingBetsRaw;
 
   const bankrollValue = parseAsNumber(currentStatus.Bankroll);
@@ -2512,6 +2686,7 @@ function buildPayload(markdown) {
           sitAccountability,
           rejectedOpportunities,
         });
+  const bettingResultsSplit = computeBettingResultsSplit({ betLog });
   const weeklyPerformanceReview = computeWeeklyPerformanceReview({
     decisionQuality,
     executionQuality,
@@ -2519,6 +2694,7 @@ function buildPayload(markdown) {
     sitAccountabilitySummary,
     currentStatus,
     bankrollContributionPolicy,
+    bettingResultsSplit,
   });
   const generatedAtUtc = new Date().toISOString();
   const dataFreshness = computeDataFreshness({
@@ -2578,6 +2754,7 @@ function buildPayload(markdown) {
     currentStatus,
     decisionQuality,
     bankrollContributionPolicy,
+    bettingResultsSplit,
   });
   const decisionDashboardModel = buildDashboardDecisionModel(canonicalDecisionPayload);
 
@@ -2630,6 +2807,10 @@ function buildPayload(markdown) {
     execution_quality: executionQuality,
     weekly_running_totals: weeklyRunningTotals,
     weekly_performance_review: weeklyPerformanceReview,
+    betting_results_split: bettingResultsSplit,
+    overall_betting_results: bettingResultsSplit.overall,
+    core_strategy_results: bettingResultsSplit.core_strategy,
+    fun_sgp_results: bettingResultsSplit.fun_sgp,
     bankroll_contribution_policy: bankrollContributionPolicy,
     bankroll_contribution_ledger: contributionLedger.entries,
     bankroll_contribution_ledger_path: contributionLedger.path,
@@ -2680,8 +2861,12 @@ function buildPayload(markdown) {
     starting_bankroll: bankrollContributionPolicy.starting_bankroll,
     actual_bankroll: bankrollContributionPolicy.actual_bankroll,
     strategy_equity: bankrollContributionPolicy.strategy_equity,
+    overall_strategy_equity: bankrollContributionPolicy.overall_strategy_equity,
+    core_strategy_equity: bankrollContributionPolicy.core_strategy_equity,
     total_external_contributions: bankrollContributionPolicy.total_external_contributions,
     realized_betting_profit_lifetime: bankrollContributionPolicy.realized_betting_profit_lifetime,
+    core_edge_profit_lifetime: bankrollContributionPolicy.core_edge_profit_lifetime,
+    fun_sgp_profit_lifetime: bankrollContributionPolicy.fun_sgp_profit_lifetime,
     bankroll_growth_from_betting: bankrollContributionPolicy.bankroll_growth_from_betting,
     bankroll_growth_from_contributions: bankrollContributionPolicy.bankroll_growth_from_contributions,
     realized_monthly_profit: bankrollContributionPolicy.realized_monthly_profit,
@@ -2701,8 +2886,12 @@ function buildPayload(markdown) {
       starting_bankroll: bankrollContributionPolicy.starting_bankroll,
       actual_bankroll: bankrollContributionPolicy.actual_bankroll,
       strategy_equity: bankrollContributionPolicy.strategy_equity,
+      overall_strategy_equity: bankrollContributionPolicy.overall_strategy_equity,
+      core_strategy_equity: bankrollContributionPolicy.core_strategy_equity,
       total_external_contributions: bankrollContributionPolicy.total_external_contributions,
       realized_betting_profit_lifetime: bankrollContributionPolicy.realized_betting_profit_lifetime,
+      core_edge_profit_lifetime: bankrollContributionPolicy.core_edge_profit_lifetime,
+      fun_sgp_profit_lifetime: bankrollContributionPolicy.fun_sgp_profit_lifetime,
       bankroll_growth_from_betting: bankrollContributionPolicy.bankroll_growth_from_betting,
       bankroll_growth_from_contributions: bankrollContributionPolicy.bankroll_growth_from_contributions,
       realized_monthly_profit: bankrollContributionPolicy.realized_monthly_profit,

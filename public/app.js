@@ -186,6 +186,7 @@ function buildBetRows(data) {
   const todayRows = (data.todays_bets || []).map((row) => ({
     Date: lastUpdatedDay,
     'Logged At': formatLoggedAt(lastUpdatedDay, row['Timestamp (CT)']),
+    'Bet Class': row.bet_class,
     Sport: row.Sport,
     Market: row.Market,
     Bet: row.Bet,
@@ -210,6 +211,7 @@ function buildBetRows(data) {
   const recent = (data.bet_log || []).slice(0, 50).map((row) => ({
     Date: row.Date,
     'Logged At': formatLoggedAt(row.Date, row['Timestamp (CT)']),
+    'Bet Class': row.bet_class,
     Sport: row.Sport,
     Market: row.Market,
     Bet: row.Bet,
@@ -237,7 +239,7 @@ function renderBets(data) {
   renderTable(
     'bets-table',
     config.rows,
-    ['Date', 'Logged At', 'Sport', 'Market', 'Bet', 'Odds (US)', 'Odds (Dec)', 'Book', 'Stake', 'Tier', 'Result', 'P/L', 'CLV'],
+    ['Date', 'Logged At', 'Bet Class', 'Sport', 'Market', 'Bet', 'Odds (US)', 'Odds (Dec)', 'Book', 'Stake', 'Tier', 'Result', 'P/L', 'CLV'],
     config.emptyText
   );
 }
@@ -280,10 +282,28 @@ function renderRecentTotals(data) {
   const review = data.weekly_performance_review || {};
   const clv = review.clv_metrics || {};
   const dq = review.decision_quality || {};
+  const overall = review.overall_betting_results || data.overall_betting_results || {};
+  const core = review.core_strategy_results || data.core_strategy_results || {};
+  const fun = review.fun_sgp_results || data.fun_sgp_results || {};
   const policy = review.bankroll_contribution_policy || {};
   const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}$${Math.abs(n).toFixed(2)}`);
   const asPct = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : ''}${n}%`);
+  const asUnits = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}${Math.abs(n).toFixed(2)}u`);
   const rows = [
+    ['Overall Betting • Count', overall.count ?? MISSING],
+    ['Overall Betting • Profit/Loss', asMoney(overall.profit_loss)],
+    ['Overall Betting • Profit Units', asUnits(overall.profit_units)],
+    ['Overall Betting • ROI', asPct(overall.roi)],
+    ['Overall Betting • Win rate', asPct(overall.win_rate)],
+    ['Core Strategy • Count', core.count ?? MISSING],
+    ['Core Strategy • Profit/Loss', asMoney(core.profit_loss)],
+    ['Core Strategy • Profit Units', asUnits(core.profit_units)],
+    ['Core Strategy • ROI', asPct(core.roi)],
+    ['FUN SGP • Count', fun.count ?? MISSING],
+    ['FUN SGP • Profit/Loss', asMoney(fun.profit_loss)],
+    ['FUN SGP • Profit Units', asUnits(fun.profit_units)],
+    ['FUN SGP • ROI', asPct(fun.roi)],
+    ['FUN SGP • Win rate', asPct(fun.win_rate)],
     ['CLV Metrics • Average CLV', clv.average_clv !== null && clv.average_clv !== undefined ? `${clv.average_clv}%` : MISSING],
     ['CLV Metrics • Positive CLV rate', asPct(clv.positive_clv_rate)],
     ['CLV Metrics • CLV win rate', asPct(clv.clv_win_rate)],
@@ -320,6 +340,7 @@ function renderQuantPerformance(data) {
   const asPValue = (n) => (n === null || n === undefined ? MISSING : n.toFixed(4));
 
   const perfRows = [
+    ['Scope', 'EDGE_BET only'],
     ['Bets settled', q.settled_bets_evaluated],
     ['Total units', asUnits(q.total_units)],
     ['Total staked units', asUnitsUnsigned(q.total_staked_units)],
@@ -336,6 +357,7 @@ function renderQuantPerformance(data) {
   renderRows('quant-performance-list', perfRows);
 
   const edgeRows = [
+    ['Scope', 'EDGE_BET only'],
     ['Average CLV', asPct(dq.avg_clv)],
     ['Positive CLV rate', asPct(dq.positive_clv_rate)],
     ['Observed win rate', asPct(q.observed_win_rate)],
@@ -379,15 +401,19 @@ function renderBankrollContribution(data) {
     ['Actual bankroll', asMoney(policy.actual_bankroll)],
     ['Reported bankroll (status source)', asMoney(policy.reported_current_bankroll)],
     ['Bankroll reconciliation difference', asMoney(policy.bankroll_formula_difference)],
-    ['Strategy equity', asMoney(policy.strategy_equity)],
+    ['Overall strategy equity', asMoney(policy.overall_strategy_equity || policy.strategy_equity)],
+    ['Core strategy equity', asMoney(policy.core_strategy_equity)],
     ['Total external contributions', asMoney(policy.total_external_contributions)],
-    ['Realized betting profit', asMoney(policy.realized_betting_profit_lifetime)],
+    ['Realized betting profit (overall)', asMoney(policy.realized_betting_profit_lifetime)],
+    ['Core edge profit (lifetime)', asMoney(policy.core_edge_profit_lifetime)],
+    ['FUN SGP profit (lifetime)', asMoney(policy.fun_sgp_profit_lifetime)],
     ['Starting bankroll', asMoney(policy.starting_bankroll)],
     ['Bankroll growth from betting', asMoney(policy.bankroll_growth_from_betting)],
     ['Bankroll growth from contributions', asMoney(policy.bankroll_growth_from_contributions)],
     ['Realized monthly profit', asMoney(policy.realized_monthly_profit_ex_contributions)],
     ['Actual bankroll includes external contributions', 'Yes'],
-    ['Strategy equity excludes external contributions', 'Yes'],
+    ['Overall strategy equity excludes external contributions', 'Yes'],
+    ['Core strategy equity excludes FUN_SGP', 'Yes'],
     ['Units remain primary strategy metric', 'Yes'],
     ['Interpretation', policy.monthly_interpretation || MISSING],
   ];

@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-03-14T17:17:52.827Z",
+  "generated_at_utc": "2026-03-14T17:24:14.951Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-14 00:35 CT",
   "state_last_updated_ct": "2026-03-14 00:35 CT",
   "runtime_status": {
-    "generated_at_utc": "2026-03-14T17:17:52.038Z",
+    "generated_at_utc": "2026-03-14T17:24:14.428Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -197,7 +197,7 @@
       },
       "passed_opportunity_grades": {
         "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-        "file_mtime_ct": "2026-03-14 00:29 CT"
+        "file_mtime_ct": "2026-03-14 12:17 CT"
       }
     },
     "state_sync": {
@@ -1440,15 +1440,67 @@
       "execution_slippage": "0.9 cents"
     },
     "decision_quality": {
-      "profit_from_bets": 126.13,
+      "profit_from_bets": 78.73,
       "profit_if_all_sits_bet": 7.81,
-      "decision_edge": 118.32,
+      "decision_edge": 70.92,
       "sit_discipline_rate": "71%"
+    },
+    "overall_betting_results": {
+      "bet_class_scope": "ALL_REAL_BETS",
+      "count": 20,
+      "wins": 11,
+      "losses": 8,
+      "pushes": 0,
+      "total_stake": 136.15,
+      "total_staked_units": 20,
+      "profit_loss": 126.13,
+      "profit_units": 18.53,
+      "roi": 92.64,
+      "average_odds_decimal": 2.72,
+      "average_odds_american": null,
+      "win_rate": 55,
+      "label": "Overall results include FUN_SGP bets."
+    },
+    "core_strategy_results": {
+      "bet_class_scope": "EDGE_BET",
+      "count": 17,
+      "wins": 9,
+      "losses": 7,
+      "pushes": 0,
+      "total_stake": 111.15,
+      "total_staked_units": 17,
+      "profit_loss": 78.73,
+      "profit_units": 12.04,
+      "roi": 70.83,
+      "average_odds_decimal": 2.1,
+      "average_odds_american": null,
+      "win_rate": 52.94,
+      "label": "Core strategy metrics exclude FUN_SGP bets."
+    },
+    "fun_sgp_results": {
+      "bet_class_scope": "FUN_SGP",
+      "count": 3,
+      "wins": 2,
+      "losses": 1,
+      "pushes": 0,
+      "total_stake": 25,
+      "total_staked_units": 3,
+      "profit_loss": 47.4,
+      "profit_units": 5.69,
+      "roi": 189.6,
+      "average_odds_decimal": 6.21,
+      "average_odds_american": null,
+      "win_rate": 66.67,
+      "label": "FUN_SGP results are included in bankroll truth, but excluded from core strategy validation."
     },
     "bankroll_contribution_policy": {
       "actual_bankroll": 1426.13,
       "strategy_equity": 226.13,
+      "overall_strategy_equity": 226.13,
+      "core_strategy_equity": 178.73,
       "realized_betting_profit_lifetime": 126.13,
+      "core_edge_profit_lifetime": 78.73,
+      "fun_sgp_profit_lifetime": 47.4,
       "bankroll_growth_from_betting": 126.13,
       "bankroll_growth_from_contributions": 1200,
       "realized_monthly_profit": 126.13,
@@ -1462,6 +1514,98 @@
       "contribution_adjusted_summary": "Strategy equity isolates betting performance by excluding external contributions."
     }
   },
+  "betting_results_split": {
+    "overall": {
+      "bet_class_scope": "ALL_REAL_BETS",
+      "count": 20,
+      "wins": 11,
+      "losses": 8,
+      "pushes": 0,
+      "total_stake": 136.15,
+      "total_staked_units": 20,
+      "profit_loss": 126.13,
+      "profit_units": 18.53,
+      "roi": 92.64,
+      "average_odds_decimal": 2.72,
+      "average_odds_american": null,
+      "win_rate": 55
+    },
+    "core_strategy": {
+      "bet_class_scope": "EDGE_BET",
+      "count": 17,
+      "wins": 9,
+      "losses": 7,
+      "pushes": 0,
+      "total_stake": 111.15,
+      "total_staked_units": 17,
+      "profit_loss": 78.73,
+      "profit_units": 12.04,
+      "roi": 70.83,
+      "average_odds_decimal": 2.1,
+      "average_odds_american": null,
+      "win_rate": 52.94
+    },
+    "fun_sgp": {
+      "bet_class_scope": "FUN_SGP",
+      "count": 3,
+      "wins": 2,
+      "losses": 1,
+      "pushes": 0,
+      "total_stake": 25,
+      "total_staked_units": 3,
+      "profit_loss": 47.4,
+      "profit_units": 5.69,
+      "roi": 189.6,
+      "average_odds_decimal": 6.21,
+      "average_odds_american": null,
+      "win_rate": 66.67
+    }
+  },
+  "overall_betting_results": {
+    "bet_class_scope": "ALL_REAL_BETS",
+    "count": 20,
+    "wins": 11,
+    "losses": 8,
+    "pushes": 0,
+    "total_stake": 136.15,
+    "total_staked_units": 20,
+    "profit_loss": 126.13,
+    "profit_units": 18.53,
+    "roi": 92.64,
+    "average_odds_decimal": 2.72,
+    "average_odds_american": null,
+    "win_rate": 55
+  },
+  "core_strategy_results": {
+    "bet_class_scope": "EDGE_BET",
+    "count": 17,
+    "wins": 9,
+    "losses": 7,
+    "pushes": 0,
+    "total_stake": 111.15,
+    "total_staked_units": 17,
+    "profit_loss": 78.73,
+    "profit_units": 12.04,
+    "roi": 70.83,
+    "average_odds_decimal": 2.1,
+    "average_odds_american": null,
+    "win_rate": 52.94
+  },
+  "fun_sgp_results": {
+    "bet_class_scope": "FUN_SGP",
+    "count": 3,
+    "wins": 2,
+    "losses": 1,
+    "pushes": 0,
+    "total_stake": 25,
+    "total_staked_units": 3,
+    "profit_loss": 47.4,
+    "profit_units": 5.69,
+    "roi": 189.6,
+    "average_odds_decimal": 6.21,
+    "average_odds_american": null,
+    "win_rate": 66.67
+  },
   "bankroll_contribution_policy": {
     "contribution_ledger_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/bankroll-contributions.csv",
     "contribution_ledger_entries": [],
@@ -1470,10 +1614,15 @@
     "reported_current_bankroll": 1328.88,
     "actual_bankroll": 1426.13,
     "strategy_equity": 226.13,
+    "overall_strategy_equity": 226.13,
+    "core_strategy_equity": 178.73,
     "total_external_contributions": 1200,
     "total_external_contributions_from_ledger": 1200,
     "total_policy_contributions_recorded": 0,
     "realized_betting_profit_lifetime": 126.13,
+    "overall_betting_profit_lifetime": 126.13,
+    "core_edge_profit_lifetime": 78.73,
+    "fun_sgp_profit_lifetime": 47.4,
     "bankroll_growth_from_betting": 126.13,
     "bankroll_growth_from_contributions": 1200,
     "bankroll_formula_difference": -97.25,
@@ -1525,67 +1674,68 @@
     "next_expected_cycle": "2026-04-01"
   },
   "quant_performance": {
-    "settled_bets_evaluated": 20,
+    "bet_class_scope": "EDGE_BET",
+    "settled_bets_evaluated": 17,
     "unit_size": 13.29,
     "unit_baseline_bankroll": 1328.88,
-    "total_units": 9.49,
-    "total_staked_units": 10.26,
-    "average_units_per_bet": 0.51,
-    "roi_units": 92.5,
+    "total_units": 5.92,
+    "total_staked_units": 8.38,
+    "average_units_per_bet": 0.49,
+    "roi_units": 70.64,
     "expected_value": 0.33,
     "expected_value_units": 0.02,
     "expected_profit": 0.33,
     "expected_profit_units": 0.02,
-    "actual_profit": 126.13,
-    "actual_profit_units": 9.49,
-    "variance": 125.8,
-    "variance_units": 9.47,
-    "ev_realization_ratio": 382.21,
-    "observed_win_rate": 57.89,
-    "breakeven_win_rate": 43.59,
-    "p_value": 0.2087,
-    "confidence_level": 79.13,
+    "actual_profit": 78.73,
+    "actual_profit_units": 5.92,
+    "variance": 78.4,
+    "variance_units": 5.9,
+    "ev_realization_ratio": 238.58,
+    "observed_win_rate": 56.25,
+    "breakeven_win_rate": 48.51,
+    "p_value": 0.5354,
+    "confidence_level": 46.46,
     "sample_status": "small sample (statistically inconclusive)",
     "binomial_significance": {
       "lifetime": {
-        "total_settled_bets": 19,
-        "wins": 11,
-        "losses": 8,
-        "observed_win_rate": 57.89,
-        "breakeven_win_rate": 43.59,
-        "p_value": 0.2087,
-        "confidence_level": 79.13,
+        "total_settled_bets": 16,
+        "wins": 9,
+        "losses": 7,
+        "observed_win_rate": 56.25,
+        "breakeven_win_rate": 48.51,
+        "p_value": 0.5354,
+        "confidence_level": 46.46,
         "sample_status": "small sample (statistically inconclusive)"
       },
       "rolling_windows": {
         "rolling_100": {
-          "total_settled_bets": 19,
-          "wins": 11,
-          "losses": 8,
-          "observed_win_rate": 57.89,
-          "breakeven_win_rate": 43.59,
-          "p_value": 0.2087,
-          "confidence_level": 79.13,
+          "total_settled_bets": 16,
+          "wins": 9,
+          "losses": 7,
+          "observed_win_rate": 56.25,
+          "breakeven_win_rate": 48.51,
+          "p_value": 0.5354,
+          "confidence_level": 46.46,
           "sample_status": "small sample (statistically inconclusive)"
         },
         "rolling_200": {
-          "total_settled_bets": 19,
-          "wins": 11,
-          "losses": 8,
-          "observed_win_rate": 57.89,
-          "breakeven_win_rate": 43.59,
-          "p_value": 0.2087,
-          "confidence_level": 79.13,
+          "total_settled_bets": 16,
+          "wins": 9,
+          "losses": 7,
+          "observed_win_rate": 56.25,
+          "breakeven_win_rate": 48.51,
+          "p_value": 0.5354,
+          "confidence_level": 46.46,
           "sample_status": "small sample (statistically inconclusive)"
         },
         "rolling_400": {
-          "total_settled_bets": 19,
-          "wins": 11,
-          "losses": 8,
-          "observed_win_rate": 57.89,
-          "breakeven_win_rate": 43.59,
-          "p_value": 0.2087,
-          "confidence_level": 79.13,
+          "total_settled_bets": 16,
+          "wins": 9,
+          "losses": 7,
+          "observed_win_rate": 56.25,
+          "breakeven_win_rate": 48.51,
+          "p_value": 0.5354,
+          "confidence_level": 46.46,
           "sample_status": "small sample (statistically inconclusive)"
         }
       },
@@ -1932,31 +2082,6 @@
       },
       {
         "date": "2026-03-06",
-        "timestamp_ct": "14:30",
-        "sport": "CBB",
-        "market": "Parlay",
-        "bet": "StJ/Bradley/KentSt",
-        "book": "DraftKings",
-        "rec_id": null,
-        "edge_at_detection": null,
-        "edge_at_placement": null,
-        "edge_at_close": null,
-        "stake_units": 0.75,
-        "profit_units": -0.75,
-        "expected_value": null,
-        "expected_value_units": null,
-        "actual_profit": -10,
-        "edge_retention": null,
-        "closing_edge_retention": null,
-        "market_efficiency_impact": null,
-        "data_quality": {
-          "has_detection": false,
-          "has_placement": false,
-          "has_close": false
-        }
-      },
-      {
-        "date": "2026-03-06",
         "timestamp_ct": "22:00",
         "sport": "NBA",
         "market": "Spread",
@@ -2054,56 +2179,6 @@
           "has_placement": true,
           "has_close": false
         }
-      },
-      {
-        "date": "2026-03-13",
-        "timestamp_ct": "16:26",
-        "sport": "NBA",
-        "market": "SGP",
-        "bet": "MIN Timberwolves -5.5 / Anthony Edwards 30+ / Over 222.5",
-        "book": "DraftKings",
-        "rec_id": null,
-        "edge_at_detection": null,
-        "edge_at_placement": null,
-        "edge_at_close": null,
-        "stake_units": 0.38,
-        "profit_units": 1.87,
-        "expected_value": null,
-        "expected_value_units": null,
-        "actual_profit": 24.9,
-        "edge_retention": null,
-        "closing_edge_retention": null,
-        "market_efficiency_impact": null,
-        "data_quality": {
-          "has_detection": false,
-          "has_placement": false,
-          "has_close": false
-        }
-      },
-      {
-        "date": "2026-03-13",
-        "timestamp_ct": "16:28",
-        "sport": "NBA",
-        "market": "SGP",
-        "bet": "Anthony Edwards 25+ / Over 222.5 / MIN Timberwolves -5.5",
-        "book": "DraftKings",
-        "rec_id": null,
-        "edge_at_detection": null,
-        "edge_at_placement": null,
-        "edge_at_close": null,
-        "stake_units": 0.75,
-        "profit_units": 2.45,
-        "expected_value": null,
-        "expected_value_units": null,
-        "actual_profit": 32.5,
-        "edge_retention": null,
-        "closing_edge_retention": null,
-        "market_efficiency_impact": null,
-        "data_quality": {
-          "has_detection": false,
-          "has_placement": false,
-          "has_close": false
-        }
       }
     ]
   },
@@ -2122,12 +2197,9 @@
     0.08,
     1.05,
     0.83,
-    0.75,
     3.54,
     0.11,
     0.08,
-    0.75,
-    0.38,
     0.75
   ],
   "profit_units": [
@@ -2144,31 +2216,28 @@
     -0.08,
     0.99,
     0.81,
-    -0.75,
     3.22,
     -0.11,
     0.1,
-    0.72,
-    1.87,
-    2.45
+    0.72
   ],
-  "total_units": 9.49,
-  "total_staked_units": 10.26,
-  "average_units_per_bet": 0.51,
-  "roi_units": 92.5,
+  "total_units": 5.92,
+  "total_staked_units": 8.38,
+  "average_units_per_bet": 0.49,
+  "roi_units": 70.64,
   "expected_value": 0.33,
   "expected_value_units": 0.02,
   "expected_profit": 0.33,
   "expected_profit_units": 0.02,
-  "actual_profit": 126.13,
-  "actual_profit_units": 9.49,
-  "variance": 125.8,
-  "variance_units": 9.47,
-  "ev_realization_ratio": 382.21,
-  "observed_win_rate": 57.89,
-  "breakeven_win_rate": 43.59,
-  "p_value": 0.2087,
-  "confidence_level": 79.13,
+  "actual_profit": 78.73,
+  "actual_profit_units": 5.92,
+  "variance": 78.4,
+  "variance_units": 5.9,
+  "ev_realization_ratio": 238.58,
+  "observed_win_rate": 56.25,
+  "breakeven_win_rate": 48.51,
+  "p_value": 0.5354,
+  "confidence_level": 46.46,
   "sample_status": "small sample (statistically inconclusive)",
   "edge_at_detection": 3.3,
   "edge_at_placement": 3.3,
@@ -2178,8 +2247,8 @@
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-12 06:04 AM",
-    "grading_cache_last_update": "2026-03-14T17:17:52.682Z",
-    "payload_build_time_utc": "2026-03-14T17:17:52.827Z",
+    "grading_cache_last_update": "2026-03-14T17:24:14.906Z",
+    "payload_build_time_utc": "2026-03-14T17:24:14.951Z",
     "state_last_updated_time": "2026-03-14 00:35 CT",
     "effective_last_updated_time": "2026-03-14 00:35 CT",
     "freshness_anchor_source": "runtime_freshness_anchor",
@@ -2197,7 +2266,7 @@
       "missing_scan_days_count": 1
     },
     "diagnostics": {
-      "freshness_hours_since_anchor": 17.3,
+      "freshness_hours_since_anchor": 17.4,
       "freshness_anchor_source": "runtime_freshness_anchor",
       "freshness_anchor_time": "2026-03-14 06:00 CT",
       "first_recommendation_day": "2026-03-07",
@@ -2227,7 +2296,7 @@
         "last_updated_day": "2026-03-14"
       },
       "runtime_status": {
-        "generated_at_utc": "2026-03-14T17:17:52.038Z",
+        "generated_at_utc": "2026-03-14T17:24:14.428Z",
         "jobs": {
           "morning_edge_hunt": {
             "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -2419,7 +2488,7 @@
           },
           "passed_opportunity_grades": {
             "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-            "file_mtime_ct": "2026-03-14 00:29 CT"
+            "file_mtime_ct": "2026-03-14 12:17 CT"
           }
         },
         "state_sync": {
@@ -2438,7 +2507,7 @@
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-14T17:17:52.827Z",
+    "generated_at_utc": "2026-03-14T17:24:14.951Z",
     "message_type": "BLOCKED",
     "verdict": "BLOCKED",
     "what_to_do_now": "Resolve system health failures before acting on recommendations.",
@@ -2494,7 +2563,7 @@
         "Scan history and recommendation log are out of sync."
       ],
       "diagnostics": {
-        "freshness_hours_since_anchor": 17.3,
+        "freshness_hours_since_anchor": 17.4,
         "freshness_anchor_source": "runtime_freshness_anchor",
         "freshness_anchor_time": "2026-03-14 06:00 CT",
         "first_recommendation_day": "2026-03-07",
@@ -2524,7 +2593,7 @@
           "last_updated_day": "2026-03-14"
         },
         "runtime_status": {
-          "generated_at_utc": "2026-03-14T17:17:52.038Z",
+          "generated_at_utc": "2026-03-14T17:24:14.428Z",
           "jobs": {
             "morning_edge_hunt": {
               "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -2716,7 +2785,7 @@
             },
             "passed_opportunity_grades": {
               "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-              "file_mtime_ct": "2026-03-14 00:29 CT"
+              "file_mtime_ct": "2026-03-14 12:17 CT"
             }
           },
           "state_sync": {
@@ -2736,7 +2805,7 @@
   "decision_renderers": {
     "terminal_text": "TIEREDGE DECISION\nVerdict: BLOCKED\nWhat to do now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: Scan history and recommendation log are out of sync.\nSystem health: FAIL\nChecks: data=pass, ledger=fail, engine=blocked\nBlock reason: Scan history and recommendation log are out of sync.\nAvoid: Do not place bets from this scan.\nRecovery: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll=$1,328.88 | open_exposure=0.0% (March 12 - no plays) | daily_exposure=0.0% (March 12 - no plays) | breaker=OFF\nAccountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=47.4% (9-10)\nSuppression Summary:\n- markets_scanned=6\n- raw_edge_over_0_5=6\n- pre_conf_edge_over_2_0=0\n- rejected_confidence=0\n- rejected_threshold=6\n- rejected_risk=0\n- final_approved_bets=0\n",
     "whatsapp_text": "*TIEREDGE BLOCKED*\nWhat now: Resolve system health failures before acting on recommendations.\nWhy: Integrity gate failed: Scan history and recommendation log are out of sync.\nHealth: FAIL (data pass, ledger fail, engine blocked)\nBLOCKED reason: Scan history and recommendation log are out of sync.\nDo NOT: Do not place bets from this scan.\nRecover: Restore freshness + ledger integrity before decisions resume.\nExecution: bankroll $1,328.88, exposure 0.0% (March 12 - no plays), daily 0.0% (March 12 - no plays), breaker OFF\nAccountability: pending 0, +CLV 100%, avg CLV 7.36, results 47.4% (9-10)\nSuppression Summary:\n- markets_scanned=6\n- raw_edge_over_0_5=6\n- pre_conf_edge_over_2_0=0\n- rejected_confidence=0\n- rejected_threshold=6\n- rejected_risk=0\n- final_approved_bets=0\n",
-    "evening_grading_report_text": "EVENING GRADING - 2026-03-14\n\nBets Settled: 20\n\nUNITS\nProfit: +9.49u\nTotal Staked: 10.26u\nROI (Units): +92.50%\n\nEXPECTATION\nExpected Profit: +$0.33\nActual Profit: +$126.13\nVariance: +$125.80\nEV Realization: 382.21\n\nSIGNAL QUALITY\nAverage CLV: +7.36%\nPositive CLV Rate: +100.00%\nBinomial p-value: 0.2087\nConfidence Level: +79.13%\nSample Status: small sample (statistically inconclusive)\n\nEDGE QUALITY\nAvg Edge Detected: +3.30%\nAvg Edge at Placement: +3.30%\nAvg Edge at Close: N/A\nEdge Retention: 100.0%\nMarket Efficiency Impact: N/A\n\nBANKROLL CONTRIBUTION POLICY\nRealized Monthly Profit: +$126.13\nRolling Average Realized Profit: $0.00\nNext Estimated Contribution: $0.00\nContribution Basis Months: 2026-02\nTotal External Contributions: +$1200.00\nInterpretation: No monthly contribution scheduled based on non-positive rolling profit.\n\nBANKROLL OVERVIEW\nActual Bankroll: +$1426.13\nStrategy Equity: +$226.13\nTotal External Contributions: +$1200.00\nRealized Betting Profit: +$126.13\nNote: Actual bankroll includes external contributions.\nNote: Strategy equity excludes external contributions.\n\nBankroll: $1,328.88\nPeak: $1,328.88\nDrawdown: N/A\n\nSystem Status: Running Hot\nNext Edge Scan: 06:00 CT\n",
+    "evening_grading_report_text": "EVENING GRADING - 2026-03-14\n\nBets Settled: 17\n\nOVERALL BETTING RESULTS\nCount: 20\nProfit/Loss: +$126.13\nProfit Units: +18.53u\nROI: +92.64%\nWin Rate: +55.00%\n\nFUN SGP RESULTS\nCount: 3\nProfit/Loss: +$47.40\nProfit Units: +5.69u\nROI: +189.60%\n\nCORE TIEREDGE STRATEGY\nProfit: +5.92u\nTotal Staked: 8.38u\nROI (Units): +70.64%\n\nEXPECTATION\nExpected Profit: +$0.33\nActual Profit: +$78.73\nVariance: +$78.40\nEV Realization: 238.58\n\nSIGNAL QUALITY\nAverage CLV: +7.36%\nPositive CLV Rate: +100.00%\nBinomial p-value: 0.5354\nConfidence Level: +46.46%\nSample Status: small sample (statistically inconclusive)\n\nEDGE QUALITY\nAvg Edge Detected: +3.30%\nAvg Edge at Placement: +3.30%\nAvg Edge at Close: N/A\nEdge Retention: 100.0%\nMarket Efficiency Impact: N/A\n\nBANKROLL CONTRIBUTION POLICY\nRealized Monthly Profit: +$126.13\nRolling Average Realized Profit: $0.00\nNext Estimated Contribution: $0.00\nContribution Basis Months: 2026-02\nTotal External Contributions: +$1200.00\nInterpretation: No monthly contribution scheduled based on non-positive rolling profit.\n\nBANKROLL OVERVIEW\nActual Bankroll: +$1426.13\nOverall Strategy Equity: +$226.13\nCore Strategy Equity: +$178.73\nTotal External Contributions: +$1200.00\nRealized Betting Profit: +$126.13\nNote: Actual bankroll includes external contributions.\nNote: Overall strategy equity excludes external contributions but includes FUN_SGP.\nNote: Core strategy equity excludes external contributions and FUN_SGP.\n\nBankroll: $1,328.88\nPeak: $1,328.88\nDrawdown: N/A\n\nSystem Status: Running Hot\nNext Edge Scan: 06:00 CT\n",
     "dashboard_model": {
       "today": {
         "verdict": "BLOCKED",
@@ -2754,7 +2823,7 @@
             "Scan history and recommendation log are out of sync."
           ],
           "diagnostics": {
-            "freshness_hours_since_anchor": 17.3,
+            "freshness_hours_since_anchor": 17.4,
             "freshness_anchor_source": "runtime_freshness_anchor",
             "freshness_anchor_time": "2026-03-14 06:00 CT",
             "first_recommendation_day": "2026-03-07",
@@ -2784,7 +2853,7 @@
               "last_updated_day": "2026-03-14"
             },
             "runtime_status": {
-              "generated_at_utc": "2026-03-14T17:17:52.038Z",
+              "generated_at_utc": "2026-03-14T17:24:14.428Z",
               "jobs": {
                 "morning_edge_hunt": {
                   "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -2976,7 +3045,7 @@
                 },
                 "passed_opportunity_grades": {
                   "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-                  "file_mtime_ct": "2026-03-14 00:29 CT"
+                  "file_mtime_ct": "2026-03-14 12:17 CT"
                 }
               },
               "state_sync": {
@@ -3052,7 +3121,7 @@
           "Scan history and recommendation log are out of sync."
         ],
         "diagnostics": {
-          "freshness_hours_since_anchor": 17.3,
+          "freshness_hours_since_anchor": 17.4,
           "freshness_anchor_source": "runtime_freshness_anchor",
           "freshness_anchor_time": "2026-03-14 06:00 CT",
           "first_recommendation_day": "2026-03-07",
@@ -3082,7 +3151,7 @@
             "last_updated_day": "2026-03-14"
           },
           "runtime_status": {
-            "generated_at_utc": "2026-03-14T17:17:52.038Z",
+            "generated_at_utc": "2026-03-14T17:24:14.428Z",
             "jobs": {
               "morning_edge_hunt": {
                 "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -3274,7 +3343,7 @@
               },
               "passed_opportunity_grades": {
                 "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-                "file_mtime_ct": "2026-03-14 00:29 CT"
+                "file_mtime_ct": "2026-03-14 12:17 CT"
               }
             },
             "state_sync": {
@@ -3337,8 +3406,12 @@
   "starting_bankroll": 100,
   "actual_bankroll": 1426.13,
   "strategy_equity": 226.13,
+  "overall_strategy_equity": 226.13,
+  "core_strategy_equity": 178.73,
   "total_external_contributions": 1200,
   "realized_betting_profit_lifetime": 126.13,
+  "core_edge_profit_lifetime": 78.73,
+  "fun_sgp_profit_lifetime": 47.4,
   "bankroll_growth_from_betting": 126.13,
   "bankroll_growth_from_contributions": 1200,
   "realized_monthly_profit": 126.13,
@@ -3363,8 +3436,12 @@
     "starting_bankroll": 100,
     "actual_bankroll": 1426.13,
     "strategy_equity": 226.13,
+    "overall_strategy_equity": 226.13,
+    "core_strategy_equity": 178.73,
     "total_external_contributions": 1200,
     "realized_betting_profit_lifetime": 126.13,
+    "core_edge_profit_lifetime": 78.73,
+    "fun_sgp_profit_lifetime": 47.4,
     "bankroll_growth_from_betting": 126.13,
     "bankroll_growth_from_contributions": 1200,
     "realized_monthly_profit": 126.13,
@@ -3435,7 +3512,17 @@
       "Tier": "FUN",
       "Result": "WIN",
       "P/L": "+$24.90",
-      "CLV": "N/A"
+      "CLV": "N/A",
+      "Date": "2026-03-14",
+      "bet_class": "FUN_SGP",
+      "bet_subtype": "SGP",
+      "include_in_core_strategy_metrics": false,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": [
+        "MIN Timberwolves -5.5",
+        "Anthony Edwards 30+",
+        "Over 222.5"
+      ]
     },
     {
       "#": "2",
@@ -3450,7 +3537,17 @@
       "Tier": "FUN",
       "Result": "WIN",
       "P/L": "+$32.50",
-      "CLV": "N/A"
+      "CLV": "N/A",
+      "Date": "2026-03-14",
+      "bet_class": "FUN_SGP",
+      "bet_subtype": "SGP",
+      "include_in_core_strategy_metrics": false,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": [
+        "Anthony Edwards 25+",
+        "Over 222.5",
+        "MIN Timberwolves -5.5"
+      ]
     }
   ],
   "bet_log": [
@@ -3468,7 +3565,12 @@
       "Result": "WIN",
       "P/L": "+$0.91",
       "CLV": "+4.8%",
-      "Bankroll": "$203.66"
+      "Bankroll": "$203.66",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-03",
@@ -3484,7 +3586,12 @@
       "Result": "LOSS",
       "P/L": "-$1.00",
       "CLV": "+1.2%",
-      "Bankroll": "$202.66"
+      "Bankroll": "$202.66",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-03",
@@ -3500,7 +3607,12 @@
       "Result": "WIN",
       "P/L": "+$9.09",
       "CLV": "N/A",
-      "Bankroll": "$211.75"
+      "Bankroll": "$211.75",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-04",
@@ -3516,7 +3628,12 @@
       "Result": "WIN",
       "P/L": "+$1.34",
       "CLV": "+4.8%",
-      "Bankroll": "$212.79"
+      "Bankroll": "$212.79",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-04",
@@ -3532,7 +3649,12 @@
       "Result": "CASHED OUT",
       "P/L": "-$0.30",
       "CLV": "N/A",
-      "Bankroll": "$212.49"
+      "Bankroll": "$212.49",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-04",
@@ -3548,7 +3670,12 @@
       "Result": "LOSS",
       "P/L": "-$3.00",
       "CLV": "N/A",
-      "Bankroll": "$209.49"
+      "Bankroll": "$209.49",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-04",
@@ -3564,7 +3691,12 @@
       "Result": "LOSS",
       "P/L": "-$1.00",
       "CLV": "-",
-      "Bankroll": "$208.49"
+      "Bankroll": "$208.49",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-05",
@@ -3580,7 +3712,12 @@
       "Result": "LOSS",
       "P/L": "-$1.65",
       "CLV": "+1.0 pt",
-      "Bankroll": "$1,204.34"
+      "Bankroll": "$1,204.34",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-05",
@@ -3596,7 +3733,12 @@
       "Result": "WIN",
       "P/L": "+$1.30",
       "CLV": "-",
-      "Bankroll": "$1,205.64"
+      "Bankroll": "$1,205.64",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-05",
@@ -3612,7 +3754,12 @@
       "Result": "LOSS",
       "P/L": "-$2.00",
       "CLV": "-",
-      "Bankroll": "$1,203.64"
+      "Bankroll": "$1,203.64",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-05",
@@ -3628,7 +3775,12 @@
       "Result": "LOSS",
       "P/L": "-$1.00",
       "CLV": "+25% boost",
-      "Bankroll": "$1,202.64"
+      "Bankroll": "$1,202.64",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-06",
@@ -3644,7 +3796,12 @@
       "Result": "WIN",
       "P/L": "+$13.21",
       "CLV": "-",
-      "Bankroll": "$1,215.85"
+      "Bankroll": "$1,215.85",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-06",
@@ -3660,7 +3817,12 @@
       "Result": "WIN",
       "P/L": "+$10.78",
       "CLV": "-",
-      "Bankroll": "$1,219.43"
+      "Bankroll": "$1,219.43",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-06",
@@ -3676,7 +3838,16 @@
       "Result": "LOSS",
       "P/L": "-$10.00",
       "CLV": "-",
-      "Bankroll": "$1,219.43"
+      "Bankroll": "$1,219.43",
+      "bet_class": "FUN_SGP",
+      "bet_subtype": "PARLAY",
+      "include_in_core_strategy_metrics": false,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": [
+        "StJ",
+        "Bradley",
+        "KentSt"
+      ]
     },
     {
       "Date": "2026-03-06",
@@ -3692,7 +3863,12 @@
       "Result": "WIN",
       "P/L": "+$42.73",
       "CLV": "-",
-      "Bankroll": "$1,262.16"
+      "Bankroll": "$1,262.16",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-07",
@@ -3708,7 +3884,12 @@
       "Result": "LOSS",
       "P/L": "-$1.50",
       "CLV": "-",
-      "Bankroll": "$1,260.66"
+      "Bankroll": "$1,260.66",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-07",
@@ -3724,7 +3905,12 @@
       "Result": "WIN",
       "P/L": "+$1.30",
       "CLV": "-",
-      "Bankroll": "$1,261.96"
+      "Bankroll": "$1,261.96",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-10",
@@ -3740,7 +3926,12 @@
       "Result": "WIN",
       "P/L": "+$9.52",
       "CLV": "-",
-      "Bankroll": "$1,271.48"
+      "Bankroll": "$1,271.48",
+      "bet_class": "EDGE_BET",
+      "bet_subtype": null,
+      "include_in_core_strategy_metrics": true,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": []
     },
     {
       "Date": "2026-03-13",
@@ -3756,7 +3947,16 @@
       "Result": "WIN",
       "P/L": "+$24.90",
       "CLV": "N/A",
-      "Bankroll": "$1,296.38"
+      "Bankroll": "$1,296.38",
+      "bet_class": "FUN_SGP",
+      "bet_subtype": "SGP",
+      "include_in_core_strategy_metrics": false,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": [
+        "MIN Timberwolves -5.5",
+        "Anthony Edwards 30+",
+        "Over 222.5"
+      ]
     },
     {
       "Date": "2026-03-13",
@@ -3772,7 +3972,16 @@
       "Result": "WIN",
       "P/L": "+$32.50",
       "CLV": "N/A",
-      "Bankroll": "$1,328.88"
+      "Bankroll": "$1,328.88",
+      "bet_class": "FUN_SGP",
+      "bet_subtype": "SGP",
+      "include_in_core_strategy_metrics": false,
+      "include_in_actual_bankroll": true,
+      "parlay_legs": [
+        "Anthony Edwards 25+",
+        "Over 222.5",
+        "MIN Timberwolves -5.5"
+      ]
     }
   ],
   "ledger": [
@@ -3808,16 +4017,16 @@
     "decision_quality_rate": 100,
     "expected_profit": 0.33,
     "expected_profit_units": 0.02,
-    "actual_profit": 126.13,
-    "actual_profit_units": 9.49,
-    "variance": 125.8,
-    "variance_units": 9.47,
-    "ev_realization_ratio": 382.21,
-    "total_units": 9.49,
-    "total_staked_units": 10.26,
-    "roi_units": 92.5,
-    "p_value": 0.2087,
-    "confidence_level": 79.13,
+    "actual_profit": 78.73,
+    "actual_profit_units": 5.92,
+    "variance": 78.4,
+    "variance_units": 5.9,
+    "ev_realization_ratio": 238.58,
+    "total_units": 5.92,
+    "total_staked_units": 8.38,
+    "roi_units": 70.64,
+    "p_value": 0.5354,
+    "confidence_level": 46.46,
     "sample_status": "small sample (statistically inconclusive)",
     "redacted_pending": false,
     "starting_bankroll": 100,

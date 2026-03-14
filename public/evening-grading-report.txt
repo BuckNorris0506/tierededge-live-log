@@ -1,23 +1,36 @@
 EVENING GRADING - 2026-03-14
 
-Bets Settled: 20
+Bets Settled: 17
 
-UNITS
-Profit: +9.49u
-Total Staked: 10.26u
-ROI (Units): +92.50%
+OVERALL BETTING RESULTS
+Count: 20
+Profit/Loss: +$126.13
+Profit Units: +18.53u
+ROI: +92.64%
+Win Rate: +55.00%
+
+FUN SGP RESULTS
+Count: 3
+Profit/Loss: +$47.40
+Profit Units: +5.69u
+ROI: +189.60%
+
+CORE TIEREDGE STRATEGY
+Profit: +5.92u
+Total Staked: 8.38u
+ROI (Units): +70.64%
 
 EXPECTATION
 Expected Profit: +$0.33
-Actual Profit: +$126.13
-Variance: +$125.80
-EV Realization: 382.21
+Actual Profit: +$78.73
+Variance: +$78.40
+EV Realization: 238.58
 
 SIGNAL QUALITY
 Average CLV: +7.36%
 Positive CLV Rate: +100.00%
-Binomial p-value: 0.2087
-Confidence Level: +79.13%
+Binomial p-value: 0.5354
+Confidence Level: +46.46%
 Sample Status: small sample (statistically inconclusive)
 
 EDGE QUALITY
@@ -37,11 +50,13 @@ Interpretation: No monthly contribution scheduled based on non-positive rolling 
 
 BANKROLL OVERVIEW
 Actual Bankroll: +$1426.13
-Strategy Equity: +$226.13
+Overall Strategy Equity: +$226.13
+Core Strategy Equity: +$178.73
 Total External Contributions: +$1200.00
 Realized Betting Profit: +$126.13
 Note: Actual bankroll includes external contributions.
-Note: Strategy equity excludes external contributions.
+Note: Overall strategy equity excludes external contributions but includes FUN_SGP.
+Note: Core strategy equity excludes external contributions and FUN_SGP.
 
 Bankroll: $1,328.88
 Peak: $1,328.88
