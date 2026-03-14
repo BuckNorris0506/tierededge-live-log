@@ -48,4 +48,4 @@ Peak: $1,271.48
 Drawdown: N/A
 
 System Status: Running Hot
-Next Edge Scan: 08:00 CT
+Next Edge Scan: 06:00 CT

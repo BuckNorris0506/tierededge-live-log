@@ -1085,7 +1085,7 @@ function computeQuantPerformance({ betLog, recommendationRows, currentStatus, le
     closing_edge_retention: closingEdgeRetention !== null ? round2(closingEdgeRetention) : null,
     market_efficiency_impact: marketEfficiencyImpact !== null ? round2(marketEfficiencyImpact) : null,
     system_status: systemStatus,
-    next_edge_scan_ct: '08:00',
+    next_edge_scan_ct: '06:00',
     per_bet: quantBetRows,
   };
 }
