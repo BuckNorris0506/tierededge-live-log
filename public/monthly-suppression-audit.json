@@ -1,0 +1,232 @@
+{
+  "generated_at_utc": "2026-03-14T05:29:35.690Z",
+  "audit_window_days": 30,
+  "total_scanned_markets": 69,
+  "total_suppressed_candidates": 13,
+  "assumptions": [
+    "Confidence-gated markets with raw T3-or-better edge are classified into Bucket A because the engine stores a hard gate rather than a separate post-confidence probability field.",
+    "Hypothetical ROI is computed on a one-unit counterfactual basis when grading cache data exists.",
+    "Closing odds and CLV remain null when the source grading cache does not store them."
+  ],
+  "buckets": {
+    "bucket_a_confidence_suppression": {
+      "label": "bucket_a_confidence_suppression",
+      "count": 5,
+      "percent_of_total_scanned_markets": 7.25,
+      "average_raw_edge_pct": 4.24,
+      "average_post_conf_edge_pct": 3.29,
+      "average_confidence_penalty_pct": 0.09,
+      "average_consensus_penalty_pct": 3.38,
+      "average_closing_clv_pct": null,
+      "positive_clv_rate": null,
+      "hypothetical_units": 1.25,
+      "hypothetical_roi": 62.5,
+      "win_rate_if_played": 50,
+      "sample_rows": [
+        {
+          "rec_id": "20260307-004",
+          "scan_time_ct": "2026-03-07 01:11 AM",
+          "selection": "MEM",
+          "book": "DraftKings",
+          "raw_edge_pct": 3.3,
+          "post_conf_edge_pct": 1.28,
+          "rejection_stage": "confidence_gate",
+          "rejection_reason": "low_confidence",
+          "result_if_played": "loss",
+          "hypothetical_units": -1
+        },
+        {
+          "rec_id": "20260307-006",
+          "scan_time_ct": "2026-03-07 01:11 AM",
+          "selection": "VAN",
+          "book": "DraftKings",
+          "raw_edge_pct": 3.2,
+          "post_conf_edge_pct": 0.88,
+          "rejection_stage": "confidence_gate",
+          "rejection_reason": "low_confidence",
+          "result_if_played": "win",
+          "hypothetical_units": 2.25
+        },
+        {
+          "rec_id": "20260309-002",
+          "scan_time_ct": "2026-03-09 06:00 AM",
+          "selection": "Gonzaga -18.5",
+          "book": "FanDuel",
+          "raw_edge_pct": 6.7,
+          "post_conf_edge_pct": 6.48,
+          "rejection_stage": "confidence_gate",
+          "rejection_reason": "low_confidence",
+          "result_if_played": null,
+          "hypothetical_units": null
+        },
+        {
+          "rec_id": "20260309-003",
+          "scan_time_ct": "2026-03-09 06:00 AM",
+          "selection": "Grambling State -12.5",
+          "book": "DraftKings",
+          "raw_edge_pct": 5.8,
+          "post_conf_edge_pct": 5.61,
+          "rejection_stage": "confidence_gate",
+          "rejection_reason": "low_confidence",
+          "result_if_played": null,
+          "hypothetical_units": null
+        },
+        {
+          "rec_id": "20260310-002",
+          "scan_time_ct": "2026-03-10 06:05 AM",
+          "selection": "76ers -3.5",
+          "book": "DraftKings",
+          "raw_edge_pct": 2.2,
+          "post_conf_edge_pct": 2.2,
+          "rejection_stage": "confidence_gate",
+          "rejection_reason": "low_confidence",
+          "result_if_played": null,
+          "hypothetical_units": null
+        }
+      ]
+    },
+    "bucket_b_threshold_near_miss": {
+      "label": "bucket_b_threshold_near_miss",
+      "count": 7,
+      "percent_of_total_scanned_markets": 10.14,
+      "average_raw_edge_pct": 1.63,
+      "average_post_conf_edge_pct": 1.63,
+      "average_confidence_penalty_pct": 0,
+      "average_consensus_penalty_pct": 1.63,
+      "average_closing_clv_pct": null,
+      "positive_clv_rate": null,
+      "hypothetical_units": 0.44,
+      "hypothetical_roi": 14.53,
+      "win_rate_if_played": 66.67,
+      "sample_rows": [
+        {
+          "rec_id": "20260309-001",
+          "scan_time_ct": "2026-03-09 06:00 AM",
+          "selection": "Denver Nuggets +7.5",
+          "book": "FanDuel",
+          "raw_edge_pct": 1.7,
+          "post_conf_edge_pct": 1.7,
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge",
+          "result_if_played": "loss",
+          "hypothetical_units": -1
+        },
+        {
+          "rec_id": "20260309-006",
+          "scan_time_ct": "2026-03-09 06:00 AM",
+          "selection": "East Tennessee State -2.5",
+          "book": "FanDuel",
+          "raw_edge_pct": 1.5,
+          "post_conf_edge_pct": 1.5,
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge",
+          "result_if_played": null,
+          "hypothetical_units": null
+        },
+        {
+          "rec_id": "20260310-003",
+          "scan_time_ct": "2026-03-10 06:05 AM",
+          "selection": "Pacers +4.5",
+          "book": "LowVig",
+          "raw_edge_pct": 1.8,
+          "post_conf_edge_pct": 1.8,
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge",
+          "result_if_played": null,
+          "hypothetical_units": null
+        },
+        {
+          "rec_id": "20260310-004",
+          "scan_time_ct": "2026-03-10 06:05 AM",
+          "selection": "Florida Panthers",
+          "book": "DraftKings",
+          "raw_edge_pct": 1.7,
+          "post_conf_edge_pct": 1.7,
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge",
+          "result_if_played": "win",
+          "hypothetical_units": 0.7692307692307692
+        },
+        {
+          "rec_id": "20260310-005",
+          "scan_time_ct": "2026-03-10 06:05 AM",
+          "selection": "Hurricanes -1.5",
+          "book": "FanDuel",
+          "raw_edge_pct": 1.7,
+          "post_conf_edge_pct": 1.7,
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge",
+          "result_if_played": null,
+          "hypothetical_units": null
+        },
+        {
+          "rec_id": "20260310-006",
+          "scan_time_ct": "2026-03-10 06:05 AM",
+          "selection": "Dallas Stars",
+          "book": "BetMGM",
+          "raw_edge_pct": 1.5,
+          "post_conf_edge_pct": 1.5,
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge",
+          "result_if_played": "win",
+          "hypothetical_units": 0.6666666666666665
+        },
+        {
+          "rec_id": "20260310-007",
+          "scan_time_ct": "2026-03-10 06:05 AM",
+          "selection": "Lightning -1.5",
+          "book": "FanDuel",
+          "raw_edge_pct": 1.5,
+          "post_conf_edge_pct": 1.5,
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge",
+          "result_if_played": null,
+          "hypothetical_units": null
+        }
+      ]
+    },
+    "bucket_c_consensus_flattening": {
+      "label": "bucket_c_consensus_flattening",
+      "count": 0,
+      "percent_of_total_scanned_markets": 0,
+      "average_raw_edge_pct": null,
+      "average_post_conf_edge_pct": null,
+      "average_confidence_penalty_pct": null,
+      "average_consensus_penalty_pct": null,
+      "average_closing_clv_pct": null,
+      "positive_clv_rate": null,
+      "hypothetical_units": null,
+      "hypothetical_roi": null,
+      "win_rate_if_played": null,
+      "sample_rows": []
+    },
+    "bucket_d_true_no_edge": {
+      "label": "bucket_d_true_no_edge",
+      "count": 1,
+      "percent_of_total_scanned_markets": 1.45,
+      "average_raw_edge_pct": 2.1,
+      "average_post_conf_edge_pct": 0.8,
+      "average_confidence_penalty_pct": 0,
+      "average_consensus_penalty_pct": 0.8,
+      "average_closing_clv_pct": null,
+      "positive_clv_rate": null,
+      "hypothetical_units": -1,
+      "hypothetical_roi": -100,
+      "win_rate_if_played": 0,
+      "sample_rows": [
+        {
+          "rec_id": "20260307-005",
+          "scan_time_ct": "2026-03-07 01:11 AM",
+          "selection": "WSH",
+          "book": "DraftKings",
+          "raw_edge_pct": 2.1,
+          "post_conf_edge_pct": 0.8,
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge",
+          "result_if_played": "loss",
+          "hypothetical_units": -1
+        }
+      ]
+    }
+  }
+}

@@ -9,3 +9,11 @@ SIT
 Threshold reminder: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.
 Execution: bankroll=$1,271.48 | open_exposure=0.0% (March 12 - no plays) | daily_exposure=0.0% (March 12 - no plays) | breaker=OFF
 Accountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=47.4% (9-10)
+Suppression Summary:
+- markets_scanned=6
+- raw_edge_over_0_5=6
+- pre_conf_edge_over_2_0=0
+- rejected_confidence=0
+- rejected_threshold=6
+- rejected_risk=0
+- final_approved_bets=0

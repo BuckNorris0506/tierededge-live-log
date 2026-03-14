@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-14T04:28:50.113Z",
+  "generated_at_utc": "2026-03-14T05:29:35.089Z",
   "jobs": {
     "morning_edge_hunt": {
       "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -175,15 +175,15 @@
     "source_path": "/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md"
   },
   "freshness_anchor": {
-    "source": "latest_successful_hunt",
-    "timestamp_ct": "2026-03-13 06:00 CT",
-    "timestamp_ms": 1773399600012
+    "source": "state_last_updated",
+    "timestamp_ct": "2026-03-13 23:38 CT",
+    "timestamp_ms": 1773463080000
   },
   "state_files": {
     "betting_state": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
-      "last_updated_ct": "2026-03-12 06:04 CT",
-      "file_mtime_ct": "2026-03-13 22:18 CT"
+      "last_updated_ct": "2026-03-13 23:38 CT",
+      "file_mtime_ct": "2026-03-13 23:39 CT"
     },
     "recommendation_log": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md",
@@ -196,8 +196,8 @@
   },
   "state_sync": {
     "blocking_sync_gap": false,
-    "hunt_after_state": true,
-    "grading_after_state": true,
+    "hunt_after_state": false,
+    "grading_after_state": false,
     "latest_hunt_requires_state_sync": false,
     "latest_grading_requires_state_sync": false
   },

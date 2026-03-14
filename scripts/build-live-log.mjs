@@ -1,6 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readRuntimeStatusSnapshot } from './openclaw-runtime-utils.mjs';
+import {
+  buildCandidateMarketRows,
+  buildSuppressedCandidateRows,
+  buildSuppressionSummary,
+  CANDIDATE_MARKET_HEADERS,
+  SUPPRESSED_CANDIDATE_HEADERS,
+  writeCsv,
+  parseAsNumber as parseAuditNumber,
+} from './suppression-audit-utils.mjs';
 
 const DEFAULT_SOURCE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md';
 const DEFAULT_OUT = path.resolve(process.cwd(), 'public', 'data.json');
@@ -8,6 +17,8 @@ const DEFAULT_PASSED_GRADES = '/Users/jaredbuckman/.openclaw/workspace/memory/pa
 const DEFAULT_MARKET_CONTEXT_HOOKS = path.resolve(process.cwd(), 'config', 'market-context-hooks.json');
 const DEFAULT_CONTRIBUTION_LEDGER = path.resolve(process.cwd(), 'data', 'bankroll-contributions.csv');
 const DEFAULT_CONTRIBUTION_STATUS = path.resolve(process.cwd(), 'data', 'bankroll-contribution-status.json');
+const DEFAULT_CANDIDATE_MARKETS = path.resolve(process.cwd(), 'data', 'candidate-markets.csv');
+const DEFAULT_SUPPRESSED_CANDIDATES = path.resolve(process.cwd(), 'data', 'suppressed-candidates.csv');
 const DATA_FRESHNESS_MAX_HOURS = 36;
 const BANKROLL_CONTINUITY_MAX_DELTA_PCT = 0.1;
 const BANKROLL_CONTINUITY_MAX_DELTA_ABS = 25;
@@ -1350,51 +1361,41 @@ function computePassedOpportunityTracker({ recommendationRows, gradesCache }) {
   };
 }
 
-function computeModelSuppressionTrace({ recommendationRows, targetDate }) {
-  const rows = recommendationRows.filter((row) => {
+function computeModelSuppressionTrace({ candidateMarketRows, suppressedCandidateRows, targetDate }) {
+  const rows = (candidateMarketRows || []).filter((row) => {
     if (!targetDate) return true;
-    return String(row.timestamp_ct || '').includes(targetDate);
+    return String(row.scan_time_ct || '').includes(targetDate);
   });
 
-  const traceRows = rows.map((row) => {
-    const edge = parsePercent(row.edge_pct);
-    const impliedFair = parsePercent(row.implied_prob_fair);
-    const trueProb = parsePercent(row.true_prob);
-    const decision = normalizeDecision(row.decision);
-    const rejectionReason = splitReasonCodes(row.rejection_reason)[0] || null;
-    const thresholdGap = edge !== null ? round2(2 - edge) : null;
-    let suppressionStage = 'accepted';
-    if (decision === 'bet') suppressionStage = 'accepted';
-    else if (edge !== null && edge < 2) suppressionStage = 'threshold_shortfall';
-    else if (decision === 'sit' && rejectionReason === 'low_confidence') suppressionStage = 'confidence_gate';
-    else if (decision === 'sit') suppressionStage = rejectionReason || 'other_gate';
+  const traceRows = rows.map((row) => ({
+    rec_id: row.rec_id || null,
+    timestamp_ct: row.scan_time_ct || null,
+    sport: row.league || row.sport || null,
+    market: row.market_type || null,
+    selection: row.selection || null,
+    source_book: row.book || null,
+    raw_market_price_us: row.odds_american || null,
+    raw_market_price_dec: row.odds_decimal || null,
+    de_vig_implied_probability: parseAuditNumber(row.devig_implied_prob),
+    consensus_baseline_probability: parseAuditNumber(row.consensus_prob),
+    pre_conf_true_probability: parseAuditNumber(row.pre_conf_true_prob),
+    confidence_total: parseAuditNumber(row.confidence_score),
+    post_conf_true_probability: parseAuditNumber(row.post_conf_true_prob),
+    raw_edge_percent: parseAuditNumber(row.raw_edge_pct),
+    final_edge_percent: parseAuditNumber(row.post_conf_edge_pct),
+    threshold_gap_to_t3: (() => {
+      const post = parseAuditNumber(row.post_conf_edge_pct);
+      return post !== null ? round2(Math.max(0, 2 - post)) : null;
+    })(),
+    decision: normalizeDecision(row.final_decision) || null,
+    rejection_reason: row.rejection_reason || null,
+    suppression_stage: row.rejection_stage || null,
+  }));
 
-    return {
-      rec_id: row.rec_id || null,
-      timestamp_ct: row.timestamp_ct || null,
-      sport: row.sport || null,
-      market: row.market || null,
-      selection: row.selection || null,
-      source_book: row.source_book || null,
-      raw_market_price_us: row.recommended_odds_us || null,
-      raw_market_price_dec: row.recommended_odds_dec || null,
-      de_vig_implied_probability: impliedFair,
-      consensus_baseline_probability: impliedFair,
-      true_probability_estimate: trueProb,
-      confidence_total: row.confidence_total || null,
-      final_edge_percent: edge,
-      threshold_gap_to_t3: thresholdGap !== null ? round2(Math.max(0, thresholdGap)) : null,
-      decision: decision || null,
-      rejection_reason: rejectionReason,
-      suppression_stage: suppressionStage,
-    };
+  const suspiciousRows = (suppressedCandidateRows || []).filter((row) => {
+    if (targetDate && !String(row.scan_time_ct || '').includes(targetDate)) return false;
+    return (parseAuditNumber(row.raw_edge_pct) ?? -Infinity) >= 2;
   });
-
-  const suspiciousRows = traceRows.filter((row) =>
-    row.decision === 'sit'
-    && row.final_edge_percent !== null
-    && row.final_edge_percent >= 2
-  );
 
   const summary = {
     total_candidates: traceRows.length,
@@ -1411,10 +1412,10 @@ function computeModelSuppressionTrace({ recommendationRows, targetDate }) {
 
   const diagnosticNotes = [];
   if (summary.total_candidates >= 20 && summary.near_miss_count === 0 && summary.bets_count === 0) {
-    diagnosticNotes.push('High-volume scan with zero bets and zero near-misses. Review whether the model is over-anchored or the input slate was genuinely efficient.');
+    diagnosticNotes.push('High-volume scan with zero bets and zero near-misses. Review whether the model is over-anchored or the slate was genuinely efficient.');
   }
   if (summary.sit_above_t3_count > 0) {
-    diagnosticNotes.push('At least one candidate cleared the T3 edge threshold but still ended as SIT. Inspect confidence and quality gates before trusting the board-level SIT conclusion.');
+    diagnosticNotes.push('At least one candidate cleared the raw T3 edge threshold and still ended as SIT. Inspect confidence gating before trusting the board-level SIT conclusion.');
   }
 
   return {
@@ -1422,8 +1423,35 @@ function computeModelSuppressionTrace({ recommendationRows, targetDate }) {
     summary,
     diagnostic_notes: diagnosticNotes,
     sample_rows: traceRows.slice(0, 50),
-    suspicious_rows: suspiciousRows,
+    suspicious_rows: suspiciousRows.slice(0, 50),
   };
+}
+
+function formatSuppressionSummaryLines(summary) {
+  if (!summary) return [];
+  return [
+    'Suppression Summary:',
+    `- markets_scanned=${summary.markets_scanned ?? 0}`,
+    `- raw_edge_over_0_5=${summary.markets_with_raw_edge_over_0_5 ?? 0}`,
+    `- pre_conf_edge_over_2_0=${summary.markets_with_pre_conf_edge_over_2_0 ?? 0}`,
+    `- rejected_confidence=${summary.markets_rejected_by_confidence_gate ?? 0}`,
+    `- rejected_threshold=${summary.markets_rejected_by_threshold_gate ?? 0}`,
+    `- rejected_risk=${summary.markets_rejected_by_risk_gate ?? 0}`,
+    `- final_approved_bets=${summary.final_approved_bets ?? 0}`,
+  ];
+}
+
+function resolveSuppressionTargetDate(candidateMarketRows, preferredDate) {
+  if (preferredDate && (candidateMarketRows || []).some((row) => String(row.scan_time_ct || '').includes(preferredDate))) {
+    return preferredDate;
+  }
+  const latest = [...(candidateMarketRows || [])]
+    .map((row) => String(row.scan_time_ct || ''))
+    .filter(Boolean)
+    .sort()
+    .pop();
+  const match = latest?.match(/(\d{4}-\d{2}-\d{2})/);
+  return match ? match[1] : preferredDate;
 }
 
 const SUPPORTED_SIT_REASON_CODES = [
@@ -1710,7 +1738,19 @@ function computeIntegrityGate({
   const ignoredPreLedgerScanDays = firstRecDay
     ? [...scanDays].filter((day) => day < firstRecDay).sort()
     : [];
-  const missingScanDays = relevantScanDays.filter((day) => !recDays.has(day)).sort();
+  const runtimeNoAppendDays = new Set();
+  const latestSuccessfulHuntDay = runtimeStatus?.latest_successful_hunt?.date_key || null;
+  if (
+    latestSuccessfulHuntDay
+    && runtimeStatus?.latest_successful_hunt?.requires_state_sync === false
+    && ['SIT', 'BLOCKED'].includes(String(runtimeStatus?.latest_successful_hunt?.message_type || '').toUpperCase())
+  ) {
+    runtimeNoAppendDays.add(latestSuccessfulHuntDay);
+  }
+  const missingScanDays = relevantScanDays
+    .filter((day) => !recDays.has(day))
+    .filter((day) => !runtimeNoAppendDays.has(day))
+    .sort();
   const freshnessAnchorMs = parseTimestampMs(dataFreshness.freshness_anchor_time);
   const generatedMs = parseTimestampMs(generatedAtUtc);
   const freshnessHours =
@@ -1752,6 +1792,7 @@ function computeIntegrityGate({
       freshness_anchor_time: dataFreshness.freshness_anchor_time,
       first_recommendation_day: firstRecDay,
       ignored_pre_ledger_scan_days: ignoredPreLedgerScanDays,
+      runtime_no_append_days: [...runtimeNoAppendDays].sort(),
       missing_scan_days: missingScanDays,
       duplicate_rec_ids: duplicateRecIds,
       bankroll_continuity: bankrollContinuity,
@@ -1764,7 +1805,6 @@ function computeIntegrityGate({
 function computeTodayDecisionConsole({
   recommendationRows,
   targetDate,
-  todaysBets,
   integrityGate,
   runtimeStatus,
 }) {
@@ -1772,18 +1812,7 @@ function computeTodayDecisionConsole({
     if (!targetDate) return true;
     return String(row.timestamp_ct || '').includes(targetDate);
   });
-
-  const sourceRows = recRowsForDate.length > 0
-    ? recRowsForDate
-    : todaysBets.map((row, idx) => ({
-        rec_id: `fallback-bet-${idx + 1}`,
-        selection: row.Bet || row.selection || 'Unknown',
-        market: row.Market || 'Unknown',
-        edge_pct: null,
-        kelly_stake: row.Stake || null,
-        decision: 'BET',
-        rejection_reason: null,
-      }));
+  const sourceRows = recRowsForDate;
 
   const bets = sourceRows
     .filter((row) => normalizeDecision(row.decision) === 'bet')
@@ -1844,6 +1873,7 @@ function buildCanonicalDecisionPayload({
   todayDecisionConsole,
   executionState,
   accountabilitySummary,
+  suppressionSummary,
 }) {
   const blocked = integrityGate.pass !== true;
   const hasBets = (todayDecisionConsole.bets || []).length > 0;
@@ -1872,6 +1902,7 @@ function buildCanonicalDecisionPayload({
     },
     execution_state: executionState,
     accountability_summary: accountabilitySummary,
+    suppression_summary: suppressionSummary || null,
     bets: blocked ? [] : (todayDecisionConsole.bets || []),
     sits: blocked ? [] : (todayDecisionConsole.sits || []),
     blocked: blocked
@@ -1938,6 +1969,7 @@ function formatTerminalDecisionMessage(payload) {
   lines.push(
     `Accountability: pending=${acc.pending_bets_count ?? '—'} | positive_clv_rate=${formatPercentValue(acc.positive_clv_rate)} | avg_clv=${acc.avg_clv ?? '—'} | recent_results=${acc.recent_results || '—'}`
   );
+  lines.push(...formatSuppressionSummaryLines(payload.suppression_summary));
 
   return `${lines.join('\n')}\n`;
 }
@@ -1984,6 +2016,7 @@ function formatWhatsAppDecisionMessage(payload) {
   lines.push(
     `Accountability: pending ${acc.pending_bets_count ?? '—'}, +CLV ${formatPercentValue(acc.positive_clv_rate)}, avg CLV ${acc.avg_clv ?? '—'}, results ${acc.recent_results || '—'}`
   );
+  lines.push(...formatSuppressionSummaryLines(payload.suppression_summary));
 
   return `${lines.join('\n')}\n`;
 }
@@ -2004,6 +2037,7 @@ function buildDashboardDecisionModel(payload) {
     system_health: payload.system_health || {},
     execution: payload.execution_state || {},
     accountability: payload.accountability_summary || {},
+    suppression_summary: payload.suppression_summary || {},
   };
 }
 
@@ -2403,6 +2437,9 @@ function buildPayload(markdown) {
     recLogPath && fs.existsSync(recLogPath)
       ? parseRecommendationRows(fs.readFileSync(recLogPath, 'utf8'))
       : [];
+  const candidateMarketRows = buildCandidateMarketRows(recommendationRows);
+  const suppressedCandidateRows = buildSuppressedCandidateRows(candidateMarketRows);
+  const suppressionTargetDate = resolveSuppressionTargetDate(candidateMarketRows, targetDate);
   const passedGradesCache = readPassedGradesCache();
 
   const todaysBets = redactPending
@@ -2449,9 +2486,11 @@ function buildPayload(markdown) {
     gradesCache: passedGradesCache,
   });
   const modelSuppressionTrace = computeModelSuppressionTrace({
-    recommendationRows,
-    targetDate,
+    candidateMarketRows,
+    suppressedCandidateRows,
+    targetDate: suppressionTargetDate,
   });
+  const dailySuppressionSummary = buildSuppressionSummary(candidateMarketRows, suppressionTargetDate);
   const quantPerformance = computeQuantPerformance({
     betLog,
     recommendationRows,
@@ -2529,6 +2568,7 @@ function buildPayload(markdown) {
     todayDecisionConsole,
     executionState,
     accountabilitySummary,
+    suppressionSummary: dailySuppressionSummary,
   });
   const decisionTerminalText = formatTerminalDecisionMessage(canonicalDecisionPayload);
   const decisionWhatsAppText = formatWhatsAppDecisionMessage(canonicalDecisionPayload);
@@ -2540,6 +2580,9 @@ function buildPayload(markdown) {
     bankrollContributionPolicy,
   });
   const decisionDashboardModel = buildDashboardDecisionModel(canonicalDecisionPayload);
+
+  writeCsv(DEFAULT_CANDIDATE_MARKETS, CANDIDATE_MARKET_HEADERS, candidateMarketRows);
+  writeCsv(DEFAULT_SUPPRESSED_CANDIDATES, SUPPRESSED_CANDIDATE_HEADERS, suppressedCandidateRows);
 
   return {
     generated_at_utc: generatedAtUtc,
@@ -2571,6 +2614,13 @@ function buildPayload(markdown) {
     sit_accountability_summary: sitAccountabilitySummary,
     passed_opportunity_tracker: passedOpportunityTracker,
     model_suppression_trace: modelSuppressionTrace,
+    suppression_summary: dailySuppressionSummary,
+    suppression_artifacts: {
+      candidate_markets_path: DEFAULT_CANDIDATE_MARKETS,
+      suppressed_candidates_path: DEFAULT_SUPPRESSED_CANDIDATES,
+      candidate_market_count: candidateMarketRows.length,
+      suppressed_candidate_count: suppressedCandidateRows.length,
+    },
     edge_distribution_transparency: edgeDistributionTransparency,
     market_type_reliability_index: marketTypeReliabilityIndex,
     sit_reason_code_standard: sitReasonCodeStandard,

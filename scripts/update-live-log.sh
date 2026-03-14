@@ -13,6 +13,8 @@ if ! node scripts/update-passed-opportunity-grades.mjs; then
 fi
 
 node scripts/build-live-log.mjs
+node scripts/enrich-suppressed-candidates.mjs
+node scripts/build-monthly-suppression-audit.mjs
 node scripts/build-standalone.mjs
 
 echo "Live log data rebuilt (including standalone page)."
