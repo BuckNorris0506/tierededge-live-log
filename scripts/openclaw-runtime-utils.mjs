@@ -104,11 +104,14 @@ function parseOddsApiConfig(markdown) {
   const apiKey = String(markdown || '').match(/^API_KEY=(.+)$/m)?.[1]?.trim() || null;
   const baseUrl = String(markdown || '').match(/^BASE_URL=(.+)$/m)?.[1]?.trim() || null;
   const freeTierScan = String(markdown || '').match(/One full scan at (\d{1,2}:\d{2})\s*AM CT/i)?.[1] || null;
+  const normalizedFreeTierScan = freeTierScan
+    ? `${String(Number(freeTierScan.split(':')[0])).padStart(2, '0')}:${freeTierScan.split(':')[1]}`
+    : null;
   return {
     key_present: Boolean(apiKey),
     key_suffix: apiKey ? apiKey.slice(-4) : null,
     base_url: baseUrl,
-    free_tier_scan_ct: freeTierScan ? `${freeTierScan}` : null,
+    free_tier_scan_ct: normalizedFreeTierScan,
     source_path: OPENCLAW_PATHS.oddsApiConfig,
   };
 }

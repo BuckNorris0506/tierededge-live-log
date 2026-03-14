@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-14T04:28:28.093Z",
+  "generated_at_utc": "2026-03-14T04:28:50.113Z",
   "jobs": {
     "morning_edge_hunt": {
       "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -171,7 +171,7 @@
     "key_present": true,
     "key_suffix": "d2d6",
     "base_url": "https://api.the-odds-api.com/v4",
-    "free_tier_scan_ct": "6:00",
+    "free_tier_scan_ct": "06:00",
     "source_path": "/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md"
   },
   "freshness_anchor": {
@@ -191,7 +191,7 @@
     },
     "passed_opportunity_grades": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-      "file_mtime_ct": "2026-03-13 22:54 CT"
+      "file_mtime_ct": "2026-03-13 23:28 CT"
     }
   },
   "state_sync": {
@@ -201,7 +201,5 @@
     "latest_hunt_requires_state_sync": false,
     "latest_grading_requires_state_sync": false
   },
-  "warnings": [
-    "odds_config_scan_policy_drift"
-  ]
+  "warnings": []
 }
