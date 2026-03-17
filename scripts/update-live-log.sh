@@ -26,6 +26,7 @@ fi
 node scripts/build-live-log.mjs
 node scripts/enrich-suppressed-candidates.mjs
 node scripts/build-monthly-suppression-audit.mjs
+node scripts/build-monthly-self-audit.mjs
 node scripts/build-standalone.mjs
 
 assert_source_state_unchanged

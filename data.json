@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-03-17T02:43:11.901Z",
+  "generated_at_utc": "2026-03-17T02:48:54.825Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-16 07:12 CT",
   "state_last_updated_ct": "2026-03-14 00:35 CT",
   "runtime_status": {
-    "generated_at_utc": "2026-03-17T02:43:11.377Z",
+    "generated_at_utc": "2026-03-17T02:48:54.336Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -694,7 +694,7 @@
       },
       "passed_opportunity_grades": {
         "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-        "file_mtime_ct": "2026-03-16 21:37 CT"
+        "file_mtime_ct": "2026-03-16 21:43 CT"
       }
     },
     "state_sync": {
@@ -1018,7 +1018,7 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Pacers +4.5 (NBA) at +EV 1.8% (-108). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
-        "failure_reason": "missing_event_identity",
+        "failure_reason": "no_historical_result_found",
         "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
         "hypothetical_units": null,
@@ -1120,7 +1120,7 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Cavaliers -3.5 (NBA) at +EV 0.7% (-110). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
-        "failure_reason": "missing_event_identity",
+        "failure_reason": "no_historical_result_found",
         "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
         "hypothetical_units": null,
@@ -1137,7 +1137,7 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Clippers -1.5 (NBA) at +EV 0.3% (-105). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
-        "failure_reason": "missing_event_identity",
+        "failure_reason": "no_historical_result_found",
         "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
         "hypothetical_units": null,
@@ -2131,8 +2131,8 @@
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-12 06:04 AM",
-    "grading_cache_last_update": "2026-03-17T02:43:11.842Z",
-    "payload_build_time_utc": "2026-03-17T02:43:11.901Z",
+    "grading_cache_last_update": "2026-03-17T02:48:54.778Z",
+    "payload_build_time_utc": "2026-03-17T02:48:54.825Z",
     "state_last_updated_time": "2026-03-14 00:35 CT",
     "effective_last_updated_time": "2026-03-16 07:12 CT",
     "freshness_anchor_source": "runtime_freshness_anchor",
@@ -2152,7 +2152,7 @@
       "missing_scan_days_count": 0
     },
     "diagnostics": {
-      "freshness_hours_since_anchor": 26.72,
+      "freshness_hours_since_anchor": 26.82,
       "freshness_anchor_source": "runtime_freshness_anchor",
       "freshness_anchor_time": "2026-03-16 07:12 CT",
       "first_recommendation_day": "2026-03-07",
@@ -2175,7 +2175,7 @@
       "odds_api_key_present": true,
       "bankroll_formula_difference": null,
       "payload_rebuild_canonical_generated_at_utc": null,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:43:11.901Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:48:54.825Z",
       "latest_hunt_date": "2026-03-16",
       "latest_hunt_type": "SIT",
       "latest_hunt_has_bet_state": true,
@@ -2192,7 +2192,7 @@
         "last_updated_day": "2026-03-16"
       },
       "runtime_status": {
-        "generated_at_utc": "2026-03-17T02:43:11.377Z",
+        "generated_at_utc": "2026-03-17T02:48:54.336Z",
         "jobs": {
           "morning_edge_hunt": {
             "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -2881,7 +2881,7 @@
           },
           "passed_opportunity_grades": {
             "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-            "file_mtime_ct": "2026-03-16 21:37 CT"
+            "file_mtime_ct": "2026-03-16 21:43 CT"
           }
         },
         "state_sync": {
@@ -2898,7 +2898,7 @@
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-17T02:43:11.901Z",
+    "generated_at_utc": "2026-03-17T02:48:54.825Z",
     "message_type": "SIT",
     "verdict": "SIT",
     "run_classification": "true_no_edge_sit",
