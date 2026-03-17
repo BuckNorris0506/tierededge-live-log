@@ -2014,11 +2014,11 @@ function classifyIntegrityOutcome({ reasons, blockedByFreshness, blockedByBankro
   if (reasons.includes('missing_api_key')) return 'missing_api_key';
   if (reasons.includes('partial_api_data')) return 'partial_api_data';
   if (reasons.includes('quota_or_rate_limit') || reasons.includes('malformed_response') || reasons.includes('degraded_data') || blockedByApiIntegrity) return 'degraded_data';
-  if (reasons.includes('bankroll_integrity_failure') || blockedByBankroll) return 'bankroll_integrity_failure';
-  if (reasons.includes('state_sync_failure') || blockedByStateSync) return 'state_sync_failure';
-  if (reasons.includes('payload_rebuild_failure') || payloadRebuildStale) return 'payload_rebuild_failure';
-  if (reasons.includes('recommendation_integrity_failure') || blockedByRecommendationIntegrity) return 'state_sync_failure';
   if (reasons.includes('stale_state') || blockedByFreshness) return 'stale_state';
+  if (reasons.includes('state_sync_failure') || blockedByStateSync) return 'state_sync_failure';
+  if (reasons.includes('recommendation_integrity_failure') || blockedByRecommendationIntegrity) return 'state_sync_failure';
+  if (reasons.includes('payload_rebuild_failure') || payloadRebuildStale) return 'payload_rebuild_failure';
+  if (reasons.includes('bankroll_integrity_failure') || blockedByBankroll) return 'bankroll_integrity_failure';
   if (hasBets) return 'bet_ready';
   return 'true_no_edge_sit';
 }

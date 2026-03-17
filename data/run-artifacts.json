@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-17T02:51:35.533Z",
+  "generated_at_utc": "2026-03-17T02:54:57.387Z",
   "latest_run_artifact": {
     "run_id": "b91fdba6-ab65-44cd-a65c-e3dde9ffe7ea",
     "run_type": "hunt",
@@ -15,7 +15,7 @@
     "state_sync_completed": true,
     "canonical_state_write_completed": true,
     "payload_rebuild_completed": true,
-    "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+    "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
     "success_criteria_met": true,
     "failure_reason": null,
     "notes": "The latest scheduled scan found no qualifying edges."
@@ -36,7 +36,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Odds could not be verified for the latest scheduled scan."
@@ -56,7 +56,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Odds could not be verified for the latest scheduled scan."
@@ -76,7 +76,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -96,7 +96,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -116,7 +116,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -136,7 +136,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -156,7 +156,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan reported at least one actionable bet."
@@ -176,7 +176,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -196,7 +196,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -216,7 +216,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -236,7 +236,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run implies bankroll or result updates."
@@ -256,7 +256,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -276,7 +276,7 @@
       "state_sync_completed": false,
       "canonical_state_write_completed": false,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": false,
       "failure_reason": "canonical_state_sync_missing",
       "notes": "The latest scheduled scan reported at least one actionable bet."
@@ -296,7 +296,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run implies bankroll or result updates."
@@ -316,7 +316,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -336,7 +336,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run implies bankroll or result updates."
@@ -356,7 +356,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -376,7 +376,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -396,7 +396,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -416,7 +416,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -436,7 +436,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -456,7 +456,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -476,7 +476,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -496,7 +496,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -516,7 +516,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -536,7 +536,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -556,7 +556,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -576,7 +576,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -596,7 +596,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -616,7 +616,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -636,7 +636,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T02:51:35.533Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:54:57.387Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run implies bankroll or result updates."
