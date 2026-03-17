@@ -8,27 +8,32 @@ source "$ROOT_DIR/scripts/load-tierededge-env.sh"
 source "$ROOT_DIR/scripts/live-log-automation-guard.sh"
 acquire_live_log_lock "update-live-log.sh"
 
+node scripts/build-runtime-status.mjs
+if ! node scripts/update-passed-opportunity-grades.mjs; then
+  echo "WARN: passed-opportunity grading failed; continuing with existing grades."
+fi
+node scripts/backfill-override-log.mjs
+node scripts/build-weekly-truth-report.mjs
 snapshot_source_state \
   /Users/jaredbuckman/.openclaw/cron/jobs.json \
-  /Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md \
-  /Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md \
   /Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md \
-  "$ROOT_DIR/data/bankroll-contributions.csv" \
-  "$ROOT_DIR/data/bankroll-contribution-status.json"
-
-node scripts/build-runtime-status.mjs
-
-# Grade passed SIT opportunities before rebuilding artifacts.
-# This writes counterfactual outcomes to the OpenClaw memory cache used by build-live-log.
-if ! node scripts/update-passed-opportunity-grades.mjs; then
-  echo "WARN: passed-opportunity grading failed; continuing with existing cache."
+  "$ROOT_DIR/data/decision-ledger.jsonl" \
+  "$ROOT_DIR/data/grading-ledger.jsonl" \
+  "$ROOT_DIR/data/bankroll-ledger.jsonl"
+node scripts/build-execution-board.mjs
+if ! node scripts/validate-ledger-invariants.mjs; then
+  echo "WARN: ledger validator failed prebuild; rendering blocked canonical state."
 fi
-
+node scripts/build-canonical-state.mjs
+cp "$ROOT_DIR/app.js" "$ROOT_DIR/public/app.js"
+cp "$ROOT_DIR/index.html" "$ROOT_DIR/public/index.html"
+cp "$ROOT_DIR/styles.css" "$ROOT_DIR/public/styles.css"
 node scripts/build-live-log.mjs
-node scripts/enrich-suppressed-candidates.mjs
-node scripts/build-monthly-suppression-audit.mjs
-node scripts/build-monthly-self-audit.mjs
 node scripts/build-standalone.mjs
+rsync -a "$ROOT_DIR/public/" "$ROOT_DIR/"
+if ! node scripts/validate-ledger-invariants.mjs --require-output-match; then
+  echo "WARN: ledger validator failed postbuild; published state remains blocked."
+fi
 
 assert_source_state_unchanged
 
@@ -54,8 +59,7 @@ if [[ -n "${LIVE_LOG_DEPLOY_REPO:-}" ]]; then
     rsync -a --delete "$ROOT_DIR/public/" "$LIVE_LOG_DEPLOY_REPO/"
     cd "$LIVE_LOG_DEPLOY_REPO"
   else
-    # In-place mode: sync built public artifacts to repo root for GitHub Pages root deploy.
-    rsync -a "$ROOT_DIR/public/" "$ROOT_DIR/"
+    # In-place mode: local root sync already completed above.
     cd "$ROOT_DIR"
   fi
 

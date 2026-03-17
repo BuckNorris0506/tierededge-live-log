@@ -1,0 +1,237 @@
+{
+  "generated_at_utc": "2026-03-17T19:58:25.401Z",
+  "status": "ready_for_confirmation",
+  "source_images": [
+    "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/whatsapp-settlement-inbox/whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg"
+  ],
+  "screenshot_previews": [
+    {
+      "image_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/whatsapp-settlement-inbox/whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg",
+      "screenshot_filename": "whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg",
+      "sportsbook": "DraftKings",
+      "average_confidence": 1,
+      "parsed_bets": [
+        {
+          "screenshot_filename": "whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg",
+          "sportsbook": "DraftKings",
+          "event": "BOS BRUINS @ MTL CANADIENS",
+          "market_type": "Moneyline",
+          "selection": "BOS BRUINS",
+          "odds": "+136",
+          "stake": "20.50",
+          "payout": "48.38",
+          "ticket_timestamp": "Mar 17, 2026, 9:23:58 AM",
+          "settlement_status": "win",
+          "extraction_confidence": 0.9,
+          "parse_warnings": [
+            "ambiguous_multiple_bets"
+          ],
+          "raw_lines": [
+            "DraftKings Sportsbook",
+            "BOS BRUINS +136",
+            "Moneyline",
+            "Wager: $20.50 Paid: $48.38",
+            "BOS BRUINS",
+            "MTL CANADIENS",
+            "Mar 17, 2026, 9:23:58 AM",
+            "WON",
+            "VGK GOLDEN KNIGHTS -125",
+            "Moneyline"
+          ]
+        },
+        {
+          "screenshot_filename": "whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg",
+          "sportsbook": "DraftKings",
+          "event": "BOS BRUINS @ MTL CANADIENS",
+          "market_type": "Moneyline",
+          "selection": "VGK GOLDEN KNIGHTS",
+          "odds": "-125",
+          "stake": "10.50",
+          "payout": null,
+          "ticket_timestamp": "Mar 17, 2026, 9:24:53 AM",
+          "settlement_status": "win",
+          "extraction_confidence": 0.9,
+          "parse_warnings": [
+            "ambiguous_multiple_bets"
+          ],
+          "raw_lines": [
+            "BOS BRUINS",
+            "MTL CANADIENS",
+            "Mar 17, 2026, 9:23:58 AM",
+            "WON",
+            "VGK GOLDEN KNIGHTS -125",
+            "Moneyline",
+            "Wager: $10.50",
+            "BUF SABRES",
+            "VGK GOLDEN KNIGHTS",
+            "Mar 17, 2026, 9:24:53 AM",
+            "LOST"
+          ]
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "preview_id": "execution::manual-recovered::2026-03-17::bruins-ml::2026-03-17 09:23:58 CT",
+      "screenshot_filename": "whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg",
+      "extracted_fields": {
+        "screenshot_filename": "whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg",
+        "sportsbook": "DraftKings",
+        "event": "BOS BRUINS @ MTL CANADIENS",
+        "market_type": "Moneyline",
+        "selection": "BOS BRUINS",
+        "odds": "+136",
+        "stake": "20.50",
+        "payout": "48.38",
+        "ticket_timestamp": "Mar 17, 2026, 9:23:58 AM",
+        "settlement_status": "win",
+        "extraction_confidence": 0.9,
+        "parse_warnings": [
+          "ambiguous_multiple_bets"
+        ],
+        "raw_lines": [
+          "DraftKings Sportsbook",
+          "BOS BRUINS +136",
+          "Moneyline",
+          "Wager: $20.50 Paid: $48.38",
+          "BOS BRUINS",
+          "MTL CANADIENS",
+          "Mar 17, 2026, 9:23:58 AM",
+          "WON",
+          "VGK GOLDEN KNIGHTS -125",
+          "Moneyline"
+        ]
+      },
+      "match_status": "matched_with_low_confidence",
+      "confidence_level": "medium",
+      "matched_execution_id": "execution::manual-recovered::2026-03-17::bruins-ml::2026-03-17 09:23:58 CT",
+      "matched_rec_id": "manual-recovered::2026-03-17::bruins-ml",
+      "warnings": [
+        "ambiguous_multiple_bets",
+        "low_match_confidence"
+      ],
+      "proposed_grading_row": {
+        "grading_id": "reconciliation::execution::manual-recovered::2026-03-17::bruins-ml::2026-03-17 09:23:58 CT::1773777505401",
+        "grading_type": "RECONCILIATION",
+        "ref_id": "execution::manual-recovered::2026-03-17::bruins-ml::2026-03-17 09:23:58 CT",
+        "execution_log_id": "execution::manual-recovered::2026-03-17::bruins-ml::2026-03-17 09:23:58 CT",
+        "rec_id": "manual-recovered::2026-03-17::bruins-ml",
+        "sportsbook": "DraftKings",
+        "event": "BOS BRUINS @ MTL CANADIENS",
+        "market": "Moneyline",
+        "selection": "BOS BRUINS",
+        "actual_odds": "+136",
+        "actual_stake": 20.5,
+        "settlement_status": "win",
+        "settlement_payout": 48.38,
+        "settlement_source": "whatsapp_screenshot",
+        "screenshot_filename": "whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg",
+        "extraction_confidence": 0.9,
+        "reconciliation_flag": "manual_reconciliation_required",
+        "reconciliation_flags": [
+          "manual_reconciliation_required"
+        ],
+        "ingestion_timestamp": "2026-03-17T19:58:25.401Z",
+        "notes": [
+          "ambiguous_multiple_bets",
+          "low_match_confidence"
+        ],
+        "warnings": [
+          "ambiguous_multiple_bets",
+          "low_match_confidence"
+        ],
+        "result": "WIN",
+        "profit_loss": 27.88,
+        "stake": 20.5,
+        "source": "whatsapp_screenshot",
+        "ticket_timestamp": "Mar 17, 2026, 9:23:58 AM",
+        "existing_grading_match": null
+      }
+    },
+    {
+      "preview_id": "execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT",
+      "screenshot_filename": "whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg",
+      "extracted_fields": {
+        "screenshot_filename": "whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg",
+        "sportsbook": "DraftKings",
+        "event": "BOS BRUINS @ MTL CANADIENS",
+        "market_type": "Moneyline",
+        "selection": "VGK GOLDEN KNIGHTS",
+        "odds": "-125",
+        "stake": "10.50",
+        "payout": null,
+        "ticket_timestamp": "Mar 17, 2026, 9:24:53 AM",
+        "settlement_status": "win",
+        "extraction_confidence": 0.9,
+        "parse_warnings": [
+          "ambiguous_multiple_bets"
+        ],
+        "raw_lines": [
+          "BOS BRUINS",
+          "MTL CANADIENS",
+          "Mar 17, 2026, 9:23:58 AM",
+          "WON",
+          "VGK GOLDEN KNIGHTS -125",
+          "Moneyline",
+          "Wager: $10.50",
+          "BUF SABRES",
+          "VGK GOLDEN KNIGHTS",
+          "Mar 17, 2026, 9:24:53 AM",
+          "LOST"
+        ]
+      },
+      "match_status": "matched_with_low_confidence",
+      "confidence_level": "medium",
+      "matched_execution_id": "execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT",
+      "matched_rec_id": "manual-recovered::2026-03-17::golden-knights-ml",
+      "warnings": [
+        "ambiguous_multiple_bets",
+        "low_match_confidence"
+      ],
+      "proposed_grading_row": {
+        "grading_id": "reconciliation::execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT::1773777505401",
+        "grading_type": "RECONCILIATION",
+        "ref_id": "execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT",
+        "execution_log_id": "execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT",
+        "rec_id": "manual-recovered::2026-03-17::golden-knights-ml",
+        "sportsbook": "DraftKings",
+        "event": "BOS BRUINS @ MTL CANADIENS",
+        "market": "Moneyline",
+        "selection": "VGK GOLDEN KNIGHTS",
+        "actual_odds": "-125",
+        "actual_stake": 10.5,
+        "settlement_status": "win",
+        "settlement_payout": null,
+        "settlement_source": "whatsapp_screenshot",
+        "screenshot_filename": "whatsapp:settle-ambiguous__wasettle-1773777505395-b57abf83__01.jpg",
+        "extraction_confidence": 0.9,
+        "reconciliation_flag": "manual_reconciliation_required",
+        "reconciliation_flags": [
+          "manual_reconciliation_required"
+        ],
+        "ingestion_timestamp": "2026-03-17T19:58:25.401Z",
+        "notes": [
+          "ambiguous_multiple_bets",
+          "low_match_confidence"
+        ],
+        "warnings": [
+          "ambiguous_multiple_bets",
+          "low_match_confidence"
+        ],
+        "result": "WIN",
+        "profit_loss": null,
+        "stake": 10.5,
+        "source": "whatsapp_screenshot",
+        "ticket_timestamp": "Mar 17, 2026, 9:24:53 AM",
+        "existing_grading_match": null
+      }
+    }
+  ],
+  "verification_actions": [
+    "CONFIRM_ALL",
+    "CONFIRM_SELECTED",
+    "REJECT"
+  ],
+  "preview_text": "SETTLED TICKET PREVIEW (2)\nStatus: ready_for_confirmation\n\n1. BOS BRUINS | BOS BRUINS @ MTL CANADIENS\n   Book: DraftKings | Market: Moneyline\n   Odds: +136 | Stake: 20.50 | Payout: 48.38\n   Settlement: win\n   Match: matched_with_low_confidence | execution_id: execution::manual-recovered::2026-03-17::bruins-ml::2026-03-17 09:23:58 CT | rec_id: manual-recovered::2026-03-17::bruins-ml\n   Warnings: ambiguous_multiple_bets, low_match_confidence\n\n2. VGK GOLDEN KNIGHTS | BOS BRUINS @ MTL CANADIENS\n   Book: DraftKings | Market: Moneyline\n   Odds: -125 | Stake: 10.50 | Payout: MISSING\n   Settlement: win\n   Match: matched_with_low_confidence | execution_id: execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT | rec_id: manual-recovered::2026-03-17::golden-knights-ml\n   Warnings: ambiguous_multiple_bets, low_match_confidence"
+}

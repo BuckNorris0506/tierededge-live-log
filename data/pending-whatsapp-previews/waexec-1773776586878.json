@@ -1,0 +1,120 @@
+{
+  "generated_at_utc": "2026-03-17T19:43:06.884Z",
+  "status": "ready_for_confirmation",
+  "source_images": [
+    "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/whatsapp-screenshot-inbox/whatsapp:example-matched__waexec-1773776586878__01.jpg"
+  ],
+  "screenshot_previews": [
+    {
+      "image_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/whatsapp-screenshot-inbox/whatsapp:example-matched__waexec-1773776586878__01.jpg",
+      "screenshot_filename": "whatsapp:example-matched__waexec-1773776586878__01.jpg",
+      "sportsbook": "DraftKings",
+      "average_confidence": 1,
+      "parsed_bets": [
+        {
+          "screenshot_filename": "whatsapp:example-matched__waexec-1773776586878__01.jpg",
+          "sportsbook": "DraftKings",
+          "event": "James Madison @ Opponent Team",
+          "market_type": "Spread",
+          "selection": "James Madison -1.5",
+          "odds": "+113",
+          "stake": "12.50",
+          "to_win_or_payout": "26.63",
+          "bet_type": "EDGE_BET",
+          "ticket_timestamp": "Mar 5, 2026, 6:05:00 PM",
+          "status": "open",
+          "extraction_confidence": 1,
+          "parse_warnings": [],
+          "raw_lines": [
+            "DraftKings Sportsbook",
+            "James Madison -1.5 +113",
+            "Spread",
+            "Wager: $12.50 To Pay: $26.63",
+            "James Madison",
+            "Opponent Team",
+            "Mar 5, 2026, 6:05:00 PM",
+            "OPEN"
+          ]
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "preview_id": "whatsapp:example-matched__waexec-1773776586878__01.jpg::jamesmadison-1.5",
+      "screenshot_filename": "whatsapp:example-matched__waexec-1773776586878__01.jpg",
+      "extracted_fields": {
+        "screenshot_filename": "whatsapp:example-matched__waexec-1773776586878__01.jpg",
+        "sportsbook": "DraftKings",
+        "event": "James Madison @ Opponent Team",
+        "market_type": "Spread",
+        "selection": "James Madison -1.5",
+        "odds": "+113",
+        "stake": "12.50",
+        "to_win_or_payout": "26.63",
+        "bet_type": "EDGE_BET",
+        "ticket_timestamp": "Mar 5, 2026, 6:05:00 PM",
+        "status": "open",
+        "extraction_confidence": 1,
+        "parse_warnings": [],
+        "raw_lines": [
+          "DraftKings Sportsbook",
+          "James Madison -1.5 +113",
+          "Spread",
+          "Wager: $12.50 To Pay: $26.63",
+          "James Madison",
+          "Opponent Team",
+          "Mar 5, 2026, 6:05:00 PM",
+          "OPEN"
+        ]
+      },
+      "matched_rec_id": null,
+      "matched_context": {
+        "recommendation_key": "betlog::2026-03-05::18:00::James Madison -1.5",
+        "run_id": "2026-03-05",
+        "selection": "James Madison -1.5",
+        "sportsbook": "DraftKings",
+        "odds_american": "+113",
+        "timestamp_ct": "2026-03-05 18:00"
+      },
+      "match_status": "matched_with_low_confidence",
+      "confidence_level": "medium",
+      "warnings": [],
+      "proposed_execution_log_row": {
+        "rec_id": null,
+        "run_id": "2026-03-05",
+        "match_status": "matched_with_low_confidence",
+        "sportsbook": "DraftKings",
+        "event": "James Madison @ Opponent Team",
+        "market": "Spread",
+        "selection": "James Madison -1.5",
+        "recommended_odds": "+113",
+        "actual_odds": "+113",
+        "recommended_stake": 1.65,
+        "actual_stake": "12.50",
+        "line_price_drift": "0 cents",
+        "screenshot_filename": "whatsapp:example-matched__waexec-1773776586878__01.jpg",
+        "extraction_confidence": 1,
+        "manual_override_flag": true,
+        "ingestion_timestamp": "2026-03-17T19:43:06.884Z",
+        "notes": [],
+        "warnings": [],
+        "execution_approval_result": "REJECT_EXECUTION",
+        "recommended_sportsbook": "DraftKings",
+        "actual_sportsbook": "DraftKings",
+        "recommendation_timestamp": "2026-03-05 18:00",
+        "bet_slip_timestamp": "Mar 5, 2026, 6:05:00 PM",
+        "actual_status": "open",
+        "bet_type": "EDGE_BET",
+        "to_win_or_payout": "26.63"
+      }
+    }
+  ],
+  "verification_actions": [
+    "CONFIRM_ALL",
+    "CONFIRM_SELECTED",
+    "REJECT",
+    "EDIT_FIELDS"
+  ],
+  "preview_text": "SCREENSHOT EXECUTION PREVIEW (1 bets)\nStatus: ready_for_confirmation\nGenerated: 2026-03-17T19:43:06.884Z\n\n1. James Madison -1.5 | James Madison @ Opponent Team\n   Screenshot: whatsapp:example-matched__waexec-1773776586878__01.jpg\n   Sportsbook: DraftKings\n   Market: Spread | Odds: +113 | Stake: 12.50\n   Match: matched_with_low_confidence | Confidence: medium\n   rec_id: NONE\n   Proposed row: actual_odds=+113 actual_stake=12.50 approval=REJECT_EXECUTION"
+}

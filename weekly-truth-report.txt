@@ -1,0 +1,14 @@
+WEEKLY TRUTH REPORT
+Generated: 2026-03-17T22:37:22.410Z
+Settled bets: 2
+Average edge at placement: N/A | Realized P/L: 57.4
+Override events: 11 | Blocked-run: 11 | Off-model: 0
+Missing snapshot count: 0 | Missing CLV count: 2
+
+Top Bleeding Categories:
+none
+
+Top Strongest Categories:
+1. NBA / NBA | bets=2 | P/L=57.4 | ROI=382.67%
+2. FUN_SGP | bets=2 | P/L=57.4 | ROI=382.67%
+3. clv_missing | bets=2 | P/L=57.4 | ROI=382.67%

@@ -1,0 +1,154 @@
+{
+  "generated_at_utc": "2026-03-17T22:37:22.410Z",
+  "window": "last_7_days",
+  "settled_bet_count": 2,
+  "expected_vs_realized_summary": {
+    "average_edge_at_placement": null,
+    "realized_pl": 57.4,
+    "units_risked": 15
+  },
+  "override_totals": {
+    "total_override_events": 11,
+    "blocked_run_override_count": 11,
+    "off_model_override_count": 0,
+    "monthly_override_count": 11
+  },
+  "missing_coverage": {
+    "missing_snapshot_count": 0,
+    "missing_clv_count": 2
+  },
+  "slices": {
+    "sport_league": {
+      "NBA / NBA": {
+        "bet_count": 2,
+        "units_risked": 15,
+        "realized_pl": 57.4,
+        "roi_pct": 382.67,
+        "hit_rate_pct": 100,
+        "average_edge_at_placement": null,
+        "clv_coverage_pct": 0,
+        "clv_average": null
+      }
+    },
+    "bet_class": {
+      "FUN_SGP": {
+        "bet_count": 2,
+        "units_risked": 15,
+        "realized_pl": 57.4,
+        "roi_pct": 382.67,
+        "hit_rate_pct": 100,
+        "average_edge_at_placement": null,
+        "clv_coverage_pct": 0,
+        "clv_average": null
+      }
+    },
+    "stake_size_bucket": {
+      "5-20": {
+        "bet_count": 2,
+        "units_risked": 15,
+        "realized_pl": 57.4,
+        "roi_pct": 382.67,
+        "hit_rate_pct": 100,
+        "average_edge_at_placement": null,
+        "clv_coverage_pct": 0,
+        "clv_average": null
+      }
+    },
+    "time_of_day": {
+      "Afternoon": {
+        "bet_count": 2,
+        "units_risked": 15,
+        "realized_pl": 57.4,
+        "roi_pct": 382.67,
+        "hit_rate_pct": 100,
+        "average_edge_at_placement": null,
+        "clv_coverage_pct": 0,
+        "clv_average": null
+      }
+    },
+    "manual_override_vs_normal": {
+      "normal_execution": {
+        "bet_count": 2,
+        "units_risked": 15,
+        "realized_pl": 57.4,
+        "roi_pct": 382.67,
+        "hit_rate_pct": 100,
+        "average_edge_at_placement": null,
+        "clv_coverage_pct": 0,
+        "clv_average": null
+      }
+    },
+    "blocked_run_override_vs_normal": {
+      "normal_run": {
+        "bet_count": 2,
+        "units_risked": 15,
+        "realized_pl": 57.4,
+        "roi_pct": 382.67,
+        "hit_rate_pct": 100,
+        "average_edge_at_placement": null,
+        "clv_coverage_pct": 0,
+        "clv_average": null
+      }
+    },
+    "clv_bucket": {
+      "clv_missing": {
+        "bet_count": 2,
+        "units_risked": 15,
+        "realized_pl": 57.4,
+        "roi_pct": 382.67,
+        "hit_rate_pct": 100,
+        "average_edge_at_placement": null,
+        "clv_coverage_pct": 0,
+        "clv_average": null
+      }
+    },
+    "approval_bucket": {
+      "approved_or_unknown": {
+        "bet_count": 2,
+        "units_risked": 15,
+        "realized_pl": 57.4,
+        "roi_pct": 382.67,
+        "hit_rate_pct": 100,
+        "average_edge_at_placement": null,
+        "clv_coverage_pct": 0,
+        "clv_average": null
+      }
+    }
+  },
+  "top_bleeding_categories": [],
+  "top_strongest_categories": [
+    {
+      "label": "NBA / NBA",
+      "bet_count": 2,
+      "units_risked": 15,
+      "realized_pl": 57.4,
+      "roi_pct": 382.67,
+      "hit_rate_pct": 100,
+      "average_edge_at_placement": null,
+      "clv_coverage_pct": 0,
+      "clv_average": null
+    },
+    {
+      "label": "FUN_SGP",
+      "bet_count": 2,
+      "units_risked": 15,
+      "realized_pl": 57.4,
+      "roi_pct": 382.67,
+      "hit_rate_pct": 100,
+      "average_edge_at_placement": null,
+      "clv_coverage_pct": 0,
+      "clv_average": null
+    },
+    {
+      "label": "clv_missing",
+      "bet_count": 2,
+      "units_risked": 15,
+      "realized_pl": 57.4,
+      "roi_pct": 382.67,
+      "hit_rate_pct": 100,
+      "average_edge_at_placement": null,
+      "clv_coverage_pct": 0,
+      "clv_average": null
+    }
+  ]
+}

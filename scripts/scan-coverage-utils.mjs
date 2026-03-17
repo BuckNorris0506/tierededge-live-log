@@ -2,7 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { OPENCLAW_PATHS } from './openclaw-runtime-utils.mjs';
 
-export const DEFAULT_SCAN_COVERAGE_POLICY = path.resolve(process.cwd(), 'config', 'scan-coverage-policy.json');
+const SCRIPT_DIR = path.dirname(new URL(import.meta.url).pathname);
+const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');
+
+export const DEFAULT_SCAN_COVERAGE_POLICY = path.resolve(REPO_ROOT, 'config', 'scan-coverage-policy.json');
 
 function readJsonSafe(filePath, fallback = null) {
   try {

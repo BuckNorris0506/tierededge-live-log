@@ -1,0 +1,119 @@
+{
+  "generated_at_utc": "2026-03-17T19:57:08.860Z",
+  "status": "ready_for_confirmation",
+  "source_images": [
+    "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/whatsapp-settlement-inbox/whatsapp:settle-loss__wasettle-1773777428856__01.jpg"
+  ],
+  "screenshot_previews": [
+    {
+      "image_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/whatsapp-settlement-inbox/whatsapp:settle-loss__wasettle-1773777428856__01.jpg",
+      "screenshot_filename": "whatsapp:settle-loss__wasettle-1773777428856__01.jpg",
+      "sportsbook": "DraftKings",
+      "average_confidence": 1,
+      "parsed_bets": [
+        {
+          "screenshot_filename": "whatsapp:settle-loss__wasettle-1773777428856__01.jpg",
+          "sportsbook": "DraftKings",
+          "event": "BUF SABRES @ VGK GOLDEN KNIGHTS",
+          "market_type": "Moneyline",
+          "selection": "VGK GOLDEN KNIGHTS",
+          "odds": "-125",
+          "stake": "10.50",
+          "payout": null,
+          "ticket_timestamp": "Mar 17, 2026, 9:24:53 AM",
+          "settlement_status": "loss",
+          "extraction_confidence": 1,
+          "parse_warnings": [],
+          "raw_lines": [
+            "DraftKings Sportsbook",
+            "VGK GOLDEN KNIGHTS -125",
+            "Moneyline",
+            "Wager: $10.50",
+            "BUF SABRES",
+            "VGK GOLDEN KNIGHTS",
+            "Mar 17, 2026, 9:24:53 AM",
+            "LOST"
+          ]
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "preview_id": "execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT",
+      "screenshot_filename": "whatsapp:settle-loss__wasettle-1773777428856__01.jpg",
+      "extracted_fields": {
+        "screenshot_filename": "whatsapp:settle-loss__wasettle-1773777428856__01.jpg",
+        "sportsbook": "DraftKings",
+        "event": "BUF SABRES @ VGK GOLDEN KNIGHTS",
+        "market_type": "Moneyline",
+        "selection": "VGK GOLDEN KNIGHTS",
+        "odds": "-125",
+        "stake": "10.50",
+        "payout": null,
+        "ticket_timestamp": "Mar 17, 2026, 9:24:53 AM",
+        "settlement_status": "loss",
+        "extraction_confidence": 1,
+        "parse_warnings": [],
+        "raw_lines": [
+          "DraftKings Sportsbook",
+          "VGK GOLDEN KNIGHTS -125",
+          "Moneyline",
+          "Wager: $10.50",
+          "BUF SABRES",
+          "VGK GOLDEN KNIGHTS",
+          "Mar 17, 2026, 9:24:53 AM",
+          "LOST"
+        ]
+      },
+      "match_status": "matched_with_low_confidence",
+      "confidence_level": "medium",
+      "matched_execution_id": "execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT",
+      "matched_rec_id": "manual-recovered::2026-03-17::golden-knights-ml",
+      "warnings": [
+        "low_match_confidence"
+      ],
+      "proposed_grading_row": {
+        "grading_id": "reconciliation::execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT::1773777428860",
+        "grading_type": "RECONCILIATION",
+        "ref_id": "execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT",
+        "execution_log_id": "execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT",
+        "rec_id": "manual-recovered::2026-03-17::golden-knights-ml",
+        "sportsbook": "DraftKings",
+        "event": "BUF SABRES @ VGK GOLDEN KNIGHTS",
+        "market": "Moneyline",
+        "selection": "VGK GOLDEN KNIGHTS",
+        "actual_odds": "-125",
+        "actual_stake": 10.5,
+        "settlement_status": "loss",
+        "settlement_payout": null,
+        "settlement_source": "whatsapp_screenshot",
+        "screenshot_filename": "whatsapp:settle-loss__wasettle-1773777428856__01.jpg",
+        "extraction_confidence": 1,
+        "reconciliation_flag": "manual_reconciliation_required",
+        "reconciliation_flags": [
+          "manual_reconciliation_required"
+        ],
+        "ingestion_timestamp": "2026-03-17T19:57:08.860Z",
+        "notes": [
+          "low_match_confidence"
+        ],
+        "warnings": [
+          "low_match_confidence"
+        ],
+        "result": "LOSS",
+        "profit_loss": -10.5,
+        "stake": 10.5,
+        "source": "whatsapp_screenshot",
+        "ticket_timestamp": "Mar 17, 2026, 9:24:53 AM",
+        "existing_grading_match": null
+      }
+    }
+  ],
+  "verification_actions": [
+    "CONFIRM_ALL",
+    "CONFIRM_SELECTED",
+    "REJECT"
+  ],
+  "preview_text": "SETTLED TICKET PREVIEW (1)\nStatus: ready_for_confirmation\n\n1. VGK GOLDEN KNIGHTS | BUF SABRES @ VGK GOLDEN KNIGHTS\n   Book: DraftKings | Market: Moneyline\n   Odds: -125 | Stake: 10.50 | Payout: MISSING\n   Settlement: loss\n   Match: matched_with_low_confidence | execution_id: execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-17 09:24:53 CT | rec_id: manual-recovered::2026-03-17::golden-knights-ml\n   Warnings: low_match_confidence"
+}

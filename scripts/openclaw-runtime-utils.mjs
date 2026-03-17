@@ -1,17 +1,23 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+const SCRIPT_DIR = path.dirname(new URL(import.meta.url).pathname);
+const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');
+
 export const OPENCLAW_PATHS = {
   root: '/Users/jaredbuckman/.openclaw',
   jobs: '/Users/jaredbuckman/.openclaw/cron/jobs.json',
   runsDir: '/Users/jaredbuckman/.openclaw/cron/runs',
+  sessionsDir: '/Users/jaredbuckman/.openclaw/agents/main/sessions',
+  sessionsIndex: '/Users/jaredbuckman/.openclaw/agents/main/sessions/sessions.json',
   bettingState: '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md',
   recommendationLog: '/Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md',
   passedOpportunityGrades: '/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json',
   oddsApiConfig: '/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md',
+  repoRoot: REPO_ROOT,
 };
 
-export const DEFAULT_RUNTIME_STATUS_SNAPSHOT = path.resolve(process.cwd(), 'data', 'openclaw-runtime-status.json');
+export const DEFAULT_RUNTIME_STATUS_SNAPSHOT = path.resolve(REPO_ROOT, 'data', 'openclaw-runtime-status.json');
 
 function readJsonSafe(filePath, fallback = null) {
   try {
@@ -108,18 +114,20 @@ function parseOddsApiConfig(markdown) {
   const envValue = process.env[envName] || null;
   const rawApiKey = String(markdown || '').match(/^API_KEY=(.+)$/m)?.[1]?.trim() || null;
   const apiKey = (typeof envValue === 'string' && envValue.trim()) ? envValue.trim() : rawApiKey;
+  const hasEnvReference = Boolean(envName);
+  const keyPresent = Boolean(apiKey || hasEnvReference);
   const baseUrl = String(markdown || '').match(/^BASE_URL=(.+)$/m)?.[1]?.trim() || null;
   const freeTierScan = String(markdown || '').match(/One full scan at (\d{1,2}:\d{2})\s*AM CT/i)?.[1] || null;
   const normalizedFreeTierScan = freeTierScan
     ? `${String(Number(freeTierScan.split(':')[0])).padStart(2, '0')}:${freeTierScan.split(':')[1]}`
     : null;
   return {
-    key_present: Boolean(apiKey),
+    key_present: keyPresent,
     key_suffix: apiKey ? apiKey.slice(-4) : null,
     api_key_env: envName,
-    api_key_source: apiKey === rawApiKey ? 'config_file' : 'environment',
+    api_key_source: apiKey === rawApiKey ? 'config_file' : (apiKey ? 'environment' : 'environment_reference'),
     base_url: baseUrl,
-    source_status: apiKey ? 'present' : 'missing_api_key',
+    source_status: keyPresent ? 'present' : 'missing_api_key',
     free_tier_scan_ct: normalizedFreeTierScan,
     source_path: OPENCLAW_PATHS.oddsApiConfig,
   };
@@ -131,10 +139,12 @@ function detectHuntDataFailureSignals(text) {
   const codes = [];
   if (!normalized) return codes;
   if (/MISSING API KEY|NO ODDS API KEY|ODDS API KEY MISSING|API KEY NOT CONFIGURED/.test(upper)) codes.push('missing_api_key');
+  if (/INVALID_KEY|AUTHENTICATION FAILURE|UNAUTHORIZED|401/.test(upper)) codes.push('auth_failure');
   if (/RATE LIMIT|RATELIMIT|QUOTA|429/.test(upper)) codes.push('quota_or_rate_limit');
   if (/PARTIAL DATA|PARTIAL RESPONSE|INCOMPLETE DATA|INCOMPLETE RESPONSE|MISSING BOOKS|INSUFFICIENT BOOKS/.test(upper)) codes.push('partial_api_data');
   if (/MALFORMED RESPONSE|INVALID JSON|PARSE ERROR|SCHEMA ERROR|VALIDATION FAILED/.test(upper)) codes.push('malformed_response');
   if (/STALE RESPONSE|STALE DATA|STALE OR UNVERIFIED ODDS|CANNOT_VERIFY_ODDS|ODDS COULD NOT BE VERIFIED/.test(upper)) codes.push('stale_response');
+  if (/GATEWAY TIMEOUT|ENGINE_OVERLOADED|UNHANDLED STOP REASON|RPC PROBE FAILED|SERVICE UNAVAILABLE|TIMED OUT/.test(upper)) codes.push('runtime_gateway_failure');
   return [...new Set(codes)];
 }
 
@@ -172,6 +182,15 @@ function classifyHuntSummary(summary) {
   const explicitSit = /VERDICT:\s*SIT/i.test(text) || /DECISION:\s*SIT/i.test(text);
   const explicitBlocked = /Status:\s*BLOCKED/i.test(text) || /Integrity gate failed/i.test(text);
   const cannotVerify = /CANNOT_VERIFY_ODDS/i.test(upper);
+  const looksIncomplete =
+    !/VERDICT:/i.test(text)
+    && !/DECISION:/i.test(text)
+    && (
+      /NOW ANALYZING/i.test(upper)
+      || /LET ME PROCESS/i.test(upper)
+      || /I HAVE LIVE ODDS DATA/i.test(upper)
+      || /I['’]VE RECEIVED FRESH ODDS DATA/i.test(upper)
+    );
   const noPlays =
     /NO PLAYS/i.test(upper)
     || /0 plays found/i.test(text)
@@ -194,6 +213,16 @@ function classifyHuntSummary(summary) {
       plain_reason: cannotVerify
         ? 'Odds could not be verified for the latest scheduled scan.'
         : 'Integrity gate failed during the latest scheduled scan.',
+    };
+  }
+  if (looksIncomplete) {
+    return {
+      message_type: 'BLOCKED',
+      has_actionable_bets: false,
+      requires_state_sync: false,
+      data_failure_codes: [...new Set([...dataFailureCodes, 'runtime_gateway_failure'])],
+      data_status: 'degraded_data',
+      plain_reason: 'Latest scheduled scan returned an incomplete summary after fetching odds.',
     };
   }
   if (hasActionableBets) {
@@ -241,10 +270,53 @@ function classifyGradingSummary(summary) {
   };
 }
 
+function readSessionTranscript(sessionId) {
+  if (!sessionId) return null;
+  const sessionFile = path.join(OPENCLAW_PATHS.sessionsDir, `${sessionId}.jsonl`);
+  const transcript = readTextSafe(sessionFile, '');
+  if (!transcript) return null;
+
+  let latestAssistantText = null;
+  let latestToolAggregated = null;
+  const lines = transcript
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  for (const line of lines) {
+    try {
+      const entry = JSON.parse(line);
+      if (entry?.type !== 'message') continue;
+      const message = entry.message || {};
+      const content = Array.isArray(message.content) ? message.content : [];
+      if (message.role === 'assistant') {
+        const textParts = content
+          .filter((item) => item?.type === 'text' && item.text)
+          .map((item) => item.text);
+        if (textParts.length) latestAssistantText = textParts.join('\n');
+      }
+      if (message.role === 'toolResult' && message.details?.aggregated) {
+        latestToolAggregated = message.details.aggregated;
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  const resolvedSummary = latestAssistantText || latestToolAggregated || null;
+  return {
+    session_file: sessionFile,
+    transcript,
+    resolved_summary: resolvedSummary,
+  };
+}
+
 function summarizeRun(event, type) {
   if (!event) return null;
   const runAtMs = Number.isFinite(event.runAtMs) ? event.runAtMs : (Number.isFinite(event.ts) ? event.ts : null);
-  const classifier = type === 'hunt' ? classifyHuntSummary(event.summary) : classifyGradingSummary(event.summary);
+  const sessionData = readSessionTranscript(event.sessionId);
+  const effectiveSummary = sessionData?.resolved_summary || event.summary || null;
+  const classifier = type === 'hunt' ? classifyHuntSummary(effectiveSummary) : classifyGradingSummary(effectiveSummary);
   return {
     status: event.status || null,
     delivery_status: event.deliveryStatus || null,
@@ -252,9 +324,127 @@ function summarizeRun(event, type) {
     run_at_ms: runAtMs,
     run_at_ct: formatCtTimestamp(runAtMs),
     date_key: extractDateKey(formatCtTimestamp(runAtMs)),
-    summary: event.summary || null,
+    summary: effectiveSummary,
+    raw_summary: event.summary || null,
     session_id: event.sessionId || null,
+    session_file: sessionData?.session_file || null,
     ...classifier,
+  };
+}
+
+function readSessionsIndex() {
+  return readJsonSafe(OPENCLAW_PATHS.sessionsIndex, {});
+}
+
+function detectSessionAttemptSignals(text) {
+  const lines = String(text || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const relevantFragments = [];
+  for (const line of lines) {
+    try {
+      const entry = JSON.parse(line);
+      if (entry?.type !== 'message') continue;
+      const message = entry.message || {};
+      if (message.role === 'assistant') {
+        if (entry.errorMessage) relevantFragments.push(entry.errorMessage);
+        const content = Array.isArray(message.content) ? message.content : [];
+        for (const item of content) {
+          if (item?.type === 'text' && item.text) relevantFragments.push(item.text);
+        }
+      } else if (message.role === 'toolResult') {
+        const toolCallId = String(message.toolCallId || '');
+        if (/^read:/.test(toolCallId)) continue;
+        const content = Array.isArray(message.content) ? message.content : [];
+        for (const item of content) {
+          if (item?.type === 'text' && item.text) relevantFragments.push(item.text);
+        }
+        if (message.details?.aggregated) relevantFragments.push(message.details.aggregated);
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  const normalized = relevantFragments.join('\n').replace(/\s+/g, ' ').trim();
+  const upper = normalized.toUpperCase();
+  const dataFailureCodes = detectHuntDataFailureSignals(normalized);
+  const hasLiveOddsPayload =
+    /"SPORT_KEY":"BASKETBALL_NBA"/.test(upper)
+    || /"SPORT_KEY":"BASKETBALL_NCAAB"/.test(upper)
+    || /"SPORT_KEY":"ICEHOCKEY_NHL"/.test(upper)
+    || /BOOKMAKERS/.test(upper)
+    || /ALL TIER A MARKETS/.test(upper);
+  const hasQuotaFailure = /OUT_OF_USAGE_CREDITS|0 REQUESTS REMAINING|RATE LIMIT EXCEEDED/.test(upper);
+  const hasAuthFailure = /INVALID_KEY|AUTHENTICATION FAILURE|UNAUTHORIZED|401/.test(upper);
+  const hasRuntimeFailure = /ENGINE_OVERLOADED|GATEWAY TIMEOUT|UNHANDLED STOP REASON|TIMED OUT/.test(upper);
+  return {
+    data_failure_codes: [...new Set(dataFailureCodes)],
+    has_live_odds_payload: hasLiveOddsPayload,
+    has_quota_failure: hasQuotaFailure,
+    has_auth_failure: hasAuthFailure,
+    has_runtime_failure: hasRuntimeFailure,
+  };
+}
+
+function buildLatestCronAttempt(job) {
+  if (!job?.id) return null;
+  const sessionsIndex = readSessionsIndex();
+  const prefix = `agent:main:cron:${job.id}:run:`;
+  const candidates = Object.entries(sessionsIndex)
+    .filter(([key, value]) => key.startsWith(prefix) && value?.sessionId)
+    .map(([key, value]) => ({
+      key,
+      session_id: value.sessionId,
+      updated_at_ms: Number(value.updatedAt) || null,
+      label: value.label || null,
+      session_file: value.sessionFile || path.join(OPENCLAW_PATHS.sessionsDir, `${value.sessionId}.jsonl`),
+    }))
+    .filter((entry) => Number.isFinite(entry.updated_at_ms))
+    .sort((a, b) => a.updated_at_ms - b.updated_at_ms);
+
+  const latest = candidates[candidates.length - 1];
+  if (!latest) return null;
+
+  const transcript = readTextSafe(latest.session_file, '');
+  const signals = detectSessionAttemptSignals(transcript);
+  const lockPath = `${latest.session_file}.lock`;
+  const lockExists = fs.existsSync(lockPath);
+  const attemptCodes = [...new Set([
+    ...(signals.data_failure_codes || []),
+    ...((signals.has_runtime_failure || lockExists) ? ['runtime_gateway_failure'] : []),
+  ])];
+
+  let messageType = 'UNKNOWN';
+  let plainReason = 'Latest cron attempt could not be classified reliably.';
+  if (signals.has_runtime_failure || lockExists) {
+    messageType = 'BLOCKED';
+    plainReason = signals.has_live_odds_payload
+      ? 'Latest cron attempt fetched live odds but failed at runtime before completion.'
+      : 'Latest cron attempt failed at the OpenClaw runtime/gateway layer before completion.';
+  } else if (signals.has_auth_failure) {
+    messageType = 'BLOCKED';
+    plainReason = 'Latest cron attempt failed authentication against The Odds API.';
+  } else if (signals.has_quota_failure) {
+    messageType = 'BLOCKED';
+    plainReason = 'Latest cron attempt exhausted or was rate-limited by The Odds API.';
+  } else if (signals.has_live_odds_payload) {
+    messageType = 'IN_PROGRESS';
+    plainReason = 'Latest cron attempt has live odds payload but no finished artifact yet.';
+  }
+
+  return {
+    session_id: latest.session_id,
+    updated_at_ms: latest.updated_at_ms,
+    updated_at_ct: formatCtTimestamp(latest.updated_at_ms),
+    session_file: latest.session_file,
+    lock_exists: lockExists,
+    message_type: messageType,
+    plain_reason: plainReason,
+    has_live_odds_payload: signals.has_live_odds_payload,
+    data_failure_codes: attemptCodes,
   };
 }
 
@@ -313,8 +503,42 @@ export function buildRuntimeStatus() {
     monthly_reload: buildJobStatus(byName['monthly-reload'], 'grading'),
   };
 
+  const latestHuntAttempt = buildLatestCronAttempt(byName['morning-edge-hunt']);
+  const latestFinishedHunt = jobStatuses.morning_edge_hunt?.latest_finished || null;
   const latestHunt = jobStatuses.morning_edge_hunt?.latest_successful || null;
   const latestGrading = jobStatuses.evening_grading?.latest_successful || null;
+  const attemptMatchesFinishedSession =
+    Boolean(latestHuntAttempt?.session_id)
+    && latestHuntAttempt?.session_id === latestFinishedHunt?.session_id;
+  const useAttemptAsCurrentHunt =
+    !attemptMatchesFinishedSession
+    && Number.isFinite(latestHuntAttempt?.updated_at_ms)
+    && (
+      !Number.isFinite(latestFinishedHunt?.run_at_ms)
+      || latestHuntAttempt.updated_at_ms > latestFinishedHunt.run_at_ms
+    );
+  const latestCurrentHunt = useAttemptAsCurrentHunt
+    ? {
+        status: latestHuntAttempt?.lock_exists ? 'running_or_stuck' : 'runtime_error',
+        delivery_status: null,
+        error: latestHuntAttempt?.plain_reason || null,
+        run_at_ms: latestHuntAttempt?.updated_at_ms || null,
+        run_at_ct: latestHuntAttempt?.updated_at_ct || null,
+        date_key: extractDateKey(latestHuntAttempt?.updated_at_ct),
+        summary: null,
+        session_id: latestHuntAttempt?.session_id || null,
+        message_type: latestHuntAttempt?.message_type || 'UNKNOWN',
+        has_actionable_bets: false,
+        requires_state_sync: false,
+        data_failure_codes: latestHuntAttempt?.data_failure_codes || [],
+        data_status: (latestHuntAttempt?.data_failure_codes || []).length > 0 ? 'degraded_data' : 'unknown',
+        plain_reason: latestHuntAttempt?.plain_reason || null,
+      }
+    : (latestFinishedHunt || latestHunt || null);
+  const normalizedLatestCurrentHunt =
+    attemptMatchesFinishedSession && latestFinishedHunt
+      ? latestFinishedHunt
+      : latestCurrentHunt;
 
   const huntAfterState = Number.isFinite(latestHunt?.run_at_ms) && Number.isFinite(stateLastUpdatedMs)
     ? latestHunt.run_at_ms > stateLastUpdatedMs
@@ -359,10 +583,13 @@ export function buildRuntimeStatus() {
 
   const warnings = computeConfigWarnings(jobStatuses, oddsApiConfig);
   if (blockingSyncGap) warnings.push('state_sync_gap');
+  if (useAttemptAsCurrentHunt) warnings.push('newer_hunt_attempt_without_finished_artifact');
 
   return {
     generated_at_utc: new Date().toISOString(),
     jobs: jobStatuses,
+    latest_hunt_attempt: latestHuntAttempt,
+    latest_hunt_current: normalizedLatestCurrentHunt,
     latest_successful_hunt: latestHunt,
     latest_successful_grading: latestGrading,
     successful_hunt_days: [...new Set((jobStatuses.morning_edge_hunt?.successful_runs || [])

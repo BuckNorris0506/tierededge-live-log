@@ -1,0 +1,5 @@
+{
+  "override_log_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/override-log.jsonl",
+  "post_mortem_log_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/post-mortem-log.jsonl",
+  "weekly_truth_report_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/weekly-truth-report.json"
+}

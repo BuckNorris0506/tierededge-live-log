@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { CORE_PATHS } from './core-ledger-utils.mjs';
 
 export const DECISION_STAGE_VALUES = [
   'no_raw_edge',
@@ -44,11 +45,11 @@ export const NATIVE_DECISION_HEADERS = [
   'include_in_actual_bankroll',
 ];
 
-export const DEFAULT_NATIVE_LEDGER_DIR = path.resolve(process.cwd(), 'data', 'native-decision-ledgers');
-export const DEFAULT_NATIVE_ALL_LEDGER = path.join(DEFAULT_NATIVE_LEDGER_DIR, 'decision-observations.jsonl');
-export const DEFAULT_NATIVE_BETS_LEDGER = path.join(DEFAULT_NATIVE_LEDGER_DIR, 'bets-ledger.jsonl');
-export const DEFAULT_NATIVE_PASS_LEDGER = path.join(DEFAULT_NATIVE_LEDGER_DIR, '0-to-2-pass-ledger.jsonl');
-export const DEFAULT_NATIVE_SUPPRESSED_LEDGER = path.join(DEFAULT_NATIVE_LEDGER_DIR, 'suppressed-candidates-ledger.jsonl');
+export const DEFAULT_NATIVE_LEDGER_DIR = path.resolve(process.cwd(), 'data');
+export const DEFAULT_NATIVE_ALL_LEDGER = CORE_PATHS.decisionLedger;
+export const DEFAULT_NATIVE_BETS_LEDGER = CORE_PATHS.decisionLedger;
+export const DEFAULT_NATIVE_PASS_LEDGER = CORE_PATHS.decisionLedger;
+export const DEFAULT_NATIVE_SUPPRESSED_LEDGER = CORE_PATHS.decisionLedger;
 
 function round4(value) {
   if (!Number.isFinite(value)) return null;
@@ -196,20 +197,12 @@ export function readNativeDecisionLedger(filePath = DEFAULT_NATIVE_ALL_LEDGER) {
 
 export function appendNativeDecisionRows(rows, options = {}) {
   const allLedger = options.allLedger || DEFAULT_NATIVE_ALL_LEDGER;
-  const betsLedger = options.betsLedger || DEFAULT_NATIVE_BETS_LEDGER;
-  const passLedger = options.passLedger || DEFAULT_NATIVE_PASS_LEDGER;
-  const suppressedLedger = options.suppressedLedger || DEFAULT_NATIVE_SUPPRESSED_LEDGER;
-
   const normalizedRows = rows.map((row) => normalizeNativeDecisionRow(row));
-  const bets = normalizedRows.filter((row) => row.final_decision === 'BET');
-  const zeroToTwoPasses = normalizedRows.filter((row) => classifyZeroToTwoPass(row));
-  const suppressed = normalizedRows.filter((row) => classifySuppressed(row));
-
-  const result = {
-    all: appendJsonl(allLedger, normalizedRows).appended,
-    bets: bets.length ? appendJsonl(betsLedger, bets).appended : 0,
-    passes: zeroToTwoPasses.length ? appendJsonl(passLedger, zeroToTwoPasses).appended : 0,
-    suppressed: suppressed.length ? appendJsonl(suppressedLedger, suppressed).appended : 0,
+  const appended = appendJsonl(allLedger, normalizedRows).appended;
+  return {
+    all: appended,
+    bets: normalizedRows.filter((row) => row.final_decision === 'BET').length,
+    passes: normalizedRows.filter((row) => classifyZeroToTwoPass(row)).length,
+    suppressed: normalizedRows.filter((row) => classifySuppressed(row)).length,
   };
-  return result;
 }

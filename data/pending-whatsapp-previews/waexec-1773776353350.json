@@ -1,0 +1,113 @@
+{
+  "generated_at_utc": "2026-03-17T19:39:45.002Z",
+  "status": "requires_review",
+  "source_images": [
+    "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/whatsapp-screenshot-inbox/whatsapp:test2__waexec-1773776353350__01.jpg"
+  ],
+  "screenshot_previews": [
+    {
+      "image_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/whatsapp-screenshot-inbox/whatsapp:test2__waexec-1773776353350__01.jpg",
+      "screenshot_filename": "whatsapp:test2__waexec-1773776353350__01.jpg",
+      "sportsbook": null,
+      "average_confidence": 0,
+      "parsed_bets": [
+        {
+          "screenshot_filename": "whatsapp:test2__waexec-1773776353350__01.jpg",
+          "sportsbook": null,
+          "event": null,
+          "market_type": null,
+          "selection": null,
+          "odds": null,
+          "stake": null,
+          "to_win_or_payout": null,
+          "bet_type": "MANUAL_OTHER",
+          "ticket_timestamp": null,
+          "status": "unknown",
+          "extraction_confidence": 0,
+          "parse_warnings": [
+            "unreadable_screenshot",
+            "ocr_backend_unavailable"
+          ],
+          "raw_lines": []
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "preview_id": "whatsapp:test2__waexec-1773776353350__01.jpg::unknown",
+      "screenshot_filename": "whatsapp:test2__waexec-1773776353350__01.jpg",
+      "extracted_fields": {
+        "screenshot_filename": "whatsapp:test2__waexec-1773776353350__01.jpg",
+        "sportsbook": null,
+        "event": null,
+        "market_type": null,
+        "selection": null,
+        "odds": null,
+        "stake": null,
+        "to_win_or_payout": null,
+        "bet_type": "MANUAL_OTHER",
+        "ticket_timestamp": null,
+        "status": "unknown",
+        "extraction_confidence": 0,
+        "parse_warnings": [
+          "unreadable_screenshot",
+          "ocr_backend_unavailable"
+        ],
+        "raw_lines": []
+      },
+      "matched_rec_id": null,
+      "matched_context": null,
+      "match_status": "unmatched_manual_bet",
+      "confidence_level": "low",
+      "warnings": [
+        "unreadable_screenshot",
+        "ocr_backend_unavailable",
+        "no_recommendation_match"
+      ],
+      "proposed_execution_log_row": {
+        "rec_id": null,
+        "run_id": null,
+        "match_status": "unmatched_manual_bet",
+        "sportsbook": null,
+        "event": null,
+        "market": null,
+        "selection": null,
+        "recommended_odds": null,
+        "actual_odds": null,
+        "recommended_stake": null,
+        "actual_stake": null,
+        "line_price_drift": "N/A",
+        "screenshot_filename": "whatsapp:test2__waexec-1773776353350__01.jpg",
+        "extraction_confidence": 0,
+        "manual_override_flag": true,
+        "ingestion_timestamp": "2026-03-17T19:39:45.002Z",
+        "notes": [
+          "unreadable_screenshot",
+          "ocr_backend_unavailable",
+          "no_recommendation_match"
+        ],
+        "warnings": [
+          "unreadable_screenshot",
+          "ocr_backend_unavailable",
+          "no_recommendation_match"
+        ],
+        "execution_approval_result": "REJECT_EXECUTION",
+        "recommended_sportsbook": null,
+        "actual_sportsbook": null,
+        "recommendation_timestamp": null,
+        "bet_slip_timestamp": null,
+        "actual_status": "unknown",
+        "bet_type": "MANUAL_OTHER",
+        "to_win_or_payout": null
+      }
+    }
+  ],
+  "verification_actions": [
+    "CONFIRM_ALL",
+    "CONFIRM_SELECTED",
+    "REJECT",
+    "EDIT_FIELDS"
+  ],
+  "preview_text": "SCREENSHOT EXECUTION PREVIEW (1 bets)\nStatus: requires_review\nGenerated: 2026-03-17T19:39:45.002Z\n\n1. UNKNOWN BET | UNKNOWN EVENT\n   Screenshot: whatsapp:test2__waexec-1773776353350__01.jpg\n   Sportsbook: UNKNOWN\n   Market: UNKNOWN | Odds: MISSING | Stake: MISSING\n   Match: unmatched_manual_bet | Confidence: low\n   rec_id: NONE\n   Proposed row: actual_odds=MISSING actual_stake=MISSING approval=REJECT_EXECUTION\n   Warnings: unreadable_screenshot, ocr_backend_unavailable, no_recommendation_match"
+}

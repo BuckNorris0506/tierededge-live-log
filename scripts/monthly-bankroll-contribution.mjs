@@ -2,10 +2,10 @@
 import fs from 'node:fs/promises';
 import fssync from 'node:fs';
 import path from 'node:path';
+import { CORE_PATHS, readJsonl, appendJsonl } from './core-ledger-utils.mjs';
 
 const ROOT = process.cwd();
-const BETTING_STATE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md';
-const LEDGER_PATH = path.resolve(ROOT, 'data', 'bankroll-contributions.csv');
+const LEDGER_PATH = CORE_PATHS.bankrollLedger;
 const STATUS_PATH = path.resolve(ROOT, 'data', 'bankroll-contribution-status.json');
 
 function nowCtDateParts() {
@@ -32,36 +32,6 @@ function parseNumber(text) {
 
 function round2(value) {
   return Number.isFinite(value) ? Math.round(value * 100) / 100 : null;
-}
-
-function extractSection(markdown, title) {
-  const header = `## ${title}`;
-  const start = markdown.indexOf(header);
-  if (start === -1) return '';
-  const lineEnd = markdown.indexOf('\n', start);
-  if (lineEnd === -1) return '';
-  const rest = markdown.slice(lineEnd + 1);
-  const nextHeaderOffset = rest.search(/\n## /);
-  if (nextHeaderOffset === -1) return rest.trim();
-  return rest.slice(0, nextHeaderOffset).trim();
-}
-
-function parseTable(section) {
-  const lines = section
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line.startsWith('|'));
-  if (lines.length < 2) return [];
-  const headers = lines[0].split('|').map((s) => s.trim()).filter(Boolean);
-  const rows = [];
-  for (let i = 2; i < lines.length; i += 1) {
-    const parts = lines[i].split('|').map((s) => s.trim()).filter(Boolean);
-    if (parts.length < headers.length) continue;
-    const row = {};
-    for (let j = 0; j < headers.length; j += 1) row[headers[j]] = parts[j];
-    rows.push(row);
-  }
-  return rows;
 }
 
 function parseMonthKey(dateText) {
@@ -96,57 +66,9 @@ function monthsInclusive(startMonth, endMonth) {
   return out;
 }
 
-function csvEscape(value) {
-  const text = String(value ?? '');
-  if (/[",\n]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
-  return text;
-}
-
-function parseCsvLine(line) {
-  const out = [];
-  let current = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i += 1) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuotes && line[i + 1] === '"') {
-        current += '"';
-        i += 1;
-      } else {
-        inQuotes = !inQuotes;
-      }
-      continue;
-    }
-    if (ch === ',' && !inQuotes) {
-      out.push(current);
-      current = '';
-      continue;
-    }
-    current += ch;
-  }
-  out.push(current);
-  return out;
-}
-
 async function loadContributionLedger() {
-  if (!fssync.existsSync(LEDGER_PATH)) {
-    await fs.mkdir(path.dirname(LEDGER_PATH), { recursive: true });
-    const header = 'contribution_date,effective_month,contribution_amount,basis_month_count,basis_months_used,realized_profit_values_used,rolling_average_realized_profit,entry_source,notes\n';
-    await fs.writeFile(LEDGER_PATH, header, 'utf8');
-  }
-  const raw = await fs.readFile(LEDGER_PATH, 'utf8');
-  const lines = raw.split('\n').map((line) => line.trim()).filter(Boolean);
-  if (lines.length <= 1) return [];
-  const headers = parseCsvLine(lines[0]).map((h) => String(h || '').trim());
-  const rows = [];
-  for (let i = 1; i < lines.length; i += 1) {
-    const cols = parseCsvLine(lines[i]);
-    if (cols.length < headers.length) continue;
-    const row = {};
-    for (let j = 0; j < headers.length; j += 1) row[headers[j]] = cols[j];
-    rows.push(row);
-  }
-  return rows;
+  if (!fssync.existsSync(LEDGER_PATH)) return [];
+  return readJsonl(LEDGER_PATH).filter((row) => row.entry_type === 'CONTRIBUTION');
 }
 
 async function writeStatus(status) {
@@ -192,22 +114,20 @@ async function main() {
     return;
   }
 
-  const bettingState = await fs.readFile(BETTING_STATE, 'utf8');
-  const betLog = parseTable(extractSection(bettingState, 'Bet Log (All Graded Bets)'));
-  const ledgerRows = parseTable(extractSection(bettingState, 'Ledger'));
+  const gradingRows = readJsonl(CORE_PATHS.gradingLedger).filter((row) => row.grading_type === 'BET');
   const realizedByMonth = {};
-  for (const row of betLog) {
-    const result = String(row.Result || '').trim().toLowerCase();
+  for (const row of gradingRows) {
+    const result = String(row.result || '').trim().toLowerCase();
     if (!result || result === 'pending') continue;
-    const pl = parseNumber(row['P/L']);
-    const monthKey = parseMonthKey(row.Date);
+    const pl = parseNumber(row.profit_loss);
+    const monthKey = parseMonthKey(row.date);
     if (pl === null || !monthKey) continue;
     realizedByMonth[monthKey] = (realizedByMonth[monthKey] || 0) + pl;
   }
 
   const knownMonths = [
     ...Object.keys(realizedByMonth),
-    ...ledgerRows.map((row) => parseMonthKey(row.Date)).filter(Boolean),
+    ...readJsonl(CORE_PATHS.bankrollLedger).map((row) => parseMonthKey(row.contribution_date || row.date)).filter(Boolean),
   ].sort();
   const firstKnownMonth = knownMonths[0];
   if (!priorCompletedMonth || !firstKnownMonth) {
@@ -244,19 +164,20 @@ async function main() {
   const contributionAmount = round2(Math.max(0, rollingAverage));
 
   const notes = `${basisMonthCount}-month rolling average contribution`;
-  const row = [
-    contributionDate,
-    effectiveMonth,
-    contributionAmount.toFixed(2),
-    String(basisMonthCount),
-    basisMonths.join(','),
-    realizedValues.map((n) => n.toFixed(2)).join(','),
-    rollingAverage.toFixed(2),
-    'auto_monthly_policy',
+  appendJsonl(LEDGER_PATH, [{
+    entry_id: `bankroll::${contributionDate}::${effectiveMonth}`,
+    entry_type: 'CONTRIBUTION',
+    amount: contributionAmount,
+    contribution_date: contributionDate,
+    effective_month: effectiveMonth,
+    basis_month_count: basisMonthCount,
+    basis_months_used: basisMonths,
+    realized_profit_values_used: realizedValues,
+    rolling_average_realized_profit: rollingAverage,
+    entry_source: 'auto_monthly_policy',
     notes,
-  ].map(csvEscape).join(',');
-
-  await fs.appendFile(LEDGER_PATH, `${row}\n`, 'utf8');
+    created_at_ct: currentCtIso(),
+  }], (entry) => String(entry.entry_id || entry.id || ''));
 
   const status = {
     status: 'success',

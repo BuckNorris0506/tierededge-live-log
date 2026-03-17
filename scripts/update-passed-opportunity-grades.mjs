@@ -2,9 +2,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { CORE_PATHS, readJsonl, writeJsonl } from './core-ledger-utils.mjs';
 
-const RECOMMENDATION_LOG = '/Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md';
-const BETTING_STATE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md';
 const CACHE_FILE = '/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json';
 const ODDS_CONFIG = '/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md';
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -265,12 +264,6 @@ function getCounterfactualResult(event, selection) {
   return 'push';
 }
 
-function isObservationBandPass(row) {
-  if (String(row.decision || '').trim().toLowerCase() !== 'sit') return false;
-  const edge = parsePercent(row.edge_pct);
-  return edge !== null && edge > 0 && edge < 2;
-}
-
 function toUnitPl(result, usOdds, decOdds) {
   const normalized = normalizeResult(result);
   const decimal = decOdds ?? toDecimalOdds(usOdds);
@@ -278,38 +271,6 @@ function toUnitPl(result, usOdds, decOdds) {
   if (normalized === 'loss') return -1;
   if (normalized === 'push') return 0;
   return null;
-}
-
-function parseMonthDayLabel(label) {
-  const match = String(label || '').trim().match(/^([A-Za-z]+)\s+(\d{1,2})(?:,\s*(\d{4}))?$/);
-  if (!match) return null;
-  const month = MONTH_INDEX[match[1].toLowerCase()];
-  const day = Number(match[2]);
-  const year = Number(match[3] || 2026);
-  if (!month || !Number.isFinite(day) || !Number.isFinite(year)) return null;
-  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-}
-
-function buildSitResultSectionMap(markdown) {
-  const map = new Map();
-  const regex = /^## Today's Sit Results \(([^)]+)\)\n\n([\s\S]*?)(?=\n## |$)/gm;
-  let match;
-  while ((match = regex.exec(markdown)) !== null) {
-    const settlementDate = parseMonthDayLabel(match[1]);
-    const tableRows = parseTable(match[2]);
-    for (const row of tableRows) {
-      const selection = String(row.Selection || '').trim();
-      if (!selection) continue;
-      const key = `${settlementDate || 'unknown'}::${normalizeName(selection)}`;
-      map.set(key, {
-        outcome_if_bet: normalizeResult(row.Result),
-        event_label: null,
-        settlement_date: settlementDate,
-        grade_source: 'betting_state_sit_results',
-      });
-    }
-  }
-  return map;
 }
 
 function buildSitResultRecIdMap(rows) {
@@ -406,21 +367,27 @@ function buildSuccessEntry(existing, row, source, result, extras = {}) {
 }
 
 async function main() {
-  const [logRaw, bettingStateRaw, configRaw] = await Promise.all([
-    fs.readFile(RECOMMENDATION_LOG, 'utf8'),
-    fs.readFile(BETTING_STATE, 'utf8'),
-    fs.readFile(ODDS_CONFIG, 'utf8'),
-  ]);
+  const configRaw = await fs.readFile(ODDS_CONFIG, 'utf8');
   const apiKey = resolveOddsApiKey(configRaw);
 
-  const rows = parseTable(logRaw);
-  const passRows = rows.filter((row) => isObservationBandPass(row));
+  const decisionRows = readJsonl(CORE_PATHS.decisionLedger);
+  const passRows = decisionRows
+    .filter((row) => row.decision_kind === 'PASS')
+    .map((row) => ({
+      rec_id: row.rec_id,
+      timestamp_ct: row.timestamp_ct,
+      sport: row.sport,
+      market: row.market_type,
+      selection: row.selection,
+      recommended_odds_us: row.odds_american,
+      recommended_odds_dec: row.odds_decimal,
+    }));
+  const validPassRecIds = new Set(passRows.map((row) => row.rec_id).filter(Boolean));
   const cache = (await readJson(CACHE_FILE)) || { updated_at: null, entries: {} };
   const entries = cache.entries || {};
   const scoresCache = await loadScoresCache();
 
-  const sitResultRecIdMap = buildSitResultRecIdMap(rows);
-  const sitResultSectionMap = buildSitResultSectionMap(bettingStateRaw);
+  const sitResultRecIdMap = new Map();
 
   const sportKeys = [...new Set(
     passRows
@@ -505,20 +472,6 @@ async function main() {
       continue;
     }
 
-    const sectionKey = `${parseIsoDatePrefix(row.timestamp_ct)}::${normalizeName(row.selection)}`;
-    const sectionGrade = sitResultSectionMap.get(sectionKey);
-    if (sectionGrade?.outcome_if_bet && sectionGrade.outcome_if_bet !== 'pending' && sectionGrade.outcome_if_bet !== 'ungraded') {
-      entries[recId] = buildSuccessEntry(entries[recId], row, sectionGrade.grade_source, sectionGrade.outcome_if_bet, sectionGrade);
-      stats.backfilled_local += 1;
-      continue;
-    }
-    if (sectionGrade?.outcome_if_bet === 'pending') {
-      entries[recId] = buildFailureEntry(entries[recId], row, 'no_historical_result_found');
-      stats.failed += 1;
-      stats.failure_reasons.no_historical_result_found = (stats.failure_reasons.no_historical_result_found || 0) + 1;
-      continue;
-    }
-
     const sportKey = SPORT_KEY_MAP[String(row.sport || '').trim().toUpperCase()];
     const events = scoresBySport[sportKey];
     if (!sportKey || !events || !Array.isArray(events)) {
@@ -591,6 +544,26 @@ async function main() {
     stats,
     entries,
   };
+  const existingGradingRows = readJsonl(CORE_PATHS.gradingLedger);
+  writeJsonl(
+    CORE_PATHS.gradingLedger,
+    [...existingGradingRows.filter((row) => row.grading_type !== 'PASS'), ...Object.entries(entries).filter(([recId]) => validPassRecIds.has(recId)).map(([recId, entry]) => ({
+      grading_id: `pass::${recId}`,
+      grading_type: 'PASS',
+      ref_id: `decision::${recId}`,
+      date: entry.settlement_date || null,
+      timestamp_ct: entry.graded_at || null,
+      selection: entry.event_label || recId,
+      result: entry.counterfactual_result || entry.outcome_if_bet || 'ungraded',
+      profit_loss: entry.counterfactual_pl ?? null,
+      stake: null,
+      bankroll_after: null,
+      clv: null,
+      bet_class: 'EDGE_BET',
+      source: entry.grade_source || 'passed_opportunity_grades',
+      failure_reason: entry.failure_reason || null,
+    }))].sort((a, b) => String(a.date || a.timestamp_ct || '').localeCompare(String(b.date || b.timestamp_ct || '')) || String(a.grading_id).localeCompare(String(b.grading_id)))
+  );
   await persistScoresCache(scoresCache);
   await fs.writeFile(CACHE_FILE, `${JSON.stringify(out, null, 2)}\n`, 'utf8');
   console.log(`Updated passed-opportunity grades cache: ${CACHE_FILE}`);

@@ -1,0 +1,31 @@
+{
+  "schema": "tierededge_execution_policy_v1",
+  "stale_recommendation_hours": 8,
+  "odds_stale_minutes": 10,
+  "price_only_tolerance_cents": {
+    "moneyline": 8,
+    "spread": 10,
+    "total": 10
+  },
+  "line_tolerance_points": {
+    "spread": 0.5,
+    "total": 0.5
+  },
+  "supported_books": {
+    "DraftKings": "draftkings",
+    "FanDuel": "fanduel",
+    "BetMGM": "betmgm",
+    "Caesars": "caesars",
+    "BetRivers": "betrivers",
+    "bet365": "bet365",
+    "LowVig": "lowvig"
+  },
+  "supported_sports": {
+    "NBA": "basketball_nba",
+    "NCAAB": "basketball_ncaab",
+    "CBB": "basketball_ncaab",
+    "NHL": "icehockey_nhl",
+    "MLB": "baseball_mlb",
+    "UFC": "mma_mixed_martial_arts"
+  }
+}

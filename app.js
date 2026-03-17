@@ -1,8 +1,11 @@
 async function loadData() {
   if (window.__LIVE_DATA__) return window.__LIVE_DATA__;
-  const res = await fetch('./data.json', { cache: 'no-store' });
+  const res = await fetch(`/tierededge-live-log/data.json?t=${Date.now()}`, { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to load data.json');
-  return res.json();
+  const data = await res.json();
+  console.log('DATA LOADED:', data);
+  console.log('PENDING:', data.pending_bets, data.pending_count);
+  return data;
 }
 
 function el(tag, cls, text) {
@@ -158,6 +161,7 @@ function renderSummaryCards(data) {
   const status = data.current_status || {};
   const life = data.lifetime_stats || {};
   const decisionQuality = data.decision_quality || {};
+  const accountability = data.behavioral_accountability || {};
 
   const processScore = status['Process Score (7d)'] || (decisionQuality.decision_quality_rate !== null && decisionQuality.decision_quality_rate !== undefined
     ? `${decisionQuality.decision_quality_rate}%`
@@ -179,6 +183,8 @@ function renderSummaryCards(data) {
   support.innerHTML = '';
   support.appendChild(makeCard('CLV Quality', clvQuality, true));
   support.appendChild(makeCard('ROI Quality', roiQuality, true));
+  support.appendChild(makeCard('Overrides (Month)', accountability.overrides?.monthly_override_count ?? MISSING, true));
+  support.appendChild(makeCard('Post-Mortem', accountability.post_mortem?.current_status || MISSING, true));
 }
 
 function buildBetRows(data) {
@@ -198,6 +204,8 @@ function buildBetRows(data) {
     Result: row.Result,
     'P/L': row['P/L'],
     CLV: row.CLV,
+    'CLV Status': row['CLV Status'],
+    'Closing Odds': row['Closing Odds'],
   }));
 
   if (todayRows.length > 0) {
@@ -223,6 +231,8 @@ function buildBetRows(data) {
     Result: row.Result,
     'P/L': row['P/L'],
     CLV: row.CLV,
+    'CLV Status': row['CLV Status'],
+    'Closing Odds': row['Closing Odds'],
   }));
 
   return {
@@ -239,18 +249,33 @@ function renderBets(data) {
   renderTable(
     'bets-table',
     config.rows,
-    ['Date', 'Logged At', 'Bet Class', 'Sport', 'Market', 'Bet', 'Odds (US)', 'Odds (Dec)', 'Book', 'Stake', 'Tier', 'Result', 'P/L', 'CLV'],
+    ['Date', 'Logged At', 'Bet Class', 'Sport', 'Market', 'Bet', 'Odds (US)', 'Odds (Dec)', 'Book', 'Stake', 'Tier', 'Result', 'P/L', 'CLV', 'CLV Status', 'Closing Odds'],
     config.emptyText
   );
 }
 
 function renderPending(data) {
   const pending = (data.pending_bets || [])
-    .map((value) => String(value || '').trim())
-    .filter((value) => value && value.toLowerCase() !== 'none')
-    .map((value, idx) => ({ '#': idx + 1, Bet: value }));
+    .filter((value) => value)
+    .map((value, idx) => {
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (!trimmed || trimmed.toLowerCase() === 'none') return null;
+        return { '#': idx + 1, Bet: trimmed, Status: 'PENDING', Notes: MISSING };
+      }
+      return {
+        '#': idx + 1,
+        Bet: value.selection || value.event || MISSING,
+        Status: value.status || 'PENDING',
+        Book: value.sportsbook || MISSING,
+        Stake: value.actual_stake !== null && value.actual_stake !== undefined ? `$${value.actual_stake}` : MISSING,
+        Logged: value.bet_slip_timestamp || MISSING,
+        Notes: value.manual_override_flag ? `manual override${value.notes ? ` (${value.notes})` : ''}` : (value.notes || MISSING),
+      };
+    })
+    .filter(Boolean);
 
-  renderTable('pending-table', pending, ['#', 'Bet'], 'No pending bets.');
+  renderTable('pending-table', pending, ['#', 'Bet', 'Status', 'Book', 'Stake', 'Logged', 'Notes'], 'No pending bets.');
 }
 
 function renderDailyRejectionSummary(data) {
@@ -378,6 +403,7 @@ function renderQuantPerformance(data) {
 function renderBankrollContribution(data) {
   const policy = data.bankroll_contribution_policy || {};
   const automation = data.bankroll_contribution_automation || {};
+  const openRisk = data.open_risk_summary || {};
   const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}$${Math.abs(n).toFixed(2)}`);
   const basisMonths = (policy.contribution_basis_months_used || []).join(', ') || MISSING;
   const profitValues = (policy.realized_profit_values_used || []).map((n) => `${n >= 0 ? '+' : '-'}$${Math.abs(Number(n)).toFixed(2)}`).join(', ') || MISSING;
@@ -401,6 +427,12 @@ function renderBankrollContribution(data) {
     ['Actual bankroll', asMoney(policy.actual_bankroll)],
     ['Reported bankroll (status source)', asMoney(policy.reported_current_bankroll)],
     ['Bankroll reconciliation difference', asMoney(policy.bankroll_formula_difference)],
+    ['Open tickets (execution truth)', openRisk.pending_ticket_count ?? MISSING],
+    ['Open stake at risk', openRisk.total_stake_at_risk || MISSING],
+    ['Open exposure % of bankroll', openRisk.open_exposure_pct_of_bankroll || MISSING],
+    ['EDGE_BET open exposure', (openRisk.by_bet_class || []).find((row) => row.bet_class === 'EDGE_BET')?.total_stake_at_risk || MISSING],
+    ['FUN_SGP open exposure', (openRisk.by_bet_class || []).find((row) => row.bet_class === 'FUN_SGP')?.total_stake_at_risk || MISSING],
+    ['Manual override exposure', openRisk.manual_override_stake_at_risk || MISSING],
     ['Overall strategy equity', asMoney(policy.overall_strategy_equity || policy.strategy_equity)],
     ['Core strategy equity', asMoney(policy.core_strategy_equity)],
     ['Total external contributions', asMoney(policy.total_external_contributions)],
@@ -453,7 +485,7 @@ function renderAccountability(data, range) {
 
   const rows = [
     ['Range', range === 'today' ? 'Today' : (range === 'last_7' ? 'Last 7' : 'All-time')],
-    ['Pending bet count', (data.pending_bets || []).filter((p) => String(p).toLowerCase() !== 'none').length],
+    ['Pending bet count', data.pending_count ?? (Array.isArray(data.pending_bets) ? data.pending_bets.length : 0)],
     ['Positive CLV rate', dq.positive_clv_rate !== null && dq.positive_clv_rate !== undefined ? `${dq.positive_clv_rate}%` : MISSING],
     ['Average CLV', dq.avg_clv],
     ['Recent results', data.lifetime_stats?.['Win Rate']],
@@ -580,10 +612,79 @@ function renderOperatorEdgeBoard(data) {
   );
 }
 
+function renderLiveExecution(data) {
+  const execution = data.live_execution || {};
+  const marketTruth = data.market_truth_summary || {};
+  const snapshotSummary = marketTruth.placement_snapshot || {};
+  const clvSummary = marketTruth.clv_anchor || {};
+  const accountability = data.behavioral_accountability || {};
+  const recentExecutionLog = (execution.recent_execution_log || []).flatMap((row) => Array.isArray(row) ? row : [row]);
+  const summaryRows = [
+    ['Candidates', execution.counts?.candidates ?? MISSING],
+    ['Approved', execution.counts?.approved ?? MISSING],
+    ['Rejected', execution.counts?.rejected ?? MISSING],
+    ['Snapshot coverage', snapshotSummary.snapshot_coverage_pct_label || MISSING],
+    ['Missing snapshots', snapshotSummary.snapshot_missing_count ?? MISSING],
+    ['CLV coverage', clvSummary.clv_coverage_pct_label || MISSING],
+    ['Missing CLV anchors', clvSummary.clv_missing_count ?? MISSING],
+    ['Overrides this month', accountability.overrides?.monthly_override_count ?? MISSING],
+    ['Post-mortem', accountability.post_mortem?.current_status || MISSING],
+    ['Run classification', data.decision_payload_v1?.run_classification || MISSING],
+  ];
+  renderRows('live-execution-summary-list', summaryRows);
+
+  const recs = (execution.recommendations || []).map((row) => ({
+    Time: row.timestamp_ct,
+    Sport: row.sport,
+    Market: row.market_type,
+    Selection: row.selection,
+    Recommended: `${formatValue(row.recommended_odds_american)} ${formatValue(row.recommended_book)}`,
+    Current: row.execution?.current_odds_american === null || row.execution?.current_odds_american === undefined
+      ? MISSING
+      : `${row.execution.current_odds_american} ${formatValue(row.execution.current_book)}`,
+    Stake: row.execution?.stake_breakdown?.formatted?.final_stake || '$0.00',
+    Drift: row.execution?.line_or_price_drift_label || MISSING,
+    Status: row.execution?.execution_status || MISSING,
+    Reason: prettyReason(row.execution?.rejection_reason),
+  }));
+  renderTable(
+    'live-execution-table',
+    recs,
+    ['Time', 'Sport', 'Market', 'Selection', 'Recommended', 'Current', 'Stake', 'Drift', 'Status', 'Reason'],
+    'No live execution candidates available.'
+  );
+
+  const logRows = recentExecutionLog.map((row) => ({
+    'Bet Slip': row.bet_slip_timestamp || row.logged_at_utc,
+    rec_id: row.rec_id,
+    Match: row.match_status || MISSING,
+    Sport: row.sport || MISSING,
+    Event: row.event || row.event_label || MISSING,
+    Market: row.market || row.market_type || MISSING,
+    Recommended: `${formatValue(row.recommended_odds)} ${formatValue(row.recommended_sportsbook)}`,
+    Actual: `${formatValue(row.actual_odds)} ${formatValue(row.actual_sportsbook)}`,
+    Stake: row.actual_stake ?? row.recommended_stake ?? MISSING,
+    Snapshot: row.placement_snapshot_status || MISSING,
+    'Snapshot Source': row.placement_snapshot_source || MISSING,
+    Approval: row.execution_approval_result || MISSING,
+    Override: row.manual_override_flag ? 'Yes' : 'No',
+  }));
+  renderTable(
+    'execution-log-table',
+    logRows,
+    ['Bet Slip', 'rec_id', 'Match', 'Sport', 'Event', 'Market', 'Recommended', 'Actual', 'Stake', 'Snapshot', 'Snapshot Source', 'Approval', 'Override'],
+    'No execution log rows yet.'
+  );
+}
+
 function renderDiagnostics(data) {
   const health = data.decision_payload_v1?.system_health || data.integrity_gate?.checks || {};
   const freshness = data.data_freshness || {};
   const integrity = data.integrity_gate || {};
+  const accountability = data.behavioral_accountability || {};
+  const weeklyTruth = accountability.weekly_truth_report_summary || {};
+  const recentOverride = accountability.overrides?.recent_overrides?.[0] || null;
+  const topBleeding = weeklyTruth.top_bleeding_categories?.[0] || null;
 
   const diagRows = [
     ['Run classification', data.decision_payload_v1?.run_classification || MISSING],
@@ -594,6 +695,13 @@ function renderDiagnostics(data) {
     ['State sync', health.state_sync],
     ['Payload rebuild', health.payload_rebuild],
     ['Decision engine status', health.decision_engine_status],
+    ['Post-mortem status', accountability.post_mortem?.current_status || MISSING],
+    ['Overrides this month', accountability.overrides?.monthly_override_count ?? MISSING],
+    ['Blocked-run overrides', accountability.overrides?.blocked_run_override_count ?? MISSING],
+    ['Off-model overrides', accountability.overrides?.off_model_override_count ?? MISSING],
+    ['Weekly truth settled bets', weeklyTruth.settled_bet_count ?? MISSING],
+    ['Recent override', recentOverride ? `${recentOverride.override_type} @ ${recentOverride.timestamp_utc}` : MISSING],
+    ['Top bleeding slice', topBleeding ? `${topBleeding.label} (${topBleeding.realized_pl})` : MISSING],
     ['Recommendation log last row', freshness.recommendation_log_last_row_time],
     ['Grading cache last update', freshness.grading_cache_last_update],
     ['Payload build time (UTC)', freshness.payload_build_time_utc],
@@ -637,6 +745,7 @@ function renderDiagnostics(data) {
     renderRejectedOpportunities(data);
     renderScanCoverage(data);
     renderOperatorEdgeBoard(data);
+    renderLiveExecution(data);
     renderDiagnostics(data);
 
     let activeRange = 'all_time';
