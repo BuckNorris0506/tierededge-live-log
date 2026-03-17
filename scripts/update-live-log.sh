@@ -4,6 +4,17 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT_DIR"
 
+source "$ROOT_DIR/scripts/live-log-automation-guard.sh"
+acquire_live_log_lock "update-live-log.sh"
+
+snapshot_source_state \
+  /Users/jaredbuckman/.openclaw/cron/jobs.json \
+  /Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md \
+  /Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md \
+  /Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md \
+  "$ROOT_DIR/data/bankroll-contributions.csv" \
+  "$ROOT_DIR/data/bankroll-contribution-status.json"
+
 node scripts/build-runtime-status.mjs
 
 # Grade passed SIT opportunities before rebuilding artifacts.
@@ -16,6 +27,8 @@ node scripts/build-live-log.mjs
 node scripts/enrich-suppressed-candidates.mjs
 node scripts/build-monthly-suppression-audit.mjs
 node scripts/build-standalone.mjs
+
+assert_source_state_unchanged
 
 echo "Live log data rebuilt (including standalone page)."
 if [[ -f "$ROOT_DIR/public/decision-terminal.txt" ]]; then

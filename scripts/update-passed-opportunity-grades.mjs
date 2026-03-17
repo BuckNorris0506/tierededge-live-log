@@ -2,12 +2,14 @@
 import fs from 'node:fs/promises';
 
 const RECOMMENDATION_LOG = '/Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md';
+const BETTING_STATE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md';
 const CACHE_FILE = '/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json';
 const ODDS_CONFIG = '/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md';
 
 const SPORT_KEY_MAP = {
   NBA: 'basketball_nba',
   CBB: 'basketball_ncaab',
+  NCAAB: 'basketball_ncaab',
   NHL: 'icehockey_nhl',
   MLB: 'baseball_mlb',
   NFL: 'americanfootball_nfl',
@@ -85,6 +87,21 @@ const TEAM_ALIAS_BY_SPORT = {
   },
 };
 
+const MONTH_INDEX = {
+  january: 1,
+  february: 2,
+  march: 3,
+  april: 4,
+  may: 5,
+  june: 6,
+  july: 7,
+  august: 8,
+  september: 9,
+  october: 10,
+  november: 11,
+  december: 12,
+};
+
 function parseTable(markdown) {
   const lines = markdown
     .split('\n')
@@ -114,6 +131,33 @@ function normalizeName(name) {
   return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
+function normalizeResult(value) {
+  const normalized = normalizeName(value);
+  if (!normalized || normalized === '-' || normalized === 'pending' || normalized === 'ungraded') return normalized || null;
+  if (normalized.includes('win')) return 'win';
+  if (normalized.includes('loss') || normalized.includes('lost')) return 'loss';
+  if (normalized.includes('push')) return 'push';
+  return normalized;
+}
+
+function parsePercent(value) {
+  if (value === null || value === undefined) return null;
+  const stripped = String(value).replace(/[%+,]/g, '').trim();
+  const num = Number(stripped);
+  return Number.isFinite(num) ? num : null;
+}
+
+function parseMoney(value) {
+  if (value === null || value === undefined) return null;
+  const stripped = String(value).replace(/[$,]/g, '').trim();
+  const num = Number(stripped);
+  return Number.isFinite(num) ? num : null;
+}
+
+function round4(value) {
+  return Number.isFinite(value) ? Math.round(value * 10000) / 10000 : null;
+}
+
 function selectionCandidates(sport, selection) {
   const raw = String(selection || '').trim();
   if (!raw) return [];
@@ -139,7 +183,7 @@ function asNumber(v) {
 
 function parseIsoDatePrefix(text) {
   const m = String(text || '').match(/(\d{4}-\d{2}-\d{2})/);
-  return m ? `${m[1]}T00:00:00Z` : null;
+  return m ? m[1] : null;
 }
 
 function toEpochMs(input) {
@@ -167,7 +211,6 @@ function pickBestEvent(events, recTimestampCt) {
 }
 
 function parseScores(event) {
-  // Supports multiple possible payload shapes.
   if (Array.isArray(event.scores) && event.scores.length >= 2) {
     const a = event.scores[0];
     const b = event.scores[1];
@@ -201,6 +244,69 @@ function getCounterfactualResult(event, selection) {
   return 'push';
 }
 
+function isObservationBandPass(row) {
+  if (String(row.decision || '').trim().toLowerCase() !== 'sit') return false;
+  const edge = parsePercent(row.edge_pct);
+  return edge !== null && edge > 0 && edge < 2;
+}
+
+function toUnitPl(result, usOdds, decOdds) {
+  const normalized = normalizeResult(result);
+  const decimal = decOdds ?? toDecimalOdds(usOdds);
+  if (normalized === 'win' && decimal) return round4(decimal - 1);
+  if (normalized === 'loss') return -1;
+  if (normalized === 'push') return 0;
+  return null;
+}
+
+function parseMonthDayLabel(label) {
+  const match = String(label || '').trim().match(/^([A-Za-z]+)\s+(\d{1,2})(?:,\s*(\d{4}))?$/);
+  if (!match) return null;
+  const month = MONTH_INDEX[match[1].toLowerCase()];
+  const day = Number(match[2]);
+  const year = Number(match[3] || 2026);
+  if (!month || !Number.isFinite(day) || !Number.isFinite(year)) return null;
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+function buildSitResultSectionMap(markdown) {
+  const map = new Map();
+  const regex = /^## Today's Sit Results \(([^)]+)\)\n\n([\s\S]*?)(?=\n## |$)/gm;
+  let match;
+  while ((match = regex.exec(markdown)) !== null) {
+    const settlementDate = parseMonthDayLabel(match[1]);
+    const tableRows = parseTable(match[2]);
+    for (const row of tableRows) {
+      const selection = String(row.Selection || '').trim();
+      if (!selection) continue;
+      const key = `${settlementDate || 'unknown'}::${normalizeName(selection)}`;
+      map.set(key, {
+        outcome_if_bet: normalizeResult(row.Result),
+        event_label: null,
+        settlement_date: settlementDate,
+        grade_source: 'betting_state_sit_results',
+      });
+    }
+  }
+  return map;
+}
+
+function buildSitResultRecIdMap(rows) {
+  const map = new Map();
+  for (const row of rows) {
+    if (String(row.decision || '').trim().toUpperCase() !== 'SIT-RESULT') continue;
+    const baseRecId = String(row.rec_id || '').replace(/-GRADE$/, '').trim();
+    if (!baseRecId) continue;
+    map.set(baseRecId, {
+      outcome_if_bet: normalizeResult(row.rejection_reason),
+      event_label: null,
+      settlement_date: parseIsoDatePrefix(row.timestamp_ct),
+      grade_source: 'recommendation_log_sit_result',
+    });
+  }
+  return map;
+}
+
 async function fetchScoresBySport(sportKey, apiKey) {
   const url = `https://api.the-odds-api.com/v4/sports/${sportKey}/scores?daysFrom=3&apiKey=${encodeURIComponent(apiKey)}`;
   const res = await fetch(url);
@@ -216,63 +322,182 @@ async function readJson(file) {
   }
 }
 
+function buildFailureEntry(existing, row, failureReason) {
+  return {
+    ...(existing || {}),
+    rec_id: row.rec_id,
+    outcome_if_bet: 'ungraded',
+    counterfactual_result: 'ungraded',
+    counterfactual_pl: null,
+    counterfactual_pl_unit: null,
+    hypothetical_units: null,
+    event_id: existing?.event_id || null,
+    event_label: existing?.event_label || null,
+    settlement_date: existing?.settlement_date || null,
+    graded_at: new Date().toISOString(),
+    grade_source: existing?.grade_source || 'deterministic_backfill_failed',
+    failure_reason: failureReason,
+  };
+}
+
+function buildSuccessEntry(existing, row, source, result, extras = {}) {
+  const unitPl = toUnitPl(result, row.recommended_odds_us, asNumber(row.recommended_odds_dec));
+  return {
+    ...(existing || {}),
+    rec_id: row.rec_id,
+    outcome_if_bet: result,
+    counterfactual_result: result,
+    counterfactual_pl: unitPl,
+    counterfactual_pl_unit: unitPl,
+    hypothetical_units: unitPl,
+    event_id: extras.event_id ?? existing?.event_id ?? null,
+    event_label: extras.event_label ?? existing?.event_label ?? null,
+    settlement_date: extras.settlement_date ?? existing?.settlement_date ?? parseIsoDatePrefix(row.timestamp_ct),
+    graded_at: new Date().toISOString(),
+    grade_source: source,
+    failure_reason: null,
+  };
+}
+
 async function main() {
-  const [logRaw, configRaw] = await Promise.all([
+  const [logRaw, bettingStateRaw, configRaw] = await Promise.all([
     fs.readFile(RECOMMENDATION_LOG, 'utf8'),
+    fs.readFile(BETTING_STATE, 'utf8'),
     fs.readFile(ODDS_CONFIG, 'utf8'),
   ]);
   const apiKey = process.env.ODDS_API_KEY || parseOddsApiKey(configRaw);
-  if (!apiKey) {
-    console.log('No ODDS API key configured; skipping passed-opportunity grading.');
-    return;
-  }
 
   const rows = parseTable(logRaw);
-  const sitRows = rows.filter((r) => String(r.decision || '').trim().toLowerCase() === 'sit');
+  const passRows = rows.filter((row) => isObservationBandPass(row));
   const cache = (await readJson(CACHE_FILE)) || { updated_at: null, entries: {} };
   const entries = cache.entries || {};
 
+  const sitResultRecIdMap = buildSitResultRecIdMap(rows);
+  const sitResultSectionMap = buildSitResultSectionMap(bettingStateRaw);
+
   const sportKeys = [...new Set(
-    sitRows
+    passRows
       .map((r) => SPORT_KEY_MAP[String(r.sport || '').trim().toUpperCase()])
       .filter(Boolean)
   )];
 
   const scoresBySport = {};
-  for (const sportKey of sportKeys) {
-    try {
-      scoresBySport[sportKey] = await fetchScoresBySport(sportKey, apiKey);
-    } catch (error) {
-      console.log(`WARN: ${String(error.message || error)}`);
+  if (apiKey) {
+    for (const sportKey of sportKeys) {
+      try {
+        scoresBySport[sportKey] = await fetchScoresBySport(sportKey, apiKey);
+      } catch (error) {
+        console.log(`WARN: ${String(error.message || error)}`);
+      }
     }
+  } else {
+    console.log('WARN: No ODDS API key configured; using deterministic local backfill only.');
   }
 
-  for (const row of sitRows) {
+  const stats = {
+    total_pass_rows: passRows.length,
+    preserved_existing: 0,
+    backfilled_local: 0,
+    backfilled_api: 0,
+    failed: 0,
+    failure_reasons: {},
+  };
+
+  for (const row of passRows) {
     const recId = row.rec_id;
     if (!recId) continue;
-    if (entries[recId]?.counterfactual_result && entries[recId]?.counterfactual_result !== 'ungraded') continue;
+
+    if (entries[recId]?.counterfactual_result && entries[recId]?.counterfactual_result !== 'ungraded') {
+      stats.preserved_existing += 1;
+      continue;
+    }
+
+    if (!parseIsoDatePrefix(row.timestamp_ct)) {
+      entries[recId] = buildFailureEntry(entries[recId], row, 'missing_event_identity');
+      stats.failed += 1;
+      stats.failure_reasons.missing_event_identity = (stats.failure_reasons.missing_event_identity || 0) + 1;
+      continue;
+    }
+    if (!String(row.market || '').trim()) {
+      entries[recId] = buildFailureEntry(entries[recId], row, 'missing_market');
+      stats.failed += 1;
+      stats.failure_reasons.missing_market = (stats.failure_reasons.missing_market || 0) + 1;
+      continue;
+    }
+    if (!String(row.selection || '').trim()) {
+      entries[recId] = buildFailureEntry(entries[recId], row, 'missing_selection');
+      stats.failed += 1;
+      stats.failure_reasons.missing_selection = (stats.failure_reasons.missing_selection || 0) + 1;
+      continue;
+    }
+    if (!String(row.recommended_odds_us || '').trim() && !String(row.recommended_odds_dec || '').trim()) {
+      entries[recId] = buildFailureEntry(entries[recId], row, 'missing_line_or_odds');
+      stats.failed += 1;
+      stats.failure_reasons.missing_line_or_odds = (stats.failure_reasons.missing_line_or_odds || 0) + 1;
+      continue;
+    }
+
+    const recIdGrade = sitResultRecIdMap.get(recId);
+    if (recIdGrade?.outcome_if_bet && recIdGrade.outcome_if_bet !== 'ungraded') {
+      entries[recId] = buildSuccessEntry(entries[recId], row, recIdGrade.grade_source, recIdGrade.outcome_if_bet, recIdGrade);
+      stats.backfilled_local += 1;
+      continue;
+    }
+
+    const sectionKey = `${parseIsoDatePrefix(row.timestamp_ct)}::${normalizeName(row.selection)}`;
+    const sectionGrade = sitResultSectionMap.get(sectionKey);
+    if (sectionGrade?.outcome_if_bet && sectionGrade.outcome_if_bet !== 'pending' && sectionGrade.outcome_if_bet !== 'ungraded') {
+      entries[recId] = buildSuccessEntry(entries[recId], row, sectionGrade.grade_source, sectionGrade.outcome_if_bet, sectionGrade);
+      stats.backfilled_local += 1;
+      continue;
+    }
+    if (sectionGrade?.outcome_if_bet === 'pending') {
+      entries[recId] = buildFailureEntry(entries[recId], row, 'no_historical_result_found');
+      stats.failed += 1;
+      stats.failure_reasons.no_historical_result_found = (stats.failure_reasons.no_historical_result_found || 0) + 1;
+      continue;
+    }
 
     const sportKey = SPORT_KEY_MAP[String(row.sport || '').trim().toUpperCase()];
     const events = scoresBySport[sportKey];
-    if (!events || !Array.isArray(events)) continue;
+    if (!sportKey || !events || !Array.isArray(events)) {
+      entries[recId] = buildFailureEntry(entries[recId], row, 'no_historical_result_found');
+      stats.failed += 1;
+      stats.failure_reasons.no_historical_result_found = (stats.failure_reasons.no_historical_result_found || 0) + 1;
+      continue;
+    }
 
     const selection = row.selection || '';
     const candidates = selectionCandidates(row.sport, selection);
+    if (candidates.length === 0) {
+      entries[recId] = buildFailureEntry(entries[recId], row, 'missing_selection');
+      stats.failed += 1;
+      stats.failure_reasons.missing_selection = (stats.failure_reasons.missing_selection || 0) + 1;
+      continue;
+    }
+
     const matched = events.filter((event) => {
       const names = [event.home_team, event.away_team].map(normalizeName);
       return candidates.some((sel) => names.some((n) => n.includes(sel) || sel.includes(n)));
     });
+    if (matched.length === 0) {
+      entries[recId] = buildFailureEntry(entries[recId], row, 'missing_event_identity');
+      stats.failed += 1;
+      stats.failure_reasons.missing_event_identity = (stats.failure_reasons.missing_event_identity || 0) + 1;
+      continue;
+    }
+
     const event = pickBestEvent(matched, row.timestamp_ct);
-    if (!event) continue;
+    if (!event) {
+      entries[recId] = buildFailureEntry(entries[recId], row, 'ambiguous_match');
+      stats.failed += 1;
+      stats.failure_reasons.ambiguous_match = (stats.failure_reasons.ambiguous_match || 0) + 1;
+      continue;
+    }
     if (event.completed !== true) {
-      entries[recId] = {
-        ...(entries[recId] || {}),
-        rec_id: recId,
-        counterfactual_result: 'ungraded',
-        event_id: event.id || null,
-        event_label: `${event.away_team} @ ${event.home_team}`,
-        graded_at: new Date().toISOString(),
-      };
+      entries[recId] = buildFailureEntry(entries[recId], row, 'no_historical_result_found');
+      stats.failed += 1;
+      stats.failure_reasons.no_historical_result_found = (stats.failure_reasons.no_historical_result_found || 0) + 1;
       continue;
     }
 
@@ -284,29 +509,30 @@ async function main() {
         break;
       }
     }
-    const usOdds = Number(row.recommended_odds_us);
-    const decOdds = toDecimalOdds(usOdds);
-    let unitPl = null;
-    if (result === 'win' && decOdds) unitPl = decOdds - 1;
-    if (result === 'loss') unitPl = -1;
-    if (result === 'push') unitPl = 0;
+    if (result === 'ungraded') {
+      entries[recId] = buildFailureEntry(entries[recId], row, matched.length > 1 ? 'ambiguous_match' : 'legacy_incomplete_row');
+      stats.failed += 1;
+      const reason = matched.length > 1 ? 'ambiguous_match' : 'legacy_incomplete_row';
+      stats.failure_reasons[reason] = (stats.failure_reasons[reason] || 0) + 1;
+      continue;
+    }
 
-    entries[recId] = {
-      rec_id: recId,
-      counterfactual_result: result,
-      counterfactual_pl_unit: unitPl,
+    entries[recId] = buildSuccessEntry(entries[recId], row, 'odds_api_scores', result, {
       event_id: event.id || null,
       event_label: `${event.away_team} @ ${event.home_team}`,
-      graded_at: new Date().toISOString(),
-    };
+      settlement_date: parseIsoDatePrefix(event.commence_time || row.timestamp_ct),
+    });
+    stats.backfilled_api += 1;
   }
 
   const out = {
     updated_at: new Date().toISOString(),
+    stats,
     entries,
   };
   await fs.writeFile(CACHE_FILE, `${JSON.stringify(out, null, 2)}\n`, 'utf8');
   console.log(`Updated passed-opportunity grades cache: ${CACHE_FILE}`);
+  console.log(JSON.stringify(stats, null, 2));
 }
 
 main().catch((error) => {

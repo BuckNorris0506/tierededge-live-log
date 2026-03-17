@@ -11,6 +11,7 @@
     "build:standalone": "node scripts/build-standalone.mjs",
     "build:all": "npm run build:runtime && npm run build:data && npm run build:suppression-enrichment && npm run build:monthly-suppression-audit && npm run build:standalone",
     "append:rec": "node scripts/append-recommendation-row.mjs",
+    "append:native-decision": "node scripts/append-native-decision-log.mjs",
     "append:contribution": "node scripts/append-bankroll-contribution.mjs",
     "contribution:monthly": "node scripts/monthly-bankroll-contribution.mjs",
     "contribution:monthly:run": "./scripts/run-monthly-bankroll-contribution.sh",

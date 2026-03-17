@@ -4,7 +4,15 @@ This project publishes your `betting-state.md` as a public transparency page.
 
 ## What it does
 - Reads: `~/.openclaw/workspace/memory/betting-state.md`
-- Builds: `public/data.json`
+- Builds canonical machine-readable truth:
+  - `data/canonical-state.json`
+  - `data/run-artifacts.json`
+  - `data/bets-ledger.json`
+  - `data/passes-ledger.json`
+  - `data/suppressed-ledger.json`
+  - `data/grading-ledger.json`
+  - `data/contributions-ledger.json`
+- Builds derived public output: `public/data.json`
 - Renders: `public/index.html`
 - Standard decision outputs:
   - `public/data.json -> decision_payload_v1` (canonical)
@@ -60,6 +68,19 @@ cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
 npm run append:rec -- '{"rec_id":"20260308-001","timestamp_ct":"2026-03-08 10:00 AM","sport":"NBA","market":"ML","selection":"BOS","source_book":"FanDuel","recommended_odds_us":"+110","recommended_odds_dec":"2.10","true_prob":"48.5%","implied_prob_fair":"47.6%","edge_pct":"1.9%","kelly_stake":"$0.00","decision":"SIT","rejection_reason":"no_edge","odds_quality":"live","injury_quality":"n/a","market_quality":"tight","confidence_total":"medium"}'
 ```
 
+Native decision-time observation logging:
+
+```bash
+cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
+npm run append:native-decision -- '@./path/to/native-decision-row.json'
+```
+
+Machine-readable native ledgers are written under:
+- `data/native-decision-ledgers/decision-observations.jsonl`
+- `data/native-decision-ledgers/bets-ledger.jsonl`
+- `data/native-decision-ledgers/0-to-2-pass-ledger.jsonl`
+- `data/native-decision-ledgers/suppressed-candidates-ledger.jsonl`
+
 Nightly integrity + backfill pass:
 
 ```bash
@@ -99,7 +120,7 @@ cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
 npm run import:rec-history -- /absolute/path/to/history.csv --apply
 ```
 
-## Auto-update every 5 minutes (local cron)
+## Auto-update every 10 minutes (local cron)
 
 ```bash
 crontab -e
@@ -108,8 +129,10 @@ crontab -e
 Add:
 
 ```cron
-*/5 * * * * cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log && /usr/local/bin/node scripts/build-live-log.mjs >/tmp/tierededge-live-log.log 2>&1
+*/10 * * * * export PATH=/usr/local/bin:/usr/bin:/bin; export LIVE_LOG_DEPLOY_REPO=/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log; cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log && /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/update-live-log.sh >> /tmp/tierededge-live-log-cron.log 2>&1
 ```
+
+Do not schedule `node scripts/build-live-log.mjs` directly in parallel with `update-live-log.sh`. The shell wrapper is the canonical rebuild path and now includes collision protection.
 
 Monthly append-only contribution automation (1st day of month, 00:07 local):
 
@@ -133,7 +156,8 @@ Detailed guide:
 - Rebuild `public/data.json` before each deploy.
 
 ## Truth-first guidance
-- This page is only as accurate as `betting-state.md`.
+- Canonical truth for this repo now lives in `data/canonical-state.json` plus the machine-readable ledgers under `data/`.
+- Markdown summary sections in `betting-state.md` are treated as non-canonical reference only.
 - Keep update timestamps visible.
 - Do not publish claims that are not in the source data.
 - Recommendation log is treated as append-only historical ledger.

@@ -56,7 +56,7 @@ This will:
 - sync `public/` into that repo
 - commit and push changes
 
-## 6) Schedule it (every 5 minutes)
+## 6) Schedule it (every 10 minutes)
 
 ```bash
 crontab -e
@@ -65,8 +65,10 @@ crontab -e
 Add:
 
 ```cron
-*/5 * * * * export LIVE_LOG_DEPLOY_REPO=/absolute/path/to/your/repo; cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log && /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/update-live-log.sh >> /tmp/tierededge-live-log-cron.log 2>&1
+*/10 * * * * export PATH=/usr/local/bin:/usr/bin:/bin; export LIVE_LOG_DEPLOY_REPO=/absolute/path/to/your/repo; cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log && /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/update-live-log.sh >> /tmp/tierededge-live-log-cron.log 2>&1
 ```
+
+Do not run `node scripts/build-live-log.mjs` from a second cron entry. `update-live-log.sh` is the only supported scheduled rebuild entrypoint.
 
 ## Security notes
 - This publishes exactly what is in `betting-state.md`.

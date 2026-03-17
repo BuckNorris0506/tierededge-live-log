@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-03-17T01:35:31.149Z",
+  "generated_at_utc": "2026-03-17T02:37:06.132Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-16 07:12 CT",
   "state_last_updated_ct": "2026-03-14 00:35 CT",
   "runtime_status": {
-    "generated_at_utc": "2026-03-17T01:35:30.648Z",
+    "generated_at_utc": "2026-03-17T02:37:05.570Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -639,7 +639,7 @@
       },
       "passed_opportunity_grades": {
         "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-        "file_mtime_ct": "2026-03-16 20:34 CT"
+        "file_mtime_ct": "2026-03-16 21:36 CT"
       }
     },
     "state_sync": {
@@ -685,12 +685,6 @@
     "starting_bankroll_numeric": 100,
     "ending_bankroll_numeric": 1328.88
   },
-  "lifetime_stats_raw": {
-    "Total Bets": "19",
-    "Win Rate": "47.4% (9-10)",
-    "Overall ROI": "+11.8%",
-    "Average CLV": "+3.6%"
-  },
   "lifetime_stats_derived": {
     "Total Bets": "20",
     "Win Rate": "55% (11-9)",
@@ -718,16 +712,6 @@
     "summary_source": "unavailable_for_target_date",
     "summary_target_date": "2026-03-16"
   },
-  "daily_rejection_summary_raw": {
-    "Total Markets Checked": "37+",
-    "Total Rejected": "37+",
-    "no_edge": "37+",
-    "low_confidence": "0",
-    "stale_or_unverified_odds": "0",
-    "exposure_cap_reached": "0",
-    "breaker_active": "0",
-    "Plays Recommended": "0"
-  },
   "sit_accountability": {
     "Avoided Losses (count)": "12",
     "Missed Winners (count)": "11",
@@ -747,35 +731,27 @@
     "games_scanned": null,
     "edges_detected": null,
     "bets_placed": 0,
-    "sits": 37,
+    "sits": 0,
     "strongest_edge_found": null,
     "strongest_edge_rejected": null,
     "largest_edge_rejected_today": null,
     "largest_edge_rejected_context": null,
     "rejection_reason_for_largest_edge": null,
-    "top_rejection_reasons": [
-      "no_edge (37)",
-      "low_confidence (0)",
-      "stale_or_unverified_odds (0)"
-    ],
-    "final_daily_verdict": "Markets were tight. 37 sit decision(s) preserved discipline."
+    "top_rejection_reasons": [],
+    "final_daily_verdict": "Markets were tight. 0 sit decision(s) preserved discipline."
   },
   "daily_decision_summary": {
     "games_scanned": null,
     "edges_detected": null,
     "bets_placed": 0,
-    "sits": 37,
+    "sits": 0,
     "strongest_edge_found": null,
     "strongest_edge_rejected": null,
     "largest_edge_rejected_today": null,
     "largest_edge_rejected_context": null,
     "rejection_reason_for_largest_edge": null,
-    "top_rejection_reasons": [
-      "no_edge (37)",
-      "low_confidence (0)",
-      "stale_or_unverified_odds (0)"
-    ],
-    "final_daily_verdict": "Markets were tight. 37 sit decision(s) preserved discipline."
+    "top_rejection_reasons": [],
+    "final_daily_verdict": "Markets were tight. 0 sit decision(s) preserved discipline."
   },
   "rejection_reason_ranges": {
     "today": {
@@ -841,22 +817,22 @@
   },
   "sit_accountability_summary": {
     "source": "passed_opportunity_tracker",
-    "passed_bets_graded": 20,
-    "passed_bets_record_if_bet": "11-9",
-    "passed_bets_wins_if_bet": 11,
-    "passed_bets_losses_if_bet": 9,
+    "passed_bets_graded": 14,
+    "passed_bets_record_if_bet": "7-7",
+    "passed_bets_wins_if_bet": 7,
+    "passed_bets_losses_if_bet": 7,
     "passed_bets_pushes_if_bet": 0,
-    "passed_bets_win_rate_if_bet": 55,
+    "passed_bets_win_rate_if_bet": 50,
     "money_saved_by_sitting": 0,
-    "missed_profit_by_sitting": 7.81,
-    "net_counterfactual_pl_if_bet": 7.81,
+    "missed_profit_by_sitting": 3.22,
+    "net_counterfactual_pl_if_bet": 3.22,
     "net_ev_rejected": null
   },
   "passed_opportunity_tracker": {
-    "total_passed_opportunities": 67,
-    "graded_count": 20,
-    "ungraded_count": 47,
-    "record_if_bet": "11-9",
+    "total_passed_opportunities": 21,
+    "graded_count": 14,
+    "ungraded_count": 7,
+    "record_if_bet": "7-7",
     "entries": [
       {
         "timestamp_ct": "2026-03-07 01:11 AM",
@@ -868,8 +844,12 @@
         "outcome_if_bet": "loss",
         "narrative": "We passed on POR in Portland Trail Blazers @ Houston Rockets at +EV 0.6% (+1800). Outcome: they lost.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": -1,
-        "event_label": "Portland Trail Blazers @ Houston Rockets"
+        "hypothetical_units": -1,
+        "event_label": "Portland Trail Blazers @ Houston Rockets",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-07 01:11 AM",
@@ -881,8 +861,12 @@
         "outcome_if_bet": "win",
         "narrative": "We passed on MIA in Miami Heat @ Charlotte Hornets at +EV 1.9% (+600). Outcome: they won.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": 6,
-        "event_label": "Miami Heat @ Charlotte Hornets"
+        "hypothetical_units": 6,
+        "event_label": "Miami Heat @ Charlotte Hornets",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-07 01:11 AM",
@@ -894,47 +878,12 @@
         "outcome_if_bet": "loss",
         "narrative": "We passed on WAS in Utah Jazz @ Washington Wizards at +EV 1.7% (+850). Outcome: they lost.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": -1,
-        "event_label": "Utah Jazz @ Washington Wizards"
-      },
-      {
-        "timestamp_ct": "2026-03-07 01:11 AM",
-        "sport": "NBA",
-        "rec_id": "20260307-004",
-        "selection": "MEM",
-        "edge_percent": 3.3,
-        "odds_us": "+130",
-        "outcome_if_bet": "loss",
-        "narrative": "We passed on MEM in Los Angeles Clippers @ Memphis Grizzlies at +EV 3.3% (+130). Outcome: they lost.",
-        "rejection_reason": "low_confidence",
-        "counterfactual_pl": -1,
-        "event_label": "Los Angeles Clippers @ Memphis Grizzlies"
-      },
-      {
-        "timestamp_ct": "2026-03-07 01:11 AM",
-        "sport": "NHL",
-        "rec_id": "20260307-005",
-        "selection": "WSH",
-        "edge_percent": 2.1,
-        "odds_us": "+102",
-        "outcome_if_bet": "loss",
-        "narrative": "We passed on WSH in Washington Capitals @ Boston Bruins at +EV 2.1% (+102). Outcome: they lost.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": -1,
-        "event_label": "Washington Capitals @ Boston Bruins"
-      },
-      {
-        "timestamp_ct": "2026-03-07 01:11 AM",
-        "sport": "NHL",
-        "rec_id": "20260307-006",
-        "selection": "VAN",
-        "edge_percent": 3.2,
-        "odds_us": "+225",
-        "outcome_if_bet": "win",
-        "narrative": "We passed on VAN in Vancouver Canucks @ Chicago Blackhawks at +EV 3.2% (+225). Outcome: they won.",
-        "rejection_reason": "low_confidence",
-        "counterfactual_pl": 2.25,
-        "event_label": "Vancouver Canucks @ Chicago Blackhawks"
+        "hypothetical_units": -1,
+        "event_label": "Utah Jazz @ Washington Wizards",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-09 06:00 AM",
@@ -946,34 +895,12 @@
         "outcome_if_bet": "loss",
         "narrative": "We passed on Denver Nuggets +7.5 in Denver Nuggets @ Oklahoma City Thunder at +EV 1.7% (-112). Outcome: they lost.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": -1,
-        "event_label": "Denver Nuggets @ Oklahoma City Thunder"
-      },
-      {
-        "timestamp_ct": "2026-03-09 06:00 AM",
-        "sport": "NCAAB",
-        "rec_id": "20260309-002",
-        "selection": "Gonzaga -18.5",
-        "edge_percent": 6.7,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Gonzaga -18.5 (NCAAB) at +EV 6.7% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "low_confidence",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-09 06:00 AM",
-        "sport": "NCAAB",
-        "rec_id": "20260309-003",
-        "selection": "Grambling State -12.5",
-        "edge_percent": 5.8,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Grambling State -12.5 (NCAAB) at +EV 5.8% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "low_confidence",
-        "counterfactual_pl": null,
-        "event_label": null
+        "hypothetical_units": -1,
+        "event_label": "Denver Nuggets @ Oklahoma City Thunder",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-09 06:00 AM",
@@ -985,8 +912,12 @@
         "outcome_if_bet": "win",
         "narrative": "We passed on Washington Capitals in Calgary Flames @ Washington Capitals at +EV 0.8% (-196). Outcome: they won.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": 0.510204081632653,
-        "event_label": "Calgary Flames @ Washington Capitals"
+        "hypothetical_units": 0.510204081632653,
+        "event_label": "Calgary Flames @ Washington Capitals",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-09 06:00 AM",
@@ -998,8 +929,12 @@
         "outcome_if_bet": "win",
         "narrative": "We passed on Ottawa Senators in Ottawa Senators @ Vancouver Canucks at +EV 0.9% (-220). Outcome: they won.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": 0.4545454545454546,
-        "event_label": "Ottawa Senators @ Vancouver Canucks"
+        "hypothetical_units": 0.4545454545454546,
+        "event_label": "Ottawa Senators @ Vancouver Canucks",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-09 06:00 AM",
@@ -1011,21 +946,12 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on East Tennessee State -2.5 (NCAAB) at +EV 1.5% (-110). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
+        "failure_reason": "missing_event_identity",
+        "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-10 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260310-002",
-        "selection": "76ers -3.5",
-        "edge_percent": 2.2,
-        "odds_us": "-115",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on 76ers -3.5 (NBA) at +EV 2.2% (-115). Outcome: awaiting grading.",
-        "rejection_reason": "low_confidence",
-        "counterfactual_pl": null,
-        "event_label": null
+        "hypothetical_units": null,
+        "event_label": null,
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-10 06:05 AM",
@@ -1037,8 +963,12 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Pacers +4.5 (NBA) at +EV 1.8% (-108). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
+        "failure_reason": "missing_event_identity",
+        "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
-        "event_label": null
+        "hypothetical_units": null,
+        "event_label": null,
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-10 06:05 AM",
@@ -1050,8 +980,12 @@
         "outcome_if_bet": "win",
         "narrative": "We passed on Florida Panthers in Detroit Red Wings @ Florida Panthers at +EV 1.7% (-130). Outcome: they won.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": 0.7692307692307692,
-        "event_label": "Detroit Red Wings @ Florida Panthers"
+        "hypothetical_units": 0.7692307692307692,
+        "event_label": "Detroit Red Wings @ Florida Panthers",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-10 06:05 AM",
@@ -1060,11 +994,15 @@
         "selection": "Hurricanes -1.5",
         "edge_percent": 1.7,
         "odds_us": "+116",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Hurricanes -1.5 (NHL) at +EV 1.7% (+116). Outcome: awaiting grading.",
+        "outcome_if_bet": "loss",
+        "narrative": "We passed on Hurricanes -1.5 (NHL) at +EV 1.7% (+116). Outcome: they lost.",
         "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
+        "failure_reason": null,
+        "grade_source": "recommendation_log_sit_result",
+        "counterfactual_pl": -1,
+        "hypothetical_units": -1,
+        "event_label": null,
+        "settlement_date": "2026-03-11"
       },
       {
         "timestamp_ct": "2026-03-10 06:05 AM",
@@ -1076,8 +1014,12 @@
         "outcome_if_bet": "win",
         "narrative": "We passed on Dallas Stars in Vegas Golden Knights @ Dallas Stars at +EV 1.5% (-150). Outcome: they won.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": 0.6666666666666665,
-        "event_label": "Vegas Golden Knights @ Dallas Stars"
+        "hypothetical_units": 0.6666666666666665,
+        "event_label": "Vegas Golden Knights @ Dallas Stars",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-10 06:05 AM",
@@ -1086,11 +1028,15 @@
         "selection": "Lightning -1.5",
         "edge_percent": 1.5,
         "odds_us": "+104",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Lightning -1.5 (NHL) at +EV 1.5% (+104). Outcome: awaiting grading.",
+        "outcome_if_bet": "loss",
+        "narrative": "We passed on Lightning -1.5 (NHL) at +EV 1.5% (+104). Outcome: they lost.",
         "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
+        "failure_reason": null,
+        "grade_source": "recommendation_log_sit_result",
+        "counterfactual_pl": -1,
+        "hypothetical_units": -1,
+        "event_label": null,
+        "settlement_date": "2026-03-11"
       },
       {
         "timestamp_ct": "2026-03-10 06:05 AM",
@@ -1099,284 +1045,15 @@
         "selection": "Baylor -3.5",
         "edge_percent": 0.5,
         "odds_us": "-115",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Baylor -3.5 (NCAAB) at +EV 0.5% (-115). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-001",
-        "selection": "Cavaliers -3.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Cavaliers -3.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-002",
-        "selection": "Magic +3.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Magic +3.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-003",
-        "selection": "Raptors -2.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Raptors -2.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-004",
-        "selection": "Pelicans +2.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Pelicans +2.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-005",
-        "selection": "Knicks -14.5",
-        "edge_percent": 0,
-        "odds_us": "-105",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Knicks -14.5 (NBA) at +EV 0% (-105). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-006",
-        "selection": "Jazz +14.5",
-        "edge_percent": 0,
-        "odds_us": "-115",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Jazz +14.5 (NBA) at +EV 0% (-115). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-007",
-        "selection": "Hornets -13.5",
-        "edge_percent": 0,
-        "odds_us": "-108",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Hornets -13.5 (NBA) at +EV 0% (-108). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-008",
-        "selection": "Kings +13.5",
-        "edge_percent": 0,
-        "odds_us": "-112",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Kings +13.5 (NBA) at +EV 0% (-112). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-009",
-        "selection": "Rockets +7.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Rockets +7.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-010",
-        "selection": "Nuggets -7.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Nuggets -7.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-011",
-        "selection": "Wolves +1.5",
-        "edge_percent": 0,
-        "odds_us": "-115",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Wolves +1.5 (NBA) at +EV 0% (-115). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-012",
-        "selection": "Clippers -1.5",
-        "edge_percent": 0,
-        "odds_us": "-105",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Clippers -1.5 (NBA) at +EV 0% (-105). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-013",
-        "selection": "76ers -14.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on 76ers -14.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-014",
-        "selection": "Pistons +14.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Pistons +14.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-015",
-        "selection": "Celtics +6.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Celtics +6.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-016",
-        "selection": "Thunder -6.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Thunder -6.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NBA",
-        "rec_id": "20260311-017",
-        "selection": "Cavs/Magic Over 226.5",
-        "edge_percent": 0,
-        "odds_us": "-108",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Cavs/Magic Over 226.5 (NBA) at +EV 0% (-108). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NHL",
-        "rec_id": "20260311-018",
-        "selection": "Canadiens",
-        "edge_percent": 0,
-        "odds_us": "160",
-        "outcome_if_bet": "win",
-        "narrative": "We passed on Canadiens in Toronto Maple Leafs @ Montréal Canadiens at +EV 0% (160). Outcome: they won.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": 1.6,
-        "event_label": "Toronto Maple Leafs @ Montréal Canadiens"
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "NHL",
-        "rec_id": "20260311-019",
-        "selection": "Senators",
-        "edge_percent": 0,
-        "odds_us": "-192",
         "outcome_if_bet": "loss",
-        "narrative": "We passed on Senators in Montréal Canadiens @ Ottawa Senators at +EV 0% (-192). Outcome: they lost.",
+        "narrative": "We passed on Baylor -3.5 (NCAAB) at +EV 0.5% (-115). Outcome: they lost.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": "recommendation_log_sit_result",
         "counterfactual_pl": -1,
-        "event_label": "Montréal Canadiens @ Ottawa Senators"
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "CBB",
-        "rec_id": "20260311-020",
-        "selection": "(various)",
-        "edge_percent": 0,
-        "odds_us": "-",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on (various) (CBB) at +EV 0% (-). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 06:05 AM",
-        "sport": "MMA",
-        "rec_id": "20260311-021",
-        "selection": "(various)",
-        "edge_percent": 0,
-        "odds_us": "-",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on (various) (MMA) at +EV 0% (-). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
+        "hypothetical_units": -1,
+        "event_label": null,
+        "settlement_date": "2026-03-11"
       },
       {
         "timestamp_ct": "2026-03-11 18:22 PM",
@@ -1388,138 +1065,12 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Cavaliers -3.5 (NBA) at +EV 0.7% (-110). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
+        "failure_reason": "missing_event_identity",
+        "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-102",
-        "selection": "Magic +3.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Magic +3.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-103",
-        "selection": "Raptors -2.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Raptors -2.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-104",
-        "selection": "Pelicans +2.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Pelicans +2.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-105",
-        "selection": "Knicks -14.5",
-        "edge_percent": 0,
-        "odds_us": "-105",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Knicks -14.5 (NBA) at +EV 0% (-105). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-106",
-        "selection": "Jazz +14.5",
-        "edge_percent": 0,
-        "odds_us": "-115",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Jazz +14.5 (NBA) at +EV 0% (-115). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-107",
-        "selection": "Hornets -13.5",
-        "edge_percent": 0,
-        "odds_us": "-108",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Hornets -13.5 (NBA) at +EV 0% (-108). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-108",
-        "selection": "Kings +13.5",
-        "edge_percent": 0,
-        "odds_us": "-112",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Kings +13.5 (NBA) at +EV 0% (-112). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-109",
-        "selection": "Rockets +7.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Rockets +7.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-110",
-        "selection": "Nuggets -7.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Nuggets -7.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-111",
-        "selection": "Wolves +1.5",
-        "edge_percent": 0,
-        "odds_us": "-115",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Wolves +1.5 (NBA) at +EV 0% (-115). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
+        "hypothetical_units": null,
+        "event_label": null,
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-11 18:22 PM",
@@ -1531,125 +1082,12 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Clippers -1.5 (NBA) at +EV 0.3% (-105). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
+        "failure_reason": "missing_event_identity",
+        "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-113",
-        "selection": "76ers -14.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on 76ers -14.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-114",
-        "selection": "Pistons +14.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Pistons +14.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-115",
-        "selection": "Celtics +6.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Celtics +6.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-116",
-        "selection": "Thunder -6.5",
-        "edge_percent": 0,
-        "odds_us": "-110",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Thunder -6.5 (NBA) at +EV 0% (-110). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NBA",
-        "rec_id": "20260311-117",
-        "selection": "Cavs/Magic Over 226.5",
-        "edge_percent": -0.4,
-        "odds_us": "-108",
-        "outcome_if_bet": "ungraded",
-        "narrative": "We passed on Cavs/Magic Over 226.5 (NBA) at +EV -0.4% (-108). Outcome: awaiting grading.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": null,
-        "event_label": null
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NHL",
-        "rec_id": "20260311-118",
-        "selection": "Canadiens",
-        "edge_percent": 0,
-        "odds_us": "160",
-        "outcome_if_bet": "win",
-        "narrative": "We passed on Canadiens in Toronto Maple Leafs @ Montréal Canadiens at +EV 0% (160). Outcome: they won.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": 1.6,
-        "event_label": "Toronto Maple Leafs @ Montréal Canadiens"
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NHL",
-        "rec_id": "20260311-119",
-        "selection": "Senators",
-        "edge_percent": 0,
-        "odds_us": "-192",
-        "outcome_if_bet": "loss",
-        "narrative": "We passed on Senators in Montréal Canadiens @ Ottawa Senators at +EV 0% (-192). Outcome: they lost.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": -1,
-        "event_label": "Montréal Canadiens @ Ottawa Senators"
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NHL",
-        "rec_id": "20260311-120",
-        "selection": "Capitals",
-        "edge_percent": 0,
-        "odds_us": "-135",
-        "outcome_if_bet": "loss",
-        "narrative": "We passed on Capitals in Washington Capitals @ Philadelphia Flyers at +EV 0% (-135). Outcome: they lost.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": -1,
-        "event_label": "Washington Capitals @ Philadelphia Flyers"
-      },
-      {
-        "timestamp_ct": "2026-03-11 18:22 PM",
-        "sport": "NHL",
-        "rec_id": "20260311-121",
-        "selection": "Flyers",
-        "edge_percent": 0,
-        "odds_us": "114",
-        "outcome_if_bet": "win",
-        "narrative": "We passed on Flyers in Washington Capitals @ Philadelphia Flyers at +EV 0% (114). Outcome: they won.",
-        "rejection_reason": "no_edge",
-        "counterfactual_pl": 1.1399999999999997,
-        "event_label": "Washington Capitals @ Philadelphia Flyers"
+        "hypothetical_units": null,
+        "event_label": null,
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-12 06:04 AM",
@@ -1661,8 +1099,12 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Missouri +3.5 (NCAAB) at +EV 1.3% (-118). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
+        "failure_reason": "missing_event_identity",
+        "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
-        "event_label": null
+        "hypothetical_units": null,
+        "event_label": null,
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-12 06:04 AM",
@@ -1674,8 +1116,12 @@
         "outcome_if_bet": "win",
         "narrative": "We passed on Islanders in New York Islanders @ St Louis Blues at +EV 1.3% (+105). Outcome: they won.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": 1.0499999999999998,
-        "event_label": "New York Islanders @ St Louis Blues"
+        "hypothetical_units": 1.0499999999999998,
+        "event_label": "New York Islanders @ St Louis Blues",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-12 06:04 AM",
@@ -1687,8 +1133,12 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Toledo -1.5 (NCAAB) at +EV 1.3% (-102). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
+        "failure_reason": "missing_event_identity",
+        "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
-        "event_label": null
+        "hypothetical_units": null,
+        "event_label": null,
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-12 06:04 AM",
@@ -1700,8 +1150,12 @@
         "outcome_if_bet": "win",
         "narrative": "We passed on Stars in Vegas Golden Knights @ Dallas Stars at +EV 1.2% (-130). Outcome: they won.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": 0.7692307692307692,
-        "event_label": "Vegas Golden Knights @ Dallas Stars"
+        "hypothetical_units": 0.7692307692307692,
+        "event_label": "Vegas Golden Knights @ Dallas Stars",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-12 06:04 AM",
@@ -1713,8 +1167,12 @@
         "outcome_if_bet": "loss",
         "narrative": "We passed on Hurricanes in St Louis Blues @ Carolina Hurricanes at +EV 1.2% (-290). Outcome: they lost.",
         "rejection_reason": "no_edge",
+        "failure_reason": null,
+        "grade_source": null,
         "counterfactual_pl": -1,
-        "event_label": "St Louis Blues @ Carolina Hurricanes"
+        "hypothetical_units": -1,
+        "event_label": "St Louis Blues @ Carolina Hurricanes",
+        "settlement_date": null
       },
       {
         "timestamp_ct": "2026-03-12 06:04 AM",
@@ -1726,8 +1184,12 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Virginia -6.5 (NCAAB) at +EV 1.1% (-110). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
+        "failure_reason": "missing_event_identity",
+        "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
-        "event_label": null
+        "hypothetical_units": null,
+        "event_label": null,
+        "settlement_date": null
       }
     ]
   },
@@ -1797,10 +1259,6 @@
     "average_clv_numeric": null,
     "realized_profit_numeric": 66.92
   },
-  "weekly_running_totals_raw": {
-    "Bets": "12 | W: 6 | L: 5 | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0 | Pending: 0",
-    "ROI": "+12.1% | Avg CLV: +3.6%"
-  },
   "weekly_performance_review": {
     "clv_metrics": {
       "average_clv": 7.36,
@@ -1812,8 +1270,8 @@
     },
     "decision_quality": {
       "profit_from_bets": 78.73,
-      "profit_if_all_sits_bet": 7.81,
-      "decision_edge": 70.92,
+      "profit_if_all_sits_bet": 3.22,
+      "decision_edge": 75.51,
       "sit_discipline_rate": "71%"
     },
     "overall_betting_results": {
@@ -2618,8 +2076,8 @@
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-12 06:04 AM",
-    "grading_cache_last_update": "2026-03-17T01:35:31.108Z",
-    "payload_build_time_utc": "2026-03-17T01:35:31.149Z",
+    "grading_cache_last_update": "2026-03-17T02:37:06.013Z",
+    "payload_build_time_utc": "2026-03-17T02:37:06.132Z",
     "state_last_updated_time": "2026-03-14 00:35 CT",
     "effective_last_updated_time": "2026-03-16 07:12 CT",
     "freshness_anchor_source": "runtime_freshness_anchor",
@@ -2637,7 +2095,7 @@
       "missing_scan_days_count": 0
     },
     "diagnostics": {
-      "freshness_hours_since_anchor": 25.59,
+      "freshness_hours_since_anchor": 26.62,
       "freshness_anchor_source": "runtime_freshness_anchor",
       "freshness_anchor_time": "2026-03-16 07:12 CT",
       "first_recommendation_day": "2026-03-07",
@@ -2669,7 +2127,7 @@
         "last_updated_day": "2026-03-16"
       },
       "runtime_status": {
-        "generated_at_utc": "2026-03-17T01:35:30.648Z",
+        "generated_at_utc": "2026-03-17T02:37:05.570Z",
         "jobs": {
           "morning_edge_hunt": {
             "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -3303,7 +2761,7 @@
           },
           "passed_opportunity_grades": {
             "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-            "file_mtime_ct": "2026-03-16 20:34 CT"
+            "file_mtime_ct": "2026-03-16 21:36 CT"
           }
         },
         "state_sync": {
@@ -3320,7 +2778,7 @@
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-17T01:35:31.149Z",
+    "generated_at_utc": "2026-03-17T02:37:06.132Z",
     "message_type": "SIT",
     "verdict": "SIT",
     "what_to_do_now": "SIT and wait for next scan.",
@@ -3345,15 +2803,15 @@
       "recent_results": "55% (11-9)",
       "sit_accountability": {
         "source": "passed_opportunity_tracker",
-        "passed_bets_graded": 20,
-        "passed_bets_record_if_bet": "11-9",
-        "passed_bets_wins_if_bet": 11,
-        "passed_bets_losses_if_bet": 9,
+        "passed_bets_graded": 14,
+        "passed_bets_record_if_bet": "7-7",
+        "passed_bets_wins_if_bet": 7,
+        "passed_bets_losses_if_bet": 7,
         "passed_bets_pushes_if_bet": 0,
-        "passed_bets_win_rate_if_bet": 55,
+        "passed_bets_win_rate_if_bet": 50,
         "money_saved_by_sitting": 0,
-        "missed_profit_by_sitting": 7.81,
-        "net_counterfactual_pl_if_bet": 7.81,
+        "missed_profit_by_sitting": 3.22,
+        "net_counterfactual_pl_if_bet": 3.22,
         "net_ev_rejected": null
       }
     },
@@ -3416,15 +2874,15 @@
         "recent_results": "55% (11-9)",
         "sit_accountability": {
           "source": "passed_opportunity_tracker",
-          "passed_bets_graded": 20,
-          "passed_bets_record_if_bet": "11-9",
-          "passed_bets_wins_if_bet": 11,
-          "passed_bets_losses_if_bet": 9,
+          "passed_bets_graded": 14,
+          "passed_bets_record_if_bet": "7-7",
+          "passed_bets_wins_if_bet": 7,
+          "passed_bets_losses_if_bet": 7,
           "passed_bets_pushes_if_bet": 0,
-          "passed_bets_win_rate_if_bet": 55,
+          "passed_bets_win_rate_if_bet": 50,
           "money_saved_by_sitting": 0,
-          "missed_profit_by_sitting": 7.81,
-          "net_counterfactual_pl_if_bet": 7.81,
+          "missed_profit_by_sitting": 3.22,
+          "net_counterfactual_pl_if_bet": 3.22,
           "net_ev_rejected": null
         }
       },
@@ -3475,15 +2933,15 @@
       "recent_results": "55% (11-9)",
       "sit_accountability": {
         "source": "passed_opportunity_tracker",
-        "passed_bets_graded": 20,
-        "passed_bets_record_if_bet": "11-9",
-        "passed_bets_wins_if_bet": 11,
-        "passed_bets_losses_if_bet": 9,
+        "passed_bets_graded": 14,
+        "passed_bets_record_if_bet": "7-7",
+        "passed_bets_wins_if_bet": 7,
+        "passed_bets_losses_if_bet": 7,
         "passed_bets_pushes_if_bet": 0,
-        "passed_bets_win_rate_if_bet": 55,
+        "passed_bets_win_rate_if_bet": 50,
         "money_saved_by_sitting": 0,
-        "missed_profit_by_sitting": 7.81,
-        "net_counterfactual_pl_if_bet": 7.81,
+        "missed_profit_by_sitting": 3.22,
+        "net_counterfactual_pl_if_bet": 3.22,
         "net_ev_rejected": null
       }
     },
@@ -3498,7 +2956,7 @@
     }
   },
   "open_exposure": "N/A (stale status field)",
-  "daily_verdict": "Markets were tight. 37 sit decision(s) preserved discipline.",
+  "daily_verdict": "Markets were tight. 0 sit decision(s) preserved discipline.",
   "starting_bankroll": 100,
   "actual_bankroll": 1426.13,
   "strategy_equity": 226.13,
@@ -3526,9 +2984,68 @@
       "2026-03": 226.13
     }
   },
+  "canonical_truth": {
+    "canonical_state_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/canonical-state.json",
+    "run_artifacts_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/run-artifacts.json",
+    "bets_ledger_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/bets-ledger.json",
+    "passes_ledger_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/passes-ledger.json",
+    "suppressed_ledger_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/suppressed-ledger.json",
+    "grading_ledger_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/grading-ledger.json",
+    "contributions_ledger_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/contributions-ledger.json",
+    "markdown_summary_sections_are_noncanonical": true
+  },
+  "markdown_reference_sections": {
+    "sit_accountability": {
+      "Avoided Losses (count)": "12",
+      "Missed Winners (count)": "11",
+      "Net P/L If Followed All Sits": "-$6.30",
+      "Net EV Rejected": "+0.8 units",
+      "Passed Bets W-L If Bet": "11-12",
+      "Money Saved By Sitting": "+$6.30",
+      "Sit Decision Win Rate If Bet": "47.8%"
+    },
+    "scanner_statistics": {},
+    "market_confidence": {},
+    "canonical_decision_engine": {},
+    "drawdown_governor": {},
+    "edge_distribution": {},
+    "reliability_index": {},
+    "daily_summary": {},
+    "market_type_reliability_index": {},
+    "sit_reason_code_standard": {},
+    "rule_ledger_pointer": {},
+    "expectation_framing": {},
+    "execution_quality_reference": {
+      "Avg Slippage (last 25 bets)": "0.9 cents",
+      "Avg Slippage (implied prob delta)": "0.3 pp",
+      "Execution Warning": "OFF"
+    },
+    "ignored_summary_sections": {
+      "lifetime_stats": {
+        "Total Bets": "19",
+        "Win Rate": "47.4% (9-10)",
+        "Overall ROI": "+11.8%",
+        "Average CLV": "+3.6%"
+      },
+      "daily_rejection_summary": {
+        "Total Markets Checked": "37+",
+        "Total Rejected": "37+",
+        "no_edge": "37+",
+        "low_confidence": "0",
+        "stale_or_unverified_odds": "0",
+        "exposure_cap_reached": "0",
+        "breaker_active": "0",
+        "Plays Recommended": "0"
+      },
+      "weekly_running_totals": {
+        "Bets": "12 | W: 6 | L: 5 | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0 | Pending: 0",
+        "ROI": "+12.1% | Avg CLV: +3.6%"
+      }
+    }
+  },
   "normalized": {
     "open_exposure": "N/A (stale status field)",
-    "daily_verdict": "Markets were tight. 37 sit decision(s) preserved discipline.",
+    "daily_verdict": "Markets were tight. 0 sit decision(s) preserved discipline.",
     "starting_bankroll": 100,
     "actual_bankroll": 1426.13,
     "strategy_equity": 226.13,
@@ -3549,9 +3066,9 @@
   },
   "decision_quality": {
     "placed_bets_count": 0,
-    "rejected_plays_count": 37,
+    "rejected_plays_count": 0,
     "high_quality_bet_decisions": 0,
-    "high_quality_sit_decisions": 37,
+    "high_quality_sit_decisions": 0,
     "positive_clv_bets_count": 5,
     "total_clv_bets_evaluated": 5,
     "clv_win_rate": 100,
@@ -3561,18 +3078,12 @@
     "rejected_ev_total": 0.8,
     "avoided_negative_ev": 0,
     "bet_quality_rate": null,
-    "sit_quality_rate": 100,
-    "sit_decision_quality_count": 37,
-    "decision_quality_rate": 100,
-    "total_decisions": 37,
+    "sit_quality_rate": null,
+    "sit_decision_quality_count": 0,
+    "decision_quality_rate": null,
+    "total_decisions": 0,
     "largest_edge_rejected": null,
-    "rejected_by_reason": {
-      "no_edge": 37,
-      "low_confidence": 0,
-      "stale_or_unverified_odds": 0,
-      "exposure_cap_reached": 0,
-      "breaker_active": 0
-    },
+    "rejected_by_reason": {},
     "sit_reason_codes_supported": [
       "no_edge",
       "weak_consensus",
@@ -4054,12 +3565,12 @@
   ],
   "derived": {
     "bankroll_numeric": 1328.88,
-    "roi_percent_numeric": 11.8,
+    "roi_percent_numeric": 92.64,
     "today_recommended_count": 0,
     "pending_count": 1,
     "graded_bet_count": 20,
     "rejected_opportunities_count": 0,
-    "decision_quality_rate": 100,
+    "decision_quality_rate": null,
     "expected_profit": 0.33,
     "expected_profit_units": 0.02,
     "actual_profit": 78.73,

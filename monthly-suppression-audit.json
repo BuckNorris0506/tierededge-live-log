@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-17T01:35:31.201Z",
+  "generated_at_utc": "2026-03-17T02:37:06.281Z",
   "audit_window_days": 30,
   "total_scanned_markets": 69,
   "total_suppressed_candidates": 13,
@@ -95,9 +95,9 @@
       "average_consensus_penalty_pct": 1.63,
       "average_closing_clv_pct": null,
       "positive_clv_rate": null,
-      "hypothetical_units": 0.44,
-      "hypothetical_roi": 14.53,
-      "win_rate_if_played": 66.67,
+      "hypothetical_units": -1.56,
+      "hypothetical_roi": -31.28,
+      "win_rate_if_played": 28.57,
       "sample_rows": [
         {
           "rec_id": "20260309-001",
@@ -120,7 +120,7 @@
           "post_conf_edge_pct": 1.5,
           "rejection_stage": "threshold_gate",
           "rejection_reason": "no_edge",
-          "result_if_played": null,
+          "result_if_played": "ungraded",
           "hypothetical_units": null
         },
         {
@@ -132,7 +132,7 @@
           "post_conf_edge_pct": 1.8,
           "rejection_stage": "threshold_gate",
           "rejection_reason": "no_edge",
-          "result_if_played": null,
+          "result_if_played": "ungraded",
           "hypothetical_units": null
         },
         {
@@ -156,8 +156,8 @@
           "post_conf_edge_pct": 1.7,
           "rejection_stage": "threshold_gate",
           "rejection_reason": "no_edge",
-          "result_if_played": null,
-          "hypothetical_units": null
+          "result_if_played": "loss",
+          "hypothetical_units": -1
         },
         {
           "rec_id": "20260310-006",
@@ -180,8 +180,8 @@
           "post_conf_edge_pct": 1.5,
           "rejection_stage": "threshold_gate",
           "rejection_reason": "no_edge",
-          "result_if_played": null,
-          "hypothetical_units": null
+          "result_if_played": "loss",
+          "hypothetical_units": -1
         }
       ]
     },

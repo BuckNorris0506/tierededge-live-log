@@ -10,6 +10,13 @@ import {
   writeCsv,
   parseAsNumber as parseAuditNumber,
 } from './suppression-audit-utils.mjs';
+import {
+  readNativeDecisionLedger,
+  DEFAULT_NATIVE_ALL_LEDGER,
+  DEFAULT_NATIVE_BETS_LEDGER,
+  DEFAULT_NATIVE_PASS_LEDGER,
+  DEFAULT_NATIVE_SUPPRESSED_LEDGER,
+} from './native-decision-log-utils.mjs';
 
 const DEFAULT_SOURCE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md';
 const DEFAULT_OUT = path.resolve(process.cwd(), 'public', 'data.json');
@@ -19,6 +26,13 @@ const DEFAULT_CONTRIBUTION_LEDGER = path.resolve(process.cwd(), 'data', 'bankrol
 const DEFAULT_CONTRIBUTION_STATUS = path.resolve(process.cwd(), 'data', 'bankroll-contribution-status.json');
 const DEFAULT_CANDIDATE_MARKETS = path.resolve(process.cwd(), 'data', 'candidate-markets.csv');
 const DEFAULT_SUPPRESSED_CANDIDATES = path.resolve(process.cwd(), 'data', 'suppressed-candidates.csv');
+const DEFAULT_CANONICAL_STATE = path.resolve(process.cwd(), 'data', 'canonical-state.json');
+const DEFAULT_RUN_ARTIFACTS = path.resolve(process.cwd(), 'data', 'run-artifacts.json');
+const DEFAULT_BETS_LEDGER = path.resolve(process.cwd(), 'data', 'bets-ledger.json');
+const DEFAULT_PASS_LEDGER = path.resolve(process.cwd(), 'data', 'passes-ledger.json');
+const DEFAULT_SUPPRESSED_LEDGER = path.resolve(process.cwd(), 'data', 'suppressed-ledger.json');
+const DEFAULT_GRADING_LEDGER = path.resolve(process.cwd(), 'data', 'grading-ledger.json');
+const DEFAULT_CONTRIBUTIONS_LEDGER_JSON = path.resolve(process.cwd(), 'data', 'contributions-ledger.json');
 const DATA_FRESHNESS_MAX_HOURS = 36;
 const BANKROLL_CONTINUITY_MAX_DELTA_PCT = 0.1;
 const BANKROLL_CONTINUITY_MAX_DELTA_ABS = 25;
@@ -261,6 +275,44 @@ function filterPlaceholderBetRows(rows) {
   });
 }
 
+function writeJson(filePath, payload) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+}
+
+function mapNativeDecisionRowsToCandidateRows(rows) {
+  return (rows || []).map((row) => ({
+    run_id: row.run_id || '',
+    scan_time_ct: row.timestamp_ct || '',
+    event_id: row.event_id || '',
+    sport: row.sport || '',
+    league: row.league || '',
+    market_type: row.market_type || '',
+    selection: row.selection || '',
+    book: row.sportsbook || '',
+    odds_american: row.odds_american ?? '',
+    odds_decimal: row.odds_decimal ?? '',
+    devig_implied_prob: row.devig_implied_prob ?? '',
+    consensus_prob: row.consensus_prob ?? '',
+    pre_conf_true_prob: row.pre_conf_true_prob ?? '',
+    confidence_score: row.confidence_score ?? '',
+    post_conf_true_prob: row.post_conf_true_prob ?? '',
+    raw_edge_pct: row.raw_edge_pct ?? '',
+    post_conf_edge_pct: row.post_conf_edge_pct ?? '',
+    tier_threshold_pct: row.tier_threshold_pct ?? '',
+    price_edge_pass: row.price_edge_pass === true,
+    bet_permission_pass: row.bet_permission_pass === true,
+    final_decision: row.final_decision || '',
+    rejection_stage: row.rejection_stage || '',
+    rejection_reason: row.rejection_reason || '',
+    rec_id: row.rec_id || '',
+    event_label: row.event_label || '',
+    bet_class: row.bet_class || '',
+    include_in_core_strategy_metrics: row.include_in_core_strategy_metrics,
+    include_in_actual_bankroll: row.include_in_actual_bankroll,
+  }));
+}
+
 function parseSchema(markdown) {
   const schemaMatch = markdown.match(/^#\s+TieredEdge Quant State \(Schema\s+([^\)]+)\)/m);
   return schemaMatch ? schemaMatch[1].trim() : 'unknown';
@@ -283,6 +335,12 @@ function parsePercent(text) {
   const n = parseAsNumber(text);
   if (n === null) return null;
   return n;
+}
+
+function isObservationBandPassRow(row) {
+  if (normalizeDecision(row?.decision) !== 'sit') return false;
+  const edge = parsePercent(row?.edge_pct);
+  return edge !== null && edge > 0 && edge < 2;
 }
 
 function parseClvValue(text) {
@@ -1535,7 +1593,7 @@ function dedupeStalePendingBetLog(betLog) {
 
 function computePassedOpportunityTracker({ recommendationRows, gradesCache }) {
   const sitRows = recommendationRows
-    .filter((row) => normalizeDecision(row.decision) === 'sit');
+    .filter((row) => isObservationBandPassRow(row));
 
   const entries = sitRows.map((row) => {
     const recId = row.rec_id || null;
@@ -1569,13 +1627,22 @@ function computePassedOpportunityTracker({ recommendationRows, gradesCache }) {
       outcome_if_bet: status,
       narrative: sentence,
       rejection_reason: row.rejection_reason || null,
+      failure_reason: graded?.failure_reason || null,
+      grade_source: graded?.grade_source || null,
       counterfactual_pl: parseAsNumber(
         row.counterfactual_pl
         || row.if_bet_pl
         || row.counterfactual_p_l
+        || graded?.counterfactual_pl
+        || graded?.counterfactual_pl_unit
+      ),
+      hypothetical_units: parseAsNumber(
+        row.hypothetical_units
+        || graded?.hypothetical_units
         || graded?.counterfactual_pl_unit
       ),
       event_label: graded?.event_label || null,
+      settlement_date: graded?.settlement_date || null,
     };
   });
 
@@ -2685,6 +2752,144 @@ function computeSitAccountabilitySummaryFromPassedTracker(passedOpportunityTrack
   };
 }
 
+function buildCanonicalRunArtifacts({
+  runtimeStatus,
+  recommendationRows,
+  betLog,
+  currentStatus,
+  stateLastUpdatedCt,
+  effectiveLastUpdatedCt,
+  generatedAtUtc,
+}) {
+  const stateLastUpdatedMs = parseTimestampMs(stateLastUpdatedCt);
+  const effectiveStateMs = parseTimestampMs(effectiveLastUpdatedCt);
+  const bankrollSnapshot = round2(parseAsNumber(currentStatus?.Bankroll));
+  const recommendationDays = new Set(
+    (recommendationRows || [])
+      .map((row) => parseDateFromLastUpdated(row.timestamp_ct))
+      .filter(Boolean)
+  );
+  const settledBetDays = new Set(
+    (betLog || [])
+      .filter((row) => normalizeDecision(row.Result) && normalizeDecision(row.Result) !== 'pending')
+      .map((row) => String(row.Date || '').trim())
+      .filter(Boolean)
+  );
+
+  const jobs = [
+    { key: 'morning_edge_hunt', ledgerType: 'hunt' },
+    { key: 'friday_sgp', ledgerType: 'hunt' },
+    { key: 'evening_grading', ledgerType: 'grading' },
+    { key: 'weekly_review', ledgerType: 'review' },
+  ];
+
+  const artifacts = [];
+  for (const jobDef of jobs) {
+    const successfulRuns = runtimeStatus?.jobs?.[jobDef.key]?.successful_runs || [];
+    for (const run of successfulRuns) {
+      const targetDate = run.date_key || parseDateFromLastUpdated(run.run_at_ct);
+      const hasRecommendationState = targetDate ? recommendationDays.has(targetDate) : false;
+      const hasSettlementState = targetDate ? settledBetDays.has(targetDate) : false;
+      const stateSyncRequired = jobDef.ledgerType === 'review' ? false : run.requires_state_sync === true;
+      const stateSyncCompleted = stateSyncRequired
+        ? (jobDef.ledgerType === 'grading' ? hasSettlementState || (Number.isFinite(stateLastUpdatedMs) && Number.isFinite(run.run_at_ms) && stateLastUpdatedMs >= run.run_at_ms) : hasRecommendationState)
+        : true;
+
+      artifacts.push({
+        run_id: run.session_id || `${jobDef.key}:${run.run_at_ms || targetDate || 'unknown'}`,
+        run_type: jobDef.ledgerType,
+        job_name: jobDef.key,
+        timestamp_ct: run.run_at_ct || null,
+        timestamp_ms: run.run_at_ms || null,
+        target_date: targetDate || null,
+        source_data_status: run.status || null,
+        bankroll_snapshot: targetDate === parseDateFromLastUpdated(effectiveLastUpdatedCt) ? bankrollSnapshot : null,
+        hunt_result_classification: run.message_type || null,
+        actionable_bets_exist: run.has_actionable_bets === true,
+        state_sync_required: stateSyncRequired,
+        state_sync_completed: stateSyncCompleted,
+        canonical_state_write_completed: stateSyncCompleted,
+        payload_rebuild_completed: true,
+        payload_rebuild_generated_at_utc: generatedAtUtc,
+        success_criteria_met: stateSyncCompleted,
+        failure_reason: stateSyncCompleted ? null : 'canonical_state_sync_missing',
+        notes: run.plain_reason || null,
+      });
+    }
+  }
+
+  artifacts.sort((a, b) => (a.timestamp_ms || 0) - (b.timestamp_ms || 0));
+  return {
+    generated_at_utc: generatedAtUtc,
+    state_last_updated_ct: stateLastUpdatedCt,
+    effective_last_updated_ct: effectiveLastUpdatedCt,
+    latest_run: [...artifacts].reverse().find((artifact) => artifact.run_type !== 'review') || artifacts[artifacts.length - 1] || null,
+    latest_hunt: [...artifacts].reverse().find((artifact) => artifact.run_type === 'hunt') || null,
+    artifacts,
+  };
+}
+
+function buildCanonicalLedgers({
+  betLog,
+  recommendationRows,
+  candidateMarketRows,
+  suppressedCandidateRows,
+  contributionLedgerEntries,
+}) {
+  const betsLedger = (betLog || []).map((row, index) => ({
+    ledger_index: index + 1,
+    ...row,
+  }));
+  const passLedger = (recommendationRows || [])
+    .filter((row) => normalizeDecision(row.decision) === 'sit')
+    .map((row, index) => {
+      const edgePct = parsePercent(row.edge_pct);
+      const clamped = edgePct !== null && edgePct > 0 && edgePct < 2;
+      return {
+        ledger_index: index + 1,
+        ...row,
+        edge_pct_numeric: edgePct,
+        in_zero_to_two_band: clamped,
+      };
+    })
+    .filter((row) => row.in_zero_to_two_band === true);
+  const suppressedLedger = (suppressedCandidateRows || []).map((row, index) => ({
+    ledger_index: index + 1,
+    ...row,
+  }));
+  const gradingLedger = (betLog || [])
+    .filter((row) => normalizeDecision(row.Result) && normalizeDecision(row.Result) !== 'pending')
+    .map((row, index) => ({
+      ledger_index: index + 1,
+      date: row.Date || null,
+      timestamp_ct: row['Timestamp (CT)'] || null,
+      bet: row.Bet || null,
+      result: row.Result || null,
+      profit_loss: row['P/L'] || null,
+      bankroll: row.Bankroll || null,
+      bet_class: row.bet_class || null,
+      stake: row.Stake || null,
+      clv: row.CLV || null,
+    }));
+  const contributionsLedger = (contributionLedgerEntries || []).map((entry, index) => ({
+    ledger_index: index + 1,
+    ...entry,
+  }));
+  const candidateLedger = (candidateMarketRows || []).map((row, index) => ({
+    ledger_index: index + 1,
+    ...row,
+  }));
+
+  return {
+    bets: betsLedger,
+    passes_zero_to_two: passLedger,
+    suppressed_candidates: suppressedLedger,
+    contributions: contributionsLedger,
+    grading_results: gradingLedger,
+    candidate_markets: candidateLedger,
+  };
+}
+
 function buildPayload(markdown) {
   const lastUpdatedCt = parseLastUpdated(markdown);
   const runtimeStatus = readRuntimeStatus();
@@ -2692,8 +2897,6 @@ function buildPayload(markdown) {
   const targetDate = parseDateFromLastUpdated(effectiveLastUpdatedCt);
   const marketContextHooksConfig = readMarketContextHooksConfig();
   const currentStatus = parseBulletMap(extractSection(markdown, 'Current Status'));
-  const lifetimeStats = parseBulletMap(extractSection(markdown, 'Lifetime Stats'));
-  const rejectionSummary = parseBulletMap(extractSection(markdown, 'Daily Rejection Summary'));
   const sitAccountability = parseBulletMap(extractSection(markdown, 'Sit Accountability'));
   const scannerStats = parseBulletMap(extractSection(markdown, 'Scanner Statistics'));
   const marketConfidence = parseBulletMap(extractSection(markdown, 'Market Confidence'));
@@ -2707,7 +2910,11 @@ function buildPayload(markdown) {
   const ruleLedgerPointer = parseBulletMap(extractSection(markdown, 'Rule Ledger Pointer'));
   const expectationFraming = parseBulletMap(extractSection(markdown, 'Expectation Framing'));
   const executionQuality = parseBulletMap(extractSection(markdown, 'Execution Quality (Slippage)'));
-  const weeklyRunningTotals = parseBulletMap(extractSection(markdown, 'Weekly Running Totals'));
+  const ignoredMarkdownSummaries = {
+    lifetime_stats: parseBulletMap(extractSection(markdown, 'Lifetime Stats')),
+    daily_rejection_summary: parseBulletMap(extractSection(markdown, 'Daily Rejection Summary')),
+    weekly_running_totals: parseBulletMap(extractSection(markdown, 'Weekly Running Totals')),
+  };
 
   const todaysBetsSection = extractDatedSection(markdown, "Today's Bets", targetDate);
   const todaysBetsRaw = filterPlaceholderBetRows(parseTable(todaysBetsSection));
@@ -2725,8 +2932,14 @@ function buildPayload(markdown) {
     recLogPath && fs.existsSync(recLogPath)
       ? parseRecommendationRows(fs.readFileSync(recLogPath, 'utf8'))
       : [];
-  const candidateMarketRows = buildCandidateMarketRows(recommendationRows);
-  const suppressedCandidateRows = buildSuppressedCandidateRows(candidateMarketRows);
+  const nativeDecisionRows = readNativeDecisionLedger(DEFAULT_NATIVE_ALL_LEDGER);
+  const nativeCandidateRows = mapNativeDecisionRowsToCandidateRows(nativeDecisionRows);
+  const candidateMarketRows = nativeCandidateRows.length > 0
+    ? nativeCandidateRows
+    : buildCandidateMarketRows(recommendationRows);
+  const suppressedCandidateRows = nativeCandidateRows.length > 0
+    ? mapNativeDecisionRowsToCandidateRows(readNativeDecisionLedger(DEFAULT_NATIVE_SUPPRESSED_LEDGER))
+    : buildSuppressedCandidateRows(candidateMarketRows);
   const suppressionTargetDate = targetDate;
   const passedGradesCache = readPassedGradesCache();
 
@@ -2737,7 +2950,6 @@ function buildPayload(markdown) {
   const pendingBets = redactPending ? [] : pendingBetsRaw;
 
   const bankrollValue = parseAsNumber(currentStatus.Bankroll);
-  const roiValue = parseAsNumber(lifetimeStats['Overall ROI']);
   const derivedDailyRejectionSummary = computeDerivedDailyRejectionSummary({
     recommendationRows,
     targetDate,
@@ -2748,7 +2960,7 @@ function buildPayload(markdown) {
     betLog,
     todaysBets,
     rejectedOpportunities,
-    rejectionSummary,
+    rejectionSummary: {},
     sitAccountability,
     recommendationRows,
   });
@@ -2862,7 +3074,7 @@ function buildPayload(markdown) {
     pending_bets_count: pendingBets.filter((item) => String(item).toLowerCase() !== 'none').length,
     positive_clv_rate: decisionQuality.positive_clv_rate,
     avg_clv: decisionQuality.avg_clv,
-    recent_results: derivedLifetimeStats['Win Rate'] || lifetimeStats['Win Rate'] || null,
+    recent_results: derivedLifetimeStats['Win Rate'] || null,
     sit_accountability: sitAccountabilitySummary,
   };
   const canonicalDecisionPayload = buildCanonicalDecisionPayload({
@@ -2884,9 +3096,22 @@ function buildPayload(markdown) {
     bettingResultsSplit,
   });
   const decisionDashboardModel = buildDashboardDecisionModel(canonicalDecisionPayload);
-
-  writeCsv(DEFAULT_CANDIDATE_MARKETS, CANDIDATE_MARKET_HEADERS, candidateMarketRows);
-  writeCsv(DEFAULT_SUPPRESSED_CANDIDATES, SUPPRESSED_CANDIDATE_HEADERS, suppressedCandidateRows);
+  const canonicalRunArtifacts = buildCanonicalRunArtifacts({
+    runtimeStatus,
+    recommendationRows,
+    betLog,
+    currentStatus,
+    stateLastUpdatedCt: lastUpdatedCt,
+    effectiveLastUpdatedCt,
+    generatedAtUtc,
+  });
+  const canonicalLedgers = buildCanonicalLedgers({
+    betLog,
+    recommendationRows,
+    candidateMarketRows,
+    suppressedCandidateRows,
+    contributionLedgerEntries: contributionLedger.entries,
+  });
 
   return {
     generated_at_utc: generatedAtUtc,
@@ -2897,10 +3122,8 @@ function buildPayload(markdown) {
     runtime_status: runtimeStatus,
     current_status: currentStatus,
     lifetime_stats: derivedLifetimeStats,
-    lifetime_stats_raw: lifetimeStats,
     lifetime_stats_derived: derivedLifetimeStats,
     daily_rejection_summary: derivedDailyRejectionSummary,
-    daily_rejection_summary_raw: rejectionSummary,
     sit_accountability: sitAccountability,
     scanner_statistics: scannerStats,
     market_confidence: marketConfidence,
@@ -2929,7 +3152,7 @@ function buildPayload(markdown) {
       suppressed_candidate_count: suppressedCandidateRows.length,
       target_date: suppressionTargetDate,
       target_date_row_count: candidateMarketRows.filter((row) => !suppressionTargetDate || String(row.scan_time_ct || '').includes(suppressionTargetDate)).length,
-      trace_origin: 'reconstructed_from_recommendation_log',
+      trace_origin: nativeDecisionRows.length > 0 ? 'native_decision_time_emission' : 'reconstructed_from_recommendation_log',
     },
     edge_distribution_transparency: edgeDistributionTransparency,
     market_type_reliability_index: marketTypeReliabilityIndex,
@@ -2939,7 +3162,6 @@ function buildPayload(markdown) {
     rejected_opportunities: rejectedOpportunities,
     execution_quality: executionQuality,
     weekly_running_totals: derivedWeeklyRunningTotals,
-    weekly_running_totals_raw: weeklyRunningTotals,
     weekly_performance_review: weeklyPerformanceReview,
     betting_results_split: bettingResultsSplit,
     overall_betting_results: bettingResultsSplit.overall,
@@ -3013,6 +3235,32 @@ function buildPayload(markdown) {
       actual_bankroll_monthly_map: bankrollContributionPolicy.actual_bankroll_monthly_map || {},
       strategy_equity_monthly_map: bankrollContributionPolicy.strategy_equity_monthly_map || {},
     },
+    canonical_truth: {
+      canonical_state_path: DEFAULT_CANONICAL_STATE,
+      run_artifacts_path: DEFAULT_RUN_ARTIFACTS,
+      bets_ledger_path: DEFAULT_BETS_LEDGER,
+      passes_ledger_path: DEFAULT_PASS_LEDGER,
+      suppressed_ledger_path: DEFAULT_SUPPRESSED_LEDGER,
+      grading_ledger_path: DEFAULT_GRADING_LEDGER,
+      contributions_ledger_path: DEFAULT_CONTRIBUTIONS_LEDGER_JSON,
+      markdown_summary_sections_are_noncanonical: true,
+    },
+    markdown_reference_sections: {
+      sit_accountability: sitAccountability,
+      scanner_statistics: scannerStats,
+      market_confidence: marketConfidence,
+      canonical_decision_engine: canonicalDecisionEngine,
+      drawdown_governor: drawdownGovernor,
+      edge_distribution: edgeDistribution,
+      reliability_index: reliabilityIndex,
+      daily_summary: dailySummary,
+      market_type_reliability_index: marketTypeReliabilityIndex,
+      sit_reason_code_standard: sitReasonCodeStandard,
+      rule_ledger_pointer: ruleLedgerPointer,
+      expectation_framing: expectationFraming,
+      execution_quality_reference: executionQuality,
+      ignored_summary_sections: ignoredMarkdownSummaries,
+    },
     normalized: {
       // Canonical aliases to reduce key-shape drift while preserving legacy fields.
       open_exposure: openExposure,
@@ -3042,7 +3290,7 @@ function buildPayload(markdown) {
     ledger,
     derived: {
       bankroll_numeric: bankrollValue,
-      roi_percent_numeric: roiValue,
+      roi_percent_numeric: derivedLifetimeStats.overall_roi_numeric,
       today_recommended_count: todaysBets.length,
       pending_count: pendingBets.length,
       graded_bet_count: betLog.length,
@@ -3076,6 +3324,53 @@ function buildPayload(markdown) {
       last_contribution_amount: bankrollContributionPolicy.last_contribution_amount,
       last_contribution_date: bankrollContributionPolicy.last_contribution_date,
     },
+    __canonical: {
+      state_template: {
+        generated_at_utc: generatedAtUtc,
+        source_ingest: {
+          betting_state_path: sourcePath,
+          recommendation_log_path: recLogPath,
+          runtime_status_snapshot_path: path.resolve(process.cwd(), 'data', 'openclaw-runtime-status.json'),
+          contribution_ledger_path: DEFAULT_CONTRIBUTION_LEDGER,
+          source_last_updated_ct: lastUpdatedCt,
+          effective_last_updated_ct: effectiveLastUpdatedCt,
+          target_date: targetDate,
+        },
+        canonical_rules: {
+          actual_bets_source: 'bet_log_table',
+          passes_source: nativeDecisionRows.length > 0 ? 'native_decision_0_to_2_pass_ledger' : 'recommendation_log_0_to_2_band',
+          suppressed_candidates_source: nativeDecisionRows.length > 0 ? 'native_suppressed_candidates_ledger' : 'recommendation_log_reconstruction',
+          bankroll_source: 'current_status_plus_ledger_reconciliation',
+          contributions_source: 'bankroll_contributions_csv_with_ledger_fallback',
+          grading_source: 'bet_log_settled_rows',
+          markdown_summary_sections_noncanonical: Object.keys(ignoredMarkdownSummaries),
+        },
+        latest_run_artifact: canonicalRunArtifacts.latest_run,
+        run_artifacts: canonicalRunArtifacts.artifacts,
+        canonical_ledgers: {
+          bets: { path: DEFAULT_BETS_LEDGER, row_count: canonicalLedgers.bets.length, rows: canonicalLedgers.bets },
+          passes_zero_to_two: { path: DEFAULT_PASS_LEDGER, row_count: canonicalLedgers.passes_zero_to_two.length, rows: canonicalLedgers.passes_zero_to_two },
+          suppressed_candidates: { path: DEFAULT_SUPPRESSED_LEDGER, row_count: canonicalLedgers.suppressed_candidates.length, rows: canonicalLedgers.suppressed_candidates },
+          contributions: { path: DEFAULT_CONTRIBUTIONS_LEDGER_JSON, row_count: canonicalLedgers.contributions.length, rows: canonicalLedgers.contributions },
+          grading_results: { path: DEFAULT_GRADING_LEDGER, row_count: canonicalLedgers.grading_results.length, rows: canonicalLedgers.grading_results },
+          candidate_markets: { path: DEFAULT_CANDIDATE_MARKETS, row_count: canonicalLedgers.candidate_markets.length, rows: canonicalLedgers.candidate_markets },
+          native_decision_observations: { path: DEFAULT_NATIVE_ALL_LEDGER, row_count: nativeDecisionRows.length },
+          native_bets_ledger: { path: DEFAULT_NATIVE_BETS_LEDGER, row_count: readNativeDecisionLedger(DEFAULT_NATIVE_BETS_LEDGER).length },
+          native_pass_ledger: { path: DEFAULT_NATIVE_PASS_LEDGER, row_count: readNativeDecisionLedger(DEFAULT_NATIVE_PASS_LEDGER).length },
+          native_suppressed_ledger: { path: DEFAULT_NATIVE_SUPPRESSED_LEDGER, row_count: readNativeDecisionLedger(DEFAULT_NATIVE_SUPPRESSED_LEDGER).length },
+        },
+        canonical_state_success: {
+          run_artifact_exists: Boolean(canonicalRunArtifacts.latest_run),
+          canonical_state_write_required: true,
+          canonical_ledgers_ready: true,
+          downstream_payload_rebuild_required: true,
+        },
+      },
+      candidate_market_rows: candidateMarketRows,
+      suppressed_candidate_rows: suppressedCandidateRows,
+      run_artifacts: canonicalRunArtifacts,
+      ledgers: canonicalLedgers,
+    },
   };
 }
 
@@ -3085,23 +3380,51 @@ if (!fs.existsSync(sourcePath)) {
 
 const markdown = fs.readFileSync(sourcePath, 'utf8');
 const payload = buildPayload(markdown);
+const canonicalTemplate = payload.__canonical?.state_template;
+const candidateMarketRows = payload.__canonical?.candidate_market_rows || [];
+const suppressedCandidateRows = payload.__canonical?.suppressed_candidate_rows || [];
+delete payload.__canonical;
+
+const canonicalState = {
+  ...canonicalTemplate,
+  public_payload: payload,
+};
+
+writeJson(DEFAULT_CANONICAL_STATE, canonicalState);
+writeJson(DEFAULT_RUN_ARTIFACTS, {
+  generated_at_utc: canonicalState.generated_at_utc,
+  latest_run_artifact: canonicalState.latest_run_artifact,
+  artifacts: canonicalState.run_artifacts,
+});
+writeJson(DEFAULT_BETS_LEDGER, canonicalState.canonical_ledgers?.bets || {});
+writeJson(DEFAULT_PASS_LEDGER, canonicalState.canonical_ledgers?.passes_zero_to_two || {});
+writeJson(DEFAULT_SUPPRESSED_LEDGER, canonicalState.canonical_ledgers?.suppressed_candidates || {});
+writeJson(DEFAULT_GRADING_LEDGER, canonicalState.canonical_ledgers?.grading_results || {});
+writeJson(DEFAULT_CONTRIBUTIONS_LEDGER_JSON, canonicalState.canonical_ledgers?.contributions || {});
+
+const canonicalSnapshot = JSON.parse(fs.readFileSync(DEFAULT_CANONICAL_STATE, 'utf8'));
+const publicPayload = canonicalSnapshot.public_payload;
+
+writeCsv(DEFAULT_CANDIDATE_MARKETS, CANDIDATE_MARKET_HEADERS, canonicalSnapshot.canonical_ledgers?.candidate_markets?.rows || candidateMarketRows);
+writeCsv(DEFAULT_SUPPRESSED_CANDIDATES, SUPPRESSED_CANDIDATE_HEADERS, canonicalSnapshot.canonical_ledgers?.suppressed_candidates?.rows || suppressedCandidateRows);
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
-fs.writeFileSync(outPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+fs.writeFileSync(outPath, `${JSON.stringify(publicPayload, null, 2)}\n`, 'utf8');
 
 const outDir = path.dirname(outPath);
-if (payload?.decision_renderers?.terminal_text) {
-  fs.writeFileSync(path.join(outDir, 'decision-terminal.txt'), payload.decision_renderers.terminal_text, 'utf8');
+if (publicPayload?.decision_renderers?.terminal_text) {
+  fs.writeFileSync(path.join(outDir, 'decision-terminal.txt'), publicPayload.decision_renderers.terminal_text, 'utf8');
 }
-if (payload?.decision_renderers?.whatsapp_text) {
-  fs.writeFileSync(path.join(outDir, 'decision-whatsapp.txt'), payload.decision_renderers.whatsapp_text, 'utf8');
+if (publicPayload?.decision_renderers?.whatsapp_text) {
+  fs.writeFileSync(path.join(outDir, 'decision-whatsapp.txt'), publicPayload.decision_renderers.whatsapp_text, 'utf8');
 }
-if (payload?.decision_renderers?.evening_grading_report_text) {
-  fs.writeFileSync(path.join(outDir, 'evening-grading-report.txt'), payload.decision_renderers.evening_grading_report_text, 'utf8');
+if (publicPayload?.decision_renderers?.evening_grading_report_text) {
+  fs.writeFileSync(path.join(outDir, 'evening-grading-report.txt'), publicPayload.decision_renderers.evening_grading_report_text, 'utf8');
 }
 
 console.log(`Built public data: ${outPath}`);
-console.log(`Schema: ${payload.schema} | Last Updated (CT): ${payload.last_updated_ct}`);
+console.log(`Built canonical state: ${DEFAULT_CANONICAL_STATE}`);
+console.log(`Schema: ${publicPayload.schema} | Last Updated (CT): ${publicPayload.last_updated_ct}`);
 if (redactPending) {
   console.log('Pending plays were redacted (REDACT_PENDING=true).');
 }
