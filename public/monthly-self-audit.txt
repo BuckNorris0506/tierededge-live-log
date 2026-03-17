@@ -1,5 +1,5 @@
 MONTHLY SELF AUDIT — 2026-03
-Generated: 2026-03-17T13:36:19.563Z
+Generated: 2026-03-17T13:36:50.194Z
 
 Audit status: insufficient_native_coverage
 Native coverage status: no_native_decision_coverage

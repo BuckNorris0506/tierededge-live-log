@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-17T13:36:19.368Z",
+  "generated_at_utc": "2026-03-17T13:36:50.095Z",
   "source_ingest": {
     "betting_state_path": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
     "recommendation_log_path": "/Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md",
@@ -37,7 +37,7 @@
     "state_sync_completed": true,
     "canonical_state_write_completed": true,
     "payload_rebuild_completed": true,
-    "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+    "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
     "success_criteria_met": true,
     "failure_reason": null,
     "notes": "Odds could not be verified for the latest scheduled scan."
@@ -58,7 +58,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Odds could not be verified for the latest scheduled scan."
@@ -78,7 +78,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Odds could not be verified for the latest scheduled scan."
@@ -98,7 +98,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -118,7 +118,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -138,7 +138,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -158,7 +158,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -178,7 +178,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan reported at least one actionable bet."
@@ -198,7 +198,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -218,7 +218,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -238,7 +238,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -258,7 +258,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run implies bankroll or result updates."
@@ -278,7 +278,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -298,7 +298,7 @@
       "state_sync_completed": false,
       "canonical_state_write_completed": false,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": false,
       "failure_reason": "canonical_state_sync_missing",
       "notes": "The latest scheduled scan reported at least one actionable bet."
@@ -318,7 +318,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run implies bankroll or result updates."
@@ -338,7 +338,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -358,7 +358,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run implies bankroll or result updates."
@@ -378,7 +378,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -398,7 +398,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -418,7 +418,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -438,7 +438,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -458,7 +458,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -478,7 +478,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -498,7 +498,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -518,7 +518,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -538,7 +538,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -558,7 +558,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -578,7 +578,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -598,7 +598,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -618,7 +618,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -638,7 +638,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "The latest scheduled scan found no qualifying edges."
@@ -658,7 +658,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run implies bankroll or result updates."
@@ -678,7 +678,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Latest grading run reported no state changes."
@@ -698,7 +698,7 @@
       "state_sync_completed": true,
       "canonical_state_write_completed": true,
       "payload_rebuild_completed": true,
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
       "success_criteria_met": true,
       "failure_reason": null,
       "notes": "Odds could not be verified for the latest scheduled scan."
@@ -4205,13 +4205,13 @@
     "downstream_payload_rebuild_required": true
   },
   "public_payload": {
-    "generated_at_utc": "2026-03-17T13:36:19.368Z",
+    "generated_at_utc": "2026-03-17T13:36:50.095Z",
     "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
     "schema": "v1.2",
     "last_updated_ct": "2026-03-17 06:00 CT",
     "state_last_updated_ct": "2026-03-14 00:35 CT",
     "runtime_status": {
-      "generated_at_utc": "2026-03-17T13:36:19.203Z",
+      "generated_at_utc": "2026-03-17T13:36:49.632Z",
       "jobs": {
         "morning_edge_hunt": {
           "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -5249,7 +5249,7 @@
           "outcome_if_bet": "ungraded",
           "narrative": "We passed on East Tennessee State -2.5 (NCAAB) at +EV 1.5% (-110). Outcome: awaiting grading.",
           "rejection_reason": "no_edge",
-          "failure_reason": "no_historical_result_found",
+          "failure_reason": "missing_event_identity",
           "grade_source": "deterministic_backfill_failed",
           "counterfactual_pl": null,
           "hypothetical_units": null,
@@ -5266,7 +5266,7 @@
           "outcome_if_bet": "ungraded",
           "narrative": "We passed on Pacers +4.5 (NBA) at +EV 1.8% (-108). Outcome: awaiting grading.",
           "rejection_reason": "no_edge",
-          "failure_reason": "no_historical_result_found",
+          "failure_reason": "missing_event_identity",
           "grade_source": "deterministic_backfill_failed",
           "counterfactual_pl": null,
           "hypothetical_units": null,
@@ -5368,7 +5368,7 @@
           "outcome_if_bet": "ungraded",
           "narrative": "We passed on Cavaliers -3.5 (NBA) at +EV 0.7% (-110). Outcome: awaiting grading.",
           "rejection_reason": "no_edge",
-          "failure_reason": "no_historical_result_found",
+          "failure_reason": "missing_event_identity",
           "grade_source": "deterministic_backfill_failed",
           "counterfactual_pl": null,
           "hypothetical_units": null,
@@ -5385,7 +5385,7 @@
           "outcome_if_bet": "ungraded",
           "narrative": "We passed on Clippers -1.5 (NBA) at +EV 0.3% (-105). Outcome: awaiting grading.",
           "rejection_reason": "no_edge",
-          "failure_reason": "no_historical_result_found",
+          "failure_reason": "missing_event_identity",
           "grade_source": "deterministic_backfill_failed",
           "counterfactual_pl": null,
           "hypothetical_units": null,
@@ -5402,7 +5402,7 @@
           "outcome_if_bet": "ungraded",
           "narrative": "We passed on Missouri +3.5 (NCAAB) at +EV 1.3% (-118). Outcome: awaiting grading.",
           "rejection_reason": "no_edge",
-          "failure_reason": "no_historical_result_found",
+          "failure_reason": "missing_event_identity",
           "grade_source": "deterministic_backfill_failed",
           "counterfactual_pl": null,
           "hypothetical_units": null,
@@ -5436,7 +5436,7 @@
           "outcome_if_bet": "ungraded",
           "narrative": "We passed on Toledo -1.5 (NCAAB) at +EV 1.3% (-102). Outcome: awaiting grading.",
           "rejection_reason": "no_edge",
-          "failure_reason": "no_historical_result_found",
+          "failure_reason": "missing_event_identity",
           "grade_source": "deterministic_backfill_failed",
           "counterfactual_pl": null,
           "hypothetical_units": null,
@@ -5487,7 +5487,7 @@
           "outcome_if_bet": "ungraded",
           "narrative": "We passed on Virginia -6.5 (NCAAB) at +EV 1.1% (-110). Outcome: awaiting grading.",
           "rejection_reason": "no_edge",
-          "failure_reason": "no_historical_result_found",
+          "failure_reason": "missing_event_identity",
           "grade_source": "deterministic_backfill_failed",
           "counterfactual_pl": null,
           "hypothetical_units": null,
@@ -6705,8 +6705,8 @@
     "market_efficiency_impact": null,
     "data_freshness": {
       "recommendation_log_last_row_time": "2026-03-12 06:04 AM",
-      "grading_cache_last_update": "2026-03-17T13:16:11.428Z",
-      "payload_build_time_utc": "2026-03-17T13:36:19.368Z",
+      "grading_cache_last_update": "2026-03-17T13:36:50.051Z",
+      "payload_build_time_utc": "2026-03-17T13:36:50.095Z",
       "state_last_updated_time": "2026-03-14 00:35 CT",
       "effective_last_updated_time": "2026-03-17 06:00 CT",
       "freshness_anchor_source": "runtime_freshness_anchor",
@@ -6752,8 +6752,8 @@
         ],
         "odds_api_key_present": true,
         "bankroll_formula_difference": -97.25,
-        "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:19.368Z",
-        "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+        "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:50.095Z",
+        "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
         "latest_hunt_date": "2026-03-17",
         "latest_hunt_type": "BLOCKED",
         "latest_hunt_has_bet_state": true,
@@ -6770,7 +6770,7 @@
           "last_updated_day": "2026-03-17"
         },
         "runtime_status": {
-          "generated_at_utc": "2026-03-17T13:36:19.203Z",
+          "generated_at_utc": "2026-03-17T13:36:49.632Z",
           "jobs": {
             "morning_edge_hunt": {
               "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -7524,7 +7524,7 @@
     },
     "decision_payload_v1": {
       "schema": "decision_payload_v1",
-      "generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "generated_at_utc": "2026-03-17T13:36:50.095Z",
       "message_type": "BLOCKED",
       "verdict": "BLOCKED",
       "run_classification": "degraded_data",
@@ -7615,8 +7615,8 @@
           ],
           "odds_api_key_present": true,
           "bankroll_formula_difference": -97.25,
-          "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:19.368Z",
-          "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+          "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:50.095Z",
+          "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
           "latest_hunt_date": "2026-03-17",
           "latest_hunt_type": "BLOCKED",
           "latest_hunt_has_bet_state": true,
@@ -7633,7 +7633,7 @@
             "last_updated_day": "2026-03-17"
           },
           "runtime_status": {
-            "generated_at_utc": "2026-03-17T13:36:19.203Z",
+            "generated_at_utc": "2026-03-17T13:36:49.632Z",
             "jobs": {
               "morning_edge_hunt": {
                 "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -8434,8 +8434,8 @@
               ],
               "odds_api_key_present": true,
               "bankroll_formula_difference": -97.25,
-              "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:19.368Z",
-              "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+              "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:50.095Z",
+              "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
               "latest_hunt_date": "2026-03-17",
               "latest_hunt_type": "BLOCKED",
               "latest_hunt_has_bet_state": true,
@@ -8452,7 +8452,7 @@
                 "last_updated_day": "2026-03-17"
               },
               "runtime_status": {
-                "generated_at_utc": "2026-03-17T13:36:19.203Z",
+                "generated_at_utc": "2026-03-17T13:36:49.632Z",
                 "jobs": {
                   "morning_edge_hunt": {
                     "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -9295,8 +9295,8 @@
             ],
             "odds_api_key_present": true,
             "bankroll_formula_difference": -97.25,
-            "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:19.368Z",
-            "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
+            "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:50.095Z",
+            "payload_rebuild_generated_at_utc": "2026-03-17T13:36:50.095Z",
             "latest_hunt_date": "2026-03-17",
             "latest_hunt_type": "BLOCKED",
             "latest_hunt_has_bet_state": true,
@@ -9313,7 +9313,7 @@
               "last_updated_day": "2026-03-17"
             },
             "runtime_status": {
-              "generated_at_utc": "2026-03-17T13:36:19.203Z",
+              "generated_at_utc": "2026-03-17T13:36:49.632Z",
               "jobs": {
                 "morning_edge_hunt": {
                   "id": "2766547c-e6a0-40ca-a680-972c7842579c",
