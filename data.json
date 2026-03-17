@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-03-17T02:37:06.132Z",
+  "generated_at_utc": "2026-03-17T02:43:11.901Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-16 07:12 CT",
   "state_last_updated_ct": "2026-03-14 00:35 CT",
   "runtime_status": {
-    "generated_at_utc": "2026-03-17T02:37:05.570Z",
+    "generated_at_utc": "2026-03-17T02:43:11.377Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -27,6 +27,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         "latest_successful": {
@@ -41,6 +43,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         "successful_runs": [
@@ -56,6 +60,10 @@
             "message_type": "BLOCKED",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [
+              "stale_response"
+            ],
+            "data_status": "degraded_data",
             "plain_reason": "Odds could not be verified for the latest scheduled scan."
           },
           {
@@ -70,6 +78,10 @@
             "message_type": "BLOCKED",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [
+              "stale_response"
+            ],
+            "data_status": "degraded_data",
             "plain_reason": "Odds could not be verified for the latest scheduled scan."
           },
           {
@@ -84,6 +96,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -98,6 +112,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -112,6 +128,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -126,6 +144,8 @@
             "message_type": "BET",
             "has_actionable_bets": true,
             "requires_state_sync": true,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan reported at least one actionable bet."
           },
           {
@@ -140,6 +160,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -154,6 +176,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -168,6 +192,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -182,6 +208,10 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [
+              "quota_or_rate_limit"
+            ],
+            "data_status": "degraded_data",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -196,6 +226,8 @@
             "message_type": "BET",
             "has_actionable_bets": true,
             "requires_state_sync": true,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan reported at least one actionable bet."
           },
           {
@@ -210,6 +242,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -224,6 +258,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -238,6 +274,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -252,6 +290,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -266,6 +306,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -280,6 +322,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -294,6 +338,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           },
           {
@@ -308,6 +354,8 @@
             "message_type": "SIT",
             "has_actionable_bets": false,
             "requires_state_sync": false,
+            "data_failure_codes": [],
+            "data_status": "verified",
             "plain_reason": "The latest scheduled scan found no qualifying edges."
           }
         ]
@@ -487,6 +535,10 @@
           "message_type": "BLOCKED",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [
+            "stale_response"
+          ],
+          "data_status": "degraded_data",
           "plain_reason": "Odds could not be verified for the latest scheduled scan."
         },
         "latest_successful": null,
@@ -576,6 +628,8 @@
       "message_type": "SIT",
       "has_actionable_bets": false,
       "requires_state_sync": false,
+      "data_failure_codes": [],
+      "data_status": "verified",
       "plain_reason": "The latest scheduled scan found no qualifying edges."
     },
     "latest_successful_grading": {
@@ -619,6 +673,7 @@
       "key_present": true,
       "key_suffix": "d2d6",
       "base_url": "https://api.the-odds-api.com/v4",
+      "source_status": "present",
       "free_tier_scan_ct": "06:00",
       "source_path": "/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md"
     },
@@ -639,7 +694,7 @@
       },
       "passed_opportunity_grades": {
         "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-        "file_mtime_ct": "2026-03-16 21:36 CT"
+        "file_mtime_ct": "2026-03-16 21:37 CT"
       }
     },
     "state_sync": {
@@ -946,7 +1001,7 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on East Tennessee State -2.5 (NCAAB) at +EV 1.5% (-110). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
-        "failure_reason": "missing_event_identity",
+        "failure_reason": "no_historical_result_found",
         "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
         "hypothetical_units": null,
@@ -1099,7 +1154,7 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Missouri +3.5 (NCAAB) at +EV 1.3% (-118). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
-        "failure_reason": "missing_event_identity",
+        "failure_reason": "no_historical_result_found",
         "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
         "hypothetical_units": null,
@@ -1133,7 +1188,7 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Toledo -1.5 (NCAAB) at +EV 1.3% (-102). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
-        "failure_reason": "missing_event_identity",
+        "failure_reason": "no_historical_result_found",
         "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
         "hypothetical_units": null,
@@ -1184,7 +1239,7 @@
         "outcome_if_bet": "ungraded",
         "narrative": "We passed on Virginia -6.5 (NCAAB) at +EV 1.1% (-110). Outcome: awaiting grading.",
         "rejection_reason": "no_edge",
-        "failure_reason": "missing_event_identity",
+        "failure_reason": "no_historical_result_found",
         "grade_source": "deterministic_backfill_failed",
         "counterfactual_pl": null,
         "hypothetical_units": null,
@@ -2076,8 +2131,8 @@
   "market_efficiency_impact": null,
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-12 06:04 AM",
-    "grading_cache_last_update": "2026-03-17T02:37:06.013Z",
-    "payload_build_time_utc": "2026-03-17T02:37:06.132Z",
+    "grading_cache_last_update": "2026-03-17T02:43:11.842Z",
+    "payload_build_time_utc": "2026-03-17T02:43:11.901Z",
     "state_last_updated_time": "2026-03-14 00:35 CT",
     "effective_last_updated_time": "2026-03-16 07:12 CT",
     "freshness_anchor_source": "runtime_freshness_anchor",
@@ -2087,15 +2142,17 @@
     "pass": true,
     "checks": {
       "data_freshness": "pass",
+      "api_integrity": "pass",
       "ledger_integrity": "pass",
       "bankroll_continuity": "pass",
       "state_sync": "pass",
+      "payload_rebuild": "pass",
       "decision_engine_status": "pass",
       "duplicate_rec_id_count": 0,
       "missing_scan_days_count": 0
     },
     "diagnostics": {
-      "freshness_hours_since_anchor": 26.62,
+      "freshness_hours_since_anchor": 26.72,
       "freshness_anchor_source": "runtime_freshness_anchor",
       "freshness_anchor_time": "2026-03-16 07:12 CT",
       "first_recommendation_day": "2026-03-07",
@@ -2114,6 +2171,14 @@
       ],
       "missing_scan_days": [],
       "duplicate_rec_ids": [],
+      "latest_hunt_data_failure_codes": [],
+      "odds_api_key_present": true,
+      "bankroll_formula_difference": null,
+      "payload_rebuild_canonical_generated_at_utc": null,
+      "payload_rebuild_generated_at_utc": "2026-03-17T02:43:11.901Z",
+      "latest_hunt_date": "2026-03-16",
+      "latest_hunt_type": "SIT",
+      "latest_hunt_has_bet_state": true,
       "bankroll_continuity": {
         "pass": true,
         "reason": "pass",
@@ -2127,7 +2192,7 @@
         "last_updated_day": "2026-03-16"
       },
       "runtime_status": {
-        "generated_at_utc": "2026-03-17T02:37:05.570Z",
+        "generated_at_utc": "2026-03-17T02:43:11.377Z",
         "jobs": {
           "morning_edge_hunt": {
             "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -2149,6 +2214,8 @@
               "message_type": "SIT",
               "has_actionable_bets": false,
               "requires_state_sync": false,
+              "data_failure_codes": [],
+              "data_status": "verified",
               "plain_reason": "The latest scheduled scan found no qualifying edges."
             },
             "latest_successful": {
@@ -2163,6 +2230,8 @@
               "message_type": "SIT",
               "has_actionable_bets": false,
               "requires_state_sync": false,
+              "data_failure_codes": [],
+              "data_status": "verified",
               "plain_reason": "The latest scheduled scan found no qualifying edges."
             },
             "successful_runs": [
@@ -2178,6 +2247,10 @@
                 "message_type": "BLOCKED",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [
+                  "stale_response"
+                ],
+                "data_status": "degraded_data",
                 "plain_reason": "Odds could not be verified for the latest scheduled scan."
               },
               {
@@ -2192,6 +2265,10 @@
                 "message_type": "BLOCKED",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [
+                  "stale_response"
+                ],
+                "data_status": "degraded_data",
                 "plain_reason": "Odds could not be verified for the latest scheduled scan."
               },
               {
@@ -2206,6 +2283,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2220,6 +2299,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2234,6 +2315,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2248,6 +2331,8 @@
                 "message_type": "BET",
                 "has_actionable_bets": true,
                 "requires_state_sync": true,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan reported at least one actionable bet."
               },
               {
@@ -2262,6 +2347,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2276,6 +2363,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2290,6 +2379,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2304,6 +2395,10 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [
+                  "quota_or_rate_limit"
+                ],
+                "data_status": "degraded_data",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2318,6 +2413,8 @@
                 "message_type": "BET",
                 "has_actionable_bets": true,
                 "requires_state_sync": true,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan reported at least one actionable bet."
               },
               {
@@ -2332,6 +2429,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2346,6 +2445,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2360,6 +2461,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2374,6 +2477,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2388,6 +2493,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2402,6 +2509,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2416,6 +2525,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               },
               {
@@ -2430,6 +2541,8 @@
                 "message_type": "SIT",
                 "has_actionable_bets": false,
                 "requires_state_sync": false,
+                "data_failure_codes": [],
+                "data_status": "verified",
                 "plain_reason": "The latest scheduled scan found no qualifying edges."
               }
             ]
@@ -2609,6 +2722,10 @@
               "message_type": "BLOCKED",
               "has_actionable_bets": false,
               "requires_state_sync": false,
+              "data_failure_codes": [
+                "stale_response"
+              ],
+              "data_status": "degraded_data",
               "plain_reason": "Odds could not be verified for the latest scheduled scan."
             },
             "latest_successful": null,
@@ -2698,6 +2815,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         "latest_successful_grading": {
@@ -2741,6 +2860,7 @@
           "key_present": true,
           "key_suffix": "d2d6",
           "base_url": "https://api.the-odds-api.com/v4",
+          "source_status": "present",
           "free_tier_scan_ct": "06:00",
           "source_path": "/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md"
         },
@@ -2761,7 +2881,7 @@
           },
           "passed_opportunity_grades": {
             "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-            "file_mtime_ct": "2026-03-16 21:36 CT"
+            "file_mtime_ct": "2026-03-16 21:37 CT"
           }
         },
         "state_sync": {
@@ -2778,15 +2898,20 @@
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-17T02:37:06.132Z",
+    "generated_at_utc": "2026-03-17T02:43:11.901Z",
     "message_type": "SIT",
     "verdict": "SIT",
+    "run_classification": "true_no_edge_sit",
     "what_to_do_now": "SIT and wait for next scan.",
     "why": "No edges above threshold.",
     "threshold_reminder": "Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.",
     "system_health": {
       "data_freshness": "pass",
+      "api_integrity": "pass",
       "ledger_integrity": "pass",
+      "bankroll_continuity": "pass",
+      "state_sync": "pass",
+      "payload_rebuild": "pass",
       "decision_engine_status": "pass",
       "pass": true
     },
@@ -2835,8 +2960,8 @@
     "blocked": null
   },
   "decision_renderers": {
-    "terminal_text": "TIEREDGE DECISION\nVerdict: SIT\nWhat to do now: SIT and wait for next scan.\nWhy: No edges above threshold.\nSystem health: PASS\nChecks: data=pass, ledger=pass, engine=pass\nSIT\n- Today's slate: The latest scheduled scan found no qualifying edges.\nThreshold reminder: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.\nExecution: bankroll=$1,328.88 | open_exposure=N/A (stale status field) | daily_exposure=N/A (stale status field) | breaker=OFF\nAccountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=55% (11-9)\nSuppression Summary:\n- markets_scanned=0\n- raw_edge_over_0_5=0\n- pre_conf_edge_over_2_0=0\n- rejected_confidence=0\n- rejected_threshold=0\n- rejected_risk=0\n- final_approved_bets=0\n",
-    "whatsapp_text": "*TIEREDGE SIT*\nWhat now: SIT and wait for next scan.\nWhy: No edges above threshold.\nHealth: PASS (data pass, ledger pass, engine pass)\n*SIT*\n- Today's slate: The latest scheduled scan found no qualifying edges.\nThreshold: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.\nExecution: bankroll $1,328.88, exposure N/A (stale status field), daily N/A (stale status field), breaker OFF\nAccountability: pending 0, +CLV 100%, avg CLV 7.36, results 55% (11-9)\nSuppression Summary:\n- markets_scanned=0\n- raw_edge_over_0_5=0\n- pre_conf_edge_over_2_0=0\n- rejected_confidence=0\n- rejected_threshold=0\n- rejected_risk=0\n- final_approved_bets=0\n",
+    "terminal_text": "TIEREDGE DECISION\nVerdict: SIT\nRun classification: true_no_edge_sit\nWhat to do now: SIT and wait for next scan.\nWhy: No edges above threshold.\nSystem health: PASS\nChecks: data=pass, api=pass, ledger=pass, bankroll=pass, sync=pass, payload=pass, engine=pass\nSIT\n- Today's slate: The latest scheduled scan found no qualifying edges.\nThreshold reminder: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.\nExecution: bankroll=$1,328.88 | open_exposure=N/A (stale status field) | daily_exposure=N/A (stale status field) | breaker=OFF\nAccountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=55% (11-9)\nSuppression Summary:\n- markets_scanned=0\n- raw_edge_over_0_5=0\n- pre_conf_edge_over_2_0=0\n- rejected_confidence=0\n- rejected_threshold=0\n- rejected_risk=0\n- final_approved_bets=0\n",
+    "whatsapp_text": "*TIEREDGE SIT*\nWhat now: SIT and wait for next scan.\nClassification: true_no_edge_sit\nWhy: No edges above threshold.\nHealth: PASS (data pass, api pass, ledger pass, bankroll pass, sync pass, payload pass, engine pass)\n*SIT*\n- Today's slate: The latest scheduled scan found no qualifying edges.\nThreshold: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.\nExecution: bankroll $1,328.88, exposure N/A (stale status field), daily N/A (stale status field), breaker OFF\nAccountability: pending 0, +CLV 100%, avg CLV 7.36, results 55% (11-9)\nSuppression Summary:\n- markets_scanned=0\n- raw_edge_over_0_5=0\n- pre_conf_edge_over_2_0=0\n- rejected_confidence=0\n- rejected_threshold=0\n- rejected_risk=0\n- final_approved_bets=0\n",
     "evening_grading_report_text": "EVENING GRADING - 2026-03-17\n\nBets Settled: 17\n\nOVERALL BETTING RESULTS\nCount: 20\nProfit/Loss: +$126.13\nProfit Units: +18.53u\nROI: +92.64%\nWin Rate: +55.00%\n\nFUN SGP RESULTS\nCount: 3\nProfit/Loss: +$47.40\nProfit Units: +5.69u\nROI: +189.60%\n\nCORE TIEREDGE STRATEGY\nProfit: +5.92u\nTotal Staked: 8.38u\nROI (Units): +70.64%\n\nEXPECTATION\nExpected Profit: +$0.33\nActual Profit: +$78.73\nVariance: +$78.40\nEV Realization: 238.58\n\nSIGNAL QUALITY\nAverage CLV: +7.36%\nPositive CLV Rate: +100.00%\nBinomial p-value: 0.5354\nConfidence Level: +46.46%\nSample Status: small sample (statistically inconclusive)\n\nEDGE QUALITY\nAvg Edge Detected: +3.30%\nAvg Edge at Placement: +3.30%\nAvg Edge at Close: N/A\nEdge Retention: 100.0%\nMarket Efficiency Impact: N/A\n\nBANKROLL CONTRIBUTION POLICY\nRealized Monthly Profit: +$126.13\nRolling Average Realized Profit: $0.00\nNext Estimated Contribution: $0.00\nContribution Basis Months: 2026-02\nTotal External Contributions: +$1200.00\nInterpretation: No monthly contribution scheduled based on non-positive rolling profit.\n\nBANKROLL OVERVIEW\nActual Bankroll: +$1426.13\nOverall Strategy Equity: +$226.13\nCore Strategy Equity: +$178.73\nTotal External Contributions: +$1200.00\nRealized Betting Profit: +$126.13\nNote: Actual bankroll includes external contributions.\nNote: Overall strategy equity excludes external contributions but includes FUN_SGP.\nNote: Core strategy equity excludes external contributions and FUN_SGP.\n\nBankroll: $1,328.88\nPeak: $1,328.88\nDrawdown: N/A\n\nSystem Status: Running Hot\nNext Edge Scan: 06:00 CT\n",
     "dashboard_model": {
       "today": {
@@ -2857,7 +2982,11 @@
       },
       "system_health": {
         "data_freshness": "pass",
+        "api_integrity": "pass",
         "ledger_integrity": "pass",
+        "bankroll_continuity": "pass",
+        "state_sync": "pass",
+        "payload_rebuild": "pass",
         "decision_engine_status": "pass",
         "pass": true
       },
@@ -2916,7 +3045,11 @@
     },
     "system_health": {
       "data_freshness": "pass",
+      "api_integrity": "pass",
       "ledger_integrity": "pass",
+      "bankroll_continuity": "pass",
+      "state_sync": "pass",
+      "payload_rebuild": "pass",
       "decision_engine_status": "pass",
       "pass": true
     },

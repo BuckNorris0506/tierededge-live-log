@@ -1345,11 +1345,21 @@ function formatPValue(value) {
 
 function explainIntegrityReason(code) {
   const map = {
-    data_freshness_fail: 'Latest validated data is stale.',
+    stale_state: 'Latest validated canonical state is stale.',
+    data_freshness_fail: 'Latest validated canonical state is stale.',
+    missing_api_key: 'Odds API key is missing.',
+    partial_api_data: 'Upstream odds data was partial or incomplete.',
+    degraded_data: 'Upstream data could not be fully verified.',
+    quota_or_rate_limit: 'Upstream odds request was rate-limited or quota-limited.',
+    malformed_response: 'Upstream odds response was malformed.',
     duplicate_rec_id: 'Recommendation log integrity failed because duplicate IDs were found.',
     missing_scan_days: 'Scan history and recommendation log are out of sync.',
     bankroll_discontinuity: 'Bankroll continuity check failed.',
+    bankroll_integrity_failure: 'Bankroll state does not reconcile cleanly.',
     state_sync_gap: 'A successful run completed, but canonical state did not sync deterministically.',
+    state_sync_failure: 'Canonical state sync failed.',
+    recommendation_integrity_failure: 'Recommendation/pass logging is incomplete for the latest run.',
+    payload_rebuild_failure: 'Public payload is stale relative to canonical state.',
   };
   return map[code] || code;
 }
@@ -1998,6 +2008,19 @@ function computeBankrollContinuityCheck({ betLog, ledger, currentStatus, lastUpd
   };
 }
 
+function classifyIntegrityOutcome({ reasons, blockedByFreshness, blockedByBankroll, blockedByStateSync, blockedByRecommendationIntegrity, blockedByApiIntegrity, payloadRebuildStale, hasBets }) {
+  if (reasons.includes('missing_api_key')) return 'missing_api_key';
+  if (reasons.includes('partial_api_data')) return 'partial_api_data';
+  if (reasons.includes('quota_or_rate_limit') || reasons.includes('malformed_response') || reasons.includes('degraded_data') || blockedByApiIntegrity) return 'degraded_data';
+  if (reasons.includes('bankroll_integrity_failure') || blockedByBankroll) return 'bankroll_integrity_failure';
+  if (reasons.includes('state_sync_failure') || blockedByStateSync) return 'state_sync_failure';
+  if (reasons.includes('payload_rebuild_failure') || payloadRebuildStale) return 'payload_rebuild_failure';
+  if (reasons.includes('recommendation_integrity_failure') || blockedByRecommendationIntegrity) return 'state_sync_failure';
+  if (reasons.includes('stale_state') || blockedByFreshness) return 'stale_state';
+  if (hasBets) return 'bet_ready';
+  return 'true_no_edge_sit';
+}
+
 function computeIntegrityGate({
   recommendationRows,
   betLog,
@@ -2008,6 +2031,8 @@ function computeIntegrityGate({
   dataFreshness,
   generatedAtUtc,
   runtimeStatus,
+  bankrollContributionPolicy,
+  canonicalGeneratedAtUtc,
 }) {
   const recIdSet = new Set();
   const duplicateRecIds = [];
@@ -2052,23 +2077,63 @@ function computeIntegrityGate({
     lastUpdatedCt: effectiveLastUpdatedCt || lastUpdatedCt,
   });
   const stateSyncGap = runtimeStatus?.state_sync?.blocking_sync_gap === true;
+  const oddsApiKeyPresent = runtimeStatus?.odds_api_config?.key_present === true;
+  const latestHunt = runtimeStatus?.latest_successful_hunt || null;
+  const latestHuntDataCodes = [...new Set(latestHunt?.data_failure_codes || [])];
+  const apiIntegrityReasons = [];
+  if (!oddsApiKeyPresent) apiIntegrityReasons.push('missing_api_key');
+  for (const code of latestHuntDataCodes) apiIntegrityReasons.push(code);
+  const apiIntegrityPass = apiIntegrityReasons.length === 0;
+
   const ledgerComplete = duplicateRecIds.length === 0 && missingScanDays.length === 0;
-  const pass = freshnessPass && ledgerComplete && bankrollContinuity.pass && !stateSyncGap;
+  const bankrollFormulaDiff = parseAsNumber(bankrollContributionPolicy?.bankroll_formula_difference);
+  const bankrollFormulaPass = bankrollFormulaDiff === null || Math.abs(bankrollFormulaDiff) <= Math.max(BANKROLL_CONTINUITY_MAX_DELTA_ABS, Math.abs(parseAsNumber(bankrollContributionPolicy?.actual_bankroll) || 0) * BANKROLL_CONTINUITY_MAX_DELTA_PCT);
+  const bankrollIntegrityPass = bankrollContinuity.pass && bankrollFormulaPass;
+
+  const latestHuntDate = latestHunt?.date_key || null;
+  const latestHuntType = String(latestHunt?.message_type || '').toUpperCase();
+  const targetRowsForLatestHunt = latestHuntDate
+    ? recommendationRows.filter((row) => String(row.timestamp_ct || '').includes(latestHuntDate))
+    : [];
+  const latestHuntHasBetState = latestHuntType === 'BET'
+    ? targetRowsForLatestHunt.some((row) => normalizeDecision(row.decision) === 'bet')
+    : true;
+  const latestHuntHasObservationState = latestHuntType === 'SIT'
+    ? true
+    : true;
+  const recommendationIntegrityPass = ledgerComplete && latestHuntHasBetState && latestHuntHasObservationState;
+
+  const canonicalMs = parseTimestampMs(canonicalGeneratedAtUtc);
+  const payloadBuildMs = parseTimestampMs(generatedAtUtc);
+  const payloadRebuildPass =
+    Number.isFinite(canonicalMs) && Number.isFinite(payloadBuildMs)
+      ? payloadBuildMs >= canonicalMs
+      : true;
+
+  const pass = freshnessPass && apiIntegrityPass && recommendationIntegrityPass && bankrollIntegrityPass && !stateSyncGap && payloadRebuildPass;
 
   const reasons = [];
-  if (!freshnessPass) reasons.push('data_freshness_fail');
+  if (!freshnessPass) reasons.push('stale_state');
+  for (const code of apiIntegrityReasons) {
+    if (!reasons.includes(code)) reasons.push(code);
+  }
   if (duplicateRecIds.length > 0) reasons.push('duplicate_rec_id');
   if (missingScanDays.length > 0) reasons.push('missing_scan_days');
+  if (!recommendationIntegrityPass) reasons.push('recommendation_integrity_failure');
+  if (!bankrollIntegrityPass) reasons.push('bankroll_integrity_failure');
   if (!bankrollContinuity.pass) reasons.push('bankroll_discontinuity');
-  if (stateSyncGap) reasons.push('state_sync_gap');
+  if (stateSyncGap) reasons.push('state_sync_failure');
+  if (!payloadRebuildPass) reasons.push('payload_rebuild_failure');
 
   return {
     pass,
     checks: {
       data_freshness: freshnessPass ? 'pass' : 'fail',
-      ledger_integrity: ledgerComplete ? 'pass' : 'fail',
-      bankroll_continuity: bankrollContinuity.pass ? 'pass' : 'fail',
+      api_integrity: apiIntegrityPass ? 'pass' : 'fail',
+      ledger_integrity: recommendationIntegrityPass ? 'pass' : 'fail',
+      bankroll_continuity: bankrollIntegrityPass ? 'pass' : 'fail',
       state_sync: stateSyncGap ? 'fail' : 'pass',
+      payload_rebuild: payloadRebuildPass ? 'pass' : 'fail',
       decision_engine_status: pass ? 'pass' : 'blocked',
       duplicate_rec_id_count: duplicateRecIds.length,
       missing_scan_days_count: missingScanDays.length,
@@ -2082,6 +2147,14 @@ function computeIntegrityGate({
       runtime_no_append_days: [...runtimeNoAppendDays].sort(),
       missing_scan_days: missingScanDays,
       duplicate_rec_ids: duplicateRecIds,
+      latest_hunt_data_failure_codes: latestHuntDataCodes,
+      odds_api_key_present: oddsApiKeyPresent,
+      bankroll_formula_difference: bankrollFormulaDiff,
+      payload_rebuild_canonical_generated_at_utc: canonicalGeneratedAtUtc || null,
+      payload_rebuild_generated_at_utc: generatedAtUtc || null,
+      latest_hunt_date: latestHuntDate,
+      latest_hunt_type: latestHuntType || null,
+      latest_hunt_has_bet_state: latestHuntHasBetState,
       bankroll_continuity: bankrollContinuity,
       runtime_status: runtimeStatus,
     },
@@ -2165,6 +2238,16 @@ function buildCanonicalDecisionPayload({
   const blocked = integrityGate.pass !== true;
   const hasBets = (todayDecisionConsole.bets || []).length > 0;
   const messageType = blocked ? 'BLOCKED' : (hasBets ? 'BET' : 'SIT');
+  const runClassification = classifyIntegrityOutcome({
+    reasons: integrityGate.reasons || [],
+    blockedByFreshness: integrityGate.checks?.data_freshness !== 'pass',
+    blockedByBankroll: integrityGate.checks?.bankroll_continuity !== 'pass',
+    blockedByStateSync: integrityGate.checks?.state_sync !== 'pass',
+    blockedByRecommendationIntegrity: integrityGate.checks?.ledger_integrity !== 'pass',
+    blockedByApiIntegrity: integrityGate.checks?.api_integrity !== 'pass',
+    payloadRebuildStale: integrityGate.checks?.payload_rebuild !== 'pass',
+    hasBets,
+  });
   const thresholdReminder = 'Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.';
   const why =
     messageType === 'BLOCKED'
@@ -2178,12 +2261,17 @@ function buildCanonicalDecisionPayload({
     generated_at_utc: generatedAtUtc,
     message_type: messageType,
     verdict: messageType,
+    run_classification: runClassification,
     what_to_do_now: todayDecisionConsole.next_action,
     why,
     threshold_reminder: thresholdReminder,
     system_health: {
       data_freshness: integrityGate.checks.data_freshness,
+      api_integrity: integrityGate.checks.api_integrity,
       ledger_integrity: integrityGate.checks.ledger_integrity,
+      bankroll_continuity: integrityGate.checks.bankroll_continuity,
+      state_sync: integrityGate.checks.state_sync,
+      payload_rebuild: integrityGate.checks.payload_rebuild,
       decision_engine_status: integrityGate.checks.decision_engine_status,
       pass: integrityGate.pass,
     },
@@ -2220,11 +2308,12 @@ function formatTerminalDecisionMessage(payload) {
 
   lines.push('TIEREDGE DECISION');
   lines.push(`Verdict: ${payload.verdict}`);
+  lines.push(`Run classification: ${payload.run_classification || 'unknown'}`);
   lines.push(`What to do now: ${payload.what_to_do_now || '—'}`);
   lines.push(`Why: ${payload.why || '—'}`);
   lines.push(`System health: ${healthPassLabel(health.pass === true)}`);
   lines.push(
-    `Checks: data=${health.data_freshness || 'fail'}, ledger=${health.ledger_integrity || 'fail'}, engine=${health.decision_engine_status || 'blocked'}`
+    `Checks: data=${health.data_freshness || 'fail'}, api=${health.api_integrity || 'fail'}, ledger=${health.ledger_integrity || 'fail'}, bankroll=${health.bankroll_continuity || 'fail'}, sync=${health.state_sync || 'fail'}, payload=${health.payload_rebuild || 'fail'}, engine=${health.decision_engine_status || 'blocked'}`
   );
 
   if (blocked) {
@@ -2268,9 +2357,10 @@ function formatWhatsAppDecisionMessage(payload) {
 
   lines.push(`*TIEREDGE ${payload.verdict}*`);
   lines.push(`What now: ${payload.what_to_do_now || '—'}`);
+  lines.push(`Classification: ${payload.run_classification || 'unknown'}`);
   lines.push(`Why: ${payload.why || '—'}`);
   lines.push(
-    `Health: ${healthPassLabel(health.pass === true)} (data ${health.data_freshness || 'fail'}, ledger ${health.ledger_integrity || 'fail'}, engine ${health.decision_engine_status || 'blocked'})`
+    `Health: ${healthPassLabel(health.pass === true)} (data ${health.data_freshness || 'fail'}, api ${health.api_integrity || 'fail'}, ledger ${health.ledger_integrity || 'fail'}, bankroll ${health.bankroll_continuity || 'fail'}, sync ${health.state_sync || 'fail'}, payload ${health.payload_rebuild || 'fail'}, engine ${health.decision_engine_status || 'blocked'})`
   );
 
   if (blocked) {

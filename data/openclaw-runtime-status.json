@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-17T02:37:05.570Z",
+  "generated_at_utc": "2026-03-17T02:43:11.377Z",
   "jobs": {
     "morning_edge_hunt": {
       "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -21,6 +21,8 @@
         "message_type": "SIT",
         "has_actionable_bets": false,
         "requires_state_sync": false,
+        "data_failure_codes": [],
+        "data_status": "verified",
         "plain_reason": "The latest scheduled scan found no qualifying edges."
       },
       "latest_successful": {
@@ -35,6 +37,8 @@
         "message_type": "SIT",
         "has_actionable_bets": false,
         "requires_state_sync": false,
+        "data_failure_codes": [],
+        "data_status": "verified",
         "plain_reason": "The latest scheduled scan found no qualifying edges."
       },
       "successful_runs": [
@@ -50,6 +54,10 @@
           "message_type": "BLOCKED",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [
+            "stale_response"
+          ],
+          "data_status": "degraded_data",
           "plain_reason": "Odds could not be verified for the latest scheduled scan."
         },
         {
@@ -64,6 +72,10 @@
           "message_type": "BLOCKED",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [
+            "stale_response"
+          ],
+          "data_status": "degraded_data",
           "plain_reason": "Odds could not be verified for the latest scheduled scan."
         },
         {
@@ -78,6 +90,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -92,6 +106,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -106,6 +122,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -120,6 +138,8 @@
           "message_type": "BET",
           "has_actionable_bets": true,
           "requires_state_sync": true,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan reported at least one actionable bet."
         },
         {
@@ -134,6 +154,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -148,6 +170,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -162,6 +186,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -176,6 +202,10 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [
+            "quota_or_rate_limit"
+          ],
+          "data_status": "degraded_data",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -190,6 +220,8 @@
           "message_type": "BET",
           "has_actionable_bets": true,
           "requires_state_sync": true,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan reported at least one actionable bet."
         },
         {
@@ -204,6 +236,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -218,6 +252,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -232,6 +268,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -246,6 +284,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -260,6 +300,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -274,6 +316,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -288,6 +332,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         },
         {
@@ -302,6 +348,8 @@
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
         }
       ]
@@ -481,6 +529,10 @@
         "message_type": "BLOCKED",
         "has_actionable_bets": false,
         "requires_state_sync": false,
+        "data_failure_codes": [
+          "stale_response"
+        ],
+        "data_status": "degraded_data",
         "plain_reason": "Odds could not be verified for the latest scheduled scan."
       },
       "latest_successful": null,
@@ -570,6 +622,8 @@
     "message_type": "SIT",
     "has_actionable_bets": false,
     "requires_state_sync": false,
+    "data_failure_codes": [],
+    "data_status": "verified",
     "plain_reason": "The latest scheduled scan found no qualifying edges."
   },
   "latest_successful_grading": {
@@ -613,6 +667,7 @@
     "key_present": true,
     "key_suffix": "d2d6",
     "base_url": "https://api.the-odds-api.com/v4",
+    "source_status": "present",
     "free_tier_scan_ct": "06:00",
     "source_path": "/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md"
   },
@@ -633,7 +688,7 @@
     },
     "passed_opportunity_grades": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-      "file_mtime_ct": "2026-03-16 21:36 CT"
+      "file_mtime_ct": "2026-03-16 21:37 CT"
     }
   },
   "state_sync": {

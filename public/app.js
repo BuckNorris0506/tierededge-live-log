@@ -490,9 +490,13 @@ function renderDiagnostics(data) {
   const integrity = data.integrity_gate || {};
 
   const diagRows = [
+    ['Run classification', data.decision_payload_v1?.run_classification || MISSING],
     ['Data freshness', health.data_freshness],
+    ['API integrity', health.api_integrity],
     ['Ledger integrity', health.ledger_integrity],
     ['Bankroll continuity', health.bankroll_continuity],
+    ['State sync', health.state_sync],
+    ['Payload rebuild', health.payload_rebuild],
     ['Decision engine status', health.decision_engine_status],
     ['Recommendation log last row', freshness.recommendation_log_last_row_time],
     ['Grading cache last update', freshness.grading_cache_last_update],
@@ -505,7 +509,8 @@ function renderDiagnostics(data) {
     {
       'Missing scan days': (integrity.diagnostics?.missing_scan_days || []).join(', ') || MISSING,
       'Duplicate rec IDs': (integrity.diagnostics?.duplicate_rec_ids || []).join(', ') || MISSING,
-      'Freshness hours': integrity.diagnostics?.freshness_hours_since_last_recommendation ?? MISSING,
+      'Freshness hours': integrity.diagnostics?.freshness_hours_since_anchor ?? MISSING,
+      'Latest data fail codes': (integrity.diagnostics?.latest_hunt_data_failure_codes || []).join(', ') || MISSING,
       'Current bankroll': integrity.diagnostics?.bankroll_continuity?.current_bankroll ?? MISSING,
       'Expected bankroll': integrity.diagnostics?.bankroll_continuity?.expected_bankroll ?? MISSING,
       'Bankroll delta': integrity.diagnostics?.bankroll_continuity?.delta ?? MISSING,
@@ -516,7 +521,7 @@ function renderDiagnostics(data) {
   renderTable(
     'diagnostics-table',
     diagTableRows,
-    ['Missing scan days', 'Duplicate rec IDs', 'Freshness hours', 'Current bankroll', 'Expected bankroll', 'Bankroll delta', 'Raw fail codes'],
+    ['Missing scan days', 'Duplicate rec IDs', 'Freshness hours', 'Latest data fail codes', 'Current bankroll', 'Expected bankroll', 'Bankroll delta', 'Raw fail codes'],
     'No diagnostics available.'
   );
 }

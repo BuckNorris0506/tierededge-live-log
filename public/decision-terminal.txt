@@ -1,9 +1,10 @@
 TIEREDGE DECISION
 Verdict: SIT
+Run classification: true_no_edge_sit
 What to do now: SIT and wait for next scan.
 Why: No edges above threshold.
 System health: PASS
-Checks: data=pass, ledger=pass, engine=pass
+Checks: data=pass, api=pass, ledger=pass, bankroll=pass, sync=pass, payload=pass, engine=pass
 SIT
 - Today's slate: The latest scheduled scan found no qualifying edges.
 Threshold reminder: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.

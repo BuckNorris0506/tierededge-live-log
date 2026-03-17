@@ -111,9 +111,23 @@ function parseOddsApiConfig(markdown) {
     key_present: Boolean(apiKey),
     key_suffix: apiKey ? apiKey.slice(-4) : null,
     base_url: baseUrl,
+    source_status: apiKey ? 'present' : 'missing_api_key',
     free_tier_scan_ct: normalizedFreeTierScan,
     source_path: OPENCLAW_PATHS.oddsApiConfig,
   };
+}
+
+function detectHuntDataFailureSignals(text) {
+  const normalized = String(text || '').replace(/\s+/g, ' ').trim();
+  const upper = normalized.toUpperCase();
+  const codes = [];
+  if (!normalized) return codes;
+  if (/MISSING API KEY|NO ODDS API KEY|ODDS API KEY MISSING|API KEY NOT CONFIGURED/.test(upper)) codes.push('missing_api_key');
+  if (/RATE LIMIT|RATELIMIT|QUOTA|429/.test(upper)) codes.push('quota_or_rate_limit');
+  if (/PARTIAL DATA|PARTIAL RESPONSE|INCOMPLETE DATA|INCOMPLETE RESPONSE|MISSING BOOKS|INSUFFICIENT BOOKS/.test(upper)) codes.push('partial_api_data');
+  if (/MALFORMED RESPONSE|INVALID JSON|PARSE ERROR|SCHEMA ERROR|VALIDATION FAILED/.test(upper)) codes.push('malformed_response');
+  if (/STALE RESPONSE|STALE DATA|STALE OR UNVERIFIED ODDS|CANNOT_VERIFY_ODDS|ODDS COULD NOT BE VERIFIED/.test(upper)) codes.push('stale_response');
+  return [...new Set(codes)];
 }
 
 function extractCronTimeCt(expr) {
@@ -145,6 +159,7 @@ function readRunEvents(runFile) {
 function classifyHuntSummary(summary) {
   const text = String(summary || '').replace(/\s+/g, ' ').trim();
   const upper = text.toUpperCase();
+  const dataFailureCodes = detectHuntDataFailureSignals(text);
   const playsMatch = text.match(/VERDICT:\s*(\d+)\s+plays found/i);
   const explicitSit = /VERDICT:\s*SIT/i.test(text) || /DECISION:\s*SIT/i.test(text);
   const explicitBlocked = /Status:\s*BLOCKED/i.test(text) || /Integrity gate failed/i.test(text);
@@ -166,6 +181,8 @@ function classifyHuntSummary(summary) {
       message_type: 'BLOCKED',
       has_actionable_bets: false,
       requires_state_sync: false,
+      data_failure_codes: dataFailureCodes,
+      data_status: dataFailureCodes.length > 0 ? 'degraded_data' : 'blocked',
       plain_reason: cannotVerify
         ? 'Odds could not be verified for the latest scheduled scan.'
         : 'Integrity gate failed during the latest scheduled scan.',
@@ -176,6 +193,8 @@ function classifyHuntSummary(summary) {
       message_type: 'BET',
       has_actionable_bets: true,
       requires_state_sync: true,
+      data_failure_codes: dataFailureCodes,
+      data_status: dataFailureCodes.length > 0 ? 'degraded_data' : 'verified',
       plain_reason: 'The latest scheduled scan reported at least one actionable bet.',
     };
   }
@@ -184,6 +203,8 @@ function classifyHuntSummary(summary) {
       message_type: 'SIT',
       has_actionable_bets: false,
       requires_state_sync: false,
+      data_failure_codes: dataFailureCodes,
+      data_status: dataFailureCodes.length > 0 ? 'degraded_data' : 'verified',
       plain_reason: 'The latest scheduled scan found no qualifying edges.',
     };
   }
@@ -191,6 +212,8 @@ function classifyHuntSummary(summary) {
     message_type: 'UNKNOWN',
     has_actionable_bets: false,
     requires_state_sync: false,
+    data_failure_codes: dataFailureCodes,
+    data_status: dataFailureCodes.length > 0 ? 'degraded_data' : 'unknown',
     plain_reason: 'The latest scheduled scan could not be classified reliably.',
   };
 }
