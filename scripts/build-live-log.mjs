@@ -607,6 +607,71 @@ function computeBankrollContributionPolicy({
   };
 }
 
+function computeDerivedLifetimeStats({ betLog, startingBankroll }) {
+  const settledRows = filterSettledRows(betLog);
+  const winRows = settledRows.filter((row) => normalizeDecision(row.Result) === 'win');
+  const lossRows = settledRows.filter((row) => ['loss', 'cashed out'].includes(normalizeDecision(row.Result)));
+  const totalStake = settledRows.reduce((sum, row) => sum + (parseAsNumber(row.Stake) || 0), 0);
+  const totalProfit = settledRows.reduce((sum, row) => sum + (parseAsNumber(row['P/L']) || 0), 0);
+  const roi = totalStake > 0 ? round2((totalProfit / totalStake) * 100) : null;
+  const clvValues = settledRows
+    .filter((row) => row.include_in_core_strategy_metrics !== false)
+    .map((row) => parseClvValue(row.CLV))
+    .filter((n) => n !== null);
+  const avgClv = clvValues.length > 0 ? round2(clvValues.reduce((a, b) => a + b, 0) / clvValues.length) : null;
+  const winRate = settledRows.length > 0 ? round2((winRows.length / settledRows.length) * 100) : null;
+  const endingBankroll = parseAsNumber(settledRows[settledRows.length - 1]?.Bankroll);
+
+  return {
+    'Total Bets': String(settledRows.length),
+    'Win Rate': settledRows.length > 0 ? `${winRate}% (${winRows.length}-${lossRows.length})` : 'N/A',
+    'Overall ROI': roi !== null ? formatPctSigned(roi) : 'N/A',
+    'Average CLV': avgClv !== null ? formatPctSigned(avgClv) : 'N/A',
+    total_bets_numeric: settledRows.length,
+    wins_numeric: winRows.length,
+    losses_numeric: lossRows.length,
+    overall_roi_numeric: roi,
+    average_clv_numeric: avgClv,
+    realized_profit_numeric: round2(totalProfit),
+    total_stake_numeric: round2(totalStake),
+    starting_bankroll_numeric: round2(startingBankroll),
+    ending_bankroll_numeric: round2(endingBankroll),
+  };
+}
+
+function computeDerivedWeeklyRunningTotals({ betLog, anchorDateKey }) {
+  const anchorMs = parseTimestampMs(anchorDateKey ? `${anchorDateKey}T00:00:00Z` : null);
+  const rows = filterSettledRows(betLog).filter((row) => {
+    if (!Number.isFinite(anchorMs)) return true;
+    const rowMs = parseTimestampMs(row.Date ? `${row.Date}T00:00:00Z` : null);
+    if (!Number.isFinite(rowMs)) return false;
+    return rowMs >= anchorMs - (6 * 24 * 60 * 60 * 1000) && rowMs <= anchorMs;
+  });
+  const wins = rows.filter((row) => normalizeDecision(row.Result) === 'win').length;
+  const losses = rows.filter((row) => ['loss', 'cashed out'].includes(normalizeDecision(row.Result))).length;
+  const pending = (betLog || []).filter((row) => normalizeDecision(row.Result) === 'pending').length;
+  const totalStake = rows.reduce((sum, row) => sum + (parseAsNumber(row.Stake) || 0), 0);
+  const totalProfit = rows.reduce((sum, row) => sum + (parseAsNumber(row['P/L']) || 0), 0);
+  const roi = totalStake > 0 ? round2((totalProfit / totalStake) * 100) : null;
+  const clvValues = rows
+    .filter((row) => row.include_in_core_strategy_metrics !== false)
+    .map((row) => parseClvValue(row.CLV))
+    .filter((n) => n !== null);
+  const avgClv = clvValues.length > 0 ? round2(clvValues.reduce((a, b) => a + b, 0) / clvValues.length) : null;
+
+  return {
+    'Bets': `${rows.length} | W: ${wins} | L: ${losses} | Push: 0 | Void: 0 | Half-Win: 0 | Half-Loss: 0 | Pending: ${pending}`,
+    'ROI': `${roi !== null ? formatPctSigned(roi) : 'N/A'} | Avg CLV: ${avgClv !== null ? formatPctSigned(avgClv) : 'N/A'}`,
+    bets_numeric: rows.length,
+    wins_numeric: wins,
+    losses_numeric: losses,
+    pending_numeric: pending,
+    roi_numeric: roi,
+    average_clv_numeric: avgClv,
+    realized_profit_numeric: round2(totalProfit),
+  };
+}
+
 function parseBooleanLike(value) {
   const raw = String(value ?? '').trim().toLowerCase();
   if (!raw) return null;
@@ -1857,13 +1922,9 @@ function computeIntegrityGate({
     if (day) recDays.add(day);
   }
 
-  const scanDays = new Set();
-  for (const row of betLog) {
-    const day = String(row.Date || '').trim();
-    if (/^\d{4}-\d{2}-\d{2}$/.test(day)) scanDays.add(day);
-  }
+  const scanDays = new Set((runtimeStatus?.successful_hunt_days || []).filter(Boolean));
   const lastUpdatedDay = parseDateFromLastUpdated(lastUpdatedCt);
-  if (lastUpdatedDay) scanDays.add(lastUpdatedDay);
+  if (scanDays.size === 0 && lastUpdatedDay) scanDays.add(lastUpdatedDay);
 
   const firstRecDay = [...recDays].sort()[0] || null;
   const relevantScanDays = firstRecDay
@@ -1872,15 +1933,7 @@ function computeIntegrityGate({
   const ignoredPreLedgerScanDays = firstRecDay
     ? [...scanDays].filter((day) => day < firstRecDay).sort()
     : [];
-  const runtimeNoAppendDays = new Set();
-  const latestSuccessfulHuntDay = runtimeStatus?.latest_successful_hunt?.date_key || null;
-  if (
-    latestSuccessfulHuntDay
-    && runtimeStatus?.latest_successful_hunt?.requires_state_sync === false
-    && ['SIT', 'BLOCKED'].includes(String(runtimeStatus?.latest_successful_hunt?.message_type || '').toUpperCase())
-  ) {
-    runtimeNoAppendDays.add(latestSuccessfulHuntDay);
-  }
+  const runtimeNoAppendDays = new Set((runtimeStatus?.no_append_hunt_days || []).filter(Boolean));
   const missingScanDays = relevantScanDays
     .filter((day) => !recDays.has(day))
     .filter((day) => !runtimeNoAppendDays.has(day))
@@ -2485,6 +2538,34 @@ function computeDailyDecisionSummary({
   };
 }
 
+function computeDerivedDailyRejectionSummary({ recommendationRows, targetDate }) {
+  const inDate = (recommendationRows || []).filter((row) => {
+    if (!targetDate) return true;
+    return String(row.timestamp_ct || '').includes(targetDate);
+  });
+  const sitRows = inDate.filter((row) => normalizeDecision(row.decision) === 'sit');
+  const counts = {
+    no_edge: 0,
+    low_confidence: 0,
+    stale_or_unverified_odds: 0,
+    exposure_cap_reached: 0,
+    breaker_active: 0,
+  };
+  for (const row of sitRows) {
+    for (const reason of splitReasonCodes(row.rejection_reason)) {
+      if (counts[reason] !== undefined) counts[reason] += 1;
+    }
+  }
+  return {
+    'Total Markets Checked': inDate.length > 0 ? String(inDate.length) : 'N/A',
+    'Total Rejected': sitRows.length > 0 ? String(sitRows.length) : 'N/A',
+    ...Object.fromEntries(Object.entries(counts).map(([k, v]) => [k, sitRows.length > 0 ? String(v) : 'N/A'])),
+    'Plays Recommended': inDate.length > 0 ? String(inDate.filter((row) => normalizeDecision(row.decision) === 'bet').length) : 'N/A',
+    summary_source: sitRows.length > 0 || inDate.length > 0 ? 'recommendation_log' : 'unavailable_for_target_date',
+    summary_target_date: targetDate || null,
+  };
+}
+
 function computeSitAccountabilitySummary({ sitAccountability, rejectedOpportunities }) {
   const avoidedLosses = parseAsNumber(sitAccountability['Avoided Losses (count)']);
   const missedWinners = parseAsNumber(sitAccountability['Missed Winners (count)']);
@@ -2612,7 +2693,7 @@ function buildPayload(markdown) {
       : [];
   const candidateMarketRows = buildCandidateMarketRows(recommendationRows);
   const suppressedCandidateRows = buildSuppressedCandidateRows(candidateMarketRows);
-  const suppressionTargetDate = resolveSuppressionTargetDate(candidateMarketRows, targetDate);
+  const suppressionTargetDate = targetDate;
   const passedGradesCache = readPassedGradesCache();
 
   const todaysBetsNormalized = todaysBetsRaw.map((row) => normalizeBetRow(row, targetDate));
@@ -2623,6 +2704,10 @@ function buildPayload(markdown) {
 
   const bankrollValue = parseAsNumber(currentStatus.Bankroll);
   const roiValue = parseAsNumber(lifetimeStats['Overall ROI']);
+  const derivedDailyRejectionSummary = computeDerivedDailyRejectionSummary({
+    recommendationRows,
+    targetDate,
+  });
   const decisionQuality = computeDecisionQuality({
     lastUpdatedCt: effectiveLastUpdatedCt,
     currentStatus,
@@ -2678,6 +2763,14 @@ function buildPayload(markdown) {
     contributionLedgerEntries: contributionLedger.entries,
     currentStatus,
     lastUpdatedCt: effectiveLastUpdatedCt,
+  });
+  const derivedLifetimeStats = computeDerivedLifetimeStats({
+    betLog,
+    startingBankroll: bankrollContributionPolicy.starting_bankroll,
+  });
+  const derivedWeeklyRunningTotals = computeDerivedWeeklyRunningTotals({
+    betLog,
+    anchorDateKey: targetDate,
   });
   const sitAccountabilitySummary =
     (passedOpportunityTracker?.graded_count || 0) > 0
@@ -2735,7 +2828,7 @@ function buildPayload(markdown) {
     pending_bets_count: pendingBets.filter((item) => String(item).toLowerCase() !== 'none').length,
     positive_clv_rate: decisionQuality.positive_clv_rate,
     avg_clv: decisionQuality.avg_clv,
-    recent_results: lifetimeStats['Win Rate'] || null,
+    recent_results: derivedLifetimeStats['Win Rate'] || lifetimeStats['Win Rate'] || null,
     sit_accountability: sitAccountabilitySummary,
   };
   const canonicalDecisionPayload = buildCanonicalDecisionPayload({
@@ -2769,8 +2862,11 @@ function buildPayload(markdown) {
     state_last_updated_ct: lastUpdatedCt,
     runtime_status: runtimeStatus,
     current_status: currentStatus,
-    lifetime_stats: lifetimeStats,
-    daily_rejection_summary: rejectionSummary,
+    lifetime_stats: derivedLifetimeStats,
+    lifetime_stats_raw: lifetimeStats,
+    lifetime_stats_derived: derivedLifetimeStats,
+    daily_rejection_summary: derivedDailyRejectionSummary,
+    daily_rejection_summary_raw: rejectionSummary,
     sit_accountability: sitAccountability,
     scanner_statistics: scannerStats,
     market_confidence: marketConfidence,
@@ -2797,6 +2893,9 @@ function buildPayload(markdown) {
       suppressed_candidates_path: DEFAULT_SUPPRESSED_CANDIDATES,
       candidate_market_count: candidateMarketRows.length,
       suppressed_candidate_count: suppressedCandidateRows.length,
+      target_date: suppressionTargetDate,
+      target_date_row_count: candidateMarketRows.filter((row) => !suppressionTargetDate || String(row.scan_time_ct || '').includes(suppressionTargetDate)).length,
+      trace_origin: 'reconstructed_from_recommendation_log',
     },
     edge_distribution_transparency: edgeDistributionTransparency,
     market_type_reliability_index: marketTypeReliabilityIndex,
@@ -2805,7 +2904,8 @@ function buildPayload(markdown) {
     expectation_framing: expectationFraming,
     rejected_opportunities: rejectedOpportunities,
     execution_quality: executionQuality,
-    weekly_running_totals: weeklyRunningTotals,
+    weekly_running_totals: derivedWeeklyRunningTotals,
+    weekly_running_totals_raw: weeklyRunningTotals,
     weekly_performance_review: weeklyPerformanceReview,
     betting_results_split: bettingResultsSplit,
     overall_betting_results: bettingResultsSplit.overall,

@@ -149,10 +149,17 @@ function classifyHuntSummary(summary) {
   const explicitSit = /VERDICT:\s*SIT/i.test(text) || /DECISION:\s*SIT/i.test(text);
   const explicitBlocked = /Status:\s*BLOCKED/i.test(text) || /Integrity gate failed/i.test(text);
   const cannotVerify = /CANNOT_VERIFY_ODDS/i.test(upper);
-  const noPlays = /NO PLAYS/i.test(upper) || /0 plays found/i.test(text) || /Full pass\./i.test(text);
+  const noPlays =
+    /NO PLAYS/i.test(upper)
+    || /0 plays found/i.test(text)
+    || /Full pass\./i.test(text)
+    || /No qualifying edges found/i.test(text)
+    || /No \+EV edges? meet tier thresholds/i.test(text)
+    || /RECOMMENDED PLAYS:\s*\*?No /i.test(text)
+    || /RECOMMENDED PLAYS:\s*None/i.test(text);
   const hasActionableBets =
     (playsMatch && Number(playsMatch[1]) > 0)
-    || (/RECOMMENDED PLAYS:/i.test(text) && !/RECOMMENDED PLAYS:\s*None/i.test(text) && !noPlays && !cannotVerify);
+    || (/RECOMMENDED PLAYS:/i.test(text) && !noPlays && !cannotVerify);
 
   if (explicitBlocked || cannotVerify) {
     return {
@@ -226,6 +233,10 @@ function buildJobStatus(job, type) {
   const events = readRunEvents(runFile);
   const latestFinished = summarizeRun(events[events.length - 1], type);
   const latestSuccessful = summarizeRun([...events].reverse().find((event) => event.status === 'ok'), type);
+  const successfulRuns = events
+    .filter((event) => event.status === 'ok')
+    .map((event) => summarizeRun(event, type))
+    .filter(Boolean);
   return {
     id: job.id,
     name: job.name,
@@ -236,6 +247,7 @@ function buildJobStatus(job, type) {
     payload_message: job.payload?.message || null,
     latest_finished: latestFinished,
     latest_successful: latestSuccessful,
+    successful_runs: successfulRuns,
   };
 }
 
@@ -322,6 +334,13 @@ export function buildRuntimeStatus() {
     jobs: jobStatuses,
     latest_successful_hunt: latestHunt,
     latest_successful_grading: latestGrading,
+    successful_hunt_days: [...new Set((jobStatuses.morning_edge_hunt?.successful_runs || [])
+      .map((run) => run.date_key)
+      .filter(Boolean))],
+    no_append_hunt_days: [...new Set((jobStatuses.morning_edge_hunt?.successful_runs || [])
+      .filter((run) => run.requires_state_sync === false && ['SIT', 'BLOCKED'].includes(String(run.message_type || '').toUpperCase()))
+      .map((run) => run.date_key)
+      .filter(Boolean))],
     next_edge_scan_ct: jobStatuses.morning_edge_hunt?.schedule_time_ct || null,
     odds_api_config: oddsApiConfig,
     freshness_anchor: freshnessAnchor,
