@@ -54,6 +54,24 @@ function extractFirstSection(markdown, titles) {
   return '';
 }
 
+function extractDatedSection(markdown, title, dateKey) {
+  if (!dateKey) return '';
+  const date = new Date(`${dateKey}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return '';
+  const month = date.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
+  const day = date.toLocaleString('en-US', { day: 'numeric', timeZone: 'UTC' });
+  const expectedHeader = `## ${title} (${month} ${day})`;
+  const start = markdown.indexOf(expectedHeader);
+  if (start === -1) return '';
+
+  const lineEnd = markdown.indexOf('\n', start);
+  if (lineEnd === -1) return '';
+  const rest = markdown.slice(lineEnd + 1);
+  const nextHeaderOffset = rest.search(/\n## /);
+  if (nextHeaderOffset === -1) return rest.trim();
+  return rest.slice(0, nextHeaderOffset).trim();
+}
+
 function parseBulletMap(section) {
   const out = {};
   const lines = section.split('\n').map((line) => line.trim()).filter(Boolean);
@@ -2676,7 +2694,8 @@ function buildPayload(markdown) {
   const executionQuality = parseBulletMap(extractSection(markdown, 'Execution Quality (Slippage)'));
   const weeklyRunningTotals = parseBulletMap(extractSection(markdown, 'Weekly Running Totals'));
 
-  const todaysBetsRaw = filterPlaceholderBetRows(parseTable(extractSection(markdown, "Today's Bets")));
+  const todaysBetsSection = extractDatedSection(markdown, "Today's Bets", targetDate);
+  const todaysBetsRaw = filterPlaceholderBetRows(parseTable(todaysBetsSection));
   const betLogRaw = parseTable(extractSection(markdown, 'Bet Log (All Graded Bets)'));
   const betLog = dedupeStalePendingBetLog(betLogRaw).map((row) => normalizeBetRow(row));
   const rejectedOpportunities = parseTable(
