@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-17T13:16:10.950Z",
+  "generated_at_utc": "2026-03-17T13:36:19.203Z",
   "jobs": {
     "morning_edge_hunt": {
       "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -707,7 +707,9 @@
   "next_edge_scan_ct": "06:00",
   "odds_api_config": {
     "key_present": true,
-    "key_suffix": "d2d6",
+    "key_suffix": "3e61",
+    "api_key_env": "ODDS_API_KEY",
+    "api_key_source": "environment",
     "base_url": "https://api.the-odds-api.com/v4",
     "source_status": "present",
     "free_tier_scan_ct": null,
@@ -730,7 +732,7 @@
     },
     "passed_opportunity_grades": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-      "file_mtime_ct": "2026-03-16 21:51 CT"
+      "file_mtime_ct": "2026-03-17 08:16 CT"
     }
   },
   "state_sync": {

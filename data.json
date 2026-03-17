@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-03-17T13:16:11.469Z",
+  "generated_at_utc": "2026-03-17T13:36:19.368Z",
   "source_file": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
   "schema": "v1.2",
   "last_updated_ct": "2026-03-17 06:00 CT",
   "state_last_updated_ct": "2026-03-14 00:35 CT",
   "runtime_status": {
-    "generated_at_utc": "2026-03-17T13:16:10.950Z",
+    "generated_at_utc": "2026-03-17T13:36:19.203Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -713,7 +713,9 @@
     "next_edge_scan_ct": "06:00",
     "odds_api_config": {
       "key_present": true,
-      "key_suffix": "d2d6",
+      "key_suffix": "3e61",
+      "api_key_env": "ODDS_API_KEY",
+      "api_key_source": "environment",
       "base_url": "https://api.the-odds-api.com/v4",
       "source_status": "present",
       "free_tier_scan_ct": null,
@@ -736,7 +738,7 @@
       },
       "passed_opportunity_grades": {
         "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-        "file_mtime_ct": "2026-03-16 21:51 CT"
+        "file_mtime_ct": "2026-03-17 08:16 CT"
       }
     },
     "state_sync": {
@@ -2498,7 +2500,7 @@
   "data_freshness": {
     "recommendation_log_last_row_time": "2026-03-12 06:04 AM",
     "grading_cache_last_update": "2026-03-17T13:16:11.428Z",
-    "payload_build_time_utc": "2026-03-17T13:16:11.469Z",
+    "payload_build_time_utc": "2026-03-17T13:36:19.368Z",
     "state_last_updated_time": "2026-03-14 00:35 CT",
     "effective_last_updated_time": "2026-03-17 06:00 CT",
     "freshness_anchor_source": "runtime_freshness_anchor",
@@ -2518,7 +2520,7 @@
       "missing_scan_days_count": 0
     },
     "diagnostics": {
-      "freshness_hours_since_anchor": 13.27,
+      "freshness_hours_since_anchor": 13.61,
       "freshness_anchor_source": "runtime_freshness_anchor",
       "freshness_anchor_time": "2026-03-17 06:00 CT",
       "first_recommendation_day": "2026-03-07",
@@ -2544,8 +2546,8 @@
       ],
       "odds_api_key_present": true,
       "bankroll_formula_difference": -97.25,
-      "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:16:11.469Z",
-      "payload_rebuild_generated_at_utc": "2026-03-17T13:16:11.469Z",
+      "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:19.368Z",
+      "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
       "latest_hunt_date": "2026-03-17",
       "latest_hunt_type": "BLOCKED",
       "latest_hunt_has_bet_state": true,
@@ -2562,7 +2564,7 @@
         "last_updated_day": "2026-03-17"
       },
       "runtime_status": {
-        "generated_at_utc": "2026-03-17T13:16:10.950Z",
+        "generated_at_utc": "2026-03-17T13:36:19.203Z",
         "jobs": {
           "morning_edge_hunt": {
             "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -3270,7 +3272,9 @@
         "next_edge_scan_ct": "06:00",
         "odds_api_config": {
           "key_present": true,
-          "key_suffix": "d2d6",
+          "key_suffix": "3e61",
+          "api_key_env": "ODDS_API_KEY",
+          "api_key_source": "environment",
           "base_url": "https://api.the-odds-api.com/v4",
           "source_status": "present",
           "free_tier_scan_ct": null,
@@ -3293,7 +3297,7 @@
           },
           "passed_opportunity_grades": {
             "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-            "file_mtime_ct": "2026-03-16 21:51 CT"
+            "file_mtime_ct": "2026-03-17 08:16 CT"
           }
         },
         "state_sync": {
@@ -3314,7 +3318,7 @@
   },
   "decision_payload_v1": {
     "schema": "decision_payload_v1",
-    "generated_at_utc": "2026-03-17T13:16:11.469Z",
+    "generated_at_utc": "2026-03-17T13:36:19.368Z",
     "message_type": "BLOCKED",
     "verdict": "BLOCKED",
     "run_classification": "degraded_data",
@@ -3379,7 +3383,7 @@
         "Bankroll state does not reconcile cleanly."
       ],
       "diagnostics": {
-        "freshness_hours_since_anchor": 13.27,
+        "freshness_hours_since_anchor": 13.61,
         "freshness_anchor_source": "runtime_freshness_anchor",
         "freshness_anchor_time": "2026-03-17 06:00 CT",
         "first_recommendation_day": "2026-03-07",
@@ -3405,8 +3409,8 @@
         ],
         "odds_api_key_present": true,
         "bankroll_formula_difference": -97.25,
-        "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:16:11.469Z",
-        "payload_rebuild_generated_at_utc": "2026-03-17T13:16:11.469Z",
+        "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:19.368Z",
+        "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
         "latest_hunt_date": "2026-03-17",
         "latest_hunt_type": "BLOCKED",
         "latest_hunt_has_bet_state": true,
@@ -3423,7 +3427,7 @@
           "last_updated_day": "2026-03-17"
         },
         "runtime_status": {
-          "generated_at_utc": "2026-03-17T13:16:10.950Z",
+          "generated_at_utc": "2026-03-17T13:36:19.203Z",
           "jobs": {
             "morning_edge_hunt": {
               "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -4131,7 +4135,9 @@
           "next_edge_scan_ct": "06:00",
           "odds_api_config": {
             "key_present": true,
-            "key_suffix": "d2d6",
+            "key_suffix": "3e61",
+            "api_key_env": "ODDS_API_KEY",
+            "api_key_source": "environment",
             "base_url": "https://api.the-odds-api.com/v4",
             "source_status": "present",
             "free_tier_scan_ct": null,
@@ -4154,7 +4160,7 @@
             },
             "passed_opportunity_grades": {
               "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-              "file_mtime_ct": "2026-03-16 21:51 CT"
+              "file_mtime_ct": "2026-03-17 08:16 CT"
             }
           },
           "state_sync": {
@@ -4196,7 +4202,7 @@
             "Bankroll state does not reconcile cleanly."
           ],
           "diagnostics": {
-            "freshness_hours_since_anchor": 13.27,
+            "freshness_hours_since_anchor": 13.61,
             "freshness_anchor_source": "runtime_freshness_anchor",
             "freshness_anchor_time": "2026-03-17 06:00 CT",
             "first_recommendation_day": "2026-03-07",
@@ -4222,8 +4228,8 @@
             ],
             "odds_api_key_present": true,
             "bankroll_formula_difference": -97.25,
-            "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:16:11.469Z",
-            "payload_rebuild_generated_at_utc": "2026-03-17T13:16:11.469Z",
+            "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:19.368Z",
+            "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
             "latest_hunt_date": "2026-03-17",
             "latest_hunt_type": "BLOCKED",
             "latest_hunt_has_bet_state": true,
@@ -4240,7 +4246,7 @@
               "last_updated_day": "2026-03-17"
             },
             "runtime_status": {
-              "generated_at_utc": "2026-03-17T13:16:10.950Z",
+              "generated_at_utc": "2026-03-17T13:36:19.203Z",
               "jobs": {
                 "morning_edge_hunt": {
                   "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -4948,7 +4954,9 @@
               "next_edge_scan_ct": "06:00",
               "odds_api_config": {
                 "key_present": true,
-                "key_suffix": "d2d6",
+                "key_suffix": "3e61",
+                "api_key_env": "ODDS_API_KEY",
+                "api_key_source": "environment",
                 "base_url": "https://api.the-odds-api.com/v4",
                 "source_status": "present",
                 "free_tier_scan_ct": null,
@@ -4971,7 +4979,7 @@
                 },
                 "passed_opportunity_grades": {
                   "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-                  "file_mtime_ct": "2026-03-16 21:51 CT"
+                  "file_mtime_ct": "2026-03-17 08:16 CT"
                 }
               },
               "state_sync": {
@@ -5055,7 +5063,7 @@
           "Bankroll state does not reconcile cleanly."
         ],
         "diagnostics": {
-          "freshness_hours_since_anchor": 13.27,
+          "freshness_hours_since_anchor": 13.61,
           "freshness_anchor_source": "runtime_freshness_anchor",
           "freshness_anchor_time": "2026-03-17 06:00 CT",
           "first_recommendation_day": "2026-03-07",
@@ -5081,8 +5089,8 @@
           ],
           "odds_api_key_present": true,
           "bankroll_formula_difference": -97.25,
-          "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:16:11.469Z",
-          "payload_rebuild_generated_at_utc": "2026-03-17T13:16:11.469Z",
+          "payload_rebuild_canonical_generated_at_utc": "2026-03-17T13:36:19.368Z",
+          "payload_rebuild_generated_at_utc": "2026-03-17T13:36:19.368Z",
           "latest_hunt_date": "2026-03-17",
           "latest_hunt_type": "BLOCKED",
           "latest_hunt_has_bet_state": true,
@@ -5099,7 +5107,7 @@
             "last_updated_day": "2026-03-17"
           },
           "runtime_status": {
-            "generated_at_utc": "2026-03-17T13:16:10.950Z",
+            "generated_at_utc": "2026-03-17T13:36:19.203Z",
             "jobs": {
               "morning_edge_hunt": {
                 "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -5807,7 +5815,9 @@
             "next_edge_scan_ct": "06:00",
             "odds_api_config": {
               "key_present": true,
-              "key_suffix": "d2d6",
+              "key_suffix": "3e61",
+              "api_key_env": "ODDS_API_KEY",
+              "api_key_source": "environment",
               "base_url": "https://api.the-odds-api.com/v4",
               "source_status": "present",
               "free_tier_scan_ct": null,
@@ -5830,7 +5840,7 @@
               },
               "passed_opportunity_grades": {
                 "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-                "file_mtime_ct": "2026-03-16 21:51 CT"
+                "file_mtime_ct": "2026-03-17 08:16 CT"
               }
             },
             "state_sync": {

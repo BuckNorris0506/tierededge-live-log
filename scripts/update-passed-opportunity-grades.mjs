@@ -132,6 +132,22 @@ function parseOddsApiKey(text) {
   return m ? m[1].trim() : null;
 }
 
+function parseOddsApiKeyEnvName(text) {
+  const explicit = text.match(/^API_KEY_ENV=(.+)$/m)?.[1]?.trim();
+  if (explicit) return explicit;
+  const yamlish = text.match(/^\s*api_key_env:\s*(.+)$/mi)?.[1]?.trim();
+  return yamlish || null;
+}
+
+function resolveOddsApiKey(text) {
+  const envName = parseOddsApiKeyEnvName(text) || 'ODDS_API_KEY';
+  const envValue = process.env[envName];
+  if (typeof envValue === 'string' && envValue.trim()) {
+    return envValue.trim();
+  }
+  return parseOddsApiKey(text);
+}
+
 function normalizeName(name) {
   return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
 }
@@ -395,7 +411,7 @@ async function main() {
     fs.readFile(BETTING_STATE, 'utf8'),
     fs.readFile(ODDS_CONFIG, 'utf8'),
   ]);
-  const apiKey = process.env.ODDS_API_KEY || parseOddsApiKey(configRaw);
+  const apiKey = resolveOddsApiKey(configRaw);
 
   const rows = parseTable(logRaw);
   const passRows = rows.filter((row) => isObservationBandPass(row));

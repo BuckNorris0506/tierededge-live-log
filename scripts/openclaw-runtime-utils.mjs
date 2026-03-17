@@ -101,7 +101,13 @@ function parseBettingStateLastUpdated(markdown) {
 }
 
 function parseOddsApiConfig(markdown) {
-  const apiKey = String(markdown || '').match(/^API_KEY=(.+)$/m)?.[1]?.trim() || null;
+  const envName =
+    String(markdown || '').match(/^API_KEY_ENV=(.+)$/m)?.[1]?.trim()
+    || String(markdown || '').match(/^\s*api_key_env:\s*(.+)$/mi)?.[1]?.trim()
+    || 'ODDS_API_KEY';
+  const envValue = process.env[envName] || null;
+  const rawApiKey = String(markdown || '').match(/^API_KEY=(.+)$/m)?.[1]?.trim() || null;
+  const apiKey = (typeof envValue === 'string' && envValue.trim()) ? envValue.trim() : rawApiKey;
   const baseUrl = String(markdown || '').match(/^BASE_URL=(.+)$/m)?.[1]?.trim() || null;
   const freeTierScan = String(markdown || '').match(/One full scan at (\d{1,2}:\d{2})\s*AM CT/i)?.[1] || null;
   const normalizedFreeTierScan = freeTierScan
@@ -110,6 +116,8 @@ function parseOddsApiConfig(markdown) {
   return {
     key_present: Boolean(apiKey),
     key_suffix: apiKey ? apiKey.slice(-4) : null,
+    api_key_env: envName,
+    api_key_source: apiKey === rawApiKey ? 'config_file' : 'environment',
     base_url: baseUrl,
     source_status: apiKey ? 'present' : 'missing_api_key',
     free_tier_scan_ct: normalizedFreeTierScan,
