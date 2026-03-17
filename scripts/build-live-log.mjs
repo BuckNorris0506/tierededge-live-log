@@ -3144,6 +3144,8 @@ function buildPayload(markdown) {
     dataFreshness,
     generatedAtUtc,
     runtimeStatus,
+    bankrollContributionPolicy,
+    canonicalGeneratedAtUtc: generatedAtUtc,
   });
   const todayDecisionConsole = computeTodayDecisionConsole({
     recommendationRows,
