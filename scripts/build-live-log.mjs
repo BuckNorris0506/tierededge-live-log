@@ -379,6 +379,21 @@ function parseMonthKey(text) {
   return match ? `${match[1]}-${match[2]}` : null;
 }
 
+function normalizeStatusValueForTargetDate(value, targetDate) {
+  const raw = String(value || '').trim();
+  if (!raw || !targetDate) return raw || null;
+  const date = new Date(`${targetDate}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return raw;
+  const month = date.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
+  const day = date.toLocaleString('en-US', { day: 'numeric', timeZone: 'UTC' });
+  const monthDayPattern = new RegExp(`${month}\\s+${day}\\b`, 'i');
+  const containsAnyMonthDay = /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}\b/i.test(raw);
+  if (containsAnyMonthDay && !monthDayPattern.test(raw)) {
+    return 'N/A (stale status field)';
+  }
+  return raw;
+}
+
 function monthKeyFromDateKey(dateKey) {
   const match = String(dateKey || '').match(/^(\d{4})-(\d{2})-\d{2}$/);
   return match ? `${match[1]}-${match[2]}` : null;
@@ -2835,12 +2850,12 @@ function buildPayload(markdown) {
     integrityGate,
     runtimeStatus,
   });
-  const openExposure = currentStatus['Daily Exposure Used'] || null;
+  const openExposure = normalizeStatusValueForTargetDate(currentStatus['Daily Exposure Used'], targetDate) || null;
   const dailyVerdict = dailyDecisionSummary.final_daily_verdict || null;
   const executionState = {
     bankroll: currentStatus.Bankroll || null,
     open_exposure: openExposure,
-    daily_exposure_used: currentStatus['Daily Exposure Used'] || null,
+    daily_exposure_used: openExposure,
     circuit_breaker: currentStatus['Circuit Breaker'] || null,
   };
   const accountabilitySummary = {

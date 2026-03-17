@@ -5,7 +5,7 @@ Health: PASS (data pass, ledger pass, engine pass)
 *SIT*
 - Today's slate: The latest scheduled scan found no qualifying edges.
 Threshold: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.
-Execution: bankroll $1,328.88, exposure 0.0% (March 12 - no plays), daily 0.0% (March 12 - no plays), breaker OFF
+Execution: bankroll $1,328.88, exposure N/A (stale status field), daily N/A (stale status field), breaker OFF
 Accountability: pending 0, +CLV 100%, avg CLV 7.36, results 55% (11-9)
 Suppression Summary:
 - markets_scanned=0
