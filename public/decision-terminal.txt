@@ -1,13 +1,13 @@
 TIEREDGE DECISION
-Verdict: SIT
-Run classification: true_no_edge_sit
-What to do now: SIT and wait for next scan.
-Why: No edges above threshold.
-System health: PASS
-Checks: data=pass, api=pass, ledger=pass, bankroll=pass, sync=pass, payload=pass, engine=pass
-SIT
-- Today's slate: The latest scheduled scan found no qualifying edges.
-Threshold reminder: Tier thresholds: T1 >= 6%, T2 >= 4%, T3 >= 2%. No qualifying edge -> SIT.
+Verdict: BLOCKED
+Run classification: bankroll_integrity_failure
+What to do now: Resolve system health failures before acting on recommendations.
+Why: Integrity gate failed: Bankroll state does not reconcile cleanly.
+System health: FAIL
+Checks: data=pass, api=pass, ledger=pass, bankroll=fail, sync=pass, payload=pass, engine=blocked
+Block reason: Bankroll state does not reconcile cleanly.
+Avoid: Do not place bets from this scan.
+Recovery: Restore freshness + ledger integrity before decisions resume.
 Execution: bankroll=$1,328.88 | open_exposure=N/A (stale status field) | daily_exposure=N/A (stale status field) | breaker=OFF
 Accountability: pending=0 | positive_clv_rate=100% | avg_clv=7.36 | recent_results=55% (11-9)
 Suppression Summary:

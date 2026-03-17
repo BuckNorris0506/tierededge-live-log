@@ -36,6 +36,8 @@ const DEFAULT_CONTRIBUTIONS_LEDGER_JSON = path.resolve(process.cwd(), 'data', 'c
 const DATA_FRESHNESS_MAX_HOURS = 36;
 const BANKROLL_CONTINUITY_MAX_DELTA_PCT = 0.1;
 const BANKROLL_CONTINUITY_MAX_DELTA_ABS = 25;
+const BANKROLL_FORMULA_MAX_DELTA_PCT = 0.01;
+const BANKROLL_FORMULA_MAX_DELTA_ABS = 5;
 
 const sourcePath = process.argv[2] || DEFAULT_SOURCE;
 const outPath = process.argv[3] || DEFAULT_OUT;
@@ -2087,7 +2089,7 @@ function computeIntegrityGate({
 
   const ledgerComplete = duplicateRecIds.length === 0 && missingScanDays.length === 0;
   const bankrollFormulaDiff = parseAsNumber(bankrollContributionPolicy?.bankroll_formula_difference);
-  const bankrollFormulaPass = bankrollFormulaDiff === null || Math.abs(bankrollFormulaDiff) <= Math.max(BANKROLL_CONTINUITY_MAX_DELTA_ABS, Math.abs(parseAsNumber(bankrollContributionPolicy?.actual_bankroll) || 0) * BANKROLL_CONTINUITY_MAX_DELTA_PCT);
+  const bankrollFormulaPass = bankrollFormulaDiff === null || Math.abs(bankrollFormulaDiff) <= Math.max(BANKROLL_FORMULA_MAX_DELTA_ABS, Math.abs(parseAsNumber(bankrollContributionPolicy?.actual_bankroll) || 0) * BANKROLL_FORMULA_MAX_DELTA_PCT);
   const bankrollIntegrityPass = bankrollContinuity.pass && bankrollFormulaPass;
 
   const latestHuntDate = latestHunt?.date_key || null;
