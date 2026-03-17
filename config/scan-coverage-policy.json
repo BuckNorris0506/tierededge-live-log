@@ -1,0 +1,109 @@
+{
+  "schema": "tierededge_scan_coverage_v1",
+  "primary_feed": "The Odds API",
+  "configured_request_budget_daily": 1500,
+  "configured_request_budget_weekly": 10500,
+  "working_daily_soft_cap": 250,
+  "low_quota_guardrail_threshold": 150,
+  "request_cost_model": {
+    "sports_index_request_cost": 1,
+    "sport_odds_request_cost": 1,
+    "sport_scores_request_cost": 1,
+    "notes": [
+      "One /sports call counts as one request unit.",
+      "One /sports/{sport}/odds call counts as one request unit even when multiple books and main markets are requested together.",
+      "One /sports/{sport}/scores call counts as one request unit."
+    ]
+  },
+  "priority_tiers": {
+    "tier_a": {
+      "label": "Highest priority",
+      "sports": [
+        "basketball_nba",
+        "basketball_ncaab",
+        "icehockey_nhl"
+      ],
+      "default_books": [
+        "draftkings",
+        "fanduel",
+        "betmgm",
+        "caesars"
+      ],
+      "comparison_books": [
+        "betrivers",
+        "bet365"
+      ],
+      "markets": [
+        "h2h",
+        "spreads",
+        "totals"
+      ],
+      "cache_minutes": 10
+    },
+    "tier_b": {
+      "label": "Medium priority",
+      "sports": [
+        "baseball_mlb",
+        "mma_mixed_martial_arts",
+        "soccer_epl",
+        "americanfootball_nfl",
+        "americanfootball_ncaaf"
+      ],
+      "default_books": [
+        "draftkings",
+        "fanduel",
+        "betmgm"
+      ],
+      "comparison_books": [
+        "caesars"
+      ],
+      "markets": [
+        "h2h",
+        "spreads",
+        "totals"
+      ],
+      "cache_minutes": 20
+    },
+    "tier_c": {
+      "label": "Low priority",
+      "sports": [
+        "soccer_uefa_champs_league",
+        "soccer_mls",
+        "tennis_atp",
+        "tennis_wta",
+        "boxing_boxing",
+        "golf_pga",
+        "motorsport_nascar",
+        "darts_pdc",
+        "esports_lol",
+        "esports_cs2",
+        "esports_valorant",
+        "esports_dota2"
+      ],
+      "default_books": [
+        "draftkings",
+        "fanduel"
+      ],
+      "comparison_books": [],
+      "markets": [
+        "h2h"
+      ],
+      "cache_minutes": 30
+    }
+  },
+  "expansion_rules": {
+    "candidate_density_floor": 12,
+    "near_miss_floor": 3,
+    "expand_to_tier_b_if_sparse": true,
+    "expand_to_tier_c_only_with_surplus": true,
+    "tier_c_minimum_headroom": 600,
+    "comparison_books_expand_only_after_core_scan": true,
+    "main_markets_first": true,
+    "props_enabled_default": false,
+    "alt_lines_enabled_default": false
+  },
+  "grading_reuse_policy": {
+    "scores_cache_minutes": 360,
+    "reuse_completed_scores": true
+  }
+}

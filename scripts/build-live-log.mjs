@@ -17,6 +17,10 @@ import {
   DEFAULT_NATIVE_PASS_LEDGER,
   DEFAULT_NATIVE_SUPPRESSED_LEDGER,
 } from './native-decision-log-utils.mjs';
+import {
+  computeScanCoverageArtifacts,
+  DEFAULT_SCAN_COVERAGE_POLICY,
+} from './scan-coverage-utils.mjs';
 
 const DEFAULT_SOURCE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md';
 const DEFAULT_OUT = path.resolve(process.cwd(), 'public', 'data.json');
@@ -24,6 +28,7 @@ const DEFAULT_PASSED_GRADES = '/Users/jaredbuckman/.openclaw/workspace/memory/pa
 const DEFAULT_MARKET_CONTEXT_HOOKS = path.resolve(process.cwd(), 'config', 'market-context-hooks.json');
 const DEFAULT_CONTRIBUTION_LEDGER = path.resolve(process.cwd(), 'data', 'bankroll-contributions.csv');
 const DEFAULT_CONTRIBUTION_STATUS = path.resolve(process.cwd(), 'data', 'bankroll-contribution-status.json');
+const DEFAULT_SCAN_POLICY = DEFAULT_SCAN_COVERAGE_POLICY;
 const DEFAULT_CANDIDATE_MARKETS = path.resolve(process.cwd(), 'data', 'candidate-markets.csv');
 const DEFAULT_SUPPRESSED_CANDIDATES = path.resolve(process.cwd(), 'data', 'suppressed-candidates.csv');
 const DEFAULT_CANONICAL_STATE = path.resolve(process.cwd(), 'data', 'canonical-state.json');
@@ -1738,6 +1743,70 @@ function computeModelSuppressionTrace({ candidateMarketRows, suppressedCandidate
   };
 }
 
+function buildOperatorEdgeBoard({ candidateMarketRows, suppressedCandidateRows, targetDate }) {
+  const scopedRows = (candidateMarketRows || []).filter((row) => {
+    if (!targetDate) return true;
+    return String(row.scan_time_ct || '').includes(targetDate);
+  });
+
+  const toBoardRow = (row) => ({
+    timestamp_ct: row.scan_time_ct || null,
+    sport: row.league || row.sport || null,
+    event_id: row.event_id || null,
+    market: row.market_type || null,
+    selection: row.selection || null,
+    book: row.book || null,
+    odds_american: row.odds_american || null,
+    raw_edge_pct: parseAuditNumber(row.raw_edge_pct),
+    post_conf_edge_pct: parseAuditNumber(row.post_conf_edge_pct),
+    confidence_score: parseAuditNumber(row.confidence_score),
+    rejection_stage: row.rejection_stage || null,
+    rejection_reason: row.rejection_reason || null,
+    final_decision: row.final_decision || null,
+  });
+
+  const actionableBets = scopedRows
+    .filter((row) => normalizeDecision(row.final_decision) === 'bet')
+    .sort((a, b) => (parseAuditNumber(b.post_conf_edge_pct) ?? -Infinity) - (parseAuditNumber(a.post_conf_edge_pct) ?? -Infinity))
+    .map(toBoardRow)
+    .slice(0, 25);
+
+  const passBand = scopedRows
+    .filter((row) => {
+      if (normalizeDecision(row.final_decision) !== 'sit') return false;
+      const edge = parseAuditNumber(row.post_conf_edge_pct);
+      return edge !== null && edge > 0 && edge < 2;
+    })
+    .sort((a, b) => (parseAuditNumber(b.post_conf_edge_pct) ?? -Infinity) - (parseAuditNumber(a.post_conf_edge_pct) ?? -Infinity))
+    .map((row) => ({
+      ...toBoardRow(row),
+      gap_to_t3_pct: round2(Math.max(0, 2 - (parseAuditNumber(row.post_conf_edge_pct) ?? 0))),
+    }))
+    .slice(0, 50);
+
+  const suppressed = (suppressedCandidateRows || [])
+    .filter((row) => {
+      if (targetDate && !String(row.scan_time_ct || '').includes(targetDate)) return false;
+      return true;
+    })
+    .sort((a, b) => (parseAuditNumber(b.raw_edge_pct) ?? -Infinity) - (parseAuditNumber(a.raw_edge_pct) ?? -Infinity))
+    .map((row) => ({
+      ...toBoardRow(row),
+      pre_conf_edge_pct: parseAuditNumber(row.raw_edge_pct),
+      confidence_penalty_pct: parseAuditNumber(row.confidence_penalty_pct),
+      consensus_penalty_pct: parseAuditNumber(row.consensus_penalty_pct),
+      gap_to_t3_pct: parseAuditNumber(row.gap_to_t3_pct),
+    }))
+    .slice(0, 50);
+
+  return {
+    target_date: targetDate,
+    actionable_bets: actionableBets,
+    pass_band: passBand,
+    suppressed_candidates: suppressed,
+  };
+}
+
 function formatSuppressionSummaryLines(summary) {
   if (!summary) return [];
   return [
@@ -3087,6 +3156,11 @@ function buildPayload(markdown) {
     suppressedCandidateRows,
     targetDate: suppressionTargetDate,
   });
+  const operatorEdgeBoard = buildOperatorEdgeBoard({
+    candidateMarketRows,
+    suppressedCandidateRows,
+    targetDate: suppressionTargetDate,
+  });
   const dailySuppressionSummary = buildSuppressionSummary(candidateMarketRows, suppressionTargetDate);
   const quantPerformance = computeQuantPerformance({
     betLog,
@@ -3128,6 +3202,10 @@ function buildPayload(markdown) {
     bettingResultsSplit,
   });
   const generatedAtUtc = new Date().toISOString();
+  const scanCoverageArtifacts = computeScanCoverageArtifacts({
+    policy: JSON.parse(fs.readFileSync(DEFAULT_SCAN_POLICY, 'utf8')),
+    asOfDate: new Date(generatedAtUtc),
+  });
   const dataFreshness = computeDataFreshness({
     recommendationRows,
     gradesCache: passedGradesCache,
@@ -3238,7 +3316,12 @@ function buildPayload(markdown) {
     sit_accountability_summary: sitAccountabilitySummary,
     passed_opportunity_tracker: passedOpportunityTracker,
     model_suppression_trace: modelSuppressionTrace,
+    operator_edge_board: operatorEdgeBoard,
     suppression_summary: dailySuppressionSummary,
+    scan_coverage_policy: scanCoverageArtifacts.scan_priority_design,
+    request_budget_model: scanCoverageArtifacts.request_budget_model,
+    cache_reuse_policy: scanCoverageArtifacts.cache_reuse_policy,
+    scan_coverage_artifacts: scanCoverageArtifacts,
     suppression_artifacts: {
       candidate_markets_path: DEFAULT_CANDIDATE_MARKETS,
       suppressed_candidates_path: DEFAULT_SUPPRESSED_CANDIDATES,

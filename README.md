@@ -120,6 +120,24 @@ cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log
 npm run import:rec-history -- /absolute/path/to/history.csv --apply
 ```
 
+## Scan coverage policy
+
+TieredEdge now uses a machine-readable scan policy:
+
+- `config/scan-coverage-policy.json`
+
+Human-readable notes:
+
+- `docs/scan-coverage-policy.md`
+
+Practical intent:
+
+- Tier A sports first
+- Tier B only when the board is sparse
+- Tier C only with clear request surplus
+- main markets first
+- pass grading reuses completed score responses instead of hammering the scores endpoint on every rebuild
+
 ## Auto-update every 10 minutes (local cron)
 
 ```bash

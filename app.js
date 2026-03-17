@@ -484,6 +484,102 @@ function renderRejectedOpportunities(data) {
   );
 }
 
+function renderScanCoverage(data) {
+  const budget = data.request_budget_model || {};
+  const coverage = data.scan_coverage_policy || {};
+  const cache = data.cache_reuse_policy || {};
+
+  const budgetRows = [
+    ['Configured daily budget', budget?.optimized_policy_estimate ? `${data.scan_coverage_artifacts?.configured_budget?.daily_requests ?? MISSING}` : MISSING],
+    ['Configured weekly budget', data.scan_coverage_artifacts?.configured_budget?.weekly_requests ?? MISSING],
+    ['Legacy broad morning scan', budget.legacy_broad_scan_estimate?.morning_edge_hunt_per_run ?? MISSING],
+    ['Optimized morning typical', budget.jobs?.morning_edge_hunt?.optimized_typical_requests_per_run ?? MISSING],
+    ['Optimized morning expanded', budget.jobs?.morning_edge_hunt?.optimized_expanded_requests_per_run ?? MISSING],
+    ['Typical daily usage', budget.optimized_policy_estimate?.daily_typical ?? MISSING],
+    ['Expanded daily usage', budget.optimized_policy_estimate?.daily_expanded ?? MISSING],
+    ['Typical weekly usage', budget.optimized_policy_estimate?.weekly_typical ?? MISSING],
+    ['Expanded weekly usage', budget.optimized_policy_estimate?.weekly_expanded ?? MISSING],
+    ['Waste avoided vs legacy/day', budget.wasted_requests_today_if_unbounded ?? MISSING],
+  ];
+  renderRows('scan-budget-list', budgetRows);
+
+  const coverageRows = [
+    ['Tier A sports', (coverage.tier_a?.active_sports_this_month || []).join(', ') || MISSING],
+    ['Tier A markets', (coverage.tier_a?.markets || []).join(', ') || MISSING],
+    ['Tier A books', (coverage.tier_a?.books || []).join(', ') || MISSING],
+    ['Tier B sports', (coverage.tier_b?.active_sports_this_month || []).join(', ') || MISSING],
+    ['Tier C sports', (coverage.tier_c?.active_sports_this_month || []).join(', ') || MISSING],
+    ['Expand to Tier B if sparse', coverage.expansion_rules?.expand_to_tier_b_if_sparse ? 'Yes' : 'No'],
+    ['Tier C only with surplus', coverage.expansion_rules?.expand_to_tier_c_only_with_surplus ? 'Yes' : 'No'],
+    ['Props default', coverage.expansion_rules?.props_enabled_default ? 'On' : 'Off'],
+    ['Alt lines default', coverage.expansion_rules?.alt_lines_enabled_default ? 'On' : 'Off'],
+    ['Tier A cache', cache.tier_a_cache_minutes ? `${cache.tier_a_cache_minutes} min` : MISSING],
+    ['Tier B cache', cache.tier_b_cache_minutes ? `${cache.tier_b_cache_minutes} min` : MISSING],
+    ['Tier C cache', cache.tier_c_cache_minutes ? `${cache.tier_c_cache_minutes} min` : MISSING],
+    ['Scores cache', cache.scores_cache_minutes ? `${cache.scores_cache_minutes} min` : MISSING],
+  ];
+  renderRows('scan-priority-list', coverageRows);
+}
+
+function renderOperatorEdgeBoard(data) {
+  const board = data.operator_edge_board || {};
+
+  const actionable = (board.actionable_bets || []).map((row) => ({
+    Time: row.timestamp_ct,
+    Sport: row.sport,
+    Market: row.market,
+    Selection: row.selection,
+    Book: row.book,
+    Odds: row.odds_american,
+    'Raw Edge %': row.raw_edge_pct,
+    'Post-Conf %': row.post_conf_edge_pct,
+    Confidence: row.confidence_score,
+  }));
+  renderTable(
+    'actionable-board-table',
+    actionable,
+    ['Time', 'Sport', 'Market', 'Selection', 'Book', 'Odds', 'Raw Edge %', 'Post-Conf %', 'Confidence'],
+    'No current BET decisions for the target scan window.'
+  );
+
+  const passBand = (board.pass_band || []).map((row) => ({
+    Time: row.timestamp_ct,
+    Sport: row.sport,
+    Market: row.market,
+    Selection: row.selection,
+    Book: row.book,
+    'Post-Conf %': row.post_conf_edge_pct,
+    'Gap To T3': row.gap_to_t3_pct,
+    Confidence: row.confidence_score,
+    Reason: prettyReason(row.rejection_reason),
+  }));
+  renderTable(
+    'pass-band-table',
+    passBand,
+    ['Time', 'Sport', 'Market', 'Selection', 'Book', 'Post-Conf %', 'Gap To T3', 'Confidence', 'Reason'],
+    'No 0% to 2% pass-band opportunities logged for the target scan window.'
+  );
+
+  const suppressed = (board.suppressed_candidates || []).map((row) => ({
+    Time: row.timestamp_ct,
+    Sport: row.sport,
+    Market: row.market,
+    Selection: row.selection,
+    Book: row.book,
+    'Pre-Conf %': row.pre_conf_edge_pct,
+    'Post-Conf %': row.post_conf_edge_pct,
+    'Conf Penalty': row.confidence_penalty_pct,
+    Stage: row.rejection_stage,
+    Reason: prettyReason(row.rejection_reason),
+  }));
+  renderTable(
+    'suppressed-board-table',
+    suppressed,
+    ['Time', 'Sport', 'Market', 'Selection', 'Book', 'Pre-Conf %', 'Post-Conf %', 'Conf Penalty', 'Stage', 'Reason'],
+    'No suppressed threshold-clearing candidates logged for the target scan window.'
+  );
+}
+
 function renderDiagnostics(data) {
   const health = data.decision_payload_v1?.system_health || data.integrity_gate?.checks || {};
   const freshness = data.data_freshness || {};
@@ -539,6 +635,8 @@ function renderDiagnostics(data) {
     renderQuantPerformance(data);
     renderBankrollContribution(data);
     renderRejectedOpportunities(data);
+    renderScanCoverage(data);
+    renderOperatorEdgeBoard(data);
     renderDiagnostics(data);
 
     let activeRange = 'all_time';

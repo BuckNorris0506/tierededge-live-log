@@ -1,11 +1,11 @@
 TIEREDGE DECISION
 Verdict: BLOCKED
-Run classification: bankroll_integrity_failure
+Run classification: degraded_data
 What to do now: Resolve system health failures before acting on recommendations.
-Why: Integrity gate failed: Bankroll state does not reconcile cleanly.
+Why: Integrity gate failed: Upstream odds request was rate-limited or quota-limited. stale_response Bankroll state does not reconcile cleanly.
 System health: FAIL
-Checks: data=pass, api=pass, ledger=pass, bankroll=fail, sync=pass, payload=pass, engine=blocked
-Block reason: Bankroll state does not reconcile cleanly.
+Checks: data=pass, api=fail, ledger=pass, bankroll=fail, sync=pass, payload=pass, engine=blocked
+Block reason: Upstream odds request was rate-limited or quota-limited. stale_response Bankroll state does not reconcile cleanly.
 Avoid: Do not place bets from this scan.
 Recovery: Restore freshness + ledger integrity before decisions resume.
 Execution: bankroll=$1,328.88 | open_exposure=N/A (stale status field) | daily_exposure=N/A (stale status field) | breaker=OFF

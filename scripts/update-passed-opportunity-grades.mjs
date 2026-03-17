@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const RECOMMENDATION_LOG = '/Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md';
 const BETTING_STATE = '/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md';
 const CACHE_FILE = '/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json';
 const ODDS_CONFIG = '/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md';
+const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const SCORES_CACHE_FILE = path.join(ROOT_DIR, 'data', 'odds-api-scores-cache.json');
+const SCORES_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
 const SPORT_KEY_MAP = {
   NBA: 'basketball_nba',
@@ -322,6 +327,31 @@ async function readJson(file) {
   }
 }
 
+function nowIso() {
+  return new Date().toISOString();
+}
+
+function isFreshCache(entry) {
+  const fetchedAt = Date.parse(String(entry?.fetched_at || ''));
+  if (!Number.isFinite(fetchedAt)) return false;
+  return (Date.now() - fetchedAt) <= SCORES_CACHE_TTL_MS;
+}
+
+async function loadScoresCache() {
+  const cache = (await readJson(SCORES_CACHE_FILE)) || { updated_at: null, sports: {} };
+  return {
+    updated_at: cache.updated_at || null,
+    sports: cache.sports || {},
+  };
+}
+
+async function persistScoresCache(cache) {
+  await fs.writeFile(SCORES_CACHE_FILE, `${JSON.stringify({
+    updated_at: nowIso(),
+    sports: cache.sports || {},
+  }, null, 2)}\n`, 'utf8');
+}
+
 function buildFailureEntry(existing, row, failureReason) {
   return {
     ...(existing || {}),
@@ -371,6 +401,7 @@ async function main() {
   const passRows = rows.filter((row) => isObservationBandPass(row));
   const cache = (await readJson(CACHE_FILE)) || { updated_at: null, entries: {} };
   const entries = cache.entries || {};
+  const scoresCache = await loadScoresCache();
 
   const sitResultRecIdMap = buildSitResultRecIdMap(rows);
   const sitResultSectionMap = buildSitResultSectionMap(bettingStateRaw);
@@ -381,11 +412,34 @@ async function main() {
       .filter(Boolean)
   )];
 
+  const stats = {
+    total_pass_rows: passRows.length,
+    preserved_existing: 0,
+    backfilled_local: 0,
+    backfilled_api: 0,
+    api_calls_made: 0,
+    scores_cache_hits: 0,
+    failed: 0,
+    failure_reasons: {},
+  };
+
   const scoresBySport = {};
   if (apiKey) {
     for (const sportKey of sportKeys) {
+      const cached = scoresCache.sports?.[sportKey];
+      if (cached?.events && isFreshCache(cached)) {
+        scoresBySport[sportKey] = cached.events;
+        stats.scores_cache_hits += 1;
+        continue;
+      }
       try {
-        scoresBySport[sportKey] = await fetchScoresBySport(sportKey, apiKey);
+        const events = await fetchScoresBySport(sportKey, apiKey);
+        scoresBySport[sportKey] = events;
+        scoresCache.sports[sportKey] = {
+          fetched_at: nowIso(),
+          events,
+        };
+        stats.api_calls_made += 1;
       } catch (error) {
         console.log(`WARN: ${String(error.message || error)}`);
       }
@@ -393,15 +447,6 @@ async function main() {
   } else {
     console.log('WARN: No ODDS API key configured; using deterministic local backfill only.');
   }
-
-  const stats = {
-    total_pass_rows: passRows.length,
-    preserved_existing: 0,
-    backfilled_local: 0,
-    backfilled_api: 0,
-    failed: 0,
-    failure_reasons: {},
-  };
 
   for (const row of passRows) {
     const recId = row.rec_id;
@@ -530,6 +575,7 @@ async function main() {
     stats,
     entries,
   };
+  await persistScoresCache(scoresCache);
   await fs.writeFile(CACHE_FILE, `${JSON.stringify(out, null, 2)}\n`, 'utf8');
   console.log(`Updated passed-opportunity grades cache: ${CACHE_FILE}`);
   console.log(JSON.stringify(stats, null, 2));

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-17T02:54:57.162Z",
+  "generated_at_utc": "2026-03-17T13:16:10.950Z",
   "jobs": {
     "morning_edge_hunt": {
       "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -8,38 +8,44 @@
       "schedule_expr": "0 6 * * *",
       "schedule_tz": "America/Chicago",
       "schedule_time_ct": "06:00",
-      "payload_message": "Use the tiered-edge skill only. Run a full morning edge hunt for today. Enforce exact thresholds: T1 >= +6%, T2 >= +4%, T3 >= +2%. Use de-vig before all edge math. Use baseline consensus-implied true-probability model (required) with capped adjustments. If odds are unverified, stale, or rate-limited, output exactly: CANNOT_VERIFY_ODDS — SIT. Output schema for ALL recommended plays must include: true probability, implied probability (de-vig), edge %, Kelly stake, source book, timestamp. Hard logic checks: (1) if edge >= +2.0% and all safety rails pass, it cannot be labeled no_edge; (2) if a play is rejected, include explicit reason code from: no_edge, low_confidence, stale_or_unverified_odds, exposure_cap_reached, breaker_active; (3) never output alternative threshold sets. Keep output concise for WhatsApp and avoid brittle file edits during this cron run. Presentation rule: For WhatsApp/user-facing text, NEVER display enum reason codes (no_edge, low_confidence, stale_or_unverified_odds, exposure_cap_reached, breaker_active). Use plain English only. Example: Reason: No edge at current price. Keep enum codes internal/log-only. Market coverage rule: scan all available markets/sports for edges (do not hard-limit search universe). Reporting rule: in WhatsApp output and public-post-ready summary, prioritize popular games first (NBA, NCAAB, NFL, NCAAF, NHL, MLB, UFC/MMA, major soccer). If verdict is SIT, include a \"Closest Misses (Popular Games)\" section with 3-6 near-miss examples, each with: matchup, market, de-vig implied %, true prob %, edge %, threshold gap, and plain-English sit reason. Keep obscure leagues in a short \"Other Markets Checked\" line unless they contain the top edge of the slate. Closest-miss selection rule: include only near-positive edges in the range +0.5% to +1.9% (strictly below T3). Exclude all negative-edge examples from Closest Misses. If no markets fall in +0.5% to +1.9%, output: \"No near-miss positive edges in the +0.5% to +1.9% window.\" Free-tier API guardrails: perform one full scan at 6:00 AM CT and avoid broad rescans in the same day unless explicitly requested by user. Reuse cached sport responses for 15 minutes (20 minutes for niche/low-liquidity sports). Prioritize popular leagues first in reporting. If remaining API quota is low (or likely low), stop broad expansion and continue with only highest-priority leagues; if verification cannot be completed safely under quota, output CANNOT_VERIFY_ODDS — SIT.",
+      "payload_message": "Use the tiered-edge skill only. Run the scheduled morning edge hunt for today. Enforce exact thresholds: T1 >= +6%, T2 >= +4%, T3 >= +2%. Use de-vig before all edge math. Use baseline consensus-implied true-probability model (required) with capped adjustments. If odds are unverified, stale, or rate-limited, output exactly: CANNOT_VERIFY_ODDS — SIT. Output schema for ALL recommended plays must include: true probability, implied probability (de-vig), edge %, Kelly stake, source book, timestamp. Hard logic checks: (1) if edge >= +2.0% and all safety rails pass, it cannot be labeled no_edge; (2) if a play is rejected, include explicit reason code from: no_edge, low_confidence, stale_or_unverified_odds, exposure_cap_reached, breaker_active; (3) never output alternative threshold sets. Keep output concise for WhatsApp and avoid brittle file edits during this cron run. Follow the scan coverage policy in /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/config/scan-coverage-policy.json. Tier A sports must be scanned first. Tier B expands only if the core board is sparse. Tier C expands only with clear request surplus. Main markets first. Props and alt lines stay off by default. Reuse fresh sport responses within the configured cache windows instead of broad duplicate fetches. If remaining quota is low, stop expansion and keep only Tier A coverage. Reporting rule: prioritize popular games first (NBA, NCAAB, NFL, NCAAF, NHL, MLB, UFC/MMA, major soccer). If verdict is SIT, include a Closest Misses (Popular Games) section with 3-6 near-miss examples in the +0.5% to +1.9% band only.",
       "latest_finished": {
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1773663123779,
-        "run_at_ct": "2026-03-16 07:12 CT",
-        "date_key": "2026-03-16",
-        "summary": "Now analyzing the odds data with de-vig calculations and edge detection...\n\n---\n\n**TIERED EDGE HUNT — March 16, 2026**\nBankroll: $1,328.88 | Phase: GROWTH | Daily Exposure Used: 0.0%\nTimestamp (CT): 2026-03-16 07:12\n\n---\n\n**RECOMMENDED PLAYS:**\n\n*No qualifying edges found across all markets.*\n\n---\n\n**SITTING OUT:**\n\n**NBA (8 games checked)**\n- Hawks vs Magic: No edge at current price\n- Warriors vs Wizards: No edge at current price\n- Celtics vs Suns: No edge at current price\n- Trail Blazers vs Nets: No edge at current price\n- Bulls vs Grizzlies: No edge at current price\n- Pelicans vs Mavericks: No edge at current price\n- Rockets vs Lakers: No edge at current price\n- Spurs vs Clippers: No edge at current price\n\n**NHL (5 games checked)**\n- Bruins vs Devils: No edge at current price\n- Flames vs Red Wings: No edge at current price\n- Kings vs Rangers: No edge at current price\n- Stars vs Mammoth: No edge at current price\n- Avalanche vs Penguins: No edge at current price\n\n**NCAAB (Future dates — skipped for daily slate)**\n\n---\n\n**CLOSEST MISSES (Popular Games):**\n\n1. **Boston Celtics -8.5 vs Suns** (DraftKings @ -118)\n   - De-vig implied: 54.1% | True prob: 56.0% | Edge: +1.9%\n   - Threshold gap: -0.1% to T3 | Reason: Price converged overnight\n\n2. **Dallas Stars ML vs Utah** (BetRivers @ -157)\n   - De-vig implied: 60.9% | True prob: 62.8% | Edge: +1.9%\n   - Threshold gap: -0.1% to T3 | Reason: Home ice premium baked in\n\n3. **Houston Rockets -2.5 vs Lakers** (DraftKings @ -110)\n   - De-vig implied: 52.4% | True prob: 54.0% | Edge: +1.6%\n   - Threshold gap: -0.4% to T3 | Reason: Late money moving toward Houston\n\n4. **Colorado Avalanche -1.5 vs Penguins** (DraftKings @ +110)\n   - De-vig implied: 47.6% | True prob: 49.1% | Edge: +1.5%\n   - Threshold gap: -0.5% to T3 | Reason: Puck line market efficient\n\n5. **Chicago Bulls -6 vs Grizzlies** (FanDuel @ -110)\n   - De-vig implied: 52.4% | True prob: 53.8% | Edge: +1.4%\n   - Threshold gap: -0.6% to T3 | Reason: Ja Morant status unce…",
-        "session_id": "b91fdba6-ab65-44cd-a65c-e3dde9ffe7ea",
-        "message_type": "SIT",
+        "run_at_ms": 1773745200009,
+        "run_at_ct": "2026-03-17 06:00 CT",
+        "date_key": "2026-03-17",
+        "summary": "**TIERED EDGE HUNT — Tuesday, March 17, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API quota has been reached (error: OUT_OF_USAGE_CREDITS). Cannot verify real-time odds for any markets.\n\n**Details:**\n- API Status: Rate limited / quota exhausted\n- Attempted: NBA, NCAAB, NHL, MMA\n- All responses returned: `{\"error_code\":\"OUT_OF_USAGE_CREDITS\"}`\n\n**System Status:**\n- Bankroll: $1,328.88\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Operating Mode: pro\n- Daily Exposure Used: 0%\n\n**Verdict:** SIT — No bets can be recommended without verified real-time odds.\n\n---\n\n*Next steps: API quota typically resets at the start of the billing cycle. Until real-time odds are available, all markets remain SIT per safety protocol.*",
+        "session_id": "d3ec445c-2e96-46d6-913e-6aad39577ea0",
+        "message_type": "BLOCKED",
         "has_actionable_bets": false,
         "requires_state_sync": false,
-        "data_failure_codes": [],
-        "data_status": "verified",
-        "plain_reason": "The latest scheduled scan found no qualifying edges."
+        "data_failure_codes": [
+          "quota_or_rate_limit",
+          "stale_response"
+        ],
+        "data_status": "degraded_data",
+        "plain_reason": "Odds could not be verified for the latest scheduled scan."
       },
       "latest_successful": {
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1773663123779,
-        "run_at_ct": "2026-03-16 07:12 CT",
-        "date_key": "2026-03-16",
-        "summary": "Now analyzing the odds data with de-vig calculations and edge detection...\n\n---\n\n**TIERED EDGE HUNT — March 16, 2026**\nBankroll: $1,328.88 | Phase: GROWTH | Daily Exposure Used: 0.0%\nTimestamp (CT): 2026-03-16 07:12\n\n---\n\n**RECOMMENDED PLAYS:**\n\n*No qualifying edges found across all markets.*\n\n---\n\n**SITTING OUT:**\n\n**NBA (8 games checked)**\n- Hawks vs Magic: No edge at current price\n- Warriors vs Wizards: No edge at current price\n- Celtics vs Suns: No edge at current price\n- Trail Blazers vs Nets: No edge at current price\n- Bulls vs Grizzlies: No edge at current price\n- Pelicans vs Mavericks: No edge at current price\n- Rockets vs Lakers: No edge at current price\n- Spurs vs Clippers: No edge at current price\n\n**NHL (5 games checked)**\n- Bruins vs Devils: No edge at current price\n- Flames vs Red Wings: No edge at current price\n- Kings vs Rangers: No edge at current price\n- Stars vs Mammoth: No edge at current price\n- Avalanche vs Penguins: No edge at current price\n\n**NCAAB (Future dates — skipped for daily slate)**\n\n---\n\n**CLOSEST MISSES (Popular Games):**\n\n1. **Boston Celtics -8.5 vs Suns** (DraftKings @ -118)\n   - De-vig implied: 54.1% | True prob: 56.0% | Edge: +1.9%\n   - Threshold gap: -0.1% to T3 | Reason: Price converged overnight\n\n2. **Dallas Stars ML vs Utah** (BetRivers @ -157)\n   - De-vig implied: 60.9% | True prob: 62.8% | Edge: +1.9%\n   - Threshold gap: -0.1% to T3 | Reason: Home ice premium baked in\n\n3. **Houston Rockets -2.5 vs Lakers** (DraftKings @ -110)\n   - De-vig implied: 52.4% | True prob: 54.0% | Edge: +1.6%\n   - Threshold gap: -0.4% to T3 | Reason: Late money moving toward Houston\n\n4. **Colorado Avalanche -1.5 vs Penguins** (DraftKings @ +110)\n   - De-vig implied: 47.6% | True prob: 49.1% | Edge: +1.5%\n   - Threshold gap: -0.5% to T3 | Reason: Puck line market efficient\n\n5. **Chicago Bulls -6 vs Grizzlies** (FanDuel @ -110)\n   - De-vig implied: 52.4% | True prob: 53.8% | Edge: +1.4%\n   - Threshold gap: -0.6% to T3 | Reason: Ja Morant status unce…",
-        "session_id": "b91fdba6-ab65-44cd-a65c-e3dde9ffe7ea",
-        "message_type": "SIT",
+        "run_at_ms": 1773745200009,
+        "run_at_ct": "2026-03-17 06:00 CT",
+        "date_key": "2026-03-17",
+        "summary": "**TIERED EDGE HUNT — Tuesday, March 17, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API quota has been reached (error: OUT_OF_USAGE_CREDITS). Cannot verify real-time odds for any markets.\n\n**Details:**\n- API Status: Rate limited / quota exhausted\n- Attempted: NBA, NCAAB, NHL, MMA\n- All responses returned: `{\"error_code\":\"OUT_OF_USAGE_CREDITS\"}`\n\n**System Status:**\n- Bankroll: $1,328.88\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Operating Mode: pro\n- Daily Exposure Used: 0%\n\n**Verdict:** SIT — No bets can be recommended without verified real-time odds.\n\n---\n\n*Next steps: API quota typically resets at the start of the billing cycle. Until real-time odds are available, all markets remain SIT per safety protocol.*",
+        "session_id": "d3ec445c-2e96-46d6-913e-6aad39577ea0",
+        "message_type": "BLOCKED",
         "has_actionable_bets": false,
         "requires_state_sync": false,
-        "data_failure_codes": [],
-        "data_status": "verified",
-        "plain_reason": "The latest scheduled scan found no qualifying edges."
+        "data_failure_codes": [
+          "quota_or_rate_limit",
+          "stale_response"
+        ],
+        "data_status": "degraded_data",
+        "plain_reason": "Odds could not be verified for the latest scheduled scan."
       },
       "successful_runs": [
         {
@@ -351,6 +357,25 @@
           "data_failure_codes": [],
           "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
+        },
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1773745200009,
+          "run_at_ct": "2026-03-17 06:00 CT",
+          "date_key": "2026-03-17",
+          "summary": "**TIERED EDGE HUNT — Tuesday, March 17, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API quota has been reached (error: OUT_OF_USAGE_CREDITS). Cannot verify real-time odds for any markets.\n\n**Details:**\n- API Status: Rate limited / quota exhausted\n- Attempted: NBA, NCAAB, NHL, MMA\n- All responses returned: `{\"error_code\":\"OUT_OF_USAGE_CREDITS\"}`\n\n**System Status:**\n- Bankroll: $1,328.88\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Operating Mode: pro\n- Daily Exposure Used: 0%\n\n**Verdict:** SIT — No bets can be recommended without verified real-time odds.\n\n---\n\n*Next steps: API quota typically resets at the start of the billing cycle. Until real-time odds are available, all markets remain SIT per safety protocol.*",
+          "session_id": "d3ec445c-2e96-46d6-913e-6aad39577ea0",
+          "message_type": "BLOCKED",
+          "has_actionable_bets": false,
+          "requires_state_sync": false,
+          "data_failure_codes": [
+            "quota_or_rate_limit",
+            "stale_response"
+          ],
+          "data_status": "degraded_data",
+          "plain_reason": "Odds could not be verified for the latest scheduled scan."
         }
       ]
     },
@@ -366,11 +391,11 @@
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1773633600017,
-        "run_at_ct": "2026-03-15 23:00 CT",
-        "date_key": "2026-03-15",
-        "summary": "**Evening Grading Summary — March 15, 2026**\n\n**Pending Bets Reviewed:** 0\n\nNo pending bets found awaiting results. All tracked wagers have been settled.\n\n**Current Bankroll Status:**\n- Bankroll: **$1,328.88**\n- All-Time High: $1,328.88 (at peak)\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Daily Exposure Used Today: 0%\n\n**Last Settled Activity:**\n- March 13 (Fri): 2 FUN SGPs — Both WINS (+$57.40)\n- March 12: No plays (37+ markets checked, all SIT)\n- March 15: No qualifying edges found across 120+ markets (Championship Sunday pricing was sharp; closest miss was MIN +8.5 at +1.4% edge, still short of T3 threshold)\n\n**Action Required:** None. System current.",
-        "session_id": "11384408-d41e-4d49-b623-d700b6396e00",
+        "run_at_ms": 1773720000009,
+        "run_at_ct": "2026-03-16 23:00 CT",
+        "date_key": "2026-03-16",
+        "summary": "**Evening Grading Report — March 16, 2026**\n\nPending Bets Reviewed: **0**\n\nNo pending bets found in `betting-state.md`. All tracked wagers have been graded and settled.\n\nCurrent Bankroll: **$1,328.88**\nAll-Time High: **$1,328.88**\nCircuit Breaker: **OFF**\n\nLast graded action: March 13 Friday FUN SGPs (2 wins, +$57.40)\n\nNo action required. System is current.",
+        "session_id": "00b12e71-dd58-4be3-b0e9-0e5946f6fcff",
         "requires_state_sync": false,
         "plain_reason": "Latest grading run reported no state changes."
       },
@@ -378,11 +403,11 @@
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1773633600017,
-        "run_at_ct": "2026-03-15 23:00 CT",
-        "date_key": "2026-03-15",
-        "summary": "**Evening Grading Summary — March 15, 2026**\n\n**Pending Bets Reviewed:** 0\n\nNo pending bets found awaiting results. All tracked wagers have been settled.\n\n**Current Bankroll Status:**\n- Bankroll: **$1,328.88**\n- All-Time High: $1,328.88 (at peak)\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Daily Exposure Used Today: 0%\n\n**Last Settled Activity:**\n- March 13 (Fri): 2 FUN SGPs — Both WINS (+$57.40)\n- March 12: No plays (37+ markets checked, all SIT)\n- March 15: No qualifying edges found across 120+ markets (Championship Sunday pricing was sharp; closest miss was MIN +8.5 at +1.4% edge, still short of T3 threshold)\n\n**Action Required:** None. System current.",
-        "session_id": "11384408-d41e-4d49-b623-d700b6396e00",
+        "run_at_ms": 1773720000009,
+        "run_at_ct": "2026-03-16 23:00 CT",
+        "date_key": "2026-03-16",
+        "summary": "**Evening Grading Report — March 16, 2026**\n\nPending Bets Reviewed: **0**\n\nNo pending bets found in `betting-state.md`. All tracked wagers have been graded and settled.\n\nCurrent Bankroll: **$1,328.88**\nAll-Time High: **$1,328.88**\nCircuit Breaker: **OFF**\n\nLast graded action: March 13 Friday FUN SGPs (2 wins, +$57.40)\n\nNo action required. System is current.",
+        "session_id": "00b12e71-dd58-4be3-b0e9-0e5946f6fcff",
         "requires_state_sync": false,
         "plain_reason": "Latest grading run reported no state changes."
       },
@@ -506,6 +531,18 @@
           "session_id": "11384408-d41e-4d49-b623-d700b6396e00",
           "requires_state_sync": false,
           "plain_reason": "Latest grading run reported no state changes."
+        },
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1773720000009,
+          "run_at_ct": "2026-03-16 23:00 CT",
+          "date_key": "2026-03-16",
+          "summary": "**Evening Grading Report — March 16, 2026**\n\nPending Bets Reviewed: **0**\n\nNo pending bets found in `betting-state.md`. All tracked wagers have been graded and settled.\n\nCurrent Bankroll: **$1,328.88**\nAll-Time High: **$1,328.88**\nCircuit Breaker: **OFF**\n\nLast graded action: March 13 Friday FUN SGPs (2 wins, +$57.40)\n\nNo action required. System is current.",
+          "session_id": "00b12e71-dd58-4be3-b0e9-0e5946f6fcff",
+          "requires_state_sync": false,
+          "plain_reason": "Latest grading run reported no state changes."
         }
       ]
     },
@@ -614,27 +651,30 @@
     "status": "ok",
     "delivery_status": "delivered",
     "error": null,
-    "run_at_ms": 1773663123779,
-    "run_at_ct": "2026-03-16 07:12 CT",
-    "date_key": "2026-03-16",
-    "summary": "Now analyzing the odds data with de-vig calculations and edge detection...\n\n---\n\n**TIERED EDGE HUNT — March 16, 2026**\nBankroll: $1,328.88 | Phase: GROWTH | Daily Exposure Used: 0.0%\nTimestamp (CT): 2026-03-16 07:12\n\n---\n\n**RECOMMENDED PLAYS:**\n\n*No qualifying edges found across all markets.*\n\n---\n\n**SITTING OUT:**\n\n**NBA (8 games checked)**\n- Hawks vs Magic: No edge at current price\n- Warriors vs Wizards: No edge at current price\n- Celtics vs Suns: No edge at current price\n- Trail Blazers vs Nets: No edge at current price\n- Bulls vs Grizzlies: No edge at current price\n- Pelicans vs Mavericks: No edge at current price\n- Rockets vs Lakers: No edge at current price\n- Spurs vs Clippers: No edge at current price\n\n**NHL (5 games checked)**\n- Bruins vs Devils: No edge at current price\n- Flames vs Red Wings: No edge at current price\n- Kings vs Rangers: No edge at current price\n- Stars vs Mammoth: No edge at current price\n- Avalanche vs Penguins: No edge at current price\n\n**NCAAB (Future dates — skipped for daily slate)**\n\n---\n\n**CLOSEST MISSES (Popular Games):**\n\n1. **Boston Celtics -8.5 vs Suns** (DraftKings @ -118)\n   - De-vig implied: 54.1% | True prob: 56.0% | Edge: +1.9%\n   - Threshold gap: -0.1% to T3 | Reason: Price converged overnight\n\n2. **Dallas Stars ML vs Utah** (BetRivers @ -157)\n   - De-vig implied: 60.9% | True prob: 62.8% | Edge: +1.9%\n   - Threshold gap: -0.1% to T3 | Reason: Home ice premium baked in\n\n3. **Houston Rockets -2.5 vs Lakers** (DraftKings @ -110)\n   - De-vig implied: 52.4% | True prob: 54.0% | Edge: +1.6%\n   - Threshold gap: -0.4% to T3 | Reason: Late money moving toward Houston\n\n4. **Colorado Avalanche -1.5 vs Penguins** (DraftKings @ +110)\n   - De-vig implied: 47.6% | True prob: 49.1% | Edge: +1.5%\n   - Threshold gap: -0.5% to T3 | Reason: Puck line market efficient\n\n5. **Chicago Bulls -6 vs Grizzlies** (FanDuel @ -110)\n   - De-vig implied: 52.4% | True prob: 53.8% | Edge: +1.4%\n   - Threshold gap: -0.6% to T3 | Reason: Ja Morant status unce…",
-    "session_id": "b91fdba6-ab65-44cd-a65c-e3dde9ffe7ea",
-    "message_type": "SIT",
+    "run_at_ms": 1773745200009,
+    "run_at_ct": "2026-03-17 06:00 CT",
+    "date_key": "2026-03-17",
+    "summary": "**TIERED EDGE HUNT — Tuesday, March 17, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API quota has been reached (error: OUT_OF_USAGE_CREDITS). Cannot verify real-time odds for any markets.\n\n**Details:**\n- API Status: Rate limited / quota exhausted\n- Attempted: NBA, NCAAB, NHL, MMA\n- All responses returned: `{\"error_code\":\"OUT_OF_USAGE_CREDITS\"}`\n\n**System Status:**\n- Bankroll: $1,328.88\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Operating Mode: pro\n- Daily Exposure Used: 0%\n\n**Verdict:** SIT — No bets can be recommended without verified real-time odds.\n\n---\n\n*Next steps: API quota typically resets at the start of the billing cycle. Until real-time odds are available, all markets remain SIT per safety protocol.*",
+    "session_id": "d3ec445c-2e96-46d6-913e-6aad39577ea0",
+    "message_type": "BLOCKED",
     "has_actionable_bets": false,
     "requires_state_sync": false,
-    "data_failure_codes": [],
-    "data_status": "verified",
-    "plain_reason": "The latest scheduled scan found no qualifying edges."
+    "data_failure_codes": [
+      "quota_or_rate_limit",
+      "stale_response"
+    ],
+    "data_status": "degraded_data",
+    "plain_reason": "Odds could not be verified for the latest scheduled scan."
   },
   "latest_successful_grading": {
     "status": "ok",
     "delivery_status": "delivered",
     "error": null,
-    "run_at_ms": 1773633600017,
-    "run_at_ct": "2026-03-15 23:00 CT",
-    "date_key": "2026-03-15",
-    "summary": "**Evening Grading Summary — March 15, 2026**\n\n**Pending Bets Reviewed:** 0\n\nNo pending bets found awaiting results. All tracked wagers have been settled.\n\n**Current Bankroll Status:**\n- Bankroll: **$1,328.88**\n- All-Time High: $1,328.88 (at peak)\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Daily Exposure Used Today: 0%\n\n**Last Settled Activity:**\n- March 13 (Fri): 2 FUN SGPs — Both WINS (+$57.40)\n- March 12: No plays (37+ markets checked, all SIT)\n- March 15: No qualifying edges found across 120+ markets (Championship Sunday pricing was sharp; closest miss was MIN +8.5 at +1.4% edge, still short of T3 threshold)\n\n**Action Required:** None. System current.",
-    "session_id": "11384408-d41e-4d49-b623-d700b6396e00",
+    "run_at_ms": 1773720000009,
+    "run_at_ct": "2026-03-16 23:00 CT",
+    "date_key": "2026-03-16",
+    "summary": "**Evening Grading Report — March 16, 2026**\n\nPending Bets Reviewed: **0**\n\nNo pending bets found in `betting-state.md`. All tracked wagers have been graded and settled.\n\nCurrent Bankroll: **$1,328.88**\nAll-Time High: **$1,328.88**\nCircuit Breaker: **OFF**\n\nLast graded action: March 13 Friday FUN SGPs (2 wins, +$57.40)\n\nNo action required. System is current.",
+    "session_id": "00b12e71-dd58-4be3-b0e9-0e5946f6fcff",
     "requires_state_sync": false,
     "plain_reason": "Latest grading run reported no state changes."
   },
@@ -648,7 +688,8 @@
     "2026-03-13",
     "2026-03-14",
     "2026-03-15",
-    "2026-03-16"
+    "2026-03-16",
+    "2026-03-17"
   ],
   "no_append_hunt_days": [
     "2026-03-07",
@@ -660,7 +701,8 @@
     "2026-03-13",
     "2026-03-14",
     "2026-03-15",
-    "2026-03-16"
+    "2026-03-16",
+    "2026-03-17"
   ],
   "next_edge_scan_ct": "06:00",
   "odds_api_config": {
@@ -668,13 +710,13 @@
     "key_suffix": "d2d6",
     "base_url": "https://api.the-odds-api.com/v4",
     "source_status": "present",
-    "free_tier_scan_ct": "06:00",
+    "free_tier_scan_ct": null,
     "source_path": "/Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md"
   },
   "freshness_anchor": {
     "source": "latest_successful_hunt",
-    "timestamp_ct": "2026-03-16 07:12 CT",
-    "timestamp_ms": 1773663123779
+    "timestamp_ct": "2026-03-17 06:00 CT",
+    "timestamp_ms": 1773745200009
   },
   "state_files": {
     "betting_state": {

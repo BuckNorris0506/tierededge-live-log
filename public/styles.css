@@ -189,6 +189,10 @@ li {
   grid-template-columns: 1fr 1fr;
 }
 
+.split.split-stacked {
+  grid-template-columns: 1fr 1fr;
+}
+
 .range-controls {
   display: flex;
   gap: 8px;
