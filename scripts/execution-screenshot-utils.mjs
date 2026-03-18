@@ -305,7 +305,7 @@ function parseRuntimeRecommendations(summary, runId, targetDate) {
     const odds = match[2];
     const books = match[3].split('/').map((item) => item.trim()).filter(Boolean);
     rows.push({
-      rec_id: null,
+      rec_id: `runtime-rec::${runId || 'unknown'}::${compact(selection)}::${index}`,
       recommendation_key: `${targetDate || 'runtime'}::${index}`,
       run_id: runId,
       selection,
@@ -323,6 +323,20 @@ function parseRuntimeRecommendations(summary, runId, targetDate) {
     index += 1;
   }
   return rows;
+}
+
+function extractRuntimeRecommendationContexts(input, acc = []) {
+  if (!input) return acc;
+  if (Array.isArray(input)) {
+    input.forEach((item) => extractRuntimeRecommendationContexts(item, acc));
+    return acc;
+  }
+  if (typeof input !== 'object') return acc;
+  if (input.summary && (input.message_type || input.session_id || input.run_at_ct)) {
+    acc.push(input);
+  }
+  Object.values(input).forEach((value) => extractRuntimeRecommendationContexts(value, acc));
+  return acc;
 }
 
 function loadRecommendationUniverse() {
@@ -350,11 +364,13 @@ function loadRecommendationUniverse() {
       source: row.source || 'decision_ledger',
     }));
 
-  const runtimeRows = parseRuntimeRecommendations(
-    runtimeStatus?.latest_hunt_current?.summary,
-    runtimeStatus?.latest_hunt_current?.session_id || runtimeStatus?.latest_hunt_current?.run_id || null,
-    runtimeStatus?.latest_hunt_current?.date_key || null
-  );
+  const runtimeRows = extractRuntimeRecommendationContexts(runtimeStatus)
+    .filter((context) => String(context.message_type || '').toUpperCase() === 'BET')
+    .flatMap((context) => parseRuntimeRecommendations(
+      context.summary,
+      context.run_id || (context.session_id ? `openclaw::morning-edge-hunt::${context.session_id}` : null),
+      context.date_key || null
+    ));
 
   return [...decisionRows, ...runtimeRows];
 }
@@ -461,15 +477,15 @@ function buildProposedExecutionRow(parsedBet, matchResult) {
     ...parsedBet.parse_warnings,
     ...matchResult.warnings,
   ]);
-  const manualOverride = matchResult.match_status !== 'matched_to_recommendation';
-  const overrideReason = manualOverride
-    ? (matchResult.match_status === 'unmatched_manual_bet'
-      ? 'unmatched_manual_bet'
-      : matchResult.match_status)
-    : null;
+  const systemFollowing = ['matched_to_recommendation', 'matched_with_low_confidence'].includes(matchResult.match_status) && matched;
+  const manualOverride = matchResult.match_status === 'unmatched_manual_bet';
+  const overrideReason = manualOverride ? 'unmatched_manual_bet' : null;
   const overrideJustification = manualOverride
     ? `Confirmed via screenshot ingestion. Match status=${matchResult.match_status}; warnings=${notes.join(',') || 'none'}.`
     : null;
+  const approvalResult = systemFollowing
+    ? 'APPROVED_EXECUTION'
+    : (matchResult.match_status === 'ambiguous_match' ? 'AMBIGUOUS_MATCH' : 'REJECT_EXECUTION');
 
   return {
     rec_id: matched?.rec_id || null,
@@ -495,7 +511,7 @@ function buildProposedExecutionRow(parsedBet, matchResult) {
     ingestion_timestamp: new Date().toISOString(),
     notes,
     warnings: notes,
-    execution_approval_result: manualOverride ? 'REJECT_EXECUTION' : 'APPROVED_TO_BET',
+    execution_approval_result: approvalResult,
     recommended_sportsbook: matched?.sportsbook || parsedBet.sportsbook,
     actual_sportsbook: parsedBet.sportsbook,
     recommendation_timestamp: matched?.timestamp_ct || null,

@@ -1,4 +1,4 @@
 *TIEREDGE BLOCKED*
-Classification: invalid_bankroll_math
-Why: Integrity gate failed: Ledger validation failed: invalid_bankroll_math
+Classification: post_mortem_required
+Why: Integrity gate failed: Post-mortem required after realized_loss_streak (-10).
 Health: FAIL

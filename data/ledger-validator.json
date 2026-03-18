@@ -1,11 +1,9 @@
 {
-  "generated_at_utc": "2026-03-17T22:37:22.611Z",
-  "require_output_match": true,
-  "passed": false,
-  "run_classification": "invalid_bankroll_math",
-  "failure_classes": [
-    "invalid_bankroll_math"
-  ],
+  "generated_at_utc": "2026-03-18T11:00:38.054Z",
+  "require_output_match": false,
+  "passed": true,
+  "run_classification": "ledger_integrity_pass",
+  "failure_classes": [],
   "summary": {
     "executions_total": 3,
     "executions_pending": 3,
@@ -13,10 +11,10 @@
     "bankroll": {
       "starting_bankroll": 100,
       "contributions": 1100,
-      "realized_profit": 126.43,
-      "derived_bankroll": 1326.43,
-      "last_recorded_bankroll": 1328.88,
-      "difference": 2.45
+      "realized_profit": 126.13,
+      "derived_bankroll": 1326.13,
+      "last_recorded_bankroll": 1326.13,
+      "difference": 0
     },
     "open_risk": {
       "pending_ticket_count": 3,
@@ -24,15 +22,5 @@
       "open_exposure_pct_of_bankroll": 3.09
     }
   },
-  "issues": [
-    {
-      "kind": "invalid_bankroll_math",
-      "starting_bankroll": 100,
-      "contributions": 1100,
-      "realized_profit": 126.43,
-      "derived_bankroll": 1326.43,
-      "last_recorded_bankroll": 1328.88,
-      "difference": 2.45
-    }
-  ]
+  "issues": []
 }

@@ -8,7 +8,7 @@
 | `friday-sgp` | OpenClaw cron | 10:00 Friday | canonical runtime input | OpenClaw skill + memory | WhatsApp delivery, OpenClaw run history, may update OpenClaw memory/state |
 | `evening-grading` | OpenClaw cron | 23:00 daily | canonical runtime input | OpenClaw memory | WhatsApp delivery, OpenClaw run history, may update OpenClaw memory/state |
 | `weekly-review` | OpenClaw cron | 09:00 Monday | derived review | OpenClaw memory | WhatsApp delivery, OpenClaw run history |
-| `update-live-log.sh` | system crontab | every 10 minutes | canonical public rebuild | OpenClaw memory + repo data | `data/*`, `public/*`, repo-root deploy mirrors, optional git push |
+| `update-live-log.sh` | system crontab | every 10 minutes | canonical public rebuild | OpenClaw memory + repo data | `data/*`, `public/*`, repo-root deploy artifacts, optional git push |
 | `run-monthly-bankroll-contribution.sh` | system crontab | 00:07 on day 1 | canonical contribution writer | OpenClaw bet log + repo ledger | `data/bankroll-contributions.csv`, `data/bankroll-contribution-status.json`, then canonical public rebuild |
 
 ## Manual or ad hoc jobs
@@ -39,7 +39,7 @@
 - `public/decision-terminal.txt`
 - `public/decision-whatsapp.txt`
 - `public/standalone.html`
-- repo-root deploy mirrors when `LIVE_LOG_DEPLOY_REPO` points to this repo
+- repo-root deploy artifacts (`data.json`, `standalone.html`, `app.js`, `index.html`, `styles.css`)
 
 ## Allowed mutation order
 
@@ -47,6 +47,6 @@
 2. `update-live-log.sh` snapshots source mtimes.
 3. `update-live-log.sh` rebuilds runtime status, grading cache, payload, suppression artifacts, standalone page.
 4. `update-live-log.sh` verifies source files did not change mid-build.
-5. `update-live-log.sh` syncs/pushes public outputs.
+5. `update-live-log.sh` syncs `public/` back to repo root, then pushes the repo-root deploy artifacts used by GitHub Pages.
 
 If step 4 fails, the run is invalid and should be retried rather than deployed.

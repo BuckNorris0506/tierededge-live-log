@@ -10,6 +10,7 @@ import {
   readJsonl,
   round2,
   toCtIsoDate,
+  writeJsonl,
   writeJson,
 } from './core-ledger-utils.mjs';
 import { EXECUTION_LOG_PATH, readExecutionLog } from './execution-layer-utils.mjs';
@@ -151,22 +152,22 @@ export function appendOverrideEventsForExecution(row) {
 
 export function backfillOverrideLogFromExecutions() {
   const rows = readExecutionLog();
-  const existing = new Set(readOverrideLog().map((event) => String(event.override_id || '')));
-  const next = [];
+  const rebuilt = [];
+  const seen = new Set();
   for (const row of rows) {
     for (const event of deriveOverrideEventsFromExecution(row)) {
       if (!event.freeform_justification) continue;
       const key = String(event.override_id || '');
-      if (existing.has(key)) continue;
-      existing.add(key);
-      next.push(event);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      rebuilt.push(event);
     }
   }
-  if (next.length) appendJsonl(OVERRIDE_LOG_PATH, next, (event) => String(event.override_id || ''));
+  writeJsonl(OVERRIDE_LOG_PATH, rebuilt);
   return {
     execution_rows_scanned: rows.length,
-    override_events_appended: next.length,
-    override_events_total: existing.size,
+    override_events_appended: rebuilt.length,
+    override_events_total: rebuilt.length,
   };
 }
 

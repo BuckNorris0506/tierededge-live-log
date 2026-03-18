@@ -19,6 +19,7 @@
     "append:execution": "node scripts/append-execution-log.mjs",
     "append:post-mortem-review": "node scripts/append-post-mortem-review.mjs",
     "backfill:execution-metadata": "node scripts/backfill-execution-metadata.mjs",
+    "reconcile:grading-bankroll": "node scripts/reconcile-grading-bankroll.mjs",
     "backfill:grading-clv": "node scripts/backfill-grading-clv.mjs",
     "backfill:override-log": "node scripts/backfill-override-log.mjs",
     "build:weekly-truth-report": "node scripts/build-weekly-truth-report.mjs",

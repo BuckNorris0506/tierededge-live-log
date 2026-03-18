@@ -2,8 +2,7 @@
 import path from 'node:path';
 import { CORE_PATHS, parseNumber, readJson, readJsonl, round2, writeJson } from './core-ledger-utils.mjs';
 import { readExecutionLog } from './execution-layer-utils.mjs';
-
-const FINAL_STATUSES = new Set(['win', 'loss', 'void', 'push', 'cashed_out', 'partial_cashout']);
+import { FINAL_BANKROLL_STATUSES, computeFinalProfitLoss, getLatestBankrollAnnotatedGrade, isBankrollRelevantGrade } from './bankroll-reconciliation-utils.mjs';
 const ALLOWED_BANKROLL_ENTRY_TYPES = new Set(['STARTING_BANKROLL', 'CONTRIBUTION']);
 const DEFAULT_OUTPUT_PATH = path.join(path.dirname(CORE_PATHS.canonicalState), 'ledger-validator.json');
 
@@ -23,21 +22,6 @@ function parseArgs(argv) {
 
 function issue(kind, details = {}) {
   return { kind, ...details };
-}
-
-function computeFinalProfitLoss(row) {
-  const explicit = parseNumber(row.profit_loss);
-  if (explicit !== null) return explicit;
-  const status = normalize(row.settlement_status || row.result);
-  const stake = parseNumber(row.actual_stake || row.stake);
-  const payout = parseNumber(row.settlement_payout || row.payout || row.return_amount);
-  if (stake === null) return null;
-  if (status === 'loss') return round2(-stake);
-  if (status === 'push' || status === 'void') return 0;
-  if ((status === 'win' || status === 'cashed_out' || status === 'partial_cashout') && payout !== null) {
-    return round2(payout - stake);
-  }
-  return null;
 }
 
 function chooseRunClassification(failureClasses) {
@@ -81,8 +65,8 @@ export function validateLedgerInvariants({ requireOutputMatch = false, outputPat
     const gradingType = String(row.grading_type || '').trim().toUpperCase();
     const status = normalize(row.settlement_status || row.result);
     const isFinal = gradingType === 'RECONCILIATION'
-      ? FINAL_STATUSES.has(status)
-      : (gradingType === 'BET' && FINAL_STATUSES.has(status));
+      ? FINAL_BANKROLL_STATUSES.has(status)
+      : (gradingType === 'BET' && FINAL_BANKROLL_STATUSES.has(status));
     if (!isFinal) continue;
 
     const executionId = String(row.execution_log_id || row.execution_id || '').trim();
@@ -152,28 +136,13 @@ export function validateLedgerInvariants({ requireOutputMatch = false, outputPat
       .filter((row) => {
         const type = String(row.grading_type || '').toUpperCase();
         const status = normalize(row.settlement_status || row.result);
-        return (type === 'BET' || type === 'RECONCILIATION') && FINAL_STATUSES.has(status);
+        return (type === 'BET' || type === 'RECONCILIATION') && FINAL_BANKROLL_STATUSES.has(status);
       })
       .reduce((sum, row) => sum + (computeFinalProfitLoss(row) || 0), 0)
   ) || 0;
   const derivedBankroll = round2(startingBankroll + contributions + realizedProfit) || 0;
-  const lastRecordedBankroll = round2(
-    gradingRows
-      .filter((row) => {
-        const status = normalize(row.settlement_status || row.result);
-        return FINAL_STATUSES.has(status) && parseNumber(row.bankroll_after) !== null;
-      })
-      .reduce((latest, row) => row, null)?.bankroll_after
-      ? parseNumber(
-        gradingRows
-          .filter((row) => {
-            const status = normalize(row.settlement_status || row.result);
-            return FINAL_STATUSES.has(status) && parseNumber(row.bankroll_after) !== null;
-          })
-          .reduce((latest, row) => row).bankroll_after
-      )
-      : derivedBankroll
-  ) || derivedBankroll;
+  const latestBankrollGrade = getLatestBankrollAnnotatedGrade(gradingRows);
+  const lastRecordedBankroll = round2(parseNumber(latestBankrollGrade?.bankroll_after)) || derivedBankroll;
   const bankrollDifference = round2(lastRecordedBankroll - derivedBankroll) || 0;
   if (Math.abs(bankrollDifference) > 0.009) {
     issues.push(issue('invalid_bankroll_math', {

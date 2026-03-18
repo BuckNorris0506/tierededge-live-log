@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import fs from 'node:fs/promises';
-import { appendJsonl, CORE_PATHS } from './core-ledger-utils.mjs';
+import { appendJsonl, CORE_PATHS, readJsonl } from './core-ledger-utils.mjs';
 import { enrichGradingRowWithClv } from './grading-market-truth-utils.mjs';
+import { isBankrollRelevantGrade, reconcileGradingBankrollAnnotations } from './bankroll-reconciliation-utils.mjs';
 
 const REQUIRED_FIELDS = ['grading_id', 'grading_type', 'ref_id', 'selection', 'result', 'source'];
 
@@ -27,7 +28,12 @@ async function main() {
     }
   }
 
-  appendJsonl(CORE_PATHS.gradingLedger, rows.map((row) => enrichGradingRowWithClv(row)), (entry) => String(entry.grading_id || ''));
+  const enrichedRows = rows.map((row) => enrichGradingRowWithClv(row));
+  const existingRows = readJsonl(CORE_PATHS.gradingLedger);
+  const reconciled = reconcileGradingBankrollAnnotations([...existingRows, ...enrichedRows], readJsonl(CORE_PATHS.bankrollLedger));
+  const annotationById = new Map(reconciled.rows.map((row) => [row.grading_id, row]));
+  const finalRows = enrichedRows.map((row) => isBankrollRelevantGrade(row) ? (annotationById.get(row.grading_id) || row) : row);
+  appendJsonl(CORE_PATHS.gradingLedger, finalRows, (entry) => String(entry.grading_id || ''));
   console.log(`Appended grading rows: ${rows.length}`);
 }
 

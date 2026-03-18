@@ -1,8 +1,8 @@
 WEEKLY TRUTH REPORT
-Generated: 2026-03-17T22:37:22.410Z
+Generated: 2026-03-18T01:37:01.374Z
 Settled bets: 2
 Average edge at placement: N/A | Realized P/L: 57.4
-Override events: 11 | Blocked-run: 11 | Off-model: 0
+Override events: 0 | Blocked-run: 0 | Off-model: 0
 Missing snapshot count: 0 | Missing CLV count: 2
 
 Top Bleeding Categories:

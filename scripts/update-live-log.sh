@@ -13,6 +13,8 @@ if ! node scripts/update-passed-opportunity-grades.mjs; then
   echo "WARN: passed-opportunity grading failed; continuing with existing grades."
 fi
 node scripts/backfill-override-log.mjs
+node scripts/backfill-execution-metadata.mjs
+node scripts/reconcile-grading-bankroll.mjs
 node scripts/build-weekly-truth-report.mjs
 snapshot_source_state \
   /Users/jaredbuckman/.openclaw/cron/jobs.json \
@@ -30,6 +32,8 @@ cp "$ROOT_DIR/index.html" "$ROOT_DIR/public/index.html"
 cp "$ROOT_DIR/styles.css" "$ROOT_DIR/public/styles.css"
 node scripts/build-live-log.mjs
 node scripts/build-standalone.mjs
+# GitHub Pages currently serves repo-root artifacts from main, not public/.
+# Keep root deploy artifacts in sync with the freshly built public outputs.
 rsync -a "$ROOT_DIR/public/" "$ROOT_DIR/"
 if ! node scripts/validate-ledger-invariants.mjs --require-output-match; then
   echo "WARN: ledger validator failed postbuild; published state remains blocked."
@@ -47,7 +51,8 @@ if [[ -f "$ROOT_DIR/public/evening-grading-report.txt" ]]; then
   cat "$ROOT_DIR/public/evening-grading-report.txt"
 fi
 
-# Optional deploy sync: set LIVE_LOG_DEPLOY_REPO to a local git repo path
+# Optional deploy sync: set LIVE_LOG_DEPLOY_REPO to a local git repo path.
+# Current production Pages model publishes repo-root artifacts from main.
 if [[ -n "${LIVE_LOG_DEPLOY_REPO:-}" ]]; then
   if [[ ! -d "$LIVE_LOG_DEPLOY_REPO/.git" ]]; then
     echo "LIVE_LOG_DEPLOY_REPO is set but is not a git repo: $LIVE_LOG_DEPLOY_REPO"
@@ -55,7 +60,7 @@ if [[ -n "${LIVE_LOG_DEPLOY_REPO:-}" ]]; then
   fi
 
   if [[ "$LIVE_LOG_DEPLOY_REPO" != "$ROOT_DIR" ]]; then
-    # External deploy repo mode: publish public site files to repo root.
+    # External deploy repo mode: publish built public files into the target repo root.
     rsync -a --delete "$ROOT_DIR/public/" "$LIVE_LOG_DEPLOY_REPO/"
     cd "$LIVE_LOG_DEPLOY_REPO"
   else

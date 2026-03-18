@@ -59,6 +59,10 @@ function normalizeEvent(value) {
     .replace(/\s+-\s+/g, ' @ ');
 }
 
+function compactText(value) {
+  return normalizeText(value).replace(/\s+/g, '');
+}
+
 function normalizeTeam(value) {
   return normalizeText(value)
     .replace(/\bst\b/g, 'state')
@@ -222,6 +226,245 @@ function asPercentProbability(value) {
 function safeDateMs(value) {
   const ms = Date.parse(String(value || '').replace(' CT', ''));
   return Number.isFinite(ms) ? ms : null;
+}
+
+function extractRuntimeRecommendationContexts(input, acc = []) {
+  if (!input) return acc;
+  if (Array.isArray(input)) {
+    input.forEach((item) => extractRuntimeRecommendationContexts(item, acc));
+    return acc;
+  }
+  if (typeof input !== 'object') return acc;
+  if (input.summary && (input.message_type || input.session_id || input.run_at_ct)) {
+    acc.push(input);
+  }
+  Object.values(input).forEach((value) => extractRuntimeRecommendationContexts(value, acc));
+  return acc;
+}
+
+function parseRuntimeRecommendations(summary, runId, targetDate, context = {}) {
+  const text = String(summary || '');
+  const rows = [];
+  const pattern = /- \[ \] (.+?)\s+([+-]\d{2,4}) \| ([^\n]+)\n\s+Timestamp \(CT\): ([^\n]+)\n\s+True Prob: ([0-9.]+)% \| Implied Prob \(de-vig\): ([0-9.]+)% \| Edge: \+?([0-9.]+)%\n\s+Kelly Stake: \$([0-9.]+)/g;
+  let match;
+  let index = 1;
+  while ((match = pattern.exec(text)) !== null) {
+    const selection = match[1].trim();
+    const books = match[3].split('/').map((item) => item.trim()).filter(Boolean);
+    const recId = `runtime-rec::${runId || 'unknown'}::${compactText(selection)}::${index}`;
+    rows.push({
+      rec_id: recId,
+      recommendation_key: `${runId || 'runtime'}::${index}`,
+      run_id: runId,
+      selection,
+      sportsbook: books[0] || null,
+      sportsbook_options: books,
+      odds_american: match[2],
+      timestamp_ct: match[4].trim(),
+      post_conf_true_prob: Number(match[5]),
+      devig_implied_prob: Number(match[6]),
+      post_conf_edge_pct: Number(match[7]),
+      raw_edge_pct: null,
+      kelly_stake: Number(match[8]),
+      market_type: null,
+      event_label: null,
+      bet_class: 'EDGE_BET',
+      source: 'runtime_summary',
+      context_message_type: context.message_type || null,
+      context_data_failure_codes: Array.isArray(context.data_failure_codes) ? context.data_failure_codes : [],
+      sport: null,
+      league: null,
+      target_date: targetDate || null,
+    });
+    index += 1;
+  }
+  return rows;
+}
+
+function loadRecommendationUniverse() {
+  const runtimeStatus = readJson(CORE_PATHS.runtimeStatus, {});
+  const decisionRows = readJsonl(CORE_PATHS.decisionLedger)
+    .filter((row) => row.final_decision === 'BET' || row.decision_kind === 'BET')
+    .map((row) => ({
+      rec_id: row.rec_id || null,
+      recommendation_key: row.entry_id,
+      run_id: row.run_id,
+      sport: row.sport || null,
+      league: row.league || row.sport || null,
+      selection: row.selection,
+      event_label: row.event_label,
+      normalized_event: row.event_label ? normalizeEvent(row.event_label) : null,
+      sportsbook: row.sportsbook,
+      sportsbook_options: [row.sportsbook].filter(Boolean),
+      odds_american: row.odds_american,
+      market_type: row.market_type || null,
+      timestamp_ct: row.timestamp_ct,
+      post_conf_true_prob: row.post_conf_true_prob,
+      devig_implied_prob: row.devig_implied_prob,
+      post_conf_edge_pct: row.post_conf_edge_pct,
+      raw_edge_pct: row.raw_edge_pct ?? null,
+      kelly_stake: parseNumber(row.kelly_stake),
+      bet_class: row.bet_class || 'EDGE_BET',
+      source: row.source || 'decision_ledger',
+      context_message_type: 'BET',
+      context_data_failure_codes: [],
+    }));
+
+  const runtimeRows = extractRuntimeRecommendationContexts(runtimeStatus)
+    .filter((context) => String(context.message_type || '').toUpperCase() === 'BET')
+    .flatMap((context) => {
+      const runId = context.run_id || (context.session_id ? `openclaw::morning-edge-hunt::${context.session_id}` : null);
+      return parseRuntimeRecommendations(context.summary, runId, context.date_key || null, context);
+    });
+
+  return [...decisionRows, ...runtimeRows];
+}
+
+function sportsbookMatch(extractedBook, candidate) {
+  const books = [candidate.sportsbook, ...(candidate.sportsbook_options || [])].filter(Boolean).map(normalizeText);
+  return extractedBook && books.includes(normalizeText(extractedBook));
+}
+
+function executionRecommendationScore(row, candidate) {
+  let score = 0;
+  const rowRunId = normalizeText(row.run_id);
+  const candidateRunId = normalizeText(candidate.run_id);
+  if (rowRunId && candidateRunId && rowRunId === candidateRunId) score += 45;
+
+  const rowEvent = normalizeEvent(row.event || row.normalized_event || '');
+  const candidateEvent = normalizeEvent(candidate.event_label || candidate.normalized_event || '');
+  if (rowEvent && candidateEvent && rowEvent === candidateEvent) {
+    score += 30;
+  } else {
+    const rowTokens = new Set(rowEvent.split(' ').filter(Boolean));
+    const candidateText = normalizeText(candidate.selection);
+    let overlap = 0;
+    for (const token of rowTokens) {
+      if (token && candidateText.includes(token)) overlap += 1;
+    }
+    score += Math.min(18, overlap * 6);
+  }
+
+  if (row.selection && candidate.selection && normalizeText(row.selection) === normalizeText(candidate.selection)) score += 25;
+  if (sportsbookMatch(row.actual_sportsbook || row.recommended_sportsbook || row.sportsbook, candidate)) score += 12;
+
+  const rowRecommendedOdds = parseNumber(row.recommended_odds);
+  const rowActualOdds = parseNumber(row.actual_odds);
+  const candidateOdds = parseNumber(candidate.odds_american);
+  const preferredOdds = Number.isFinite(rowRecommendedOdds) ? rowRecommendedOdds : rowActualOdds;
+  if (Number.isFinite(preferredOdds) && Number.isFinite(candidateOdds)) {
+    const diff = Math.abs(preferredOdds - candidateOdds);
+    if (diff === 0) score += 20;
+    else if (diff <= 5) score += 16;
+    else if (diff <= 10) score += 10;
+  }
+
+  const rowStake = parseNumber(row.recommended_stake) ?? parseNumber(row.actual_stake);
+  const candidateStake = parseNumber(candidate.kelly_stake);
+  if (Number.isFinite(rowStake) && Number.isFinite(candidateStake)) {
+    const diff = Math.abs(rowStake - candidateStake);
+    if (diff < 0.01) score += 15;
+    else if (diff <= 0.5) score += 10;
+    else if (diff <= 2) score += 4;
+  }
+
+  const rowTs = safeDateMs(row.recommendation_timestamp || row.bet_slip_timestamp);
+  const candidateTs = safeDateMs(candidate.timestamp_ct);
+  if (Number.isFinite(rowTs) && Number.isFinite(candidateTs)) {
+    const diffMinutes = Math.abs(rowTs - candidateTs) / 60000;
+    if (diffMinutes <= 30) score += 10;
+    else if (diffMinutes <= 120) score += 6;
+    else if (diffMinutes <= 480) score += 3;
+  }
+
+  return score;
+}
+
+function classifyExecutionRecommendationMatch(row, recommendations) {
+  const scored = recommendations.map((candidate) => ({ candidate, score: executionRecommendationScore(row, candidate) }))
+    .sort((a, b) => b.score - a.score);
+  const top = scored[0];
+  const second = scored[1];
+  if (!top || top.score < 65) return { match_status: 'unmatched_manual_bet', candidate: null, confidence: 'low' };
+  if (second && top.score - second.score <= 5) {
+    return { match_status: 'ambiguous_match', candidate: top.candidate, confidence: 'low' };
+  }
+  return {
+    match_status: top.score >= 85 ? 'matched_to_recommendation' : 'matched_with_low_confidence',
+    candidate: top.candidate,
+    confidence: top.score >= 85 ? 'high' : 'medium',
+  };
+}
+
+function cleanupNotesValue(value) {
+  const items = Array.isArray(value) ? value : value ? [value] : [];
+  return Array.from(new Set(items.filter(Boolean).map((item) => String(item).trim()).filter((item) => item && item !== 'blocked_run')));
+}
+
+function evAtBetFieldsFromCandidate(row, candidate) {
+  const existingTrueProb = asPercentProbability(row.true_probability_at_bet);
+  const existingImpliedProb = asPercentProbability(row.implied_probability_at_bet);
+  const existingEdgePct = parseNumber(row.edge_pct_at_bet);
+  const existingRawEdgePct = parseNumber(row.raw_edge_pct_at_bet);
+
+  const trueProb = existingTrueProb ?? asPercentProbability(candidate?.post_conf_true_prob);
+  const impliedProb = existingImpliedProb ?? asPercentProbability(candidate?.devig_implied_prob);
+  const edgePct = existingEdgePct ?? parseNumber(candidate?.post_conf_edge_pct);
+  const rawEdgePct = existingRawEdgePct ?? parseNumber(candidate?.raw_edge_pct);
+
+  const hasCanonicalEv = [trueProb, impliedProb, edgePct].every((value) => Number.isFinite(value));
+  return {
+    true_probability_at_bet: Number.isFinite(trueProb) ? round2(trueProb) : null,
+    implied_probability_at_bet: Number.isFinite(impliedProb) ? round2(impliedProb) : null,
+    edge_pct_at_bet: Number.isFinite(edgePct) ? round2(edgePct) : null,
+    raw_edge_pct_at_bet: Number.isFinite(rawEdgePct) ? round2(rawEdgePct) : null,
+    recommended_odds_at_bet: row.recommended_odds_at_bet || candidate?.odds_american || row.recommended_odds || null,
+    bet_class: row.bet_class || candidate?.bet_class || null,
+    market_type: row.market_type || candidate?.market_type || row.market || null,
+    event_label: row.event_label || candidate?.event_label || row.event || null,
+    ev_at_bet_status: hasCanonicalEv ? 'captured' : 'missing_recommendation_ev',
+    ev_at_bet_source: hasCanonicalEv ? candidate?.source || 'recommendation_match' : 'missing',
+  };
+}
+
+function reclassifyExecutionRow(row, recommendations = null) {
+  const universe = recommendations || loadRecommendationUniverse();
+  const match = classifyExecutionRecommendationMatch(row, universe);
+  if (!match.candidate) {
+    return {
+      ...row,
+      ...evAtBetFieldsFromCandidate(row, null),
+      match_status: row.match_status || 'unmatched_manual_bet',
+    };
+  }
+
+  const candidate = match.candidate;
+  const approved = ['matched_to_recommendation', 'matched_with_low_confidence'].includes(match.match_status)
+    && String(candidate.context_message_type || '').toUpperCase() === 'BET'
+    && (!Array.isArray(candidate.context_data_failure_codes) || candidate.context_data_failure_codes.length === 0);
+
+  const next = {
+    ...row,
+    rec_id: row.rec_id?.startsWith('manual-recovered::') ? candidate.rec_id : (row.rec_id || candidate.rec_id),
+    run_id: row.run_id || candidate.run_id || null,
+    selection: row.selection || candidate.selection || null,
+    recommended_sportsbook: row.recommended_sportsbook || candidate.sportsbook || null,
+    recommended_odds: row.recommended_odds || candidate.odds_american || null,
+    recommended_stake: row.recommended_stake || candidate.kelly_stake || null,
+    recommendation_timestamp: row.recommendation_timestamp || candidate.timestamp_ct || null,
+    sport: row.sport && row.sport !== 'UNKNOWN' ? row.sport : (candidate.sport || row.sport || null),
+    league: row.league || candidate.league || row.sport || null,
+    match_status: match.match_status,
+    match_confidence: match.confidence,
+    execution_approval_result: approved ? 'APPROVED_EXECUTION' : (match.match_status === 'ambiguous_match' ? 'AMBIGUOUS_MATCH' : (row.execution_approval_result || 'REJECT_EXECUTION')),
+    manual_override_flag: approved ? false : Boolean(row.manual_override_flag),
+    execution_approval_result_reason: approved ? 'matched_originating_recommendation' : row.execution_approval_result_reason,
+    override_reason: approved && normalizeText(row.override_reason) === 'blocked_run' ? null : row.override_reason,
+    notes: cleanupNotesValue(row.notes),
+    warnings: cleanupNotesValue(row.warnings),
+    ...evAtBetFieldsFromCandidate(row, candidate),
+  };
+  return next;
 }
 
 export function loadExecutionPolicy() {
@@ -645,7 +888,7 @@ export function readExecutionLog() {
 
 export function appendExecutionLogRow(row) {
   const metadataIndex = buildExecutionMetadataIndex();
-  const enriched = enrichExecutionLogRow(row, { metadataIndex });
+  const enriched = enrichExecutionLogRow(reclassifyExecutionRow(row), { metadataIndex });
   const overrideEvents = deriveOverrideEventsFromExecution(enriched);
   const missingJustification = overrideEvents.filter((event) => !String(event.freeform_justification || '').trim());
   if (missingJustification.length) {
@@ -661,9 +904,15 @@ export function appendExecutionLogRow(row) {
 
 export function backfillExecutionLogMetadata() {
   const metadataIndex = buildExecutionMetadataIndex();
+  const recommendationUniverse = loadRecommendationUniverse();
   const rows = readJsonl(EXECUTION_LOG_PATH).flatMap((row) => Array.isArray(row) ? row : [row]);
-  const enrichedRows = rows.map((row) => enrichExecutionLogRow(row, { metadataIndex }));
+  const enrichedRows = rows.map((row) => enrichExecutionLogRow(reclassifyExecutionRow(row, recommendationUniverse), { metadataIndex }));
   writeJsonl(EXECUTION_LOG_PATH, enrichedRows);
   const unknownCount = enrichedRows.filter((row) => String(row.sport || '') === 'UNKNOWN').length;
-  return { total_rows: enrichedRows.length, unknown_count: unknownCount };
+  return {
+    total_rows: enrichedRows.length,
+    unknown_count: unknownCount,
+    approved_execution_count: enrichedRows.filter((row) => normalizeText(row.execution_approval_result) === 'approved_execution').length,
+    manual_override_count: enrichedRows.filter((row) => Boolean(row.manual_override_flag)).length,
+  };
 }

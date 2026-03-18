@@ -163,15 +163,15 @@ Monthly append-only contribution automation (1st day of month, 00:07 local):
 ### Option A: GitHub Pages (recommended)
 1. Create repo `tierededge-live-log`.
 2. Push this project.
-3. Enable GitHub Pages from `/public` (or root with `public` copied to docs).
-4. Set cron/local automation to rebuild + commit `public/data.json` when updated.
+3. Enable GitHub Pages from `main` -> `/ (root)`.
+4. Set cron/local automation to run `update-live-log.sh`, which builds `public/*` and then syncs the live deploy artifacts back to repo root before commit/push.
 
 Detailed guide:
 - `DEPLOY-GITHUB-PAGES.md`
 
 ### Option B: Static host (Cloudflare Pages / Netlify)
-- Deploy this folder as static site.
-- Rebuild `public/data.json` before each deploy.
+- Deploy `public/` directly if your host supports a dedicated publish directory.
+- For GitHub Pages in this repo, the current production model is repo-root deploy artifacts on `main`.
 
 ## Truth-first guidance
 - Canonical truth for this repo now lives in `data/canonical-state.json` plus the machine-readable ledgers under `data/`.

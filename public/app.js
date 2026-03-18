@@ -3,8 +3,6 @@ async function loadData() {
   const res = await fetch(`/tierededge-live-log/data.json?t=${Date.now()}`, { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to load data.json');
   const data = await res.json();
-  console.log('DATA LOADED:', data);
-  console.log('PENDING:', data.pending_bets, data.pending_count);
   return data;
 }
 
@@ -15,13 +13,28 @@ function el(tag, cls, text) {
   return node;
 }
 
-const MISSING = '\u2014';
+const MISSING = 'Insufficient data';
 
 function formatValue(value) {
   if (value === null || value === undefined || value === '') return MISSING;
+  if (typeof value === 'number' && !Number.isFinite(value)) return 'Insufficient data';
+  if (typeof value === 'string' && ['n/a', 'na', '-'].includes(value.trim().toLowerCase())) return 'Insufficient data';
   if (Array.isArray(value)) return value.length ? value.join(', ') : MISSING;
   if (typeof value === 'object') return MISSING;
   return String(value);
+}
+
+function numberOrNull(value) {
+  if (value === null || value === undefined || value === '') return null;
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+  const parsed = Number(String(value).replace(/[^0-9.-]/g, ''));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function hideSection(id, hidden = true) {
+  const node = document.getElementById(id);
+  if (!node) return;
+  node.hidden = hidden;
 }
 
 function parsePercent(value) {
@@ -159,30 +172,23 @@ function renderSummaryCards(data) {
   if (!top || !support) return;
 
   const status = data.current_status || {};
-  const life = data.lifetime_stats || {};
-  const decisionQuality = data.decision_quality || {};
+  const settled = data.analytics_summary?.settled_performance?.overall || {};
+  const clv = data.analytics_summary?.clv_analytics || {};
+  const executionQuality = data.analytics_summary?.execution_quality || {};
+  const edgeValidation = data.edge_validation?.summary || {};
+  const openRisk = data.open_risk_summary || {};
   const accountability = data.behavioral_accountability || {};
-
-  const processScore = status['Process Score (7d)'] || (decisionQuality.decision_quality_rate !== null && decisionQuality.decision_quality_rate !== undefined
-    ? `${decisionQuality.decision_quality_rate}%`
-    : null);
 
   top.innerHTML = '';
   top.appendChild(makeCard('Bankroll', status.Bankroll));
-  top.appendChild(makeCard('Overall ROI', life['Overall ROI']));
-  top.appendChild(makeCard('Average CLV', life['Average CLV']));
-  top.appendChild(makeCard('Process Score', processScore));
-
-  const clvRate = decisionQuality.positive_clv_rate;
-  const clvQuality = clvRate === null || clvRate === undefined
-    ? MISSING
-    : (clvRate >= 55 ? 'Strong' : (clvRate >= 45 ? 'Neutral' : 'Watch'));
-  const roiValue = parsePercent(life['Overall ROI']);
-  const roiQuality = roiValue === null ? MISSING : (roiValue > 0 ? 'Positive' : (roiValue === 0 ? 'Flat' : 'Negative'));
+  top.appendChild(makeCard('Open Risk', openRisk.total_stake_at_risk || MISSING));
+  top.appendChild(makeCard('Settled P/L', settled.realized_profit || MISSING));
+  top.appendChild(makeCard('CLV Coverage', clv.coverage_pct_label || MISSING));
 
   support.innerHTML = '';
-  support.appendChild(makeCard('CLV Quality', clvQuality, true));
-  support.appendChild(makeCard('ROI Quality', roiQuality, true));
+  support.appendChild(makeCard('Settled Bets', settled.settled_bet_count ?? MISSING, true));
+  support.appendChild(makeCard('EV Coverage', edgeValidation.ev_coverage_pct_label || MISSING, true));
+  support.appendChild(makeCard('Snapshot Coverage', executionQuality.snapshot_coverage_pct_label || MISSING, true));
   support.appendChild(makeCard('Overrides (Month)', accountability.overrides?.monthly_override_count ?? MISSING, true));
   support.appendChild(makeCard('Post-Mortem', accountability.post_mortem?.current_status || MISSING, true));
 }
@@ -293,161 +299,130 @@ function renderDailyRejectionSummary(data) {
 }
 
 function renderExecutionQuality(data) {
-  const eq = data.execution_quality || {};
+  const eq = data.analytics_summary?.execution_quality || {};
   const rows = [
-    ['Average slippage (last 25)', eq['Avg Slippage (last 25 bets)']],
-    ['Implied probability delta', eq['Avg Slippage (implied prob delta)']],
-    ['Execution warning', eq['Execution Warning']],
+    ['Status', eq.status || 'Insufficient data'],
+    ['Execution rows', eq.execution_row_count ?? MISSING],
+    ['Sample status', eq.sample_size_status || MISSING],
+    ['Matched to recommendation', eq.matched_to_recommendation_rate_label || MISSING],
+    ['Snapshot coverage', eq.snapshot_coverage_pct_label || MISSING],
+    ['Same-book quote coverage', eq.same_book_quote_coverage_pct_label || MISSING],
+    ['Average price drift', eq.average_price_drift_cents_label || MISSING],
+    ['Average absolute price drift', eq.average_absolute_price_drift_cents_label || MISSING],
+    ['CLV coverage', eq.clv_coverage_pct_label || MISSING],
+    ['Sample note', eq.sample_note || MISSING],
   ];
   renderRows('execution-quality-list', rows);
 }
 
 function renderRecentTotals(data) {
-  const totals = data.weekly_running_totals || {};
-  const review = data.weekly_performance_review || {};
-  const clv = review.clv_metrics || {};
-  const dq = review.decision_quality || {};
-  const overall = review.overall_betting_results || data.overall_betting_results || {};
-  const core = review.core_strategy_results || data.core_strategy_results || {};
-  const fun = review.fun_sgp_results || data.fun_sgp_results || {};
-  const policy = review.bankroll_contribution_policy || {};
-  const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}$${Math.abs(n).toFixed(2)}`);
-  const asPct = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : ''}${n}%`);
-  const asUnits = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}${Math.abs(n).toFixed(2)}u`);
+  const title = document.querySelector('#recent-totals-section h2');
+  if (title) title.textContent = 'Settled Performance';
+  const perf = data.analytics_summary?.settled_performance || {};
+  const overall = perf.overall || {};
+  const core = perf.edge_bet || {};
+  const fun = perf.fun_sgp || {};
   const rows = [
-    ['Overall Betting • Count', overall.count ?? MISSING],
-    ['Overall Betting • Profit/Loss', asMoney(overall.profit_loss)],
-    ['Overall Betting • Profit Units', asUnits(overall.profit_units)],
-    ['Overall Betting • ROI', asPct(overall.roi)],
-    ['Overall Betting • Win rate', asPct(overall.win_rate)],
-    ['Core Strategy • Count', core.count ?? MISSING],
-    ['Core Strategy • Profit/Loss', asMoney(core.profit_loss)],
-    ['Core Strategy • Profit Units', asUnits(core.profit_units)],
-    ['Core Strategy • ROI', asPct(core.roi)],
-    ['FUN SGP • Count', fun.count ?? MISSING],
-    ['FUN SGP • Profit/Loss', asMoney(fun.profit_loss)],
-    ['FUN SGP • Profit Units', asUnits(fun.profit_units)],
-    ['FUN SGP • ROI', asPct(fun.roi)],
-    ['FUN SGP • Win rate', asPct(fun.win_rate)],
-    ['CLV Metrics • Average CLV', clv.average_clv !== null && clv.average_clv !== undefined ? `${clv.average_clv}%` : MISSING],
-    ['CLV Metrics • Positive CLV rate', asPct(clv.positive_clv_rate)],
-    ['CLV Metrics • CLV win rate', asPct(clv.clv_win_rate)],
-    ['CLV Metrics • CLV interpretation', clv.clv_win_rate_interpretation || MISSING],
-    ['CLV Metrics • Total bets evaluated', clv.total_bets_evaluated ?? MISSING],
-    ['CLV Metrics • Execution slippage', clv.execution_slippage || MISSING],
-    ['Decision Quality • Profit from bets', asMoney(dq.profit_from_bets)],
-    ['Decision Quality • Profit if all sits bet', asMoney(dq.profit_if_all_sits_bet)],
-    ['Decision Quality • Decision edge', asMoney(dq.decision_edge)],
-    ['Decision Quality • Sit discipline rate', dq.sit_discipline_rate || MISSING],
-    ['Contribution Policy • Realized monthly profit', asMoney(policy.realized_monthly_profit)],
-    ['Contribution Policy • Actual bankroll', asMoney(policy.actual_bankroll)],
-    ['Contribution Policy • Strategy equity', asMoney(policy.strategy_equity)],
-    ['Contribution Policy • Realized betting profit (lifetime)', asMoney(policy.realized_betting_profit_lifetime)],
-    ['Contribution Policy • Basis months', (policy.contribution_basis_months_used || []).join(', ') || MISSING],
-    ['Contribution Policy • Next estimated contribution', asMoney(policy.next_estimated_contribution)],
-    ['Contribution Policy • Total contributions to date', asMoney(policy.total_contributions_to_date)],
-    ['Contribution Policy • Summary', policy.contribution_adjusted_summary || MISSING],
-    ['Bets', totals.Bets],
-    ['ROI', totals.ROI],
+    ['Overall • Settled bets', overall.settled_bet_count ?? MISSING],
+    ['Overall • Record', `${overall.win_count ?? 0}-${overall.loss_count ?? 0}`],
+    ['Overall • Profit/Loss', overall.realized_profit || MISSING],
+    ['Overall • Stake risked', overall.total_stake || MISSING],
+    ['Overall • ROI', overall.roi_pct_label || MISSING],
+    ['Overall • Win rate', overall.win_rate_pct_label || MISSING],
+    ['Overall • Sample status', overall.sample_size_status || MISSING],
+    ['Overall • Reliability note', overall.reliability_note || MISSING],
+    ['EDGE_BET • Settled bets', core.settled_bet_count ?? MISSING],
+    ['EDGE_BET • Profit/Loss', core.realized_profit || MISSING],
+    ['EDGE_BET • ROI', core.roi_pct_label || MISSING],
+    ['EDGE_BET • Win rate', core.win_rate_pct_label || MISSING],
+    ['FUN_SGP • Settled bets', fun.settled_bet_count ?? MISSING],
+    ['FUN_SGP • Profit/Loss', fun.realized_profit || MISSING],
+    ['FUN_SGP • ROI', fun.roi_pct_label || MISSING],
+    ['FUN_SGP • Win rate', fun.win_rate_pct_label || MISSING],
+    ['Unit metrics', overall.unit_metrics_status === 'insufficient_data' ? 'Insufficient data' : MISSING],
+    ['Unit metrics reason', overall.unit_metrics_reason || MISSING],
   ];
   renderRows('recent-totals-list', rows);
 }
 
 function renderQuantPerformance(data) {
-  const q = data.quant_performance || {};
-  const dq = data.decision_quality || {};
-  const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}$${Math.abs(n).toFixed(2)}`);
-  const asPct = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : ''}${n}%`);
-  const asRatio = (n) => (n === null || n === undefined ? MISSING : n.toFixed(2));
-  const asRet = (n) => (n === null || n === undefined ? MISSING : `${(n * 100).toFixed(1)}%`);
-  const asUnits = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}${Math.abs(n).toFixed(2)}u`);
-  const asUnitsUnsigned = (n) => (n === null || n === undefined ? MISSING : `${n.toFixed(2)}u`);
-  const asPValue = (n) => (n === null || n === undefined ? MISSING : n.toFixed(4));
+  const expectationTitle = document.querySelector('#quant-performance-section h2');
+  const clvTitle = document.querySelector('#edge-quality-section h2');
+  if (expectationTitle) expectationTitle.textContent = 'Edge Validation Summary';
+  if (clvTitle) clvTitle.textContent = 'CLV Coverage / Missing Anchors';
+
+  const summary = data.edge_validation?.summary || {};
+  const perf = data.edge_validation?.actual_vs_expected || {};
+  const clv = data.edge_validation?.clv_coverage || data.analytics_summary?.clv_analytics || {};
 
   const perfRows = [
-    ['Scope', 'EDGE_BET only'],
-    ['Bets settled', q.settled_bets_evaluated],
-    ['Total units', asUnits(q.total_units)],
-    ['Total staked units', asUnitsUnsigned(q.total_staked_units)],
-    ['Average units per bet', asUnitsUnsigned(q.average_units_per_bet)],
-    ['ROI (units)', asPct(q.roi_units)],
-    ['Expected profit', asMoney(q.expected_profit)],
-    ['Expected profit (units)', asUnits(q.expected_profit_units)],
-    ['Actual profit', asMoney(q.actual_profit)],
-    ['Actual profit (units)', asUnits(q.actual_profit_units)],
-    ['Variance', asMoney(q.variance)],
-    ['Variance (units)', asUnits(q.variance_units)],
-    ['EV realization', asRatio(q.ev_realization_ratio)],
+    ['Status', summary.status || 'Insufficient data'],
+    ['Settled bet sample', summary.settled_bet_sample_size ?? MISSING],
+    ['Settled sample status', summary.settled_sample_status || MISSING],
+    ['Settled sample note', summary.settled_sample_note || MISSING],
+    ['EV coverage', summary.ev_coverage_pct_label || MISSING],
+    ['Average edge at bet', summary.average_edge_at_bet_pct_label || MISSING],
+    ['Observed win rate', summary.observed_win_rate_pct_label || MISSING],
+    ['Breakeven win rate', summary.breakeven_win_rate_pct_label || MISSING],
+    ['95% win-rate interval', summary.win_rate_interval_95_label || MISSING],
+    ['Variance context', summary.variance_context || MISSING],
+    ['Reliability label', summary.reliability_label || MISSING],
+    ['Actual vs expected', perf.status || 'Insufficient data'],
+    ['Actual vs expected note', perf.note || perf.reason || MISSING],
+    ['Expected profit', perf.expected_profit || MISSING],
+    ['Realized profit', perf.realized_profit || MISSING],
+    ['Divergence vs expected', perf.divergence_from_expected || MISSING],
   ];
   renderRows('quant-performance-list', perfRows);
 
   const edgeRows = [
-    ['Scope', 'EDGE_BET only'],
-    ['Average CLV', asPct(dq.avg_clv)],
-    ['Positive CLV rate', asPct(dq.positive_clv_rate)],
-    ['Observed win rate', asPct(q.observed_win_rate)],
-    ['Breakeven win rate', asPct(q.breakeven_win_rate)],
-    ['Binomial p-value', asPValue(q.p_value)],
-    ['Confidence level', asPct(q.confidence_level)],
-    ['Sample status', q.sample_status || MISSING],
-    ['Avg edge detected', asPct(q.edge_at_detection)],
-    ['Avg edge at placement', asPct(q.edge_at_placement)],
-    ['Avg edge at close', asPct(q.edge_at_close)],
-    ['Edge retention', asRet(q.edge_retention)],
-    ['Closing edge retention', asRet(q.closing_edge_retention)],
-    ['Market efficiency impact', asRet(q.market_efficiency_impact)],
+    ['Coverage status', clv.coverage_status || clv.status || 'Insufficient data'],
+    ['Settled bets eligible for CLV', clv.settled_bet_count ?? clv.eligible_settled_bet_count ?? MISSING],
+    ['CLV anchored', clv.clv_anchored_count ?? clv.anchored_bet_count ?? MISSING],
+    ['CLV missing', clv.clv_missing_count ?? clv.missing_clv_bet_count ?? MISSING],
+    ['CLV coverage', clv.clv_coverage_pct_label || clv.coverage_pct_label || MISSING],
+    ['Sample status', clv.sample_size_status || MISSING],
+    ['Average CLV price delta', clv.average_clv_price_delta_label || MISSING],
+    ['Positive CLV rate', clv.positive_clv_rate_label || MISSING],
+    ['Coverage warning', clv.coverage_warning || clv.source_warning || MISSING],
   ];
   renderRows('edge-quality-list', edgeRows);
 }
 
 function renderBankrollContribution(data) {
   const policy = data.bankroll_contribution_policy || {};
-  const automation = data.bankroll_contribution_automation || {};
   const openRisk = data.open_risk_summary || {};
-  const asMoney = (n) => (n === null || n === undefined ? MISSING : `${n >= 0 ? '+' : '-'}$${Math.abs(n).toFixed(2)}`);
-  const basisMonths = (policy.contribution_basis_months_used || []).join(', ') || MISSING;
-  const profitValues = (policy.realized_profit_values_used || []).map((n) => `${n >= 0 ? '+' : '-'}$${Math.abs(Number(n)).toFixed(2)}`).join(', ') || MISSING;
+  const bankroll = data.bankroll_summary || {};
+  const asMoney = (n) => {
+    const value = numberOrNull(n);
+    return value === null ? MISSING : `${value >= 0 ? '+' : '-'}$${Math.abs(value).toFixed(2)}`;
+  };
 
-  const policyRows = [
-    ['Last contribution', asMoney(policy.last_contribution_amount)],
-    ['Last contribution date', policy.last_contribution_date || MISSING],
-    ['Contribution basis months', basisMonths],
-    ['Realized profit values used', profitValues],
-    ['Rolling average realized profit', asMoney(policy.rolling_average_realized_profit)],
-    ['Next estimated contribution', asMoney(policy.next_estimated_contribution)],
-    ['Automation status', automation.status || MISSING],
-    ['Automation last run', automation.last_run_ct || MISSING],
-    ['Automation effective month', automation.effective_month || MISSING],
-    ['Automation reason', automation.reason || MISSING],
-    ['Next expected contribution cycle', automation.next_expected_cycle || MISSING],
-  ];
-  renderRows('bankroll-contribution-policy-list', policyRows);
+  if (policy.status === 'insufficient_data') {
+    hideSection('bankroll-contribution-policy-section', true);
+  } else {
+    hideSection('bankroll-contribution-policy-section', false);
+    const policyRows = [
+      ['Status', policy.status || MISSING],
+      ['Reason', policy.reason || MISSING],
+    ];
+    renderRows('bankroll-contribution-policy-list', policyRows);
+  }
 
   const compositionRows = [
-    ['Actual bankroll', asMoney(policy.actual_bankroll)],
-    ['Reported bankroll (status source)', asMoney(policy.reported_current_bankroll)],
-    ['Bankroll reconciliation difference', asMoney(policy.bankroll_formula_difference)],
+    ['Starting bankroll', bankroll.starting_bankroll || MISSING],
+    ['Contributions', bankroll.contributions || MISSING],
+    ['Realized profit', bankroll.realized_profit || MISSING],
+    ['Derived bankroll', bankroll.actual_bankroll || MISSING],
+    ['Last recorded bankroll', bankroll.last_recorded_bankroll || MISSING],
+    ['Bankroll reconciliation difference', bankroll.bankroll_difference || MISSING],
     ['Open tickets (execution truth)', openRisk.pending_ticket_count ?? MISSING],
     ['Open stake at risk', openRisk.total_stake_at_risk || MISSING],
     ['Open exposure % of bankroll', openRisk.open_exposure_pct_of_bankroll || MISSING],
     ['EDGE_BET open exposure', (openRisk.by_bet_class || []).find((row) => row.bet_class === 'EDGE_BET')?.total_stake_at_risk || MISSING],
     ['FUN_SGP open exposure', (openRisk.by_bet_class || []).find((row) => row.bet_class === 'FUN_SGP')?.total_stake_at_risk || MISSING],
     ['Manual override exposure', openRisk.manual_override_stake_at_risk || MISSING],
-    ['Overall strategy equity', asMoney(policy.overall_strategy_equity || policy.strategy_equity)],
-    ['Core strategy equity', asMoney(policy.core_strategy_equity)],
-    ['Total external contributions', asMoney(policy.total_external_contributions)],
-    ['Realized betting profit (overall)', asMoney(policy.realized_betting_profit_lifetime)],
-    ['Core edge profit (lifetime)', asMoney(policy.core_edge_profit_lifetime)],
-    ['FUN SGP profit (lifetime)', asMoney(policy.fun_sgp_profit_lifetime)],
-    ['Starting bankroll', asMoney(policy.starting_bankroll)],
-    ['Bankroll growth from betting', asMoney(policy.bankroll_growth_from_betting)],
-    ['Bankroll growth from contributions', asMoney(policy.bankroll_growth_from_contributions)],
-    ['Realized monthly profit', asMoney(policy.realized_monthly_profit_ex_contributions)],
-    ['Actual bankroll includes external contributions', 'Yes'],
-    ['Overall strategy equity excludes external contributions', 'Yes'],
-    ['Core strategy equity excludes FUN_SGP', 'Yes'],
-    ['Units remain primary strategy metric', 'Yes'],
-    ['Interpretation', policy.monthly_interpretation || MISSING],
+    ['Interpretation', 'Ledger-derived bankroll only. Sportsbook balances are not used here.'],
   ];
   renderRows('bankroll-composition-list', compositionRows);
 }
@@ -475,7 +450,8 @@ function renderAccountability(data, range) {
   const record = graded.length > 0 ? `${wins}-${losses}${pushes > 0 ? `-${pushes}` : ''}` : MISSING;
 
   const rangeStats = data.rejection_reason_ranges?.[range] || { total_rejections: null, top_rejection_reasons: [] };
-  const dq = data.decision_quality || {};
+  const clv = data.analytics_summary?.clv_analytics || {};
+  const overrides = data.behavioral_accountability?.overrides || {};
 
   const topReasons = (rangeStats.top_rejection_reasons || []).map((item) => {
     const match = String(item).match(/^([a-z_]+)\s*\((\d+)\)$/i);
@@ -486,12 +462,13 @@ function renderAccountability(data, range) {
   const rows = [
     ['Range', range === 'today' ? 'Today' : (range === 'last_7' ? 'Last 7' : 'All-time')],
     ['Pending bet count', data.pending_count ?? (Array.isArray(data.pending_bets) ? data.pending_bets.length : 0)],
-    ['Positive CLV rate', dq.positive_clv_rate !== null && dq.positive_clv_rate !== undefined ? `${dq.positive_clv_rate}%` : MISSING],
-    ['Average CLV', dq.avg_clv],
+    ['CLV coverage', clv.coverage_pct_label || MISSING],
+    ['Positive CLV rate', clv.positive_clv_rate_label || MISSING],
     ['Recent results', data.lifetime_stats?.['Win Rate']],
     ['Passed opportunities', entries.length],
     ['Rejected opportunities', rangeStats.total_rejections],
     ['Passed record if bet', record],
+    ['Overrides this month', overrides.monthly_override_count ?? MISSING],
     ['Top rejection reasons', topReasons.join(', ') || MISSING],
   ];
 
@@ -508,6 +485,11 @@ function renderRejectedOpportunities(data) {
     Reason: prettyReason(row['Reason Code']),
   }));
 
+  if (!rows.length) {
+    hideSection('rejected-opportunities-section', true);
+    return;
+  }
+  hideSection('rejected-opportunities-section', false);
   renderTable(
     'rejected-opportunities-table',
     rows,
