@@ -634,7 +634,8 @@ function main() {
   const betDecisions = decisions.filter((row) => row.decision_kind === 'BET');
   const passBand = decisions.filter((row) => row.decision_kind === 'PASS');
   const suppressed = decisions.filter((row) => row.decision_kind === 'SUPPRESSED');
-  const betGrades = grading.filter((row) => row.grading_type === 'BET');
+  const settledBetRows = grading.filter((row) => ['BET', 'RECONCILIATION'].includes(String(row.grading_type || '').toUpperCase()));
+  const betGrades = settledBetRows;
   const passGrades = grading.filter((row) => row.grading_type === 'PASS');
   const reconciliationEvents = grading.filter((row) => row.grading_type === 'RECONCILIATION');
 
@@ -644,9 +645,9 @@ function main() {
   const contributions = bankrollEntries
     .filter((row) => row.entry_type === 'CONTRIBUTION')
     .reduce((sum, row) => sum + (parseNumber(row.amount) || 0), 0);
-  const realizedProfit = round2(betGrades.reduce((sum, row) => sum + (parseNumber(row.profit_loss) || 0), 0)) || 0;
+  const realizedProfit = round2(settledBetRows.reduce((sum, row) => sum + (parseNumber(row.profit_loss) || 0), 0)) || 0;
   const actualBankroll = round2(startingBankroll + contributions + realizedProfit) || 0;
-  const latestBankrollGrade = getLatestBankrollAnnotatedGrade(betGrades);
+  const latestBankrollGrade = getLatestBankrollAnnotatedGrade(settledBetRows);
   const lastRecordedBankroll = round2(parseNumber(latestBankrollGrade?.bankroll_after)) || actualBankroll;
   const bankrollDifference = round2(lastRecordedBankroll - actualBankroll) || 0;
   const latestRuntime = runtimeStatus.latest_hunt_current || runtimeStatus.latest_successful_hunt || null;
@@ -665,18 +666,18 @@ function main() {
   const runClassification = parseRunClassification({ runtimeStatus, freshnessHours, bankrollDiff: bankrollDifference, stateSyncGap, ledgerValidation, postMortemStatus });
   const verdict = runClassification === 'bet_ready' ? 'BET' : (runClassification === 'true_no_edge_sit' ? 'SIT' : 'BLOCKED');
 
-  const wins = betGrades.filter((row) => String(row.result || '').toUpperCase() === 'WIN').length;
-  const losses = betGrades.filter((row) => String(row.result || '').toUpperCase() === 'LOSS').length;
-  const totalGraded = betGrades.filter((row) => ['WIN', 'LOSS'].includes(String(row.result || '').toUpperCase())).length;
-  const totalStake = round2(betGrades.reduce((sum, row) => sum + (parseNumber(row.stake) || 0), 0)) || 0;
+  const wins = settledBetRows.filter((row) => String(row.result || '').toUpperCase() === 'WIN').length;
+  const losses = settledBetRows.filter((row) => String(row.result || '').toUpperCase() === 'LOSS').length;
+  const totalGraded = settledBetRows.filter((row) => ['WIN', 'LOSS'].includes(String(row.result || '').toUpperCase())).length;
+  const totalStake = round2(settledBetRows.reduce((sum, row) => sum + (parseNumber(row.stake) || 0), 0)) || 0;
   const roi = totalStake > 0 ? round2((realizedProfit / totalStake) * 100) : null;
   const avgClv = (() => {
-    const values = betGrades.map((row) => parsePercentString(row.clv)).filter((value) => value !== null);
+    const values = settledBetRows.map((row) => parsePercentString(row.clv)).filter((value) => value !== null);
     return values.length ? round2(values.reduce((sum, value) => sum + value, 0) / values.length) : null;
   })();
 
-  const latestDate = latestRuntime?.date_key || betGrades.at(-1)?.date || null;
-  const todaysBets = betGrades.filter((row) => row.date === latestDate).map((row) => ({
+  const latestDate = latestRuntime?.date_key || settledBetRows.at(-1)?.date || null;
+  const todaysBets = settledBetRows.filter((row) => row.date === latestDate).map((row) => ({
     'Timestamp (CT)': row.timestamp_ct,
     Sport: decisions.find((entry) => entry.selection === row.selection && entry.target_date === row.date)?.sport || '',
     Market: decisions.find((entry) => entry.selection === row.selection && entry.target_date === row.date)?.market_type || '',
@@ -696,15 +697,15 @@ function main() {
   const passWins = passGradeResolved.filter((row) => String(row.result || '').toLowerCase() === 'win').length;
   const passLosses = passGradeResolved.filter((row) => String(row.result || '').toLowerCase() === 'loss').length;
   const passNet = round2(passGradeResolved.reduce((sum, row) => sum + (parseNumber(row.profit_loss) || 0), 0)) || 0;
-  const pendingBets = buildPendingBets({ executionLog, betGrades, reconciliationEvents });
+  const pendingBets = buildPendingBets({ executionLog, betGrades: settledBetRows, reconciliationEvents });
   const openRiskSummary = buildOpenRiskSummary({ pendingBets, bankroll: lastRecordedBankroll, decisionIndex });
   const placementSnapshotSummary = buildPlacementSnapshotSummary(executionLog);
-  const clvCoverageSummary = buildClvCoverageSummary(betGrades);
-  const settledValidationRows = buildSettledEdgeValidationRows({ betGrades, decisionIndex, executionIndex });
-  const settledPerformanceOverall = buildSettledPerformanceSummary(betGrades);
-  const settledPerformanceCore = buildSettledPerformanceSummary(betGrades.filter((row) => row.bet_class === 'EDGE_BET'));
-  const settledPerformanceFun = buildSettledPerformanceSummary(betGrades.filter((row) => row.bet_class === 'FUN_SGP'));
-  const clvAnalytics = buildClvAnalyticsSummary(betGrades);
+  const clvCoverageSummary = buildClvCoverageSummary(settledBetRows);
+  const settledValidationRows = buildSettledEdgeValidationRows({ betGrades: settledBetRows, decisionIndex, executionIndex });
+  const settledPerformanceOverall = buildSettledPerformanceSummary(settledBetRows);
+  const settledPerformanceCore = buildSettledPerformanceSummary(settledBetRows.filter((row) => row.bet_class === 'EDGE_BET'));
+  const settledPerformanceFun = buildSettledPerformanceSummary(settledBetRows.filter((row) => row.bet_class === 'FUN_SGP'));
+  const clvAnalytics = buildClvAnalyticsSummary(settledBetRows);
   const executionQualitySummary = buildExecutionQualitySummary(executionLog, clvCoverageSummary);
   const expectationSummary = buildExpectationSummary(settledValidationRows);
   const edgeValidationSummary = buildEdgeValidationSummary(settledValidationRows, clvCoverageSummary, expectationSummary);
@@ -740,12 +741,12 @@ function main() {
       'Circuit Breaker': 'OFF',
     },
     lifetime_stats: {
-      'Total Bets': betGrades.length,
+      'Total Bets': settledBetRows.length,
       'Win Rate': totalGraded ? `${round2((wins / totalGraded) * 100)}% (${wins}-${losses})` : 'N/A',
       'Overall ROI': roi === null ? 'N/A' : `${roi}%`,
       'Average CLV': avgClv === null ? 'N/A' : `${avgClv}%`,
     },
-    bet_log: betGrades.slice().reverse().map((row) => ({
+    bet_log: settledBetRows.slice().reverse().map((row) => ({
       Date: row.date,
       'Timestamp (CT)': row.timestamp_ct,
       Sport: decisions.find((entry) => entry.selection === row.selection && entry.target_date === row.date)?.sport || '',

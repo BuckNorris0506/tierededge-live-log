@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-03-18T01:37:01.349Z",
-  "ending_bankroll": 1326.13,
-  "annotated_count": 20,
+  "generated_at_utc": "2026-03-18T20:26:47.483Z",
+  "ending_bankroll": 1300.53,
+  "annotated_count": 23,
   "trace": [
     {
       "date": "2026-02-28",
@@ -275,6 +275,42 @@
       "bankroll_before": 1293.63,
       "bankroll_after": 1326.13,
       "realized_pl_contribution": 32.5,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-03-18",
+      "timestamp_ct": "2026-03-18T10:05:00-05:00",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "reconciliation::execution::manual-recovered::2026-03-17::bruins-ml::2026-03-18T10:05:00-05:00",
+      "bankroll_before": 1326.13,
+      "bankroll_after": 1305.63,
+      "realized_pl_contribution": -20.5,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-03-18",
+      "timestamp_ct": "2026-03-18T10:05:00-05:00",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "reconciliation::execution::manual-recovered::2026-03-17::golden-knights-ml::2026-03-18T10:05:00-05:00",
+      "bankroll_before": 1305.63,
+      "bankroll_after": 1295.13,
+      "realized_pl_contribution": -10.5,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-03-18",
+      "timestamp_ct": "2026-03-18T10:05:00-05:00",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "reconciliation::execution::manual-recovered::2026-03-17::wild-ml::2026-03-18T10:05:00-05:00",
+      "bankroll_before": 1295.13,
+      "bankroll_after": 1300.53,
+      "realized_pl_contribution": 5.4,
       "included_in_derived_bankroll": true,
       "included_in_displayed_bankroll": true
     }

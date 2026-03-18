@@ -1,169 +1,9 @@
 {
-  "updated_at": "2026-03-18T01:37:01.272Z",
+  "updated_at": "2026-03-18T20:26:47.319Z",
   "sports": {
     "basketball_nba": {
-      "fetched_at": "2026-03-17T20:09:59.199Z",
+      "fetched_at": "2026-03-18T20:25:21.471Z",
       "events": [
-        {
-          "id": "99121dd3b759ee039a7172119402defe",
-          "sport_key": "basketball_nba",
-          "sport_title": "NBA",
-          "commence_time": "2026-03-14T22:11:00Z",
-          "completed": true,
-          "home_team": "Boston Celtics",
-          "away_team": "Washington Wizards",
-          "scores": [
-            {
-              "name": "Boston Celtics",
-              "score": "111"
-            },
-            {
-              "name": "Washington Wizards",
-              "score": "100"
-            }
-          ],
-          "last_update": "2026-03-15T10:32:59Z"
-        },
-        {
-          "id": "b356eed95fac84c751e3a07a9b013bdb",
-          "sport_key": "basketball_nba",
-          "sport_title": "NBA",
-          "commence_time": "2026-03-15T00:12:00Z",
-          "completed": true,
-          "home_team": "Miami Heat",
-          "away_team": "Orlando Magic",
-          "scores": [
-            {
-              "name": "Miami Heat",
-              "score": "117"
-            },
-            {
-              "name": "Orlando Magic",
-              "score": "121"
-            }
-          ],
-          "last_update": "2026-03-15T10:32:59Z"
-        },
-        {
-          "id": "5b7467a257447a40f885525e863992a5",
-          "sport_key": "basketball_nba",
-          "sport_title": "NBA",
-          "commence_time": "2026-03-15T00:41:00Z",
-          "completed": true,
-          "home_team": "Los Angeles Lakers",
-          "away_team": "Denver Nuggets",
-          "scores": [
-            {
-              "name": "Los Angeles Lakers",
-              "score": "127"
-            },
-            {
-              "name": "Denver Nuggets",
-              "score": "125"
-            }
-          ],
-          "last_update": "2026-03-15T10:32:59Z"
-        },
-        {
-          "id": "fd3cb91e05ed15d6fa70f51f1d305f3b",
-          "sport_key": "basketball_nba",
-          "sport_title": "NBA",
-          "commence_time": "2026-03-15T02:47:00Z",
-          "completed": true,
-          "home_team": "Los Angeles Clippers",
-          "away_team": "Sacramento Kings",
-          "scores": [
-            {
-              "name": "Los Angeles Clippers",
-              "score": "109"
-            },
-            {
-              "name": "Sacramento Kings",
-              "score": "118"
-            }
-          ],
-          "last_update": "2026-03-15T10:32:59Z"
-        },
-        {
-          "id": "689cb75979724773a16b617332228d55",
-          "sport_key": "basketball_nba",
-          "sport_title": "NBA",
-          "commence_time": "2026-03-15T17:12:00Z",
-          "completed": true,
-          "home_team": "Oklahoma City Thunder",
-          "away_team": "Minnesota Timberwolves",
-          "scores": [
-            {
-              "name": "Oklahoma City Thunder",
-              "score": "116"
-            },
-            {
-              "name": "Minnesota Timberwolves",
-              "score": "103"
-            }
-          ],
-          "last_update": "2026-03-16T09:45:32Z"
-        },
-        {
-          "id": "45f9fc1bf871b54d2392e9ec6506097f",
-          "sport_key": "basketball_nba",
-          "sport_title": "NBA",
-          "commence_time": "2026-03-15T19:41:00Z",
-          "completed": true,
-          "home_team": "Cleveland Cavaliers",
-          "away_team": "Dallas Mavericks",
-          "scores": [
-            {
-              "name": "Cleveland Cavaliers",
-              "score": "120"
-            },
-            {
-              "name": "Dallas Mavericks",
-              "score": "130"
-            }
-          ],
-          "last_update": "2026-03-16T09:45:32Z"
-        },
-        {
-          "id": "ee20dd8148c700589a380b7f5b5c1010",
-          "sport_key": "basketball_nba",
-          "sport_title": "NBA",
-          "commence_time": "2026-03-15T19:42:00Z",
-          "completed": true,
-          "home_team": "Toronto Raptors",
-          "away_team": "Detroit Pistons",
-          "scores": [
-            {
-              "name": "Toronto Raptors",
-              "score": "119"
-            },
-            {
-              "name": "Detroit Pistons",
-              "score": "108"
-            }
-          ],
-          "last_update": "2026-03-16T09:45:32Z"
-        },
-        {
-          "id": "4d87f60750a28b81c5a82803e3b412a7",
-          "sport_key": "basketball_nba",
-          "sport_title": "NBA",
-          "commence_time": "2026-03-15T19:42:00Z",
-          "completed": true,
-          "home_team": "Milwaukee Bucks",
-          "away_team": "Indiana Pacers",
-          "scores": [
-            {
-              "name": "Milwaukee Bucks",
-              "score": "134"
-            },
-            {
-              "name": "Indiana Pacers",
-              "score": "123"
-            }
-          ],
-          "last_update": "2026-03-16T09:45:32Z"
-        },
         {
           "id": "6420f72c1e96bb40f11548af8dbb2950",
           "sport_key": "basketball_nba",
@@ -385,90 +225,250 @@
           "last_update": "2026-03-17T10:10:24Z"
         },
         {
-          "id": "97559ed79c99e86d90fc2f9d2059e761",
-          "sport_key": "basketball_nba",
-          "sport_title": "NBA",
-          "commence_time": "2026-03-17T23:10:00Z",
-          "completed": false,
-          "home_team": "Charlotte Hornets",
-          "away_team": "Miami Heat",
-          "scores": null,
-          "last_update": null
-        },
-        {
           "id": "ef96df74a063b75de7971612d1c1b18a",
           "sport_key": "basketball_nba",
           "sport_title": "NBA",
           "commence_time": "2026-03-17T23:10:00Z",
-          "completed": false,
+          "completed": true,
           "home_team": "Washington Wizards",
           "away_team": "Detroit Pistons",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Washington Wizards",
+              "score": "117"
+            },
+            {
+              "name": "Detroit Pistons",
+              "score": "130"
+            }
+          ],
+          "last_update": "2026-03-18T09:36:16Z"
+        },
+        {
+          "id": "97559ed79c99e86d90fc2f9d2059e761",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-17T23:11:00Z",
+          "completed": true,
+          "home_team": "Charlotte Hornets",
+          "away_team": "Miami Heat",
+          "scores": [
+            {
+              "name": "Charlotte Hornets",
+              "score": "136"
+            },
+            {
+              "name": "Miami Heat",
+              "score": "106"
+            }
+          ],
+          "last_update": "2026-03-18T09:36:16Z"
         },
         {
           "id": "1071bc9088322a8c42c7cd80db4c8c6f",
           "sport_key": "basketball_nba",
           "sport_title": "NBA",
-          "commence_time": "2026-03-17T23:10:00Z",
-          "completed": false,
+          "commence_time": "2026-03-17T23:11:00Z",
+          "completed": true,
           "home_team": "Orlando Magic",
           "away_team": "Oklahoma City Thunder",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Orlando Magic",
+              "score": "108"
+            },
+            {
+              "name": "Oklahoma City Thunder",
+              "score": "113"
+            }
+          ],
+          "last_update": "2026-03-18T09:36:16Z"
         },
         {
           "id": "9eba01d4cfa06caacc9d62a166b5a632",
           "sport_key": "basketball_nba",
           "sport_title": "NBA",
-          "commence_time": "2026-03-17T23:40:00Z",
-          "completed": false,
+          "commence_time": "2026-03-17T23:42:00Z",
+          "completed": true,
           "home_team": "New York Knicks",
           "away_team": "Indiana Pacers",
-          "scores": null,
-          "last_update": null
-        },
-        {
-          "id": "8951b3300ad3588888cb2397ea770d5e",
-          "sport_key": "basketball_nba",
-          "sport_title": "NBA",
-          "commence_time": "2026-03-18T00:10:00Z",
-          "completed": false,
-          "home_team": "Milwaukee Bucks",
-          "away_team": "Cleveland Cavaliers",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "New York Knicks",
+              "score": "136"
+            },
+            {
+              "name": "Indiana Pacers",
+              "score": "110"
+            }
+          ],
+          "last_update": "2026-03-18T09:36:16Z"
         },
         {
           "id": "79806ec6c1db4dc28fa93612d8269dc0",
           "sport_key": "basketball_nba",
           "sport_title": "NBA",
           "commence_time": "2026-03-18T00:10:00Z",
-          "completed": false,
+          "completed": true,
           "home_team": "Minnesota Timberwolves",
           "away_team": "Phoenix Suns",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Minnesota Timberwolves",
+              "score": "116"
+            },
+            {
+              "name": "Phoenix Suns",
+              "score": "104"
+            }
+          ],
+          "last_update": "2026-03-18T09:36:16Z"
         },
         {
-          "id": "259082f7f5b98968cfaa3245ddc3da0b",
+          "id": "8951b3300ad3588888cb2397ea770d5e",
           "sport_key": "basketball_nba",
           "sport_title": "NBA",
-          "commence_time": "2026-03-18T01:10:00Z",
-          "completed": false,
-          "home_team": "Denver Nuggets",
-          "away_team": "Philadelphia 76ers",
-          "scores": null,
-          "last_update": null
+          "commence_time": "2026-03-18T00:12:00Z",
+          "completed": true,
+          "home_team": "Milwaukee Bucks",
+          "away_team": "Cleveland Cavaliers",
+          "scores": [
+            {
+              "name": "Milwaukee Bucks",
+              "score": "116"
+            },
+            {
+              "name": "Cleveland Cavaliers",
+              "score": "123"
+            }
+          ],
+          "last_update": "2026-03-18T09:36:16Z"
         },
         {
           "id": "352d39711b11d736c88876aa668df022",
           "sport_key": "basketball_nba",
           "sport_title": "NBA",
-          "commence_time": "2026-03-18T03:10:00Z",
-          "completed": false,
+          "commence_time": "2026-03-18T02:11:00Z",
+          "completed": true,
           "home_team": "Sacramento Kings",
           "away_team": "San Antonio Spurs",
+          "scores": [
+            {
+              "name": "Sacramento Kings",
+              "score": "104"
+            },
+            {
+              "name": "San Antonio Spurs",
+              "score": "132"
+            }
+          ],
+          "last_update": "2026-03-18T09:36:16Z"
+        },
+        {
+          "id": "259082f7f5b98968cfaa3245ddc3da0b",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-18T02:13:00Z",
+          "completed": true,
+          "home_team": "Denver Nuggets",
+          "away_team": "Philadelphia 76ers",
+          "scores": [
+            {
+              "name": "Denver Nuggets",
+              "score": "124"
+            },
+            {
+              "name": "Philadelphia 76ers",
+              "score": "96"
+            }
+          ],
+          "last_update": "2026-03-18T09:36:16Z"
+        },
+        {
+          "id": "559e3b7523e4be26e5788e58c1e6067b",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-18T23:10:00Z",
+          "completed": false,
+          "home_team": "Boston Celtics",
+          "away_team": "Golden State Warriors",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "b8069101e24852c60cabdc606432eee7",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-18T23:40:00Z",
+          "completed": false,
+          "home_team": "Brooklyn Nets",
+          "away_team": "Oklahoma City Thunder",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "ad16cbe50231fbc2c6e23cc24db31365",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-18T23:40:00Z",
+          "completed": false,
+          "home_team": "Indiana Pacers",
+          "away_team": "Portland Trail Blazers",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "a9e7cf9b2e8337be24987faf71d38562",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-19T00:10:00Z",
+          "completed": false,
+          "home_team": "Chicago Bulls",
+          "away_team": "Toronto Raptors",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "17096eee549e2159e71d78bb3849db57",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-19T00:10:00Z",
+          "completed": false,
+          "home_team": "New Orleans Pelicans",
+          "away_team": "Los Angeles Clippers",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "c159c8836e9475f580cc678470d80c1b",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-19T00:10:00Z",
+          "completed": false,
+          "home_team": "Minnesota Timberwolves",
+          "away_team": "Utah Jazz",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "d1b7a6b86d3200f31d702d039df933e1",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-19T00:40:00Z",
+          "completed": false,
+          "home_team": "Dallas Mavericks",
+          "away_team": "Atlanta Hawks",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "88b9327dddb11904d24fb9f317b5db4f",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-19T00:40:00Z",
+          "completed": false,
+          "home_team": "Memphis Grizzlies",
+          "away_team": "Denver Nuggets",
           "scores": null,
           "last_update": null
         },
@@ -486,248 +486,8 @@
       ]
     },
     "icehockey_nhl": {
-      "fetched_at": "2026-03-17T20:09:59.267Z",
+      "fetched_at": "2026-03-18T20:25:21.536Z",
       "events": [
-        {
-          "id": "1fee958390166dc50c6902e968f2dc0c",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-14T22:09:00Z",
-          "completed": true,
-          "home_team": "Minnesota Wild",
-          "away_team": "New York Rangers",
-          "scores": [
-            {
-              "name": "Minnesota Wild",
-              "score": "2"
-            },
-            {
-              "name": "New York Rangers",
-              "score": "4"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "95a632998d5d7025e31824cb237c992f",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-14T23:08:00Z",
-          "completed": true,
-          "home_team": "New Jersey Devils",
-          "away_team": "Los Angeles Kings",
-          "scores": [
-            {
-              "name": "New Jersey Devils",
-              "score": "6"
-            },
-            {
-              "name": "Los Angeles Kings",
-              "score": "4"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "68ce016f127b0e8f3eb3aa2c67526118",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-14T23:10:00Z",
-          "completed": true,
-          "home_team": "Tampa Bay Lightning",
-          "away_team": "Carolina Hurricanes",
-          "scores": [
-            {
-              "name": "Tampa Bay Lightning",
-              "score": "2"
-            },
-            {
-              "name": "Carolina Hurricanes",
-              "score": "4"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "76ee9a295b1b046a49fb344e592b9b7c",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-14T23:15:00Z",
-          "completed": true,
-          "home_team": "New York Islanders",
-          "away_team": "Calgary Flames",
-          "scores": [
-            {
-              "name": "New York Islanders",
-              "score": "3"
-            },
-            {
-              "name": "Calgary Flames",
-              "score": "2"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "9a3af7aea7a36d27560ecd2a641e2943",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-14T23:15:00Z",
-          "completed": true,
-          "home_team": "Montréal Canadiens",
-          "away_team": "San Jose Sharks",
-          "scores": [
-            {
-              "name": "Montréal Canadiens",
-              "score": "2"
-            },
-            {
-              "name": "San Jose Sharks",
-              "score": "4"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "2077a7a7423aa57225a6fa2283322bed",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-14T23:15:17Z",
-          "completed": true,
-          "home_team": "Buffalo Sabres",
-          "away_team": "Toronto Maple Leafs",
-          "scores": [
-            {
-              "name": "Buffalo Sabres",
-              "score": "3"
-            },
-            {
-              "name": "Toronto Maple Leafs",
-              "score": "2"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "d53b53862a9714a36122e0371d4f594c",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-14T23:40:00Z",
-          "completed": true,
-          "home_team": "Philadelphia Flyers",
-          "away_team": "Columbus Blue Jackets",
-          "scores": [
-            {
-              "name": "Philadelphia Flyers",
-              "score": "1"
-            },
-            {
-              "name": "Columbus Blue Jackets",
-              "score": "2"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "f32c93fecae58dc645384924c8baf7c3",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-15T00:08:00Z",
-          "completed": true,
-          "home_team": "Dallas Stars",
-          "away_team": "Detroit Red Wings",
-          "scores": [
-            {
-              "name": "Dallas Stars",
-              "score": "3"
-            },
-            {
-              "name": "Detroit Red Wings",
-              "score": "2"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "1783a9758edc08a032ead5945c265c09",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-15T01:08:00Z",
-          "completed": true,
-          "home_team": "Utah Mammoth",
-          "away_team": "Pittsburgh Penguins",
-          "scores": [
-            {
-              "name": "Utah Mammoth",
-              "score": "3"
-            },
-            {
-              "name": "Pittsburgh Penguins",
-              "score": "4"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "3f24fac6ebd64df7d4212f47e1ca348f",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-15T02:08:40Z",
-          "completed": true,
-          "home_team": "Vegas Golden Knights",
-          "away_team": "Chicago Blackhawks",
-          "scores": [
-            {
-              "name": "Vegas Golden Knights",
-              "score": "4"
-            },
-            {
-              "name": "Chicago Blackhawks",
-              "score": "0"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "a30d764f88e80e48ab6a6701f612d4b7",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-15T02:10:08Z",
-          "completed": true,
-          "home_team": "Vancouver Canucks",
-          "away_team": "Seattle Kraken",
-          "scores": [
-            {
-              "name": "Vancouver Canucks",
-              "score": "2"
-            },
-            {
-              "name": "Seattle Kraken",
-              "score": "5"
-            }
-          ],
-          "last_update": "2026-03-15T18:55:21Z"
-        },
-        {
-          "id": "a75f0e1a856bd60f28f5b0c57fc99270",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-15T19:08:32Z",
-          "completed": true,
-          "home_team": "Winnipeg Jets",
-          "away_team": "St Louis Blues",
-          "scores": [
-            {
-              "name": "Winnipeg Jets",
-              "score": "3"
-            },
-            {
-              "name": "St Louis Blues",
-              "score": "2"
-            }
-          ],
-          "last_update": "2026-03-16T08:03:13Z"
-        },
         {
           "id": "86375ff5a0a406f1f278039808088533",
           "sport_key": "icehockey_nhl",
@@ -929,120 +689,190 @@
           "last_update": "2026-03-17T09:45:16Z"
         },
         {
+          "id": "ac2572c449fcdbfd787a79d60b69e7ee",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-17T23:08:07Z",
+          "completed": true,
+          "home_team": "Toronto Maple Leafs",
+          "away_team": "New York Islanders",
+          "scores": [
+            {
+              "name": "Toronto Maple Leafs",
+              "score": "1"
+            },
+            {
+              "name": "New York Islanders",
+              "score": "3"
+            }
+          ],
+          "last_update": "2026-03-18T10:14:35Z"
+        },
+        {
           "id": "31ff36b939589e06055491f1d8aec95a",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-17T23:10:00Z",
-          "completed": false,
+          "commence_time": "2026-03-17T23:08:22Z",
+          "completed": true,
           "home_team": "Montréal Canadiens",
           "away_team": "Boston Bruins",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Montréal Canadiens",
+              "score": "3"
+            },
+            {
+              "name": "Boston Bruins",
+              "score": "2"
+            }
+          ],
+          "last_update": "2026-03-18T10:14:35Z"
         },
         {
           "id": "67ba228ae7a60bbab128fd6274fe262c",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-17T23:10:00Z",
-          "completed": false,
+          "commence_time": "2026-03-17T23:08:46Z",
+          "completed": true,
           "home_team": "Columbus Blue Jackets",
           "away_team": "Carolina Hurricanes",
-          "scores": null,
-          "last_update": null
-        },
-        {
-          "id": "ac2572c449fcdbfd787a79d60b69e7ee",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-17T23:10:00Z",
-          "completed": false,
-          "home_team": "Toronto Maple Leafs",
-          "away_team": "New York Islanders",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Columbus Blue Jackets",
+              "score": "5"
+            },
+            {
+              "name": "Carolina Hurricanes",
+              "score": "1"
+            }
+          ],
+          "last_update": "2026-03-18T10:14:35Z"
         },
         {
           "id": "c0056bb3deb856d36e5c16024094563a",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-17T23:40:00Z",
-          "completed": false,
+          "commence_time": "2026-03-17T23:38:10Z",
+          "completed": true,
           "home_team": "Chicago Blackhawks",
           "away_team": "Minnesota Wild",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Chicago Blackhawks",
+              "score": "3"
+            },
+            {
+              "name": "Minnesota Wild",
+              "score": "4"
+            }
+          ],
+          "last_update": "2026-03-18T10:14:35Z"
         },
         {
           "id": "95d3df5719f8cf3e75b7ac785e4833f8",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-18T00:10:00Z",
-          "completed": false,
+          "commence_time": "2026-03-18T00:08:55Z",
+          "completed": true,
           "home_team": "Winnipeg Jets",
           "away_team": "Nashville Predators",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Winnipeg Jets",
+              "score": "3"
+            },
+            {
+              "name": "Nashville Predators",
+              "score": "4"
+            }
+          ],
+          "last_update": "2026-03-18T10:14:35Z"
         },
         {
           "id": "4b661c344ab22cd5a70faff8982191a2",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-18T01:10:00Z",
-          "completed": false,
+          "commence_time": "2026-03-18T01:08:11Z",
+          "completed": true,
           "home_team": "Edmonton Oilers",
           "away_team": "San Jose Sharks",
-          "scores": null,
-          "last_update": null
-        },
-        {
-          "id": "86347cbc349f3048f144432388c72927",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-18T02:10:00Z",
-          "completed": false,
-          "home_team": "Vegas Golden Knights",
-          "away_team": "Buffalo Sabres",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Edmonton Oilers",
+              "score": "5"
+            },
+            {
+              "name": "San Jose Sharks",
+              "score": "3"
+            }
+          ],
+          "last_update": "2026-03-18T10:14:35Z"
         },
         {
           "id": "99a0d9c87d9951439455d009358c21f6",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-18T02:10:00Z",
-          "completed": false,
+          "commence_time": "2026-03-18T02:08:09Z",
+          "completed": true,
           "home_team": "Vancouver Canucks",
           "away_team": "Florida Panthers",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Vancouver Canucks",
+              "score": "5"
+            },
+            {
+              "name": "Florida Panthers",
+              "score": "2"
+            }
+          ],
+          "last_update": "2026-03-18T10:14:35Z"
+        },
+        {
+          "id": "86347cbc349f3048f144432388c72927",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-18T02:08:44Z",
+          "completed": true,
+          "home_team": "Vegas Golden Knights",
+          "away_team": "Buffalo Sabres",
+          "scores": [
+            {
+              "name": "Vegas Golden Knights",
+              "score": "0"
+            },
+            {
+              "name": "Buffalo Sabres",
+              "score": "2"
+            }
+          ],
+          "last_update": "2026-03-18T10:14:35Z"
         },
         {
           "id": "b04ac08fd99757e46ef19fd418ef1127",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-18T02:10:00Z",
-          "completed": false,
+          "commence_time": "2026-03-18T02:20:48Z",
+          "completed": true,
           "home_team": "Seattle Kraken",
           "away_team": "Tampa Bay Lightning",
-          "scores": null,
-          "last_update": null
-        },
-        {
-          "id": "ec0dcf609ea452b05d902d76b892c658",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-18T23:00:00Z",
-          "completed": false,
-          "home_team": "Carolina Hurricanes",
-          "away_team": "Pittsburgh Penguins",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Seattle Kraken",
+              "score": "2"
+            },
+            {
+              "name": "Tampa Bay Lightning",
+              "score": "6"
+            }
+          ],
+          "last_update": "2026-03-18T10:14:35Z"
         },
         {
           "id": "c781e17c9b7e43ff86ca0cdcda2fd20c",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-18T23:00:00Z",
+          "commence_time": "2026-03-18T23:09:00Z",
           "completed": false,
           "home_team": "New York Rangers",
           "away_team": "New Jersey Devils",
@@ -1050,10 +880,21 @@
           "last_update": null
         },
         {
+          "id": "ec0dcf609ea452b05d902d76b892c658",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-18T23:10:00Z",
+          "completed": false,
+          "home_team": "Carolina Hurricanes",
+          "away_team": "Pittsburgh Penguins",
+          "scores": null,
+          "last_update": null
+        },
+        {
           "id": "069a610fbb90adb38785efe8ea88a213",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-18T23:30:00Z",
+          "commence_time": "2026-03-18T23:40:00Z",
           "completed": false,
           "home_team": "Washington Capitals",
           "away_team": "Ottawa Senators",
@@ -1064,7 +905,7 @@
           "id": "3823357462fd967d18f73586a4703358",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-19T01:30:00Z",
+          "commence_time": "2026-03-19T01:40:00Z",
           "completed": false,
           "home_team": "Calgary Flames",
           "away_team": "St Louis Blues",
@@ -1075,7 +916,7 @@
           "id": "cc0a178e1b67dd05da493c110f6a086a",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-19T01:30:00Z",
+          "commence_time": "2026-03-19T01:40:00Z",
           "completed": false,
           "home_team": "Colorado Avalanche",
           "away_team": "Dallas Stars",
@@ -1086,9 +927,130 @@
           "id": "aa034f3d5a318a5142817618dc54cbfa",
           "sport_key": "icehockey_nhl",
           "sport_title": "NHL",
-          "commence_time": "2026-03-19T02:00:00Z",
+          "commence_time": "2026-03-19T02:10:00Z",
           "completed": false,
           "home_team": "Anaheim Ducks",
+          "away_team": "Philadelphia Flyers",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "0373028254e45b674f987e50a4bbb233",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-19T23:10:00Z",
+          "completed": false,
+          "home_team": "Boston Bruins",
+          "away_team": "Winnipeg Jets",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "1571037e949c7a62c6aa0f3c594a698f",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-19T23:10:00Z",
+          "completed": false,
+          "home_team": "Columbus Blue Jackets",
+          "away_team": "New York Rangers",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "259601128581caaa207c95135c0aff7e",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-19T23:10:00Z",
+          "completed": false,
+          "home_team": "Detroit Red Wings",
+          "away_team": "Montréal Canadiens",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "c2d8bd5835815f4107370b4ba9ee1636",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-19T23:10:00Z",
+          "completed": false,
+          "home_team": "Ottawa Senators",
+          "away_team": "New York Islanders",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "c61de5d8abe10744c5fb337ec50dea3c",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-19T23:40:00Z",
+          "completed": false,
+          "home_team": "Minnesota Wild",
+          "away_team": "Chicago Blackhawks",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "b6caa925af28045747ada8a612592aea",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-20T00:10:00Z",
+          "completed": false,
+          "home_team": "Nashville Predators",
+          "away_team": "Seattle Kraken",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "f81404632adecc70648182abc130750a",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-20T01:10:00Z",
+          "completed": false,
+          "home_team": "Edmonton Oilers",
+          "away_team": "Florida Panthers",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "e55d0f25aa1221df5be1126478ac58c7",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-20T02:00:00Z",
+          "completed": false,
+          "home_team": "San Jose Sharks",
+          "away_team": "Buffalo Sabres",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "eb0b43faa851ab35eb85a7822801e644",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-20T02:00:00Z",
+          "completed": false,
+          "home_team": "Vancouver Canucks",
+          "away_team": "Tampa Bay Lightning",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "5aaf98eb2e787ab8f4a7b4878804631a",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-20T02:00:00Z",
+          "completed": false,
+          "home_team": "Vegas Golden Knights",
+          "away_team": "Utah Mammoth",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "45686e62dbc445766dbde5cb892c7b6a",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-20T02:40:00Z",
+          "completed": false,
+          "home_team": "Los Angeles Kings",
           "away_team": "Philadelphia Flyers",
           "scores": null,
           "last_update": null
@@ -1096,437 +1058,207 @@
       ]
     },
     "basketball_ncaab": {
-      "fetched_at": "2026-03-17T20:09:59.331Z",
+      "fetched_at": "2026-03-18T20:25:21.614Z",
       "events": [
-        {
-          "id": "44ced3be6a50900bad5dbab08bdae716",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-14T20:10:00Z",
-          "completed": true,
-          "home_team": "VCU Rams",
-          "away_team": "Saint Joseph's Hawks",
-          "scores": [
-            {
-              "name": "VCU Rams",
-              "score": "77"
-            },
-            {
-              "name": "Saint Joseph's Hawks",
-              "score": "64"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "bfdb588cb4485338438bbb78c5aac525",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-14T21:41:26Z",
-          "completed": true,
-          "home_team": "Wichita St Shockers",
-          "away_team": "Tulsa Golden Hurricane",
-          "scores": [
-            {
-              "name": "Wichita St Shockers",
-              "score": "81"
-            },
-            {
-              "name": "Tulsa Golden Hurricane",
-              "score": "68"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "eab408a3dcdfcd7113768d179b641156",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-14T22:11:09Z",
-          "completed": true,
-          "home_team": "Utah State Aggies",
-          "away_team": "San Diego St Aztecs",
-          "scores": [
-            {
-              "name": "Utah State Aggies",
-              "score": "73"
-            },
-            {
-              "name": "San Diego St Aztecs",
-              "score": "62"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "b9ce04b7f20bd9b456723cda77654a9d",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-14T22:11:38Z",
-          "completed": true,
-          "home_team": "Arizona Wildcats",
-          "away_team": "Houston Cougars",
-          "scores": [
-            {
-              "name": "Arizona Wildcats",
-              "score": "79"
-            },
-            {
-              "name": "Houston Cougars",
-              "score": "74"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "4248fa5bf8f63e8ba648f2e69fa7dd10",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-14T22:29:00Z",
-          "completed": true,
-          "home_team": "St. John's Red Storm",
-          "away_team": "UConn Huskies",
-          "scores": [
-            {
-              "name": "St. John's Red Storm",
-              "score": "72"
-            },
-            {
-              "name": "UConn Huskies",
-              "score": "52"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "39a1fe5442f41631421431e40cc625e8",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-14T23:33:06Z",
-          "completed": true,
-          "home_team": "Southern Jaguars",
-          "away_team": "Prairie View Panthers",
-          "scores": [
-            {
-              "name": "Southern Jaguars",
-              "score": "66"
-            },
-            {
-              "name": "Prairie View Panthers",
-              "score": "72"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "813b3559328533ce3501d5b4442d48d3",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-15T00:04:14Z",
-          "completed": true,
-          "home_team": "Akron Zips",
-          "away_team": "Toledo Rockets",
-          "scores": [
-            {
-              "name": "Akron Zips",
-              "score": "79"
-            },
-            {
-              "name": "Toledo Rockets",
-              "score": "76"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "7bb5909479c5ed4a61812c7c23c149c5",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-15T00:40:00Z",
-          "completed": true,
-          "home_team": "Duke Blue Devils",
-          "away_team": "Virginia Cavaliers",
-          "scores": [
-            {
-              "name": "Duke Blue Devils",
-              "score": "74"
-            },
-            {
-              "name": "Virginia Cavaliers",
-              "score": "70"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "e8778b28236aba0192b11b0e7aa5ba93",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-15T00:49:00Z",
-          "completed": true,
-          "home_team": "Louisiana Tech Bulldogs",
-          "away_team": "Kennesaw St Owls",
-          "scores": [
-            {
-              "name": "Louisiana Tech Bulldogs",
-              "score": "60"
-            },
-            {
-              "name": "Kennesaw St Owls",
-              "score": "71"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "aa37e30d942c5580cd2557db139af112",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-15T02:00:00Z",
-          "completed": true,
-          "home_team": "UC Irvine Anteaters",
-          "away_team": "Hawai'i Rainbow Warriors",
-          "scores": [
-            {
-              "name": "UC Irvine Anteaters",
-              "score": "64"
-            },
-            {
-              "name": "Hawai'i Rainbow Warriors",
-              "score": "71"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "f38a42eccb4064d9591de89917725747",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-15T04:11:07Z",
-          "completed": true,
-          "home_team": "Utah Valley Wolverines",
-          "away_team": "Cal Baptist Lancers",
-          "scores": [
-            {
-              "name": "Utah Valley Wolverines",
-              "score": "61"
-            },
-            {
-              "name": "Cal Baptist Lancers",
-              "score": "63"
-            }
-          ],
-          "last_update": "2026-03-15T15:55:01Z"
-        },
-        {
-          "id": "4c05c053758b9252b2bdfe80fdfac663",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-15T16:00:00Z",
-          "completed": true,
-          "home_team": "Yale Bulldogs",
-          "away_team": "Pennsylvania Quakers",
-          "scores": [
-            {
-              "name": "Yale Bulldogs",
-              "score": "84"
-            },
-            {
-              "name": "Pennsylvania Quakers",
-              "score": "88"
-            }
-          ],
-          "last_update": "2026-03-16T02:59:56Z"
-        },
-        {
-          "id": "92f9253e9da70c1ae31330c678da91f8",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-15T17:07:42Z",
-          "completed": true,
-          "home_team": "Arkansas Razorbacks",
-          "away_team": "Vanderbilt Commodores",
-          "scores": [
-            {
-              "name": "Arkansas Razorbacks",
-              "score": "86"
-            },
-            {
-              "name": "Vanderbilt Commodores",
-              "score": "75"
-            }
-          ],
-          "last_update": "2026-03-16T02:59:56Z"
-        },
-        {
-          "id": "18d953313154b00d887282a0b920ccd4",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-15T17:10:37Z",
-          "completed": true,
-          "home_team": "VCU Rams",
-          "away_team": "Dayton Flyers",
-          "scores": [
-            {
-              "name": "VCU Rams",
-              "score": "70"
-            },
-            {
-              "name": "Dayton Flyers",
-              "score": "62"
-            }
-          ],
-          "last_update": "2026-03-16T02:59:56Z"
-        },
-        {
-          "id": "949f9f69eaf9a0d0bf9d76c31e5aa761",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-15T19:19:07Z",
-          "completed": true,
-          "home_team": "South Florida Bulls",
-          "away_team": "Wichita St Shockers",
-          "scores": [
-            {
-              "name": "South Florida Bulls",
-              "score": "70"
-            },
-            {
-              "name": "Wichita St Shockers",
-              "score": "55"
-            }
-          ],
-          "last_update": "2026-03-16T02:59:56Z"
-        },
-        {
-          "id": "7b5d1be6fcb2f07046958febbd9627ae",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-15T19:32:32Z",
-          "completed": true,
-          "home_team": "Michigan Wolverines",
-          "away_team": "Purdue Boilermakers",
-          "scores": [
-            {
-              "name": "Michigan Wolverines",
-              "score": "72"
-            },
-            {
-              "name": "Purdue Boilermakers",
-              "score": "80"
-            }
-          ],
-          "last_update": "2026-03-16T02:59:56Z"
-        },
         {
           "id": "9272640a0af4aec081374d0504f621d8",
           "sport_key": "basketball_ncaab",
           "sport_title": "NCAAB",
-          "commence_time": "2026-03-17T22:00:00Z",
-          "completed": false,
+          "commence_time": "2026-03-17T22:02:10Z",
+          "completed": true,
           "home_team": "George Mason Patriots",
           "away_team": "Liberty Flames",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "George Mason Patriots",
+              "score": "71"
+            },
+            {
+              "name": "Liberty Flames",
+              "score": "77"
+            }
+          ],
+          "last_update": "2026-03-18T10:43:07Z"
         },
         {
           "id": "dcc2e1aabfce3314a2ea90e566839129",
           "sport_key": "basketball_ncaab",
           "sport_title": "NCAAB",
-          "commence_time": "2026-03-17T22:40:00Z",
-          "completed": false,
+          "commence_time": "2026-03-17T22:41:04Z",
+          "completed": true,
           "home_team": "Howard Bison",
           "away_team": "UMBC Retrievers",
-          "scores": null,
-          "last_update": null
-        },
-        {
-          "id": "ac522b775a444ef7069acde07fbcc070",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-17T23:00:00Z",
-          "completed": false,
-          "home_team": "Yale Bulldogs",
-          "away_team": "UNC Wilmington Seahawks",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Howard Bison",
+              "score": "86"
+            },
+            {
+              "name": "UMBC Retrievers",
+              "score": "83"
+            }
+          ],
+          "last_update": "2026-03-18T10:43:07Z"
         },
         {
           "id": "de835cf03dd5c83bb2c236ff98b597bf",
           "sport_key": "basketball_ncaab",
           "sport_title": "NCAAB",
-          "commence_time": "2026-03-17T23:00:00Z",
-          "completed": false,
+          "commence_time": "2026-03-17T23:01:27Z",
+          "completed": true,
           "home_team": "Wichita St Shockers",
           "away_team": "Wyoming Cowboys",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Wichita St Shockers",
+              "score": "74"
+            },
+            {
+              "name": "Wyoming Cowboys",
+              "score": "70"
+            }
+          ],
+          "last_update": "2026-03-18T10:43:07Z"
+        },
+        {
+          "id": "ac522b775a444ef7069acde07fbcc070",
+          "sport_key": "basketball_ncaab",
+          "sport_title": "NCAAB",
+          "commence_time": "2026-03-17T23:01:44Z",
+          "completed": true,
+          "home_team": "Yale Bulldogs",
+          "away_team": "UNC Wilmington Seahawks",
+          "scores": [
+            {
+              "name": "Yale Bulldogs",
+              "score": "67"
+            },
+            {
+              "name": "UNC Wilmington Seahawks",
+              "score": "68"
+            }
+          ],
+          "last_update": "2026-03-18T10:43:07Z"
         },
         {
           "id": "34d788c2f49b816b48d38a2bd75ffc1c",
           "sport_key": "basketball_ncaab",
           "sport_title": "NCAAB",
-          "commence_time": "2026-03-18T00:00:00Z",
-          "completed": false,
+          "commence_time": "2026-03-18T00:15:00Z",
+          "completed": true,
           "home_team": "Oklahoma St Cowboys",
           "away_team": "Davidson Wildcats",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Oklahoma St Cowboys",
+              "score": "84"
+            },
+            {
+              "name": "Davidson Wildcats",
+              "score": "80"
+            }
+          ],
+          "last_update": "2026-03-18T10:43:07Z"
         },
         {
           "id": "a2650d78b733a7c01cbb9bf9f7e99cc4",
           "sport_key": "basketball_ncaab",
           "sport_title": "NCAAB",
-          "commence_time": "2026-03-18T01:00:00Z",
-          "completed": false,
+          "commence_time": "2026-03-18T01:07:00Z",
+          "completed": true,
           "home_team": "Tulsa Golden Hurricane",
           "away_team": "Stephen F. Austin Lumberjacks",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Tulsa Golden Hurricane",
+              "score": "89"
+            },
+            {
+              "name": "Stephen F. Austin Lumberjacks",
+              "score": "84"
+            }
+          ],
+          "last_update": "2026-03-18T10:43:07Z"
         },
         {
           "id": "83db61d68c8c62ef872b1eee299ab99e",
           "sport_key": "basketball_ncaab",
           "sport_title": "NCAAB",
-          "commence_time": "2026-03-18T01:15:00Z",
-          "completed": false,
+          "commence_time": "2026-03-18T01:29:44Z",
+          "completed": true,
           "home_team": "Texas Longhorns",
           "away_team": "NC State Wolfpack",
-          "scores": null,
-          "last_update": null
-        },
-        {
-          "id": "053a196562aba960db6e7f274538d5c6",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-03-18T02:00:00Z",
-          "completed": false,
-          "home_team": "Auburn Tigers",
-          "away_team": "South Alabama Jaguars",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "NC State Wolfpack",
+              "score": "66"
+            },
+            {
+              "name": "Texas Longhorns",
+              "score": "68"
+            }
+          ],
+          "last_update": "2026-03-18T10:43:07Z"
         },
         {
           "id": "75b92ad01b2bc0d8a811df5bef96bbfc",
           "sport_key": "basketball_ncaab",
           "sport_title": "NCAAB",
-          "commence_time": "2026-03-18T02:00:00Z",
-          "completed": false,
+          "commence_time": "2026-03-18T02:05:00Z",
+          "completed": true,
           "home_team": "Seattle Redhawks",
           "away_team": "St. Thomas (MN) Tommies",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "Seattle Redhawks",
+              "score": "67"
+            },
+            {
+              "name": "St. Thomas (MN) Tommies",
+              "score": "52"
+            }
+          ],
+          "last_update": "2026-03-18T10:43:07Z"
+        },
+        {
+          "id": "053a196562aba960db6e7f274538d5c6",
+          "sport_key": "basketball_ncaab",
+          "sport_title": "NCAAB",
+          "commence_time": "2026-03-18T02:05:27Z",
+          "completed": true,
+          "home_team": "Auburn Tigers",
+          "away_team": "South Alabama Jaguars",
+          "scores": [
+            {
+              "name": "Auburn Tigers",
+              "score": "78"
+            },
+            {
+              "name": "South Alabama Jaguars",
+              "score": "67"
+            }
+          ],
+          "last_update": "2026-03-18T10:43:07Z"
         },
         {
           "id": "1e9a55a9c7539299852f3917b14f07c2",
           "sport_key": "basketball_ncaab",
           "sport_title": "NCAAB",
-          "commence_time": "2026-03-18T03:00:00Z",
-          "completed": false,
+          "commence_time": "2026-03-18T03:05:00Z",
+          "completed": true,
           "home_team": "UC Irvine Anteaters",
           "away_team": "UNLV Rebels",
-          "scores": null,
-          "last_update": null
+          "scores": [
+            {
+              "name": "UC Irvine Anteaters",
+              "score": "72"
+            },
+            {
+              "name": "UNLV Rebels",
+              "score": "75"
+            }
+          ],
+          "last_update": "2026-03-18T10:43:07Z"
         },
         {
           "id": "2e509835ca6e5a0564e5e470fca0ba82",
@@ -1734,6 +1466,28 @@
           "completed": false,
           "home_team": "North Carolina Tar Heels",
           "away_team": "VCU Rams",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "dc6f71cb1afa7a72165707c843095089",
+          "sport_key": "basketball_ncaab",
+          "sport_title": "NCAAB",
+          "commence_time": "2026-03-19T23:10:42Z",
+          "completed": false,
+          "home_team": "Michigan Wolverines",
+          "away_team": "Howard Bison",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "5b9fe866ea3b4f58a1e005af132c185d",
+          "sport_key": "basketball_ncaab",
+          "sport_title": "NCAAB",
+          "commence_time": "2026-03-19T23:25:00Z",
+          "completed": false,
+          "home_team": "BYU Cougars",
+          "away_team": "Texas Longhorns",
           "scores": null,
           "last_update": null
         },

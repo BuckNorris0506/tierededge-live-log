@@ -1,25 +1,25 @@
 {
-  "generated_at_utc": "2026-03-18T11:00:38.054Z",
-  "require_output_match": false,
+  "generated_at_utc": "2026-03-18T20:26:47.974Z",
+  "require_output_match": true,
   "passed": true,
   "run_classification": "ledger_integrity_pass",
   "failure_classes": [],
   "summary": {
     "executions_total": 3,
-    "executions_pending": 3,
-    "final_execution_grades": 0,
+    "executions_pending": 0,
+    "final_execution_grades": 3,
     "bankroll": {
       "starting_bankroll": 100,
       "contributions": 1100,
-      "realized_profit": 126.13,
-      "derived_bankroll": 1326.13,
-      "last_recorded_bankroll": 1326.13,
+      "realized_profit": 100.53,
+      "derived_bankroll": 1300.53,
+      "last_recorded_bankroll": 1300.53,
       "difference": 0
     },
     "open_risk": {
-      "pending_ticket_count": 3,
-      "total_stake_at_risk": 41,
-      "open_exposure_pct_of_bankroll": 3.09
+      "pending_ticket_count": 0,
+      "total_stake_at_risk": 0,
+      "open_exposure_pct_of_bankroll": 0
     }
   },
   "issues": []

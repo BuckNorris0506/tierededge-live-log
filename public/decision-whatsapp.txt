@@ -1,4 +1,4 @@
 *TIEREDGE BLOCKED*
 Classification: post_mortem_required
-Why: Integrity gate failed: Post-mortem required after realized_loss_streak (-10).
+Why: Integrity gate failed: Post-mortem required after realized_loss_streak (-10.5). Canonical state sync failed.
 Health: FAIL
