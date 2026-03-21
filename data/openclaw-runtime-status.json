@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-18T20:26:47.260Z",
+  "generated_at_utc": "2026-03-21T13:11:56.574Z",
   "jobs": {
     "morning_edge_hunt": {
       "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -9,17 +9,35 @@
       "schedule_tz": "America/Chicago",
       "schedule_time_ct": "06:00",
       "payload_message": "Use the tiered-edge skill only. Run the scheduled morning edge hunt for today. Enforce exact thresholds: T1 >= +6%, T2 >= +4%, T3 >= +2%. Use de-vig before all edge math. Use baseline consensus-implied true-probability model (required) with capped adjustments. If odds are unverified, stale, or rate-limited, output exactly: CANNOT_VERIFY_ODDS — SIT. Output schema for ALL recommended plays must include: true probability, implied probability (de-vig), edge %, Kelly stake, source book, timestamp. Hard logic checks: (1) if edge >= +2.0% and all safety rails pass, it cannot be labeled no_edge; (2) if a play is rejected, include explicit reason code from: no_edge, low_confidence, stale_or_unverified_odds, exposure_cap_reached, breaker_active; (3) never output alternative threshold sets. Keep output concise for WhatsApp and avoid brittle file edits during this cron run. Follow the scan coverage policy in /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/config/scan-coverage-policy.json. Tier A sports must be scanned first. Tier B expands only if the core board is sparse. Tier C expands only with clear request surplus. Main markets first. Props and alt lines stay off by default. Reuse fresh sport responses within the configured cache windows instead of broad duplicate fetches. If remaining quota is low, stop expansion and keep only Tier A coverage. Reporting rule: prioritize popular games first (NBA, NCAAB, NFL, NCAAF, NHL, MLB, UFC/MMA, major soccer). If verdict is SIT, include a Closest Misses (Popular Games) section with 3-6 near-miss examples in the +0.5% to +1.9% band only.",
-      "latest_finished": {
-        "status": "ok",
+      "latest_finished_overall": {
+        "status": "error",
         "delivery_status": "delivered",
-        "error": null,
-        "run_at_ms": 1773860915807,
-        "run_at_ct": "2026-03-18 14:08 CT",
-        "date_key": "2026-03-18",
-        "summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%\n\n---\n\n**RECOMMENDED PLAYS:** 0\n\n---\n\n**SITTING OUT:**\n\nTier A scan complete (NBA, NCAAB, NHL). No qualifying edges found.\n\n**Closest Misses (Popular Games):**\n- Lakers ML @ Rockets (+106 FD): +0.96% edge — SIT\n- Clippers ML @ Pelicans (+100 FD): +1.00% edge — SIT  \n- Rangers ML vs Devils (+102 FD): +1.00% edge — SIT\n- Missouri Tigers ML vs Miami (+110 DK): +1.38% edge — SIT\n- UIC Flames ML @ California (+202 FD): +1.39% edge — SIT\n\n**Markets Checked:** 45+ | **T1 Plays:** 0 | **T2 Plays:** 0 | **T3 Plays:** 0\n\n---\n\n**Daily Rejection Summary:**\n- no_edge: 45+\n- low_confidence: 0\n- stale_or_unverified_odds: 0\n- exposure_cap_reached: 0\n- breaker_active: 0\n\n---\n\n**VERDICT:** 0 plays found | 45+ sat out\n\nMarket conditions tight across Tier A. Pre-March Madness pricing efficient. All near-misses fell short of +2% T3 threshold. Native decision log appended.",
-        "raw_summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%\n\n---\n\n**RECOMMENDED PLAYS:** 0\n\n---\n\n**SITTING OUT:**\n\nTier A scan complete (NBA, NCAAB, NHL). No qualifying edges found.\n\n**Closest Misses (Popular Games):**\n- Lakers ML @ Rockets (+106 FD): +0.96% edge — SIT\n- Clippers ML @ Pelicans (+100 FD): +1.00% edge — SIT  \n- Rangers ML vs Devils (+102 FD): +1.00% edge — SIT\n- Missouri Tigers ML vs Miami (+110 DK): +1.38% edge — SIT\n- UIC Flames ML @ California (+202 FD): +1.39% edge — SIT\n\n**Markets Checked:** 45+ | **T1 Plays:** 0 | **T2 Plays:** 0 | **T3 Plays:** 0\n\n---\n\n**Daily Rejection Summary:**\n- no_edge: 45+\n- low_confidence: 0\n- stale_or_unverified_odds: 0\n- exposure_cap_reached: 0\n- breaker_active: 0\n\n---\n\n**VERDICT:** 0 plays found | 45+ sat out\n\nMarket conditions tight across Tier A. Pre-March Madness pricing efficient. All near-misses fell short of +2% T3 threshold. Native decision log appended.",
-        "session_id": "799ad687-c72f-4612-9eba-8d94a4a6094f",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/799ad687-c72f-4612-9eba-8d94a4a6094f.jsonl",
+        "error": "⚠️ ✍️ Write failed",
+        "run_at_ms": 1774097397987,
+        "run_at_ct": "2026-03-21 07:49 CT",
+        "date_key": "2026-03-21",
+        "summary": "The analysis confirms no qualifying edges. The market is highly efficient with all books aligned within a tight range. Even the best prices available (-102 on DK) result in negative edge after proper de-vigging.\n\nHere is the final morning edge hunt report:\n\n---\n\n**🌿 TIERED EDGE HUNT — Saturday, March 21, 2026**\n\n**Bankroll:** $1,399.05 | **Phase:** GROWTH | **Mode:** pro  \n**Thresholds:** T1 ≥+6% | T2 ≥+4% | T3 ≥+2%\n\n---\n\n**🔴 VERDICT: SIT**\n\nNo qualifying edges ≥+2.0% detected after consensus-implied de-vig analysis.\n\n**Reason:** Market efficiency is exceptionally tight across Tier A coverage. All three primary books (DraftKings, FanDuel, BetMGM) are aligned within 2-4 cents on main lines, leaving no mathematical advantage after vigorish removal.\n\n---\n\n**CLOSEST MISSES (Popular Games — +0.5% to +1.9% band)**\n\nNo near-misses identified in the +0.5% to +1.9% edge band.\n\nEven the softest available prices (DraftKings -102 on select spreads) carry slightly negative expected value (~-0.5%) after proportional de-vig to consensus true probability.\n\n---\n\n**SCAN SUMMARY**\n- **Coverage:** Tier A complete (NBA, NCAAB, NHL)\n- **Markets:** Main spreads, totals\n- **Books checked:** DraftKings, FanDuel, BetMGM\n- **Games scanned:** 10 NBA, 10+ NCAAB (tournament), 12 NHL\n- **Timestamp:** 07:49 CT\n\n---\n\n**NEXT STEPS:** Board is clear. Await line movement or afternoon edge refresh. No action required.\n\n*Data verified live via The Odds API*",
+        "raw_summary": "⚠️ ✍️ Write failed",
+        "session_id": "e82b8534-4c37-4dcd-8abd-40b011275569",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/e82b8534-4c37-4dcd-8abd-40b011275569.jsonl",
+        "message_type": "SIT",
+        "has_actionable_bets": false,
+        "requires_state_sync": false,
+        "data_failure_codes": [],
+        "data_status": "verified",
+        "plain_reason": "The latest scheduled scan found no qualifying edges."
+      },
+      "latest_finished": {
+        "status": "error",
+        "delivery_status": "delivered",
+        "error": "⚠️ ✍️ Write failed",
+        "run_at_ms": 1774097397987,
+        "run_at_ct": "2026-03-21 07:49 CT",
+        "date_key": "2026-03-21",
+        "summary": "The analysis confirms no qualifying edges. The market is highly efficient with all books aligned within a tight range. Even the best prices available (-102 on DK) result in negative edge after proper de-vigging.\n\nHere is the final morning edge hunt report:\n\n---\n\n**🌿 TIERED EDGE HUNT — Saturday, March 21, 2026**\n\n**Bankroll:** $1,399.05 | **Phase:** GROWTH | **Mode:** pro  \n**Thresholds:** T1 ≥+6% | T2 ≥+4% | T3 ≥+2%\n\n---\n\n**🔴 VERDICT: SIT**\n\nNo qualifying edges ≥+2.0% detected after consensus-implied de-vig analysis.\n\n**Reason:** Market efficiency is exceptionally tight across Tier A coverage. All three primary books (DraftKings, FanDuel, BetMGM) are aligned within 2-4 cents on main lines, leaving no mathematical advantage after vigorish removal.\n\n---\n\n**CLOSEST MISSES (Popular Games — +0.5% to +1.9% band)**\n\nNo near-misses identified in the +0.5% to +1.9% edge band.\n\nEven the softest available prices (DraftKings -102 on select spreads) carry slightly negative expected value (~-0.5%) after proportional de-vig to consensus true probability.\n\n---\n\n**SCAN SUMMARY**\n- **Coverage:** Tier A complete (NBA, NCAAB, NHL)\n- **Markets:** Main spreads, totals\n- **Books checked:** DraftKings, FanDuel, BetMGM\n- **Games scanned:** 10 NBA, 10+ NCAAB (tournament), 12 NHL\n- **Timestamp:** 07:49 CT\n\n---\n\n**NEXT STEPS:** Board is clear. Await line movement or afternoon edge refresh. No action required.\n\n*Data verified live via The Odds API*",
+        "raw_summary": "⚠️ ✍️ Write failed",
+        "session_id": "e82b8534-4c37-4dcd-8abd-40b011275569",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/e82b8534-4c37-4dcd-8abd-40b011275569.jsonl",
         "message_type": "SIT",
         "has_actionable_bets": false,
         "requires_state_sync": false,
@@ -31,19 +49,19 @@
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1773860915807,
-        "run_at_ct": "2026-03-18 14:08 CT",
-        "date_key": "2026-03-18",
-        "summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%\n\n---\n\n**RECOMMENDED PLAYS:** 0\n\n---\n\n**SITTING OUT:**\n\nTier A scan complete (NBA, NCAAB, NHL). No qualifying edges found.\n\n**Closest Misses (Popular Games):**\n- Lakers ML @ Rockets (+106 FD): +0.96% edge — SIT\n- Clippers ML @ Pelicans (+100 FD): +1.00% edge — SIT  \n- Rangers ML vs Devils (+102 FD): +1.00% edge — SIT\n- Missouri Tigers ML vs Miami (+110 DK): +1.38% edge — SIT\n- UIC Flames ML @ California (+202 FD): +1.39% edge — SIT\n\n**Markets Checked:** 45+ | **T1 Plays:** 0 | **T2 Plays:** 0 | **T3 Plays:** 0\n\n---\n\n**Daily Rejection Summary:**\n- no_edge: 45+\n- low_confidence: 0\n- stale_or_unverified_odds: 0\n- exposure_cap_reached: 0\n- breaker_active: 0\n\n---\n\n**VERDICT:** 0 plays found | 45+ sat out\n\nMarket conditions tight across Tier A. Pre-March Madness pricing efficient. All near-misses fell short of +2% T3 threshold. Native decision log appended.",
-        "raw_summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%\n\n---\n\n**RECOMMENDED PLAYS:** 0\n\n---\n\n**SITTING OUT:**\n\nTier A scan complete (NBA, NCAAB, NHL). No qualifying edges found.\n\n**Closest Misses (Popular Games):**\n- Lakers ML @ Rockets (+106 FD): +0.96% edge — SIT\n- Clippers ML @ Pelicans (+100 FD): +1.00% edge — SIT  \n- Rangers ML vs Devils (+102 FD): +1.00% edge — SIT\n- Missouri Tigers ML vs Miami (+110 DK): +1.38% edge — SIT\n- UIC Flames ML @ California (+202 FD): +1.39% edge — SIT\n\n**Markets Checked:** 45+ | **T1 Plays:** 0 | **T2 Plays:** 0 | **T3 Plays:** 0\n\n---\n\n**Daily Rejection Summary:**\n- no_edge: 45+\n- low_confidence: 0\n- stale_or_unverified_odds: 0\n- exposure_cap_reached: 0\n- breaker_active: 0\n\n---\n\n**VERDICT:** 0 plays found | 45+ sat out\n\nMarket conditions tight across Tier A. Pre-March Madness pricing efficient. All near-misses fell short of +2% T3 threshold. Native decision log appended.",
-        "session_id": "799ad687-c72f-4612-9eba-8d94a4a6094f",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/799ad687-c72f-4612-9eba-8d94a4a6094f.jsonl",
-        "message_type": "SIT",
-        "has_actionable_bets": false,
-        "requires_state_sync": false,
+        "run_at_ms": 1773933871482,
+        "run_at_ct": "2026-03-19 10:24 CT",
+        "date_key": "2026-03-19",
+        "summary": "Proper de-vig analysis shows **NO qualifying edges**. The apparent +2.5% edges were calculated incorrectly - proper de-vig reduces them to +0.5-1.2%. \n\n**TIERED EDGE HUNT — Thursday, March 19, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%  \nCircuit Breaker: OFF | Mode: pro | Timestamp: 10:24 AM CT\n\n---\n\n**RECOMMENDED PLAYS:**\n\nNone. No edges ≥+2% found after proper de-vig analysis.\n\n---\n\n**SITTING OUT:**\n\n**NCAAB (32 games checked):**\n- Wisconsin -10.5 @ -108 (DK): Edge +1.2% vs fair — No edge at current price\n- Duke -27.5 @ -112 (DK): Edge +0.5% vs fair — No edge at current price  \n- Michigan St -15.5 @ -118 (DK): Edge +0.4% vs fair — No edge at current price\n- Arkansas -15.5 @ -108 (DK): Edge +0.8% vs fair — No edge at current price\n- Michigan -30.5 @ -115 (DK): Edge +0.6% vs fair — No edge at current price\n\n**NBA (8 games checked):**\n- Pistons -14.5 @ -112 (DK): Negative edge vs offered — No edge at current price\n- Cavaliers -12.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n- Spurs -9.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n\n**NHL (16 games checked):**\n- Bruins ML @ -135: Edge +1.0% — No edge at current price\n- All other ML markets: Edge <1.0%\n\n---\n\n**CLOSEST MISSES (Popular Games, +0.5% to +1.9%):**\n\n1. **Wisconsin -10.5 vs High Point** @ -108 (DK)  \n   True: 52.1% | Implied (de-vig): 50.9% | Edge: +1.2%  \n   Gap to T3: 0.8% | Reason: Large spread tournament game; market efficient\n\n2. **Arkansas -15.5 vs Nebraska** @ -108 (DK)  \n   True: 51.8% | Implied: 50.9% | Edge: +0.9%  \n   Gap to T3: 1.1% | Reason: Tournament pricing sharp on heavy favorites\n\n3. **Bruins ML vs Winnipeg** @ -135 (DK)  \n   True: 58.5% | Implied: 57.4% | Edge: +1.1%  \n   Gap to T3: 0.9% | Reason: Home ice premium correctly priced\n\n4. **Louisville vs South Florida** — Louisville ML @ -110 (DK)  \n   True: 52.0% | Implied: 50.5% | Edge: +1.5%  \n   Gap to T3: 0.5% | Reason: Market converged on tournament neutral site\n\n5. **Ho…",
+        "raw_summary": "Proper de-vig analysis shows **NO qualifying edges**. The apparent +2.5% edges were calculated incorrectly - proper de-vig reduces them to +0.5-1.2%. \n\n**TIERED EDGE HUNT — Thursday, March 19, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%  \nCircuit Breaker: OFF | Mode: pro | Timestamp: 10:24 AM CT\n\n---\n\n**RECOMMENDED PLAYS:**\n\nNone. No edges ≥+2% found after proper de-vig analysis.\n\n---\n\n**SITTING OUT:**\n\n**NCAAB (32 games checked):**\n- Wisconsin -10.5 @ -108 (DK): Edge +1.2% vs fair — No edge at current price\n- Duke -27.5 @ -112 (DK): Edge +0.5% vs fair — No edge at current price  \n- Michigan St -15.5 @ -118 (DK): Edge +0.4% vs fair — No edge at current price\n- Arkansas -15.5 @ -108 (DK): Edge +0.8% vs fair — No edge at current price\n- Michigan -30.5 @ -115 (DK): Edge +0.6% vs fair — No edge at current price\n\n**NBA (8 games checked):**\n- Pistons -14.5 @ -112 (DK): Negative edge vs offered — No edge at current price\n- Cavaliers -12.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n- Spurs -9.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n\n**NHL (16 games checked):**\n- Bruins ML @ -135: Edge +1.0% — No edge at current price\n- All other ML markets: Edge <1.0%\n\n---\n\n**CLOSEST MISSES (Popular Games, +0.5% to +1.9%):**\n\n1. **Wisconsin -10.5 vs High Point** @ -108 (DK)  \n   True: 52.1% | Implied (de-vig): 50.9% | Edge: +1.2%  \n   Gap to T3: 0.8% | Reason: Large spread tournament game; market efficient\n\n2. **Arkansas -15.5 vs Nebraska** @ -108 (DK)  \n   True: 51.8% | Implied: 50.9% | Edge: +0.9%  \n   Gap to T3: 1.1% | Reason: Tournament pricing sharp on heavy favorites\n\n3. **Bruins ML vs Winnipeg** @ -135 (DK)  \n   True: 58.5% | Implied: 57.4% | Edge: +1.1%  \n   Gap to T3: 0.9% | Reason: Home ice premium correctly priced\n\n4. **Louisville vs South Florida** — Louisville ML @ -110 (DK)  \n   True: 52.0% | Implied: 50.5% | Edge: +1.5%  \n   Gap to T3: 0.5% | Reason: Market converged on tournament neutral site\n\n5. **Ho…",
+        "session_id": "4dac25fb-cf7f-4039-a9d5-dcadc37626f5",
+        "session_file": null,
+        "message_type": "BET",
+        "has_actionable_bets": true,
+        "requires_state_sync": true,
         "data_failure_codes": [],
         "data_status": "verified",
-        "plain_reason": "The latest scheduled scan found no qualifying edges."
+        "plain_reason": "The latest scheduled scan reported at least one actionable bet."
       },
       "successful_runs": [
         {
@@ -529,7 +547,7 @@
           "summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,326.13 | Phase: GROWTH | Daily Exposure Used: 0.0% | Circuit Breaker: OFF\n\n**RECOMMENDED PLAYS:**\nNo qualifying edges found.\n\n**SITTING OUT:**\nAll markets — No edge at current price\n\n**Closest Misses (Popular Games, +0.5% to +1.9%):**\n- Murray St Racers @ Nevada Wolf Pack: Murray St Racers @ +330 — Edge: +1.1% (T3 needs +2.0%)\n- Saint Joseph's Hawks @ Colorado St Rams: Saint Joseph's Hawks @ +215 — Edge: +0.8%\n\n**VERDICT:** 0 plays found | 120+ sat out | Tier A complete (NBA, NCAAB, NHL)\n\n---\n\n**Native ledger updated:** 2 SIT observations recorded. No exposure allocated. Markets were efficient across all Tier A sports. March Madness pricing is sharp — sitting is the right play.",
           "raw_summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,326.13 | Phase: GROWTH | Daily Exposure Used: 0.0% | Circuit Breaker: OFF\n\n**RECOMMENDED PLAYS:**\nNo qualifying edges found.\n\n**SITTING OUT:**\nAll markets — No edge at current price\n\n**Closest Misses (Popular Games, +0.5% to +1.9%):**\n- Murray St Racers @ Nevada Wolf Pack: Murray St Racers @ +330 — Edge: +1.1% (T3 needs +2.0%)\n- Saint Joseph's Hawks @ Colorado St Rams: Saint Joseph's Hawks @ +215 — Edge: +0.8%\n\n**VERDICT:** 0 plays found | 120+ sat out | Tier A complete (NBA, NCAAB, NHL)\n\n---\n\n**Native ledger updated:** 2 SIT observations recorded. No exposure allocated. Markets were efficient across all Tier A sports. March Madness pricing is sharp — sitting is the right play.",
           "session_id": "e48ff26c-2d3b-4d60-942b-0a8edd80295b",
-          "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/e48ff26c-2d3b-4d60-942b-0a8edd80295b.jsonl",
+          "session_file": null,
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
@@ -547,13 +565,71 @@
           "summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%\n\n---\n\n**RECOMMENDED PLAYS:** 0\n\n---\n\n**SITTING OUT:**\n\nTier A scan complete (NBA, NCAAB, NHL). No qualifying edges found.\n\n**Closest Misses (Popular Games):**\n- Lakers ML @ Rockets (+106 FD): +0.96% edge — SIT\n- Clippers ML @ Pelicans (+100 FD): +1.00% edge — SIT  \n- Rangers ML vs Devils (+102 FD): +1.00% edge — SIT\n- Missouri Tigers ML vs Miami (+110 DK): +1.38% edge — SIT\n- UIC Flames ML @ California (+202 FD): +1.39% edge — SIT\n\n**Markets Checked:** 45+ | **T1 Plays:** 0 | **T2 Plays:** 0 | **T3 Plays:** 0\n\n---\n\n**Daily Rejection Summary:**\n- no_edge: 45+\n- low_confidence: 0\n- stale_or_unverified_odds: 0\n- exposure_cap_reached: 0\n- breaker_active: 0\n\n---\n\n**VERDICT:** 0 plays found | 45+ sat out\n\nMarket conditions tight across Tier A. Pre-March Madness pricing efficient. All near-misses fell short of +2% T3 threshold. Native decision log appended.",
           "raw_summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%\n\n---\n\n**RECOMMENDED PLAYS:** 0\n\n---\n\n**SITTING OUT:**\n\nTier A scan complete (NBA, NCAAB, NHL). No qualifying edges found.\n\n**Closest Misses (Popular Games):**\n- Lakers ML @ Rockets (+106 FD): +0.96% edge — SIT\n- Clippers ML @ Pelicans (+100 FD): +1.00% edge — SIT  \n- Rangers ML vs Devils (+102 FD): +1.00% edge — SIT\n- Missouri Tigers ML vs Miami (+110 DK): +1.38% edge — SIT\n- UIC Flames ML @ California (+202 FD): +1.39% edge — SIT\n\n**Markets Checked:** 45+ | **T1 Plays:** 0 | **T2 Plays:** 0 | **T3 Plays:** 0\n\n---\n\n**Daily Rejection Summary:**\n- no_edge: 45+\n- low_confidence: 0\n- stale_or_unverified_odds: 0\n- exposure_cap_reached: 0\n- breaker_active: 0\n\n---\n\n**VERDICT:** 0 plays found | 45+ sat out\n\nMarket conditions tight across Tier A. Pre-March Madness pricing efficient. All near-misses fell short of +2% T3 threshold. Native decision log appended.",
           "session_id": "799ad687-c72f-4612-9eba-8d94a4a6094f",
-          "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/799ad687-c72f-4612-9eba-8d94a4a6094f.jsonl",
+          "session_file": null,
           "message_type": "SIT",
           "has_actionable_bets": false,
           "requires_state_sync": false,
           "data_failure_codes": [],
           "data_status": "verified",
           "plain_reason": "The latest scheduled scan found no qualifying edges."
+        },
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1773932220802,
+          "run_at_ct": "2026-03-19 09:57 CT",
+          "date_key": "2026-03-19",
+          "summary": "**TIERED EDGE HUNT — Thursday, March 19, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API key is not available in the runtime environment (ODDS_API_KEY missing). Cannot fetch real-time odds data required for edge calculation.\n\n**System Status:**\n- Bankroll: $1,303.28\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Daily Exposure Used: 0%\n- Operating Mode: pro\n\n**Verdict:** SIT — No bets can be recommended without verified real-time odds.\n\n**Markets Skipped:** NBA (8 games), NCAAB (8 games), NHL (8 games), ~180 total markets\n\n---\n\n*Timestamp: 09:57 CT | Data Source: UNAVAILABLE*",
+          "raw_summary": "**TIERED EDGE HUNT — Thursday, March 19, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API key is not available in the runtime environment (ODDS_API_KEY missing). Cannot fetch real-time odds data required for edge calculation.\n\n**System Status:**\n- Bankroll: $1,303.28\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Daily Exposure Used: 0%\n- Operating Mode: pro\n\n**Verdict:** SIT — No bets can be recommended without verified real-time odds.\n\n**Markets Skipped:** NBA (8 games), NCAAB (8 games), NHL (8 games), ~180 total markets\n\n---\n\n*Timestamp: 09:57 CT | Data Source: UNAVAILABLE*",
+          "session_id": "9cc08193-3f26-4cc4-afb3-c5d0d2acf11c",
+          "session_file": null,
+          "message_type": "BLOCKED",
+          "has_actionable_bets": false,
+          "requires_state_sync": false,
+          "data_failure_codes": [
+            "stale_response"
+          ],
+          "data_status": "degraded_data",
+          "plain_reason": "Odds could not be verified for the latest scheduled scan."
+        },
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1773933210752,
+          "run_at_ct": "2026-03-19 10:13 CT",
+          "date_key": "2026-03-19",
+          "summary": "Based on the system check, the ODDS_API_KEY is not available in the runtime environment. Following the TieredEdge skill's hard fallback rule, I must output the canonical failure response:\n\n---\n\n**TIERED EDGE HUNT — Thursday, March 19, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API key is not available in the runtime environment (ODDS_API_KEY missing). Cannot fetch real-time odds data required for edge calculation.\n\n**System Status:**\n- Bankroll: $1,303.28\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Daily Exposure Used: 0%\n- Operating Mode: pro\n\n**Verdict:** SIT — No bets can be recommended without verified real-time odds.\n\n**Markets Skipped:** NBA (8 games), NCAAB (8 games), NHL (8 games), ~180 total markets\n\n---\n\n*Timestamp: 10:13 CT | Data Source: UNAVAILABLE*\n\n---\n\n**Action Required:** Configure ODDS_API_KEY in the environment to resume live edge hunts. Until real-time odds are available, all markets remain SIT per safety protocol.",
+          "raw_summary": "Based on the system check, the ODDS_API_KEY is not available in the runtime environment. Following the TieredEdge skill's hard fallback rule, I must output the canonical failure response:\n\n---\n\n**TIERED EDGE HUNT — Thursday, March 19, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API key is not available in the runtime environment (ODDS_API_KEY missing). Cannot fetch real-time odds data required for edge calculation.\n\n**System Status:**\n- Bankroll: $1,303.28\n- Phase: GROWTH ($250-$1,500)\n- Circuit Breaker: OFF\n- Daily Exposure Used: 0%\n- Operating Mode: pro\n\n**Verdict:** SIT — No bets can be recommended without verified real-time odds.\n\n**Markets Skipped:** NBA (8 games), NCAAB (8 games), NHL (8 games), ~180 total markets\n\n---\n\n*Timestamp: 10:13 CT | Data Source: UNAVAILABLE*\n\n---\n\n**Action Required:** Configure ODDS_API_KEY in the environment to resume live edge hunts. Until real-time odds are available, all markets remain SIT per safety protocol.",
+          "session_id": "c11cafd0-2568-43a2-9dea-b26c1b96b6de",
+          "session_file": null,
+          "message_type": "BLOCKED",
+          "has_actionable_bets": false,
+          "requires_state_sync": false,
+          "data_failure_codes": [
+            "stale_response"
+          ],
+          "data_status": "degraded_data",
+          "plain_reason": "Odds could not be verified for the latest scheduled scan."
+        },
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1773933871482,
+          "run_at_ct": "2026-03-19 10:24 CT",
+          "date_key": "2026-03-19",
+          "summary": "Proper de-vig analysis shows **NO qualifying edges**. The apparent +2.5% edges were calculated incorrectly - proper de-vig reduces them to +0.5-1.2%. \n\n**TIERED EDGE HUNT — Thursday, March 19, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%  \nCircuit Breaker: OFF | Mode: pro | Timestamp: 10:24 AM CT\n\n---\n\n**RECOMMENDED PLAYS:**\n\nNone. No edges ≥+2% found after proper de-vig analysis.\n\n---\n\n**SITTING OUT:**\n\n**NCAAB (32 games checked):**\n- Wisconsin -10.5 @ -108 (DK): Edge +1.2% vs fair — No edge at current price\n- Duke -27.5 @ -112 (DK): Edge +0.5% vs fair — No edge at current price  \n- Michigan St -15.5 @ -118 (DK): Edge +0.4% vs fair — No edge at current price\n- Arkansas -15.5 @ -108 (DK): Edge +0.8% vs fair — No edge at current price\n- Michigan -30.5 @ -115 (DK): Edge +0.6% vs fair — No edge at current price\n\n**NBA (8 games checked):**\n- Pistons -14.5 @ -112 (DK): Negative edge vs offered — No edge at current price\n- Cavaliers -12.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n- Spurs -9.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n\n**NHL (16 games checked):**\n- Bruins ML @ -135: Edge +1.0% — No edge at current price\n- All other ML markets: Edge <1.0%\n\n---\n\n**CLOSEST MISSES (Popular Games, +0.5% to +1.9%):**\n\n1. **Wisconsin -10.5 vs High Point** @ -108 (DK)  \n   True: 52.1% | Implied (de-vig): 50.9% | Edge: +1.2%  \n   Gap to T3: 0.8% | Reason: Large spread tournament game; market efficient\n\n2. **Arkansas -15.5 vs Nebraska** @ -108 (DK)  \n   True: 51.8% | Implied: 50.9% | Edge: +0.9%  \n   Gap to T3: 1.1% | Reason: Tournament pricing sharp on heavy favorites\n\n3. **Bruins ML vs Winnipeg** @ -135 (DK)  \n   True: 58.5% | Implied: 57.4% | Edge: +1.1%  \n   Gap to T3: 0.9% | Reason: Home ice premium correctly priced\n\n4. **Louisville vs South Florida** — Louisville ML @ -110 (DK)  \n   True: 52.0% | Implied: 50.5% | Edge: +1.5%  \n   Gap to T3: 0.5% | Reason: Market converged on tournament neutral site\n\n5. **Ho…",
+          "raw_summary": "Proper de-vig analysis shows **NO qualifying edges**. The apparent +2.5% edges were calculated incorrectly - proper de-vig reduces them to +0.5-1.2%. \n\n**TIERED EDGE HUNT — Thursday, March 19, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%  \nCircuit Breaker: OFF | Mode: pro | Timestamp: 10:24 AM CT\n\n---\n\n**RECOMMENDED PLAYS:**\n\nNone. No edges ≥+2% found after proper de-vig analysis.\n\n---\n\n**SITTING OUT:**\n\n**NCAAB (32 games checked):**\n- Wisconsin -10.5 @ -108 (DK): Edge +1.2% vs fair — No edge at current price\n- Duke -27.5 @ -112 (DK): Edge +0.5% vs fair — No edge at current price  \n- Michigan St -15.5 @ -118 (DK): Edge +0.4% vs fair — No edge at current price\n- Arkansas -15.5 @ -108 (DK): Edge +0.8% vs fair — No edge at current price\n- Michigan -30.5 @ -115 (DK): Edge +0.6% vs fair — No edge at current price\n\n**NBA (8 games checked):**\n- Pistons -14.5 @ -112 (DK): Negative edge vs offered — No edge at current price\n- Cavaliers -12.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n- Spurs -9.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n\n**NHL (16 games checked):**\n- Bruins ML @ -135: Edge +1.0% — No edge at current price\n- All other ML markets: Edge <1.0%\n\n---\n\n**CLOSEST MISSES (Popular Games, +0.5% to +1.9%):**\n\n1. **Wisconsin -10.5 vs High Point** @ -108 (DK)  \n   True: 52.1% | Implied (de-vig): 50.9% | Edge: +1.2%  \n   Gap to T3: 0.8% | Reason: Large spread tournament game; market efficient\n\n2. **Arkansas -15.5 vs Nebraska** @ -108 (DK)  \n   True: 51.8% | Implied: 50.9% | Edge: +0.9%  \n   Gap to T3: 1.1% | Reason: Tournament pricing sharp on heavy favorites\n\n3. **Bruins ML vs Winnipeg** @ -135 (DK)  \n   True: 58.5% | Implied: 57.4% | Edge: +1.1%  \n   Gap to T3: 0.9% | Reason: Home ice premium correctly priced\n\n4. **Louisville vs South Florida** — Louisville ML @ -110 (DK)  \n   True: 52.0% | Implied: 50.5% | Edge: +1.5%  \n   Gap to T3: 0.5% | Reason: Market converged on tournament neutral site\n\n5. **Ho…",
+          "session_id": "4dac25fb-cf7f-4039-a9d5-dcadc37626f5",
+          "session_file": null,
+          "message_type": "BET",
+          "has_actionable_bets": true,
+          "requires_state_sync": true,
+          "data_failure_codes": [],
+          "data_status": "verified",
+          "plain_reason": "The latest scheduled scan reported at least one actionable bet."
         }
       ]
     },
@@ -565,33 +641,50 @@
       "schedule_tz": "America/Chicago",
       "schedule_time_ct": "23:00",
       "payload_message": "grade pending bets",
+      "latest_finished_overall": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1774065600009,
+        "run_at_ct": "2026-03-20 23:00 CT",
+        "date_key": "2026-03-20",
+        "summary": "---\n\n**GRADING COMPLETE — March 20, 2026**\n\n**Parlay Result: WIN** ✅\n\n| Detail | Value |\n|--------|-------|\n| Event | Tennessee vs Wofford |\n| Final Score | Tennessee 77, Wofford 62 |\n| Spread | Tennessee -11.5 (covered by 3.5) |\n| All 3 Legs | WIN |\n| Profit | +$79.87 |\n| New Bankroll | $1,399.05 |\n\n**Updated Stats:**\n- Total Bets: 22 (11-11)\n- Win Rate: 50.0%\n- Overall ROI: +16.2%\n- All-Time High: $1,399.05\n\n**No pending bets remaining.**\n\n*Note: Native ledger append failed (missing required fields), but markdown state updated successfully.*",
+        "raw_summary": "---\n\n**GRADING COMPLETE — March 20, 2026**\n\n**Parlay Result: WIN** ✅\n\n| Detail | Value |\n|--------|-------|\n| Event | Tennessee vs Wofford |\n| Final Score | Tennessee 77, Wofford 62 |\n| Spread | Tennessee -11.5 (covered by 3.5) |\n| All 3 Legs | WIN |\n| Profit | +$79.87 |\n| New Bankroll | $1,399.05 |\n\n**Updated Stats:**\n- Total Bets: 22 (11-11)\n- Win Rate: 50.0%\n- Overall ROI: +16.2%\n- All-Time High: $1,399.05\n\n**No pending bets remaining.**\n\n*Note: Native ledger append failed (missing required fields), but markdown state updated successfully.*",
+        "session_id": "cb4deb98-ca12-4d82-b061-6ed5d4daf473",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/cb4deb98-ca12-4d82-b061-6ed5d4daf473.jsonl",
+        "requires_state_sync": false,
+        "native_append_failed": true,
+        "plain_reason": "Latest grading summary reported markdown updates after a native-ledger append failure."
+      },
       "latest_finished": {
         "status": "ok",
-        "delivery_status": "not-delivered",
+        "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1773806400009,
-        "run_at_ct": "2026-03-17 23:00 CT",
-        "date_key": "2026-03-17",
-        "summary": null,
-        "raw_summary": null,
-        "session_id": "2c4fe94b-f852-4e0e-9a4d-f08c78cdd73f",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/2c4fe94b-f852-4e0e-9a4d-f08c78cdd73f.jsonl",
-        "requires_state_sync": true,
-        "plain_reason": "Latest grading run implies bankroll or result updates."
+        "run_at_ms": 1774065600009,
+        "run_at_ct": "2026-03-20 23:00 CT",
+        "date_key": "2026-03-20",
+        "summary": "---\n\n**GRADING COMPLETE — March 20, 2026**\n\n**Parlay Result: WIN** ✅\n\n| Detail | Value |\n|--------|-------|\n| Event | Tennessee vs Wofford |\n| Final Score | Tennessee 77, Wofford 62 |\n| Spread | Tennessee -11.5 (covered by 3.5) |\n| All 3 Legs | WIN |\n| Profit | +$79.87 |\n| New Bankroll | $1,399.05 |\n\n**Updated Stats:**\n- Total Bets: 22 (11-11)\n- Win Rate: 50.0%\n- Overall ROI: +16.2%\n- All-Time High: $1,399.05\n\n**No pending bets remaining.**\n\n*Note: Native ledger append failed (missing required fields), but markdown state updated successfully.*",
+        "raw_summary": "---\n\n**GRADING COMPLETE — March 20, 2026**\n\n**Parlay Result: WIN** ✅\n\n| Detail | Value |\n|--------|-------|\n| Event | Tennessee vs Wofford |\n| Final Score | Tennessee 77, Wofford 62 |\n| Spread | Tennessee -11.5 (covered by 3.5) |\n| All 3 Legs | WIN |\n| Profit | +$79.87 |\n| New Bankroll | $1,399.05 |\n\n**Updated Stats:**\n- Total Bets: 22 (11-11)\n- Win Rate: 50.0%\n- Overall ROI: +16.2%\n- All-Time High: $1,399.05\n\n**No pending bets remaining.**\n\n*Note: Native ledger append failed (missing required fields), but markdown state updated successfully.*",
+        "session_id": "cb4deb98-ca12-4d82-b061-6ed5d4daf473",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/cb4deb98-ca12-4d82-b061-6ed5d4daf473.jsonl",
+        "requires_state_sync": false,
+        "native_append_failed": true,
+        "plain_reason": "Latest grading summary reported markdown updates after a native-ledger append failure."
       },
       "latest_successful": {
         "status": "ok",
-        "delivery_status": "not-delivered",
+        "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1773806400009,
-        "run_at_ct": "2026-03-17 23:00 CT",
-        "date_key": "2026-03-17",
-        "summary": null,
-        "raw_summary": null,
-        "session_id": "2c4fe94b-f852-4e0e-9a4d-f08c78cdd73f",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/2c4fe94b-f852-4e0e-9a4d-f08c78cdd73f.jsonl",
-        "requires_state_sync": true,
-        "plain_reason": "Latest grading run implies bankroll or result updates."
+        "run_at_ms": 1774065600009,
+        "run_at_ct": "2026-03-20 23:00 CT",
+        "date_key": "2026-03-20",
+        "summary": "---\n\n**GRADING COMPLETE — March 20, 2026**\n\n**Parlay Result: WIN** ✅\n\n| Detail | Value |\n|--------|-------|\n| Event | Tennessee vs Wofford |\n| Final Score | Tennessee 77, Wofford 62 |\n| Spread | Tennessee -11.5 (covered by 3.5) |\n| All 3 Legs | WIN |\n| Profit | +$79.87 |\n| New Bankroll | $1,399.05 |\n\n**Updated Stats:**\n- Total Bets: 22 (11-11)\n- Win Rate: 50.0%\n- Overall ROI: +16.2%\n- All-Time High: $1,399.05\n\n**No pending bets remaining.**\n\n*Note: Native ledger append failed (missing required fields), but markdown state updated successfully.*",
+        "raw_summary": "---\n\n**GRADING COMPLETE — March 20, 2026**\n\n**Parlay Result: WIN** ✅\n\n| Detail | Value |\n|--------|-------|\n| Event | Tennessee vs Wofford |\n| Final Score | Tennessee 77, Wofford 62 |\n| Spread | Tennessee -11.5 (covered by 3.5) |\n| All 3 Legs | WIN |\n| Profit | +$79.87 |\n| New Bankroll | $1,399.05 |\n\n**Updated Stats:**\n- Total Bets: 22 (11-11)\n- Win Rate: 50.0%\n- Overall ROI: +16.2%\n- All-Time High: $1,399.05\n\n**No pending bets remaining.**\n\n*Note: Native ledger append failed (missing required fields), but markdown state updated successfully.*",
+        "session_id": "cb4deb98-ca12-4d82-b061-6ed5d4daf473",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/cb4deb98-ca12-4d82-b061-6ed5d4daf473.jsonl",
+        "requires_state_sync": false,
+        "native_append_failed": true,
+        "plain_reason": "Latest grading summary reported markdown updates after a native-ledger append failure."
       },
       "successful_runs": [
         {
@@ -606,6 +699,7 @@
           "session_id": "c6f51c65-96df-40f3-bc6d-e22af6ee8f00",
           "session_file": null,
           "requires_state_sync": false,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run reported no state changes."
         },
         {
@@ -620,6 +714,7 @@
           "session_id": "c692b738-48cb-42a6-a903-3e6ab6f91e8e",
           "session_file": null,
           "requires_state_sync": true,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run implies bankroll or result updates."
         },
         {
@@ -634,6 +729,7 @@
           "session_id": "c57a96eb-52bf-47fa-b490-410534e81417",
           "session_file": null,
           "requires_state_sync": true,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run implies bankroll or result updates."
         },
         {
@@ -648,6 +744,7 @@
           "session_id": "e1cc5b03-2fca-4e20-b2fc-1b39aacf28a4",
           "session_file": null,
           "requires_state_sync": false,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run reported no state changes."
         },
         {
@@ -662,6 +759,7 @@
           "session_id": "3e82b468-f9f7-4bca-9393-ac42bd9c0937",
           "session_file": null,
           "requires_state_sync": false,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run reported no state changes."
         },
         {
@@ -676,6 +774,7 @@
           "session_id": "2b664752-8364-43dc-a128-21fb4c26ebbf",
           "session_file": null,
           "requires_state_sync": false,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run reported no state changes."
         },
         {
@@ -690,6 +789,7 @@
           "session_id": "895591e1-6320-4b03-9e4a-00d68b658948",
           "session_file": null,
           "requires_state_sync": false,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run reported no state changes."
         },
         {
@@ -704,6 +804,7 @@
           "session_id": "0f4f2259-5c7f-4b01-bd6f-b726f222137c",
           "session_file": null,
           "requires_state_sync": false,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run reported no state changes."
         },
         {
@@ -718,6 +819,7 @@
           "session_id": "869ed9b6-85ff-453f-a31a-a45820311577",
           "session_file": null,
           "requires_state_sync": false,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run reported no state changes."
         },
         {
@@ -732,6 +834,7 @@
           "session_id": "11384408-d41e-4d49-b623-d700b6396e00",
           "session_file": null,
           "requires_state_sync": false,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run reported no state changes."
         },
         {
@@ -746,6 +849,7 @@
           "session_id": "00b12e71-dd58-4be3-b0e9-0e5946f6fcff",
           "session_file": null,
           "requires_state_sync": false,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run reported no state changes."
         },
         {
@@ -758,9 +862,40 @@
           "summary": null,
           "raw_summary": null,
           "session_id": "2c4fe94b-f852-4e0e-9a4d-f08c78cdd73f",
-          "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/2c4fe94b-f852-4e0e-9a4d-f08c78cdd73f.jsonl",
+          "session_file": null,
           "requires_state_sync": true,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run implies bankroll or result updates."
+        },
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1773892800016,
+          "run_at_ct": "2026-03-18 23:00 CT",
+          "date_key": "2026-03-18",
+          "summary": "**Evening Grading Summary — March 18, 2026**\n\nPending bets reviewed: **0**\n\nNo bets awaiting results. All positions from prior sessions have been settled.\n\n**Last Graded (March 17):**\n- MIN Wild ML @ -185 → WIN (+$5.40)\n- BOS Bruins ML @ +136 → LOSS (-$20.50)\n- VGK Golden Knights ML @ -125 → LOSS (-$10.50)\n\n**Current Bankroll:** $1,303.28\n**All-Time High:** $1,328.88\n**Drawdown from Peak:** 1.9% (well below 30% breaker threshold)\n\nNo action required. Standing by for tomorrow's 8 AM edge hunt.",
+          "raw_summary": "**Evening Grading Summary — March 18, 2026**\n\nPending bets reviewed: **0**\n\nNo bets awaiting results. All positions from prior sessions have been settled.\n\n**Last Graded (March 17):**\n- MIN Wild ML @ -185 → WIN (+$5.40)\n- BOS Bruins ML @ +136 → LOSS (-$20.50)\n- VGK Golden Knights ML @ -125 → LOSS (-$10.50)\n\n**Current Bankroll:** $1,303.28\n**All-Time High:** $1,328.88\n**Drawdown from Peak:** 1.9% (well below 30% breaker threshold)\n\nNo action required. Standing by for tomorrow's 8 AM edge hunt.",
+          "session_id": "1c7d65ad-807c-49e2-8234-a0689f7601cf",
+          "session_file": null,
+          "requires_state_sync": false,
+          "native_append_failed": false,
+          "plain_reason": "Latest grading run reported no state changes."
+        },
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1774065600009,
+          "run_at_ct": "2026-03-20 23:00 CT",
+          "date_key": "2026-03-20",
+          "summary": "---\n\n**GRADING COMPLETE — March 20, 2026**\n\n**Parlay Result: WIN** ✅\n\n| Detail | Value |\n|--------|-------|\n| Event | Tennessee vs Wofford |\n| Final Score | Tennessee 77, Wofford 62 |\n| Spread | Tennessee -11.5 (covered by 3.5) |\n| All 3 Legs | WIN |\n| Profit | +$79.87 |\n| New Bankroll | $1,399.05 |\n\n**Updated Stats:**\n- Total Bets: 22 (11-11)\n- Win Rate: 50.0%\n- Overall ROI: +16.2%\n- All-Time High: $1,399.05\n\n**No pending bets remaining.**\n\n*Note: Native ledger append failed (missing required fields), but markdown state updated successfully.*",
+          "raw_summary": "---\n\n**GRADING COMPLETE — March 20, 2026**\n\n**Parlay Result: WIN** ✅\n\n| Detail | Value |\n|--------|-------|\n| Event | Tennessee vs Wofford |\n| Final Score | Tennessee 77, Wofford 62 |\n| Spread | Tennessee -11.5 (covered by 3.5) |\n| All 3 Legs | WIN |\n| Profit | +$79.87 |\n| New Bankroll | $1,399.05 |\n\n**Updated Stats:**\n- Total Bets: 22 (11-11)\n- Win Rate: 50.0%\n- Overall ROI: +16.2%\n- All-Time High: $1,399.05\n\n**No pending bets remaining.**\n\n*Note: Native ledger append failed (missing required fields), but markdown state updated successfully.*",
+          "session_id": "cb4deb98-ca12-4d82-b061-6ed5d4daf473",
+          "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/cb4deb98-ca12-4d82-b061-6ed5d4daf473.jsonl",
+          "requires_state_sync": false,
+          "native_append_failed": true,
+          "plain_reason": "Latest grading summary reported markdown updates after a native-ledger append failure."
         }
       ]
     },
@@ -772,28 +907,108 @@
       "schedule_tz": "America/Chicago",
       "schedule_time_ct": "10:00",
       "payload_message": "fun sgp hunt for TODAY only. Use only events commencing today in America/Chicago. Reject any settled, completed, in-progress, postponed, canceled, or prior-day games. If live odds cannot be verified for today's slate, return CANNOT_VERIFY_ODDS — SIT.",
-      "latest_finished": {
-        "status": "error",
-        "delivery_status": "unknown",
-        "error": "cron announce delivery failed",
-        "run_at_ms": 1773430168854,
-        "run_at_ct": "2026-03-13 14:29 CT",
-        "date_key": "2026-03-13",
-        "summary": "**FRIDAY FUN SGP HUNT — March 13, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API is currently blocked by network filtering (Gambling category). Cannot fetch real-time odds data required for any bet recommendations, including fun SGPs.\n\n**Network Details:**\n- URL: api.the-odds-api.com\n- Blocked by: Guest Network Policy (Securly DNS filtering)\n- Category: Gambling\n\n**Verdict:** No SGP can be constructed without verified odds per TieredEdge rules. Even fun SGPs require real-time data validation.\n\n**Recommendation:** Retry when connected to an unrestricted network, or manually verify odds through DraftKings mobile app if available.",
-        "raw_summary": "**FRIDAY FUN SGP HUNT — March 13, 2026**\n\n`CANNOT_VERIFY_ODDS — SIT`\n\n**Reason:** The Odds API is currently blocked by network filtering (Gambling category). Cannot fetch real-time odds data required for any bet recommendations, including fun SGPs.\n\n**Network Details:**\n- URL: api.the-odds-api.com\n- Blocked by: Guest Network Policy (Securly DNS filtering)\n- Category: Gambling\n\n**Verdict:** No SGP can be constructed without verified odds per TieredEdge rules. Even fun SGPs require real-time data validation.\n\n**Recommendation:** Retry when connected to an unrestricted network, or manually verify odds through DraftKings mobile app if available.",
-        "session_id": "7e276a48-c2ac-41d6-b4ef-623091065d74",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/7e276a48-c2ac-41d6-b4ef-623091065d74.jsonl",
+      "latest_finished_overall": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1774018800009,
+        "run_at_ct": "2026-03-20 10:00 CT",
+        "date_key": "2026-03-20",
+        "summary": "I have verified live odds for today's slate. Now analyzing SGP opportunities and generating output per SKILL.md spec.\n\n---\n\n**TIERED EDGE HUNT — FRIDAY SGP EDITION**\nBankroll: $1,303.28 | FUN SGP Cap: 1% ($13.03) | Timestamp: Fri Mar 20, 10:00 AM CT\n\n---\n\n**SGP #1 — NBA: NY KNICKS @ BROOKLYN NETS (6:40 PM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Knicks -17.5 | -110 | Heavy favorite vs depleted Nets |\n| 2 | Total | Under 214.5 | -110 | Blowout = slower pace, bench minutes |\n| 3 | H2H | Knicks ML | -1800 | Locked-in leg for correlation |\n\n**Parlay Odds:** Approximately +550 to +600 (estimated based on correlation)\n**SGP Stake:** $6.50 (0.5% bankroll)\n**Source:** DraftKings (primary book)\n\nCorrelation thesis: Large spreads and unders are positively correlated — if Knicks blow out Nets early, garbage time slows scoring.\n\n---\n\n**SGP #2 — NCAAB FIRST ROUND: KENTUCKY vs SANTA CLARA (11:15 AM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Kentucky -3.5 | -102 | Tighter line, quality favorite |\n| 2 | Total | Under 156.5 | -105 | Tournament game = defensive intensity |\n| 3 | H2H | Kentucky ML | -155 | Lower juice than typical SGP add |\n\n**Parlay Odds:** Approximately +280 to +320\n**SGP Stake:** $6.53 (0.5% bankroll)\n**Source:** DraftKings\n\nCorrelation thesis: Early tournament games often feature tight defense and slower pace. Kentucky grinding a win aligns with under hitting.\n\n---\n\n**RISK CHECK — FUN SGP ENVELOPE**\n- Total SGP Exposure: $13.03 (exactly 1.0% bankroll) ✓\n- Legs per SGP: 3 (within reasonable correlation bounds)\n- Both SGPs: DraftKings only (single book as required)\n\n---\n\n**SIT — NO OTHER FRIDAY SGPs**\n- Remaining slate lacks compelling correlation edges\n- NBA games with big spreads (Celtics -15, Nuggets -7.5) have high totals that reduce correlation confidence\n- NCAAB blowout lines (Arizona -30.5, Purdue -25.5) too volatile for SGP construction\n\n---\n\n**RECOMMENDATION SUMMARY**\n\n| Bet ID | Type | Stake | Book | Confidence |\n|--------|------|-------|------|------------|\n| SGP-2026-03-20-001 | Knicks -17.5 + Under 214.5 + Knicks ML | $6.50 | DraftKings | FUN — Correlation play |\n| SGP-2026-03-20-002 | Kentucky -3.5 + Under 156.5 + Kentucky ML | $6.53 | DraftKings | FUN — Tournament grind |\n\n**Total FUN SGP Risk:** $13.03 / $13.03 cap (100% utilized)\n\n---\n\n*FUN SGPs are entertainment-only with capped exposure. No +EV guarantee implied. Correlation assumptions based on pace/scoring dynamics.*",
+        "raw_summary": "I have verified live odds for today's slate. Now analyzing SGP opportunities and generating output per SKILL.md spec.\n\n---\n\n**TIERED EDGE HUNT — FRIDAY SGP EDITION**\nBankroll: $1,303.28 | FUN SGP Cap: 1% ($13.03) | Timestamp: Fri Mar 20, 10:00 AM CT\n\n---\n\n**SGP #1 — NBA: NY KNICKS @ BROOKLYN NETS (6:40 PM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Knicks -17.5 | -110 | Heavy favorite vs depleted Nets |\n| 2 | Total | Under 214.5 | -110 | Blowout = slower pace, bench minutes |\n| 3 | H2H | Knicks ML | -1800 | Locked-in leg for correlation |\n\n**Parlay Odds:** Approximately +550 to +600 (estimated based on correlation)\n**SGP Stake:** $6.50 (0.5% bankroll)\n**Source:** DraftKings (primary book)\n\nCorrelation thesis: Large spreads and unders are positively correlated — if Knicks blow out Nets early, garbage time slows scoring.\n\n---\n\n**SGP #2 — NCAAB FIRST ROUND: KENTUCKY vs SANTA CLARA (11:15 AM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Kentucky -3.5 | -102 | Tighter line, quality favorite |\n| 2 | Total | Under 156.5 | -105 | Tournament game = defensive intensity |\n| 3 | H2H | Kentucky ML | -155 | Lower juice than typical SGP add |\n\n**Parlay Odds:** Approximately +280 to +320\n**SGP Stake:** $6.53 (0.5% bankroll)\n**Source:** DraftKings\n\nCorrelation thesis: Early tournament games often feature tight defense and slower pace. Kentucky grinding a win aligns with under hitting.\n\n---\n\n**RISK CHECK — FUN SGP ENVELOPE**\n- Total SGP Exposure: $13.03 (exactly 1.0% bankroll) ✓\n- Legs per SGP: 3 (within reasonable correlation bounds)\n- Both SGPs: DraftKings only (single book as required)\n\n---\n\n**SIT — NO OTHER FRIDAY SGPs**\n- Remaining slate lacks compelling correlation edges\n- NBA games with big spreads (Celtics -15, Nuggets -7.5) have high totals that reduce correlation confidence\n- NCAAB blowout lines (Arizon…",
+        "session_id": "0038cf09-875d-490e-9201-bf5147943169",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/0038cf09-875d-490e-9201-bf5147943169.jsonl",
         "message_type": "BLOCKED",
         "has_actionable_bets": false,
         "requires_state_sync": false,
         "data_failure_codes": [
-          "stale_response"
+          "runtime_gateway_failure"
         ],
         "data_status": "degraded_data",
-        "plain_reason": "Odds could not be verified for the latest scheduled scan."
+        "plain_reason": "Latest scheduled scan returned an incomplete summary after fetching odds."
       },
-      "latest_successful": null,
-      "successful_runs": []
+      "latest_finished": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1774018800009,
+        "run_at_ct": "2026-03-20 10:00 CT",
+        "date_key": "2026-03-20",
+        "summary": "I have verified live odds for today's slate. Now analyzing SGP opportunities and generating output per SKILL.md spec.\n\n---\n\n**TIERED EDGE HUNT — FRIDAY SGP EDITION**\nBankroll: $1,303.28 | FUN SGP Cap: 1% ($13.03) | Timestamp: Fri Mar 20, 10:00 AM CT\n\n---\n\n**SGP #1 — NBA: NY KNICKS @ BROOKLYN NETS (6:40 PM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Knicks -17.5 | -110 | Heavy favorite vs depleted Nets |\n| 2 | Total | Under 214.5 | -110 | Blowout = slower pace, bench minutes |\n| 3 | H2H | Knicks ML | -1800 | Locked-in leg for correlation |\n\n**Parlay Odds:** Approximately +550 to +600 (estimated based on correlation)\n**SGP Stake:** $6.50 (0.5% bankroll)\n**Source:** DraftKings (primary book)\n\nCorrelation thesis: Large spreads and unders are positively correlated — if Knicks blow out Nets early, garbage time slows scoring.\n\n---\n\n**SGP #2 — NCAAB FIRST ROUND: KENTUCKY vs SANTA CLARA (11:15 AM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Kentucky -3.5 | -102 | Tighter line, quality favorite |\n| 2 | Total | Under 156.5 | -105 | Tournament game = defensive intensity |\n| 3 | H2H | Kentucky ML | -155 | Lower juice than typical SGP add |\n\n**Parlay Odds:** Approximately +280 to +320\n**SGP Stake:** $6.53 (0.5% bankroll)\n**Source:** DraftKings\n\nCorrelation thesis: Early tournament games often feature tight defense and slower pace. Kentucky grinding a win aligns with under hitting.\n\n---\n\n**RISK CHECK — FUN SGP ENVELOPE**\n- Total SGP Exposure: $13.03 (exactly 1.0% bankroll) ✓\n- Legs per SGP: 3 (within reasonable correlation bounds)\n- Both SGPs: DraftKings only (single book as required)\n\n---\n\n**SIT — NO OTHER FRIDAY SGPs**\n- Remaining slate lacks compelling correlation edges\n- NBA games with big spreads (Celtics -15, Nuggets -7.5) have high totals that reduce correlation confidence\n- NCAAB blowout lines (Arizona -30.5, Purdue -25.5) too volatile for SGP construction\n\n---\n\n**RECOMMENDATION SUMMARY**\n\n| Bet ID | Type | Stake | Book | Confidence |\n|--------|------|-------|------|------------|\n| SGP-2026-03-20-001 | Knicks -17.5 + Under 214.5 + Knicks ML | $6.50 | DraftKings | FUN — Correlation play |\n| SGP-2026-03-20-002 | Kentucky -3.5 + Under 156.5 + Kentucky ML | $6.53 | DraftKings | FUN — Tournament grind |\n\n**Total FUN SGP Risk:** $13.03 / $13.03 cap (100% utilized)\n\n---\n\n*FUN SGPs are entertainment-only with capped exposure. No +EV guarantee implied. Correlation assumptions based on pace/scoring dynamics.*",
+        "raw_summary": "I have verified live odds for today's slate. Now analyzing SGP opportunities and generating output per SKILL.md spec.\n\n---\n\n**TIERED EDGE HUNT — FRIDAY SGP EDITION**\nBankroll: $1,303.28 | FUN SGP Cap: 1% ($13.03) | Timestamp: Fri Mar 20, 10:00 AM CT\n\n---\n\n**SGP #1 — NBA: NY KNICKS @ BROOKLYN NETS (6:40 PM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Knicks -17.5 | -110 | Heavy favorite vs depleted Nets |\n| 2 | Total | Under 214.5 | -110 | Blowout = slower pace, bench minutes |\n| 3 | H2H | Knicks ML | -1800 | Locked-in leg for correlation |\n\n**Parlay Odds:** Approximately +550 to +600 (estimated based on correlation)\n**SGP Stake:** $6.50 (0.5% bankroll)\n**Source:** DraftKings (primary book)\n\nCorrelation thesis: Large spreads and unders are positively correlated — if Knicks blow out Nets early, garbage time slows scoring.\n\n---\n\n**SGP #2 — NCAAB FIRST ROUND: KENTUCKY vs SANTA CLARA (11:15 AM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Kentucky -3.5 | -102 | Tighter line, quality favorite |\n| 2 | Total | Under 156.5 | -105 | Tournament game = defensive intensity |\n| 3 | H2H | Kentucky ML | -155 | Lower juice than typical SGP add |\n\n**Parlay Odds:** Approximately +280 to +320\n**SGP Stake:** $6.53 (0.5% bankroll)\n**Source:** DraftKings\n\nCorrelation thesis: Early tournament games often feature tight defense and slower pace. Kentucky grinding a win aligns with under hitting.\n\n---\n\n**RISK CHECK — FUN SGP ENVELOPE**\n- Total SGP Exposure: $13.03 (exactly 1.0% bankroll) ✓\n- Legs per SGP: 3 (within reasonable correlation bounds)\n- Both SGPs: DraftKings only (single book as required)\n\n---\n\n**SIT — NO OTHER FRIDAY SGPs**\n- Remaining slate lacks compelling correlation edges\n- NBA games with big spreads (Celtics -15, Nuggets -7.5) have high totals that reduce correlation confidence\n- NCAAB blowout lines (Arizon…",
+        "session_id": "0038cf09-875d-490e-9201-bf5147943169",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/0038cf09-875d-490e-9201-bf5147943169.jsonl",
+        "message_type": "BLOCKED",
+        "has_actionable_bets": false,
+        "requires_state_sync": false,
+        "data_failure_codes": [
+          "runtime_gateway_failure"
+        ],
+        "data_status": "degraded_data",
+        "plain_reason": "Latest scheduled scan returned an incomplete summary after fetching odds."
+      },
+      "latest_successful": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1774018800009,
+        "run_at_ct": "2026-03-20 10:00 CT",
+        "date_key": "2026-03-20",
+        "summary": "I have verified live odds for today's slate. Now analyzing SGP opportunities and generating output per SKILL.md spec.\n\n---\n\n**TIERED EDGE HUNT — FRIDAY SGP EDITION**\nBankroll: $1,303.28 | FUN SGP Cap: 1% ($13.03) | Timestamp: Fri Mar 20, 10:00 AM CT\n\n---\n\n**SGP #1 — NBA: NY KNICKS @ BROOKLYN NETS (6:40 PM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Knicks -17.5 | -110 | Heavy favorite vs depleted Nets |\n| 2 | Total | Under 214.5 | -110 | Blowout = slower pace, bench minutes |\n| 3 | H2H | Knicks ML | -1800 | Locked-in leg for correlation |\n\n**Parlay Odds:** Approximately +550 to +600 (estimated based on correlation)\n**SGP Stake:** $6.50 (0.5% bankroll)\n**Source:** DraftKings (primary book)\n\nCorrelation thesis: Large spreads and unders are positively correlated — if Knicks blow out Nets early, garbage time slows scoring.\n\n---\n\n**SGP #2 — NCAAB FIRST ROUND: KENTUCKY vs SANTA CLARA (11:15 AM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Kentucky -3.5 | -102 | Tighter line, quality favorite |\n| 2 | Total | Under 156.5 | -105 | Tournament game = defensive intensity |\n| 3 | H2H | Kentucky ML | -155 | Lower juice than typical SGP add |\n\n**Parlay Odds:** Approximately +280 to +320\n**SGP Stake:** $6.53 (0.5% bankroll)\n**Source:** DraftKings\n\nCorrelation thesis: Early tournament games often feature tight defense and slower pace. Kentucky grinding a win aligns with under hitting.\n\n---\n\n**RISK CHECK — FUN SGP ENVELOPE**\n- Total SGP Exposure: $13.03 (exactly 1.0% bankroll) ✓\n- Legs per SGP: 3 (within reasonable correlation bounds)\n- Both SGPs: DraftKings only (single book as required)\n\n---\n\n**SIT — NO OTHER FRIDAY SGPs**\n- Remaining slate lacks compelling correlation edges\n- NBA games with big spreads (Celtics -15, Nuggets -7.5) have high totals that reduce correlation confidence\n- NCAAB blowout lines (Arizona -30.5, Purdue -25.5) too volatile for SGP construction\n\n---\n\n**RECOMMENDATION SUMMARY**\n\n| Bet ID | Type | Stake | Book | Confidence |\n|--------|------|-------|------|------------|\n| SGP-2026-03-20-001 | Knicks -17.5 + Under 214.5 + Knicks ML | $6.50 | DraftKings | FUN — Correlation play |\n| SGP-2026-03-20-002 | Kentucky -3.5 + Under 156.5 + Kentucky ML | $6.53 | DraftKings | FUN — Tournament grind |\n\n**Total FUN SGP Risk:** $13.03 / $13.03 cap (100% utilized)\n\n---\n\n*FUN SGPs are entertainment-only with capped exposure. No +EV guarantee implied. Correlation assumptions based on pace/scoring dynamics.*",
+        "raw_summary": "I have verified live odds for today's slate. Now analyzing SGP opportunities and generating output per SKILL.md spec.\n\n---\n\n**TIERED EDGE HUNT — FRIDAY SGP EDITION**\nBankroll: $1,303.28 | FUN SGP Cap: 1% ($13.03) | Timestamp: Fri Mar 20, 10:00 AM CT\n\n---\n\n**SGP #1 — NBA: NY KNICKS @ BROOKLYN NETS (6:40 PM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Knicks -17.5 | -110 | Heavy favorite vs depleted Nets |\n| 2 | Total | Under 214.5 | -110 | Blowout = slower pace, bench minutes |\n| 3 | H2H | Knicks ML | -1800 | Locked-in leg for correlation |\n\n**Parlay Odds:** Approximately +550 to +600 (estimated based on correlation)\n**SGP Stake:** $6.50 (0.5% bankroll)\n**Source:** DraftKings (primary book)\n\nCorrelation thesis: Large spreads and unders are positively correlated — if Knicks blow out Nets early, garbage time slows scoring.\n\n---\n\n**SGP #2 — NCAAB FIRST ROUND: KENTUCKY vs SANTA CLARA (11:15 AM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Kentucky -3.5 | -102 | Tighter line, quality favorite |\n| 2 | Total | Under 156.5 | -105 | Tournament game = defensive intensity |\n| 3 | H2H | Kentucky ML | -155 | Lower juice than typical SGP add |\n\n**Parlay Odds:** Approximately +280 to +320\n**SGP Stake:** $6.53 (0.5% bankroll)\n**Source:** DraftKings\n\nCorrelation thesis: Early tournament games often feature tight defense and slower pace. Kentucky grinding a win aligns with under hitting.\n\n---\n\n**RISK CHECK — FUN SGP ENVELOPE**\n- Total SGP Exposure: $13.03 (exactly 1.0% bankroll) ✓\n- Legs per SGP: 3 (within reasonable correlation bounds)\n- Both SGPs: DraftKings only (single book as required)\n\n---\n\n**SIT — NO OTHER FRIDAY SGPs**\n- Remaining slate lacks compelling correlation edges\n- NBA games with big spreads (Celtics -15, Nuggets -7.5) have high totals that reduce correlation confidence\n- NCAAB blowout lines (Arizon…",
+        "session_id": "0038cf09-875d-490e-9201-bf5147943169",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/0038cf09-875d-490e-9201-bf5147943169.jsonl",
+        "message_type": "BLOCKED",
+        "has_actionable_bets": false,
+        "requires_state_sync": false,
+        "data_failure_codes": [
+          "runtime_gateway_failure"
+        ],
+        "data_status": "degraded_data",
+        "plain_reason": "Latest scheduled scan returned an incomplete summary after fetching odds."
+      },
+      "successful_runs": [
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1774017458491,
+          "run_at_ct": "2026-03-20 09:37 CT",
+          "date_key": "2026-03-20",
+          "summary": "**FRIDAY SGP HUNT — MARCH 20, 2026**\n\nBankroll: $1,303.28 | Max SGP Stake: 1% = $13.03\n\n---\n\n**Today's Slate (America/Chicago):**\n\n**NBA (6 games)**\n- 6:40 PM: Brooklyn Nets @ New York Knicks\n- 6:40 PM: Detroit Pistons @ Golden State Warriors\n- 7:10 PM: Atlanta Hawks @ Houston Rockets\n- 7:10 PM: Boston Celtics @ Memphis Grizzlies\n- 7:10 PM: Portland Trail Blazers @ Minnesota Timberwolves\n- 8:10 PM: Toronto Raptors @ Denver Nuggets\n\n**NCAAB (17 games)**\n- 11:15 AM: Kentucky Wildcats @ Santa Clara Broncos\n- 11:40 AM: Akron Zips @ Texas Tech Red Raiders\n- 12:35 PM: LIU Sharks @ Arizona Wildcats\n- 12:50 PM: Wright St Raiders @ Virginia Cavaliers\n- 1:50 PM: Tennessee St Tigers @ Iowa State Cyclones\n- 2:15 PM: Hofstra Pride @ Alabama Crimson Tide\n- 3:10 PM: Utah State Aggies @ Villanova Wildcats\n- 3:25 PM: Miami (OH) RedHawks @ Tennessee Volunteers\n- 5:50 PM: Iowa Hawkeyes @ Clemson Tigers\n- 6:10 PM: Northern Iowa Panthers @ St. John's Red Storm\n- 6:35 PM: Queens University Royals @ Purdue Boilermakers\n- 7:10 PM: Missouri Tigers @ Miami Hurricanes\n- 8:25 PM: Prairie View Panthers @ Florida Gators\n- 8:45 PM: Cal Baptist Lancers @ Kansas Jayhawks\n- 9:00 PM: Furman Paladins @ UConn Huskies\n\n**NHL (4 games)**\n- 6:10 PM: Carolina Hurricanes @ Toronto Maple Leafs\n- 6:10 PM: New Jersey Devils @ Washington Capitals\n- 7:40 PM: Colorado Avalanche @ Chicago Blackhawks\n- 8:10 PM: Florida Panthers @ Calgary Flames\n\n---\n\n**VERDICT: CANNOT_VERIFY_ODDS — SIT**\n\n**Reason:** The Odds API provides only h2h, spreads, and totals markets. Same Game Parlays require player prop markets (points, rebounds, assists, goals, saves, etc.). Without verified player prop odds from DraftKings and true probability estimates, I cannot calculate edge or construct a mathematically sound SGP.\n\n**Note:** To hunt SGPs, I need access to DraftKings player prop odds in real-time. Recommend checking the DraftKings app directly for any +EV SGP legs if you wish to proceed manually.",
+          "raw_summary": "**FRIDAY SGP HUNT — MARCH 20, 2026**\n\nBankroll: $1,303.28 | Max SGP Stake: 1% = $13.03\n\n---\n\n**Today's Slate (America/Chicago):**\n\n**NBA (6 games)**\n- 6:40 PM: Brooklyn Nets @ New York Knicks\n- 6:40 PM: Detroit Pistons @ Golden State Warriors\n- 7:10 PM: Atlanta Hawks @ Houston Rockets\n- 7:10 PM: Boston Celtics @ Memphis Grizzlies\n- 7:10 PM: Portland Trail Blazers @ Minnesota Timberwolves\n- 8:10 PM: Toronto Raptors @ Denver Nuggets\n\n**NCAAB (17 games)**\n- 11:15 AM: Kentucky Wildcats @ Santa Clara Broncos\n- 11:40 AM: Akron Zips @ Texas Tech Red Raiders\n- 12:35 PM: LIU Sharks @ Arizona Wildcats\n- 12:50 PM: Wright St Raiders @ Virginia Cavaliers\n- 1:50 PM: Tennessee St Tigers @ Iowa State Cyclones\n- 2:15 PM: Hofstra Pride @ Alabama Crimson Tide\n- 3:10 PM: Utah State Aggies @ Villanova Wildcats\n- 3:25 PM: Miami (OH) RedHawks @ Tennessee Volunteers\n- 5:50 PM: Iowa Hawkeyes @ Clemson Tigers\n- 6:10 PM: Northern Iowa Panthers @ St. John's Red Storm\n- 6:35 PM: Queens University Royals @ Purdue Boilermakers\n- 7:10 PM: Missouri Tigers @ Miami Hurricanes\n- 8:25 PM: Prairie View Panthers @ Florida Gators\n- 8:45 PM: Cal Baptist Lancers @ Kansas Jayhawks\n- 9:00 PM: Furman Paladins @ UConn Huskies\n\n**NHL (4 games)**\n- 6:10 PM: Carolina Hurricanes @ Toronto Maple Leafs\n- 6:10 PM: New Jersey Devils @ Washington Capitals\n- 7:40 PM: Colorado Avalanche @ Chicago Blackhawks\n- 8:10 PM: Florida Panthers @ Calgary Flames\n\n---\n\n**VERDICT: CANNOT_VERIFY_ODDS — SIT**\n\n**Reason:** The Odds API provides only h2h, spreads, and totals markets. Same Game Parlays require player prop markets (points, rebounds, assists, goals, saves, etc.). Without verified player prop odds from DraftKings and true probability estimates, I cannot calculate edge or construct a mathematically sound SGP.\n\n**Note:** To hunt SGPs, I need access to DraftKings player prop odds in real-time. Recommend checking the DraftKings app directly for any +EV SGP legs if you wish to proceed manually.",
+          "session_id": "41f0dc8b-c530-4986-b609-ea315903d41d",
+          "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/41f0dc8b-c530-4986-b609-ea315903d41d.jsonl",
+          "message_type": "BLOCKED",
+          "has_actionable_bets": false,
+          "requires_state_sync": false,
+          "data_failure_codes": [
+            "stale_response"
+          ],
+          "data_status": "degraded_data",
+          "plain_reason": "Odds could not be verified for the latest scheduled scan."
+        },
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1774018800009,
+          "run_at_ct": "2026-03-20 10:00 CT",
+          "date_key": "2026-03-20",
+          "summary": "I have verified live odds for today's slate. Now analyzing SGP opportunities and generating output per SKILL.md spec.\n\n---\n\n**TIERED EDGE HUNT — FRIDAY SGP EDITION**\nBankroll: $1,303.28 | FUN SGP Cap: 1% ($13.03) | Timestamp: Fri Mar 20, 10:00 AM CT\n\n---\n\n**SGP #1 — NBA: NY KNICKS @ BROOKLYN NETS (6:40 PM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Knicks -17.5 | -110 | Heavy favorite vs depleted Nets |\n| 2 | Total | Under 214.5 | -110 | Blowout = slower pace, bench minutes |\n| 3 | H2H | Knicks ML | -1800 | Locked-in leg for correlation |\n\n**Parlay Odds:** Approximately +550 to +600 (estimated based on correlation)\n**SGP Stake:** $6.50 (0.5% bankroll)\n**Source:** DraftKings (primary book)\n\nCorrelation thesis: Large spreads and unders are positively correlated — if Knicks blow out Nets early, garbage time slows scoring.\n\n---\n\n**SGP #2 — NCAAB FIRST ROUND: KENTUCKY vs SANTA CLARA (11:15 AM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Kentucky -3.5 | -102 | Tighter line, quality favorite |\n| 2 | Total | Under 156.5 | -105 | Tournament game = defensive intensity |\n| 3 | H2H | Kentucky ML | -155 | Lower juice than typical SGP add |\n\n**Parlay Odds:** Approximately +280 to +320\n**SGP Stake:** $6.53 (0.5% bankroll)\n**Source:** DraftKings\n\nCorrelation thesis: Early tournament games often feature tight defense and slower pace. Kentucky grinding a win aligns with under hitting.\n\n---\n\n**RISK CHECK — FUN SGP ENVELOPE**\n- Total SGP Exposure: $13.03 (exactly 1.0% bankroll) ✓\n- Legs per SGP: 3 (within reasonable correlation bounds)\n- Both SGPs: DraftKings only (single book as required)\n\n---\n\n**SIT — NO OTHER FRIDAY SGPs**\n- Remaining slate lacks compelling correlation edges\n- NBA games with big spreads (Celtics -15, Nuggets -7.5) have high totals that reduce correlation confidence\n- NCAAB blowout lines (Arizona -30.5, Purdue -25.5) too volatile for SGP construction\n\n---\n\n**RECOMMENDATION SUMMARY**\n\n| Bet ID | Type | Stake | Book | Confidence |\n|--------|------|-------|------|------------|\n| SGP-2026-03-20-001 | Knicks -17.5 + Under 214.5 + Knicks ML | $6.50 | DraftKings | FUN — Correlation play |\n| SGP-2026-03-20-002 | Kentucky -3.5 + Under 156.5 + Kentucky ML | $6.53 | DraftKings | FUN — Tournament grind |\n\n**Total FUN SGP Risk:** $13.03 / $13.03 cap (100% utilized)\n\n---\n\n*FUN SGPs are entertainment-only with capped exposure. No +EV guarantee implied. Correlation assumptions based on pace/scoring dynamics.*",
+          "raw_summary": "I have verified live odds for today's slate. Now analyzing SGP opportunities and generating output per SKILL.md spec.\n\n---\n\n**TIERED EDGE HUNT — FRIDAY SGP EDITION**\nBankroll: $1,303.28 | FUN SGP Cap: 1% ($13.03) | Timestamp: Fri Mar 20, 10:00 AM CT\n\n---\n\n**SGP #1 — NBA: NY KNICKS @ BROOKLYN NETS (6:40 PM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Knicks -17.5 | -110 | Heavy favorite vs depleted Nets |\n| 2 | Total | Under 214.5 | -110 | Blowout = slower pace, bench minutes |\n| 3 | H2H | Knicks ML | -1800 | Locked-in leg for correlation |\n\n**Parlay Odds:** Approximately +550 to +600 (estimated based on correlation)\n**SGP Stake:** $6.50 (0.5% bankroll)\n**Source:** DraftKings (primary book)\n\nCorrelation thesis: Large spreads and unders are positively correlated — if Knicks blow out Nets early, garbage time slows scoring.\n\n---\n\n**SGP #2 — NCAAB FIRST ROUND: KENTUCKY vs SANTA CLARA (11:15 AM CT)**\n\n| Leg | Market | Selection | DraftKings Odds | Notes |\n|-----|--------|-----------|-----------------|-------|\n| 1 | Spread | Kentucky -3.5 | -102 | Tighter line, quality favorite |\n| 2 | Total | Under 156.5 | -105 | Tournament game = defensive intensity |\n| 3 | H2H | Kentucky ML | -155 | Lower juice than typical SGP add |\n\n**Parlay Odds:** Approximately +280 to +320\n**SGP Stake:** $6.53 (0.5% bankroll)\n**Source:** DraftKings\n\nCorrelation thesis: Early tournament games often feature tight defense and slower pace. Kentucky grinding a win aligns with under hitting.\n\n---\n\n**RISK CHECK — FUN SGP ENVELOPE**\n- Total SGP Exposure: $13.03 (exactly 1.0% bankroll) ✓\n- Legs per SGP: 3 (within reasonable correlation bounds)\n- Both SGPs: DraftKings only (single book as required)\n\n---\n\n**SIT — NO OTHER FRIDAY SGPs**\n- Remaining slate lacks compelling correlation edges\n- NBA games with big spreads (Celtics -15, Nuggets -7.5) have high totals that reduce correlation confidence\n- NCAAB blowout lines (Arizon…",
+          "session_id": "0038cf09-875d-490e-9201-bf5147943169",
+          "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/0038cf09-875d-490e-9201-bf5147943169.jsonl",
+          "message_type": "BLOCKED",
+          "has_actionable_bets": false,
+          "requires_state_sync": false,
+          "data_failure_codes": [
+            "runtime_gateway_failure"
+          ],
+          "data_status": "degraded_data",
+          "plain_reason": "Latest scheduled scan returned an incomplete summary after fetching odds."
+        }
+      ]
     },
     "weekly_review": {
       "id": "408793e1-ca62-49ea-89c8-d85aecd7da0d",
@@ -803,6 +1018,21 @@
       "schedule_tz": "America/Chicago",
       "schedule_time_ct": "09:00",
       "payload_message": "Run the weekly TieredEdge performance review. Read memory/betting-state.md. Analyze all bets from the past 7 days. Check drawdown status. Calculate CLV averages. Identify any leaks. Output full structured review.",
+      "latest_finished_overall": {
+        "status": "ok",
+        "delivery_status": "delivered",
+        "error": null,
+        "run_at_ms": 1773669600011,
+        "run_at_ct": "2026-03-16 09:00 CT",
+        "date_key": "2026-03-16",
+        "summary": "# 📊 TIEREDEDGE WEEKLY PERFORMANCE REVIEW\n**Review Period:** March 9-15, 2026  \n**Generated:** Monday, March 16, 2026 — 9:00 AM CT\n\n---\n\n## EXECUTIVE SUMMARY\n\n| Metric | Value | Status |\n|--------|-------|--------|\n| **Bankroll** | $1,328.88 | ATH ✓ |\n| **Week P/L** | +$67.42 | ✅ |\n| **Week ROI** | +5.3% | ✅ |\n| **Edge Bets Placed** | 1 | PATIENCE |\n| **SIT Rate** | 97% | DISCIPLINE |\n| **Circuit Breaker** | OFF | NORMAL |\n| **Drawdown from Peak** | 0.0% | ✅ HEALTHY |\n\n---\n\n## DRAWDOWN STATUS\n\n- **Peak Bankroll:** $1,328.88 (current ATH)\n- **Current Bankroll:** $1,328.88\n- **Peak-to-Trough:** $0.00 (0.0%)\n- **30% Circuit Breaker Trigger:** $930.22 (not near)\n- **Status:** 🟢 GREEN — No drawdown concerns\n\n---\n\n## WEEKLY BET ANALYSIS (Mar 9-15)\n\n### Edge Bets (1)\n| Date | Selection | Tier | Odds | Stake | Result | P/L | CLV |\n|------|-----------|------|------|-------|--------|-----|-----|\n| Mar 10 | Spurs -3.5 | T3 | -105 | $10.00 | WIN | +$9.52 | — |\n\n**Edge Bet Performance:** 1-0, +$9.52 (+95.2% ROI)\n\n### Fun SGPs (2) — Friday Only\n| Date | Selection | Odds | Stake | Result | P/L |\n|------|-----------|------|-------|--------|-----|\n| Mar 13 | MIN -5.5/Edwards 30+/O222.5 | +498 | $5.00 | WIN | +$24.90 |\n| Mar 13 | Edwards 25+/O222.5/MIN -5.5 | +325 | $10.00 | WIN | +$32.50 |\n\n**FUN SGP Performance:** 2-0, +$57.40\n\n---\n\n## CLV ANALYSIS\n\n| Metric | Value |\n|--------|-------|\n| **Week CLV (Edge Only)** | N/A (Spurs CLV not recorded) |\n| **Lifetime Avg CLV** | +3.6% |\n| **Slippage (Avg)** | 0.9 cents |\n| **Data Verification** | 100% (7d) |\n\n---\n\n## SIT DISCIPLINE REVIEW\n\n### Summary\n- **Markets Checked:** 95+\n- **SIT Decisions:** 95\n- **Edge Bets:** 1\n- **SIT Rate:** 97.1%\n- **Sit Win Rate (if bet):** 47.8%\n\n### Notable SIT Saves (Mar 10)\n| Selection | Edge | Result | Avoided Loss |\n|-----------|------|--------|--------------|\n| Hurricanes -1.5 | +1.7% | LOSS | ✅ $1.00 |\n| Lightning -1.5 | +1.5% | LOSS | ✅ $1.00 |\n| Baylor -3.5 | +0.5% | LOSS | ✅ $1.00 |\n\n### Notable Missed Winners (Mar 10)\n| Selection | Edge | Result | Missed Profit |\n|-----------|------|--------|---------------|\n| 76ers -3.5 | +2.2% | WIN | — |\n| Panthers ML | +1.7% | WIN | — |\n| Stars ML | +1.5% | WIN | — |\n\n**Net SIT Impact:** +$6.30 capital preserved by sitting correctly on 3 losers vs 3 winners missed.\n\n---\n\n## COMPLIANCE SCORECARD (7D)\n\n| Metric | Score | Target | Status |\n|--------|-------|--------|--------|\n| Process Score | 78 | 75+ | ✅ |\n| Data Verification | 100% | 100% | ✅ |\n| Exposure Compliance | 100% | 100% | ✅ |\n| Sit Discipline | 71% | 65%+ | ✅ |\n\n---\n\n## LEAK DETECTION\n\n| Potential Leak | Evidence | Severity | Status |\n|----------------|----------|----------|--------|\n| **Low Edge Capture** | Only 1 edge bet in 7 days; 95+ sits | MEDIUM | ⚠️ MONITOR |\n| **CLV Gap** | Spurs bet CLV not recorded | LOW | 🔧 FIX |\n| **UFC Pending** | Oliveira/Garbrandt from Mar 7 unresolved | LOW | 🔧 CLEANUP |\n| **Over-Sitting?** | 3 winners missed at 1.5-2.2% edge | LOW | ⚠️ REVIEW |\n\n### Leak Analysis\n\n**1. Edge Capture Rate (MEDIUM)**\n- Issue: 97% sit rate is disciplined but may be overly conservative\n- Root Cause: Markets have been tight; legitimate edges >2% are rare\n- Action: **MONITOR** — Do not lower thresholds. Edge droughts are normal.\n- Signal to Watch: If SIT win rate >55%, consider threshold review.\n\n**2. CLV Tracking (LOW)**\n- Issue: Spurs CLV not captured in state file\n- Action: **FIX** — Ensure CLV recorded for all edge bets going forward\n\n**3. Pending Bets (LOW)**\n- Issue: UFC bets from Mar 7 still showing \"PENDING\" in state file\n- Action: **CLEANUP** — Grade Oliveira (LOSS) and Garbrandt (WIN) properly\n\n**4. Sit Threshold Tightness (LOW)**\n- Observation: Missed 3 winners at 1.5-2.2% edge (below T3 threshold)\n- Assessment: Correct behavior — T3 threshold protects against noise\n- Net SIT impact remains positive (+$6.30 preserved)\n\n---\n\n## WEEKLY SCORE\n\n| Category | Grade |\n|----------|-------|\n| **Profitability** | A+ |\n| **Drawdown Mgmt** | A+ |\n| **Process Adherence** | A |\n| **Edge Generation** | B |\n| **Record Keeping** | B+ |\n\n**Overall Grade: A-**\n\n---\n\n## RECOMMENDATIONS\n\n1. **MAINTAIN DISCIPLINE** — Current 97% sit rate is appropriate for tight March markets post-conference tournaments. Do not chase sub-threshold edges.\n\n2. **CLEAN UP PENDING** — Grade UFC bets from March 7; update bankroll if needed.\n\n3. **CAPTURE CLV** — Ensure all edge bets log CLV at time of placement for better diagnostics.\n\n4. **PREPARE FOR MADNESS** — NCAA Tournament begins this week. Edge opportunities typically expand in early rounds. Stay sharp, stick to T1/T2 for larger edges.\n\n5. **NO CIRCUIT BREAKER CONCERNS** — At ATH, no drawdown risk. System healthy.\n\n---\n\n*Review complete. System operating within normal parameters. Edge generation is the only watch item — but this reflects market conditions, not model degradation.*",
+        "raw_summary": "# 📊 TIEREDEDGE WEEKLY PERFORMANCE REVIEW\n**Review Period:** March 9-15, 2026  \n**Generated:** Monday, March 16, 2026 — 9:00 AM CT\n\n---\n\n## EXECUTIVE SUMMARY\n\n| Metric | Value | Status |\n|--------|-------|--------|\n| **Bankroll** | $1,328.88 | ATH ✓ |\n| **Week P/L** | +$67.42 | ✅ |\n| **Week ROI** | +5.3% | ✅ |\n| **Edge Bets Placed** | 1 | PATIENCE |\n| **SIT Rate** | 97% | DISCIPLINE |\n| **Circuit Breaker** | OFF | NORMAL |\n| **Drawdown from Peak** | 0.0% | ✅ HEALTHY |\n\n---\n\n## DRAWDOWN STATUS\n\n- **Peak Bankroll:** $1,328.88 (current ATH)\n- **Current Bankroll:** $1,328.88\n- **Peak-to-Trough:** $0.00 (0.0%)\n- **30% Circuit Breaker Trigger:** $930.22 (not near)\n- **Status:** 🟢 GREEN — No drawdown concerns\n\n---\n\n## WEEKLY BET ANALYSIS (Mar 9-15)\n\n### Edge Bets (1)\n| Date | Selection | Tier | Odds | Stake | Result | P/L | CLV |\n|------|-----------|------|------|-------|--------|-----|-----|\n| Mar 10 | Spurs -3.5 | T3 | -105 | $10.00 | WIN | +$9.52 | — |\n\n**Edge Bet Performance:** 1-0, +$9.52 (+95.2% ROI)\n\n### Fun SGPs (2) — Friday Only\n| Date | Selection | Odds | Stake | Result | P/L |\n|------|-----------|------|-------|--------|-----|\n| Mar 13 | MIN -5.5/Edwards 30+/O222.5 | +498 | $5.00 | WIN | +$24.90 |\n| Mar 13 | Edwards 25+/O222.5/MIN -5.5 | +325 | $10.00 | WIN | +$32.50 |\n\n**FUN SGP Performance:** 2-0, +$57.40\n\n---\n\n## CLV ANALYSIS\n\n| Metric | Value |\n|--------|-------|\n| **Week CLV (Edge Only)** | N/A (Spurs CLV not recorded) |\n| **Lifetime Avg CLV** | +3.6% |\n| **Slippage (Avg)** | 0.9 cents |\n| **Data Verification** | 100% (7d) |\n\n---\n\n## SIT DISCIPLINE REVIEW\n\n### Summary\n- **Markets Checked:** 95+\n- **SIT Decisions:** 95\n- **Edge Bets:** 1\n- **SIT Rate:** 97.1%\n- **Sit Win Rate (if bet):** 47.8%\n\n### Notable SIT Saves (Mar 10)\n| Selection | Edge | Result | Avoided Loss |\n|-----------|------|--------|--------------|\n| Hurricanes -1.5 | +1.7% | LOSS | ✅ $1.00 |\n| Lightning -1.5 | +1.5% | LOSS | ✅ $1.00 |\n| Baylor -3.5 | +0.5% | LOSS | ✅ $1.00 |\n\n### Notable Mis…",
+        "session_id": "9439e7a1-4f8e-4826-95ee-a3b8904fa85d",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/9439e7a1-4f8e-4826-95ee-a3b8904fa85d.jsonl",
+        "requires_state_sync": true,
+        "native_append_failed": false,
+        "plain_reason": "Latest grading run implies bankroll or result updates."
+      },
       "latest_finished": {
         "status": "ok",
         "delivery_status": "delivered",
@@ -815,6 +1045,7 @@
         "session_id": "9439e7a1-4f8e-4826-95ee-a3b8904fa85d",
         "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/9439e7a1-4f8e-4826-95ee-a3b8904fa85d.jsonl",
         "requires_state_sync": true,
+        "native_append_failed": false,
         "plain_reason": "Latest grading run implies bankroll or result updates."
       },
       "latest_successful": {
@@ -829,6 +1060,7 @@
         "session_id": "9439e7a1-4f8e-4826-95ee-a3b8904fa85d",
         "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/9439e7a1-4f8e-4826-95ee-a3b8904fa85d.jsonl",
         "requires_state_sync": true,
+        "native_append_failed": false,
         "plain_reason": "Latest grading run implies bankroll or result updates."
       },
       "successful_runs": [
@@ -844,6 +1076,7 @@
           "session_id": "ac25d53e-dc50-41c3-adc6-f1d8c4a0e64f",
           "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/ac25d53e-dc50-41c3-adc6-f1d8c4a0e64f.jsonl",
           "requires_state_sync": true,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run implies bankroll or result updates."
         },
         {
@@ -858,6 +1091,7 @@
           "session_id": "9439e7a1-4f8e-4826-95ee-a3b8904fa85d",
           "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/9439e7a1-4f8e-4826-95ee-a3b8904fa85d.jsonl",
           "requires_state_sync": true,
+          "native_append_failed": false,
           "plain_reason": "Latest grading run implies bankroll or result updates."
         }
       ]
@@ -870,73 +1104,120 @@
       "schedule_tz": "America/Chicago",
       "schedule_time_ct": "08:00",
       "payload_message": "DISABLED. Do not modify bankroll from this cron job. Monthly bankroll contributions are handled by the append-only contribution policy automation in the live-log repo.",
+      "latest_finished_overall": null,
       "latest_finished": null,
       "latest_successful": null,
       "successful_runs": []
     }
   },
   "latest_hunt_attempt": {
-    "session_id": "799ad687-c72f-4612-9eba-8d94a4a6094f",
-    "updated_at_ms": 1773860915811,
-    "updated_at_ct": "2026-03-18 14:08 CT",
-    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/799ad687-c72f-4612-9eba-8d94a4a6094f.jsonl",
+    "session_id": "e82b8534-4c37-4dcd-8abd-40b011275569",
+    "updated_at_ms": 1774097398020,
+    "updated_at_ct": "2026-03-21 07:49 CT",
+    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/e82b8534-4c37-4dcd-8abd-40b011275569.jsonl",
     "lock_exists": false,
-    "message_type": "IN_PROGRESS",
-    "plain_reason": "Latest cron attempt has live odds payload but no finished artifact yet.",
+    "message_type": "BLOCKED",
+    "plain_reason": "Latest cron attempt failed authentication against The Odds API.",
     "has_live_odds_payload": true,
     "data_failure_codes": [
-      "quota_or_rate_limit"
+      "auth_failure",
+      "quota_or_rate_limit",
+      "stale_response"
     ]
   },
   "latest_hunt_current": {
     "status": "ok",
-    "delivery_status": "delivered",
+    "delivery_status": "repo_direct",
     "error": null,
-    "run_at_ms": 1773860915807,
-    "run_at_ct": "2026-03-18 14:08 CT",
-    "date_key": "2026-03-18",
-    "summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%\n\n---\n\n**RECOMMENDED PLAYS:** 0\n\n---\n\n**SITTING OUT:**\n\nTier A scan complete (NBA, NCAAB, NHL). No qualifying edges found.\n\n**Closest Misses (Popular Games):**\n- Lakers ML @ Rockets (+106 FD): +0.96% edge — SIT\n- Clippers ML @ Pelicans (+100 FD): +1.00% edge — SIT  \n- Rangers ML vs Devils (+102 FD): +1.00% edge — SIT\n- Missouri Tigers ML vs Miami (+110 DK): +1.38% edge — SIT\n- UIC Flames ML @ California (+202 FD): +1.39% edge — SIT\n\n**Markets Checked:** 45+ | **T1 Plays:** 0 | **T2 Plays:** 0 | **T3 Plays:** 0\n\n---\n\n**Daily Rejection Summary:**\n- no_edge: 45+\n- low_confidence: 0\n- stale_or_unverified_odds: 0\n- exposure_cap_reached: 0\n- breaker_active: 0\n\n---\n\n**VERDICT:** 0 plays found | 45+ sat out\n\nMarket conditions tight across Tier A. Pre-March Madness pricing efficient. All near-misses fell short of +2% T3 threshold. Native decision log appended.",
-    "raw_summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%\n\n---\n\n**RECOMMENDED PLAYS:** 0\n\n---\n\n**SITTING OUT:**\n\nTier A scan complete (NBA, NCAAB, NHL). No qualifying edges found.\n\n**Closest Misses (Popular Games):**\n- Lakers ML @ Rockets (+106 FD): +0.96% edge — SIT\n- Clippers ML @ Pelicans (+100 FD): +1.00% edge — SIT  \n- Rangers ML vs Devils (+102 FD): +1.00% edge — SIT\n- Missouri Tigers ML vs Miami (+110 DK): +1.38% edge — SIT\n- UIC Flames ML @ California (+202 FD): +1.39% edge — SIT\n\n**Markets Checked:** 45+ | **T1 Plays:** 0 | **T2 Plays:** 0 | **T3 Plays:** 0\n\n---\n\n**Daily Rejection Summary:**\n- no_edge: 45+\n- low_confidence: 0\n- stale_or_unverified_odds: 0\n- exposure_cap_reached: 0\n- breaker_active: 0\n\n---\n\n**VERDICT:** 0 plays found | 45+ sat out\n\nMarket conditions tight across Tier A. Pre-March Madness pricing efficient. All near-misses fell short of +2% T3 threshold. Native decision log appended.",
-    "session_id": "799ad687-c72f-4612-9eba-8d94a4a6094f",
-    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/799ad687-c72f-4612-9eba-8d94a4a6094f.jsonl",
+    "run_at_ms": 1774098709209,
+    "run_at_ct": "2026-03-21 08:11",
+    "date_key": "2026-03-21",
+    "summary": "TIERED EDGE HUNT — 2026-03-21\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\n\nRECOMMENDED PLAYS: None\n\nSITTING OUT:\n- Vancouver Canucks ML @ 126 | FanDuel: +1.98% edge — no_edge\n- Liberty Flames ML @ 300 | FanDuel: +1.89% edge — no_edge\n- Liberty Flames +7.5 @ -102 | FanDuel: +1.65% edge — no_edge\n- Los Angeles Lakers ML @ -141 | BetRivers: +1.63% edge — no_edge\n- Philadelphia Flyers ML @ 104 | BetRivers: +1.39% edge — no_edge\n- Nevada Wolf Pack -7.5 @ -105 | BetMGM: +1.36% edge — no_edge\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "raw_summary": "TIERED EDGE HUNT — 2026-03-21\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\n\nRECOMMENDED PLAYS: None\n\nSITTING OUT:\n- Vancouver Canucks ML @ 126 | FanDuel: +1.98% edge — no_edge\n- Liberty Flames ML @ 300 | FanDuel: +1.89% edge — no_edge\n- Liberty Flames +7.5 @ -102 | FanDuel: +1.65% edge — no_edge\n- Los Angeles Lakers ML @ -141 | BetRivers: +1.63% edge — no_edge\n- Philadelphia Flyers ML @ 104 | BetRivers: +1.39% edge — no_edge\n- Nevada Wolf Pack -7.5 @ -105 | BetMGM: +1.36% edge — no_edge\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "session_id": null,
+    "session_file": null,
     "message_type": "SIT",
     "has_actionable_bets": false,
     "requires_state_sync": false,
     "data_failure_codes": [],
     "data_status": "verified",
-    "plain_reason": "The latest scheduled scan found no qualifying edges."
+    "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
+    "source": "canonical_repo_hunt",
+    "native_rows_appended": 260
   },
   "latest_successful_hunt": {
     "status": "ok",
     "delivery_status": "delivered",
     "error": null,
-    "run_at_ms": 1773860915807,
-    "run_at_ct": "2026-03-18 14:08 CT",
-    "date_key": "2026-03-18",
-    "summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%\n\n---\n\n**RECOMMENDED PLAYS:** 0\n\n---\n\n**SITTING OUT:**\n\nTier A scan complete (NBA, NCAAB, NHL). No qualifying edges found.\n\n**Closest Misses (Popular Games):**\n- Lakers ML @ Rockets (+106 FD): +0.96% edge — SIT\n- Clippers ML @ Pelicans (+100 FD): +1.00% edge — SIT  \n- Rangers ML vs Devils (+102 FD): +1.00% edge — SIT\n- Missouri Tigers ML vs Miami (+110 DK): +1.38% edge — SIT\n- UIC Flames ML @ California (+202 FD): +1.39% edge — SIT\n\n**Markets Checked:** 45+ | **T1 Plays:** 0 | **T2 Plays:** 0 | **T3 Plays:** 0\n\n---\n\n**Daily Rejection Summary:**\n- no_edge: 45+\n- low_confidence: 0\n- stale_or_unverified_odds: 0\n- exposure_cap_reached: 0\n- breaker_active: 0\n\n---\n\n**VERDICT:** 0 plays found | 45+ sat out\n\nMarket conditions tight across Tier A. Pre-March Madness pricing efficient. All near-misses fell short of +2% T3 threshold. Native decision log appended.",
-    "raw_summary": "**TIERED EDGE HUNT — March 18, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%\n\n---\n\n**RECOMMENDED PLAYS:** 0\n\n---\n\n**SITTING OUT:**\n\nTier A scan complete (NBA, NCAAB, NHL). No qualifying edges found.\n\n**Closest Misses (Popular Games):**\n- Lakers ML @ Rockets (+106 FD): +0.96% edge — SIT\n- Clippers ML @ Pelicans (+100 FD): +1.00% edge — SIT  \n- Rangers ML vs Devils (+102 FD): +1.00% edge — SIT\n- Missouri Tigers ML vs Miami (+110 DK): +1.38% edge — SIT\n- UIC Flames ML @ California (+202 FD): +1.39% edge — SIT\n\n**Markets Checked:** 45+ | **T1 Plays:** 0 | **T2 Plays:** 0 | **T3 Plays:** 0\n\n---\n\n**Daily Rejection Summary:**\n- no_edge: 45+\n- low_confidence: 0\n- stale_or_unverified_odds: 0\n- exposure_cap_reached: 0\n- breaker_active: 0\n\n---\n\n**VERDICT:** 0 plays found | 45+ sat out\n\nMarket conditions tight across Tier A. Pre-March Madness pricing efficient. All near-misses fell short of +2% T3 threshold. Native decision log appended.",
-    "session_id": "799ad687-c72f-4612-9eba-8d94a4a6094f",
-    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/799ad687-c72f-4612-9eba-8d94a4a6094f.jsonl",
-    "message_type": "SIT",
-    "has_actionable_bets": false,
-    "requires_state_sync": false,
+    "run_at_ms": 1773933871482,
+    "run_at_ct": "2026-03-19 10:24 CT",
+    "date_key": "2026-03-19",
+    "summary": "Proper de-vig analysis shows **NO qualifying edges**. The apparent +2.5% edges were calculated incorrectly - proper de-vig reduces them to +0.5-1.2%. \n\n**TIERED EDGE HUNT — Thursday, March 19, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%  \nCircuit Breaker: OFF | Mode: pro | Timestamp: 10:24 AM CT\n\n---\n\n**RECOMMENDED PLAYS:**\n\nNone. No edges ≥+2% found after proper de-vig analysis.\n\n---\n\n**SITTING OUT:**\n\n**NCAAB (32 games checked):**\n- Wisconsin -10.5 @ -108 (DK): Edge +1.2% vs fair — No edge at current price\n- Duke -27.5 @ -112 (DK): Edge +0.5% vs fair — No edge at current price  \n- Michigan St -15.5 @ -118 (DK): Edge +0.4% vs fair — No edge at current price\n- Arkansas -15.5 @ -108 (DK): Edge +0.8% vs fair — No edge at current price\n- Michigan -30.5 @ -115 (DK): Edge +0.6% vs fair — No edge at current price\n\n**NBA (8 games checked):**\n- Pistons -14.5 @ -112 (DK): Negative edge vs offered — No edge at current price\n- Cavaliers -12.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n- Spurs -9.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n\n**NHL (16 games checked):**\n- Bruins ML @ -135: Edge +1.0% — No edge at current price\n- All other ML markets: Edge <1.0%\n\n---\n\n**CLOSEST MISSES (Popular Games, +0.5% to +1.9%):**\n\n1. **Wisconsin -10.5 vs High Point** @ -108 (DK)  \n   True: 52.1% | Implied (de-vig): 50.9% | Edge: +1.2%  \n   Gap to T3: 0.8% | Reason: Large spread tournament game; market efficient\n\n2. **Arkansas -15.5 vs Nebraska** @ -108 (DK)  \n   True: 51.8% | Implied: 50.9% | Edge: +0.9%  \n   Gap to T3: 1.1% | Reason: Tournament pricing sharp on heavy favorites\n\n3. **Bruins ML vs Winnipeg** @ -135 (DK)  \n   True: 58.5% | Implied: 57.4% | Edge: +1.1%  \n   Gap to T3: 0.9% | Reason: Home ice premium correctly priced\n\n4. **Louisville vs South Florida** — Louisville ML @ -110 (DK)  \n   True: 52.0% | Implied: 50.5% | Edge: +1.5%  \n   Gap to T3: 0.5% | Reason: Market converged on tournament neutral site\n\n5. **Ho…",
+    "raw_summary": "Proper de-vig analysis shows **NO qualifying edges**. The apparent +2.5% edges were calculated incorrectly - proper de-vig reduces them to +0.5-1.2%. \n\n**TIERED EDGE HUNT — Thursday, March 19, 2026**\n\nBankroll: $1,303.28 | Phase: GROWTH | Daily Exposure Used: 0%  \nCircuit Breaker: OFF | Mode: pro | Timestamp: 10:24 AM CT\n\n---\n\n**RECOMMENDED PLAYS:**\n\nNone. No edges ≥+2% found after proper de-vig analysis.\n\n---\n\n**SITTING OUT:**\n\n**NCAAB (32 games checked):**\n- Wisconsin -10.5 @ -108 (DK): Edge +1.2% vs fair — No edge at current price\n- Duke -27.5 @ -112 (DK): Edge +0.5% vs fair — No edge at current price  \n- Michigan St -15.5 @ -118 (DK): Edge +0.4% vs fair — No edge at current price\n- Arkansas -15.5 @ -108 (DK): Edge +0.8% vs fair — No edge at current price\n- Michigan -30.5 @ -115 (DK): Edge +0.6% vs fair — No edge at current price\n\n**NBA (8 games checked):**\n- Pistons -14.5 @ -112 (DK): Negative edge vs offered — No edge at current price\n- Cavaliers -12.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n- Spurs -9.5 @ -118 (DK): Negative edge vs offered — No edge at current price\n\n**NHL (16 games checked):**\n- Bruins ML @ -135: Edge +1.0% — No edge at current price\n- All other ML markets: Edge <1.0%\n\n---\n\n**CLOSEST MISSES (Popular Games, +0.5% to +1.9%):**\n\n1. **Wisconsin -10.5 vs High Point** @ -108 (DK)  \n   True: 52.1% | Implied (de-vig): 50.9% | Edge: +1.2%  \n   Gap to T3: 0.8% | Reason: Large spread tournament game; market efficient\n\n2. **Arkansas -15.5 vs Nebraska** @ -108 (DK)  \n   True: 51.8% | Implied: 50.9% | Edge: +0.9%  \n   Gap to T3: 1.1% | Reason: Tournament pricing sharp on heavy favorites\n\n3. **Bruins ML vs Winnipeg** @ -135 (DK)  \n   True: 58.5% | Implied: 57.4% | Edge: +1.1%  \n   Gap to T3: 0.9% | Reason: Home ice premium correctly priced\n\n4. **Louisville vs South Florida** — Louisville ML @ -110 (DK)  \n   True: 52.0% | Implied: 50.5% | Edge: +1.5%  \n   Gap to T3: 0.5% | Reason: Market converged on tournament neutral site\n\n5. **Ho…",
+    "session_id": "4dac25fb-cf7f-4039-a9d5-dcadc37626f5",
+    "session_file": null,
+    "message_type": "BET",
+    "has_actionable_bets": true,
+    "requires_state_sync": true,
     "data_failure_codes": [],
     "data_status": "verified",
-    "plain_reason": "The latest scheduled scan found no qualifying edges."
+    "plain_reason": "The latest scheduled scan reported at least one actionable bet."
+  },
+  "latest_canonical_hunt_run": {
+    "schema": "tierededge_canonical_hunt_run_v1",
+    "run_id": "canonical-hunt::2026-03-21::0815-proof",
+    "generated_at_utc": "2026-03-21T13:11:49.209Z",
+    "run_at_ct": "2026-03-21 08:11",
+    "status": "ok",
+    "message_type": "SIT",
+    "requires_state_sync": false,
+    "has_actionable_bets": false,
+    "native_rows_appended": 260,
+    "native_bets_appended": 0,
+    "native_sits_appended": 260,
+    "invalidated": false,
+    "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
+    "summary": "TIERED EDGE HUNT — 2026-03-21\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\n\nRECOMMENDED PLAYS: None\n\nSITTING OUT:\n- Vancouver Canucks ML @ 126 | FanDuel: +1.98% edge — no_edge\n- Liberty Flames ML @ 300 | FanDuel: +1.89% edge — no_edge\n- Liberty Flames +7.5 @ -102 | FanDuel: +1.65% edge — no_edge\n- Los Angeles Lakers ML @ -141 | BetRivers: +1.63% edge — no_edge\n- Philadelphia Flyers ML @ 104 | BetRivers: +1.39% edge — no_edge\n- Nevada Wolf Pack -7.5 @ -105 | BetMGM: +1.36% edge — no_edge\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "rows": {
+      "bet_rec_ids": [],
+      "sit_rec_ids": [
+        "canonical-hunt::2026-03-21::0815-proof::basketball_nba::87e5b0e532472d1e7a6815746302dd10::h2h::cleveland-cavaliers-ml::betrivers",
+        "canonical-hunt::2026-03-21::0815-proof::icehockey_nhl::ebac1f10963262ca40e2e438dd36f679::spreads::vancouver-canucks-1-5::fanduel",
+        "canonical-hunt::2026-03-21::0815-proof::icehockey_nhl::ebac1f10963262ca40e2e438dd36f679::h2h::vancouver-canucks-ml::fanduel",
+        "canonical-hunt::2026-03-21::0815-proof::basketball_ncaab::ae492a9a2bf377222a2adc7881b178cb::h2h::liberty-flames-ml::fanduel",
+        "canonical-hunt::2026-03-21::0815-proof::basketball_ncaab::ae492a9a2bf377222a2adc7881b178cb::spreads::liberty-flames-7-5::fanduel",
+        "canonical-hunt::2026-03-21::0815-proof::basketball_nba::041a208c3a53186e8bc0983045ab66f7::h2h::los-angeles-lakers-ml::betrivers",
+        "canonical-hunt::2026-03-21::0815-proof::icehockey_nhl::9dc1a098f3ecf88662aae1e9e46e334d::h2h::philadelphia-flyers-ml::betrivers",
+        "canonical-hunt::2026-03-21::0815-proof::basketball_ncaab::ae492a9a2bf377222a2adc7881b178cb::spreads::nevada-wolf-pack-7-5::betmgm",
+        "canonical-hunt::2026-03-21::0815-proof::icehockey_nhl::ae5fdff58a789b2ce42b8bd8af0ffb22::spreads::tampa-bay-lightning-1-5::betrivers",
+        "canonical-hunt::2026-03-21::0815-proof::icehockey_nhl::9dc1a098f3ecf88662aae1e9e46e334d::spreads::philadelphia-flyers-1-5::betrivers",
+        "canonical-hunt::2026-03-21::0815-proof::icehockey_nhl::ae5fdff58a789b2ce42b8bd8af0ffb22::spreads::edmonton-oilers-1-5::betmgm",
+        "canonical-hunt::2026-03-21::0815-proof::icehockey_nhl::7bbde2e4a8d0f35f70fa22c1dbcc33be::spreads::dallas-stars-1-5::draftkings",
+        "canonical-hunt::2026-03-21::0815-proof::icehockey_nhl::434e6e5221fe5f525c94012fb8412991::spreads::seattle-kraken-1-5::fanduel",
+        "canonical-hunt::2026-03-21::0815-proof::basketball_ncaab::cb1a01294019c46704ff3863e18270e0::h2h::duke-blue-devils-ml::betrivers",
+        "canonical-hunt::2026-03-21::0815-proof::basketball_nba::1a580864294677520ddb2a2a0fe31268::h2h::indiana-pacers-ml::fanduel",
+        "canonical-hunt::2026-03-21::0815-proof::basketball_nba::b9b4d5f3dfbad29e6a0e3e08fff25a95::h2h::utah-jazz-ml::fanduel",
+        "canonical-hunt::2026-03-21::0815-proof::basketball_ncaab::a10e497e52912c25444f881ab6242db2::spreads::gonzaga-bulldogs-6-5::fanduel",
+        "canonical-hunt::2026-03-21::0815-proof::basketball_nba::a1158df1a3a21def58491807df167c6a::h2h::oklahoma-city-thunder-ml::betrivers",
+        "canonical-hunt::2026-03-21::0815-proof::icehockey_nhl::25eae2f31db6187252d8210fc1b19e9a::h2h::toronto-maple-leafs-ml::fanduel",
+        "canonical-hunt::2026-03-21::0815-proof::icehockey_nhl::7bbde2e4a8d0f35f70fa22c1dbcc33be::spreads::minnesota-wild-1-5::betrivers"
+      ]
+    }
   },
   "latest_successful_grading": {
     "status": "ok",
-    "delivery_status": "not-delivered",
+    "delivery_status": "delivered",
     "error": null,
-    "run_at_ms": 1773806400009,
-    "run_at_ct": "2026-03-17 23:00 CT",
-    "date_key": "2026-03-17",
-    "summary": null,
-    "raw_summary": null,
-    "session_id": "2c4fe94b-f852-4e0e-9a4d-f08c78cdd73f",
-    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/2c4fe94b-f852-4e0e-9a4d-f08c78cdd73f.jsonl",
-    "requires_state_sync": true,
-    "plain_reason": "Latest grading run implies bankroll or result updates."
+    "run_at_ms": 1774065600009,
+    "run_at_ct": "2026-03-20 23:00 CT",
+    "date_key": "2026-03-20",
+    "summary": "---\n\n**GRADING COMPLETE — March 20, 2026**\n\n**Parlay Result: WIN** ✅\n\n| Detail | Value |\n|--------|-------|\n| Event | Tennessee vs Wofford |\n| Final Score | Tennessee 77, Wofford 62 |\n| Spread | Tennessee -11.5 (covered by 3.5) |\n| All 3 Legs | WIN |\n| Profit | +$79.87 |\n| New Bankroll | $1,399.05 |\n\n**Updated Stats:**\n- Total Bets: 22 (11-11)\n- Win Rate: 50.0%\n- Overall ROI: +16.2%\n- All-Time High: $1,399.05\n\n**No pending bets remaining.**\n\n*Note: Native ledger append failed (missing required fields), but markdown state updated successfully.*",
+    "raw_summary": "---\n\n**GRADING COMPLETE — March 20, 2026**\n\n**Parlay Result: WIN** ✅\n\n| Detail | Value |\n|--------|-------|\n| Event | Tennessee vs Wofford |\n| Final Score | Tennessee 77, Wofford 62 |\n| Spread | Tennessee -11.5 (covered by 3.5) |\n| All 3 Legs | WIN |\n| Profit | +$79.87 |\n| New Bankroll | $1,399.05 |\n\n**Updated Stats:**\n- Total Bets: 22 (11-11)\n- Win Rate: 50.0%\n- Overall ROI: +16.2%\n- All-Time High: $1,399.05\n\n**No pending bets remaining.**\n\n*Note: Native ledger append failed (missing required fields), but markdown state updated successfully.*",
+    "session_id": "cb4deb98-ca12-4d82-b061-6ed5d4daf473",
+    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/cb4deb98-ca12-4d82-b061-6ed5d4daf473.jsonl",
+    "requires_state_sync": false,
+    "native_append_failed": true,
+    "plain_reason": "Latest grading summary reported markdown updates after a native-ledger append failure."
   },
   "successful_hunt_days": [
     "2026-03-07",
@@ -950,7 +1231,8 @@
     "2026-03-15",
     "2026-03-16",
     "2026-03-17",
-    "2026-03-18"
+    "2026-03-18",
+    "2026-03-19"
   ],
   "no_append_hunt_days": [
     "2026-03-07",
@@ -964,7 +1246,8 @@
     "2026-03-15",
     "2026-03-16",
     "2026-03-17",
-    "2026-03-18"
+    "2026-03-18",
+    "2026-03-19"
   ],
   "next_edge_scan_ct": "06:00",
   "odds_api_config": {
@@ -972,6 +1255,8 @@
     "key_suffix": "3e61",
     "api_key_env": "ODDS_API_KEY",
     "api_key_source": "environment",
+    "secure_key_present": true,
+    "secure_key_provider": "macos_keychain",
     "base_url": "https://api.the-odds-api.com/v4",
     "source_status": "present",
     "free_tier_scan_ct": null,
@@ -979,32 +1264,32 @@
   },
   "freshness_anchor": {
     "source": "state_last_updated",
-    "timestamp_ct": "2026-03-17 10:00 CT",
-    "timestamp_ms": 1773759600000
+    "timestamp_ct": "2026-03-20 23:00 CT",
+    "timestamp_ms": 1774065600000
   },
   "state_files": {
     "betting_state": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/betting-state.md",
-      "last_updated_ct": "2026-03-17 10:00 CT",
-      "file_mtime_ct": "2026-03-18 06:53 CT"
+      "last_updated_ct": "2026-03-20 23:00 CT",
+      "file_mtime_ct": "2026-03-20 23:01 CT"
     },
     "recommendation_log": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/recommendation-log.md",
-      "file_mtime_ct": "2026-03-18 06:53 CT"
+      "file_mtime_ct": "2026-03-20 23:01 CT"
     },
     "passed_opportunity_grades": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-      "file_mtime_ct": "2026-03-18 15:25 CT"
+      "file_mtime_ct": "2026-03-21 08:00 CT"
     }
   },
   "state_sync": {
-    "blocking_sync_gap": true,
-    "hunt_after_state": true,
+    "blocking_sync_gap": false,
+    "hunt_after_state": false,
     "grading_after_state": true,
-    "latest_hunt_requires_state_sync": false,
-    "latest_grading_requires_state_sync": true
+    "latest_hunt_requires_state_sync": true,
+    "latest_grading_requires_state_sync": false
   },
   "warnings": [
-    "state_sync_gap"
+    "latest_grading_native_append_failed"
   ]
 }

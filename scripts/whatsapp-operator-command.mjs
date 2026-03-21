@@ -2,10 +2,12 @@
 import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { CORE_PATHS, readJson } from './core-ledger-utils.mjs';
+import { readHuntBlockStatus } from './hunt-block-status.mjs';
 
 const MORNING_HUNT_FALLBACK_ID = '2766547c-e6a0-40ca-a680-972c7842579c';
 const OPENCLAW_JOBS_PATH = '/Users/jaredbuckman/.openclaw/cron/jobs.json';
 const LIVE_LOG_REBUILD_SCRIPT = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/update-live-log.sh';
+const CANONICAL_HUNT_RUNNER = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs';
 
 const COMMANDS = [
   'RUN HUNT',
@@ -148,15 +150,28 @@ function helpText() {
   ].join('\n');
 }
 
+function blockedHuntText(blockStatus) {
+  return [
+    'SYSTEM BLOCKED',
+    `Reason: ${blockStatus.reason_class || 'unknown'}`,
+    'Edge hunt NOT executed.',
+    blockStatus.reason || 'No explanation available.',
+    blockStatus.post_mortem_required ? 'Complete the required post-mortem to resume.' : 'Resolve the active integrity block to resume.',
+  ].join('\n');
+}
+
 function runHuntText(stateBefore) {
-  const jobId = getMorningHuntId();
-  const cronResult = spawnSync('openclaw', ['cron', 'run', jobId, '--expect-final', '--timeout', '120000'], { encoding: 'utf8' });
-  if (cronResult.status !== 0) {
+  const blockStatus = readHuntBlockStatus();
+  if (blockStatus.blocked) {
+    return blockedHuntText(blockStatus);
+  }
+  const runnerResult = spawnSync('node', [CANONICAL_HUNT_RUNNER], { encoding: 'utf8' });
+  if (runnerResult.status !== 0) {
     return [
       'RUN HUNT',
       'Status: FAILED',
-      'Stage: cron_run',
-      `Reason: ${(cronResult.stderr || cronResult.stdout || 'OpenClaw cron run failed.').trim()}`,
+      'Stage: canonical_runner',
+      `Reason: ${(runnerResult.stderr || runnerResult.stdout || 'Canonical hunt runner failed.').trim()}`,
       `Last known verdict: ${stateBefore.decision_payload_v1?.verdict || 'UNKNOWN'}`,
     ].join('\n');
   }
@@ -171,19 +186,7 @@ function runHuntText(stateBefore) {
     ].join('\n');
   }
 
-  const stateAfter = loadState();
-  const decision = stateAfter.decision_payload_v1 || {};
-  const current = stateAfter.current_status || {};
-  const openRisk = stateAfter.open_risk_summary || {};
-  return [
-    'RUN HUNT',
-    'Status: COMPLETE',
-    `Verdict: ${decision.verdict || 'UNKNOWN'}`,
-    `Class: ${decision.run_classification || 'unknown'}`,
-    `Why: ${decision.why || 'No explanation available.'}`,
-    `Bankroll: ${current.Bankroll || 'N/A'} | Open risk: ${openRisk.total_stake_at_risk || 'N/A'} (${openRisk.open_exposure_pct_of_bankroll || 'N/A'})`,
-    `Executable: ${(stateAfter.live_execution?.counts || {}).approved ?? 0} approved / ${(stateAfter.live_execution?.counts || {}).candidates ?? 0} candidates`,
-  ].join('\n');
+  return (runnerResult.stdout || 'RUN HUNT\nStatus: COMPLETE').trim();
 }
 
 function render(command, state) {

@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-03-18T20:26:47.483Z",
-  "ending_bankroll": 1300.53,
-  "annotated_count": 23,
+  "generated_at_utc": "2026-03-21T13:11:56.706Z",
+  "ending_bankroll": 1396.3,
+  "annotated_count": 25,
   "trace": [
     {
       "date": "2026-02-28",
@@ -311,6 +311,30 @@
       "bankroll_before": 1295.13,
       "bankroll_after": 1300.53,
       "realized_pl_contribution": 5.4,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-03-20",
+      "timestamp_ct": "12:34",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "bet::2026-03-20::12:34::Texas Tech -7.5",
+      "bankroll_before": 1300.53,
+      "bankroll_after": 1316.43,
+      "realized_pl_contribution": 15.9,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-03-20",
+      "timestamp_ct": "23:00",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "bet::2026-03-20::23:00::Kentucky -3.5 / Tennessee -11.5 / Texas Tech -7.5",
+      "bankroll_before": 1316.43,
+      "bankroll_after": 1396.3,
+      "realized_pl_contribution": 79.87,
       "included_in_derived_bankroll": true,
       "included_in_displayed_bankroll": true
     }

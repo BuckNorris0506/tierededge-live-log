@@ -9,6 +9,8 @@ export const CORE_PATHS = {
   decisionLedger: path.join(DATA_DIR, 'decision-ledger.jsonl'),
   gradingLedger: path.join(DATA_DIR, 'grading-ledger.jsonl'),
   bankrollLedger: path.join(DATA_DIR, 'bankroll-ledger.jsonl'),
+  huntAuditLog: path.join(DATA_DIR, 'hunt-audit-log.jsonl'),
+  canonicalHuntRun: path.join(DATA_DIR, 'canonical-hunt-run.json'),
   canonicalState: path.join(DATA_DIR, 'canonical-state.json'),
   runtimeStatus: path.join(DATA_DIR, 'openclaw-runtime-status.json'),
   publicData: path.join(REPO_ROOT, 'public', 'data.json'),

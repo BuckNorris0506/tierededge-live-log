@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs/promises';
 import { appendNativeDecisionRows } from './native-decision-log-utils.mjs';
+import { readHuntBlockStatus } from './hunt-block-status.mjs';
 
 async function main() {
   const input = process.argv[2];
@@ -17,6 +18,10 @@ async function main() {
   }
 
   const rows = Array.isArray(parsed) ? parsed : [parsed];
+  const blockStatus = readHuntBlockStatus();
+  if (blockStatus.blocked) {
+    throw new Error(`hunt_blocked:${blockStatus.reason_class}:${blockStatus.reason}`);
+  }
   const result = appendNativeDecisionRows(rows);
   console.log(`Appended native decision rows: all=${result.all} bets=${result.bets} passes=${result.passes} suppressed=${result.suppressed}`);
 }

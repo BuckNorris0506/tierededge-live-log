@@ -3,8 +3,11 @@ import fs from 'node:fs';
 import { CORE_PATHS, readJson, readJsonl, writeJson, parseNumber, round2, formatMoney } from './core-ledger-utils.mjs';
 import { EXECUTION_BOARD_PATH, EXECUTION_LOG_PATH, readExecutionLog } from './execution-layer-utils.mjs';
 import { validateLedgerInvariants } from './validate-ledger-invariants.mjs';
-import { OVERRIDE_LOG_PATH, POST_MORTEM_LOG_PATH, getPostMortemStatus, readOverrideLog, buildWeeklyTruthReport } from './behavioral-accountability-utils.mjs';
+import { OVERRIDE_LOG_PATH, POST_MORTEM_LOG_PATH, getPostMortemStatus, readOverrideLog, readPostMortemLog, buildWeeklyTruthReport } from './behavioral-accountability-utils.mjs';
 import { getLatestBankrollAnnotatedGrade } from './bankroll-reconciliation-utils.mjs';
+import { formatCtTimestamp } from './openclaw-runtime-utils.mjs';
+
+const HUNT_AUDIT_LOG_PATH = CORE_PATHS.huntAuditLog;
 
 function parsePhase(bankroll) {
   if (!Number.isFinite(bankroll)) return 'UNKNOWN';
@@ -181,6 +184,20 @@ function buildDecisionIndex(decisions) {
         .filter((row) => row.selection && row.target_date)
         .map((row) => [`${row.target_date}::${normalizeText(row.selection)}`, row])
     ),
+  };
+}
+
+function buildInvalidRunScope(huntAuditLog, decisions) {
+  const invalidRuns = (huntAuditLog || []).filter((row) => String(row.invalid_status || '').toLowerCase().includes('invalid'));
+  const invalidRunIds = Array.from(new Set(invalidRuns.map((row) => String(row.run_id || '').trim()).filter(Boolean)));
+  const invalidRunIdSet = new Set(invalidRunIds);
+  const excludedRows = (decisions || []).filter((row) => invalidRunIdSet.has(String(row.run_id || '').trim()));
+  return {
+    invalid_runs: invalidRuns,
+    invalid_run_ids: invalidRunIds,
+    invalid_run_id_set: invalidRunIdSet,
+    excluded_rows: excludedRows,
+    excluded_row_count: excludedRows.length,
   };
 }
 
@@ -626,14 +643,18 @@ function main() {
   });
   const executionLog = readExecutionLog();
   const overrideLog = readOverrideLog();
+  const huntAuditLog = readJsonl(HUNT_AUDIT_LOG_PATH);
   const ledgerValidation = validateLedgerInvariants({ requireOutputMatch: false });
   const generatedAtUtc = new Date().toISOString();
-  const decisionIndex = buildDecisionIndex(decisions);
+  const invalidRunScope = buildInvalidRunScope(huntAuditLog, decisions);
+  const validLearningDecisions = decisions.filter((row) => !invalidRunScope.invalid_run_id_set.has(String(row.run_id || '').trim()));
+  const decisionIndex = buildDecisionIndex(validLearningDecisions);
+  const rawDecisionIndex = buildDecisionIndex(decisions);
   const executionIndex = buildExecutionIndex(executionLog);
 
-  const betDecisions = decisions.filter((row) => row.decision_kind === 'BET');
-  const passBand = decisions.filter((row) => row.decision_kind === 'PASS');
-  const suppressed = decisions.filter((row) => row.decision_kind === 'SUPPRESSED');
+  const betDecisions = validLearningDecisions.filter((row) => row.decision_kind === 'BET');
+  const passBand = validLearningDecisions.filter((row) => row.decision_kind === 'PASS');
+  const suppressed = validLearningDecisions.filter((row) => row.decision_kind === 'SUPPRESSED');
   const settledBetRows = grading.filter((row) => ['BET', 'RECONCILIATION'].includes(String(row.grading_type || '').toUpperCase()));
   const betGrades = settledBetRows;
   const passGrades = grading.filter((row) => row.grading_type === 'PASS');
@@ -651,10 +672,15 @@ function main() {
   const lastRecordedBankroll = round2(parseNumber(latestBankrollGrade?.bankroll_after)) || actualBankroll;
   const bankrollDifference = round2(lastRecordedBankroll - actualBankroll) || 0;
   const latestRuntime = runtimeStatus.latest_hunt_current || runtimeStatus.latest_successful_hunt || null;
-  const freshnessAnchorMs = runtimeStatus?.freshness_anchor?.timestamp_ms || null;
-  const freshnessHours = Number.isFinite(freshnessAnchorMs) ? round2((Date.now() - freshnessAnchorMs) / 36e5) : null;
+  const payloadBuildMs = Date.now();
+  const freshnessHours = 0;
   const stateSyncGap = Boolean(runtimeStatus?.state_sync?.blocking_sync_gap);
-  const postMortemStatus = getPostMortemStatus(grading);
+  const postMortemStatus = getPostMortemStatus(grading, readPostMortemLog());
+  const invalidHuntRuns = huntAuditLog
+    .filter((row) => String(row.invalid_status || '').toLowerCase().includes('invalid'))
+    .slice()
+    .reverse();
+  const latestInvalidHunt = invalidHuntRuns[0] || null;
   const weeklyTruth = buildWeeklyTruthReport().report;
   const now = new Date();
   const monthlyOverrideCount = overrideLog.filter((row) => {
@@ -698,7 +724,7 @@ function main() {
   const passLosses = passGradeResolved.filter((row) => String(row.result || '').toLowerCase() === 'loss').length;
   const passNet = round2(passGradeResolved.reduce((sum, row) => sum + (parseNumber(row.profit_loss) || 0), 0)) || 0;
   const pendingBets = buildPendingBets({ executionLog, betGrades: settledBetRows, reconciliationEvents });
-  const openRiskSummary = buildOpenRiskSummary({ pendingBets, bankroll: lastRecordedBankroll, decisionIndex });
+  const openRiskSummary = buildOpenRiskSummary({ pendingBets, bankroll: lastRecordedBankroll, decisionIndex: rawDecisionIndex });
   const placementSnapshotSummary = buildPlacementSnapshotSummary(executionLog);
   const clvCoverageSummary = buildClvCoverageSummary(settledBetRows);
   const settledValidationRows = buildSettledEdgeValidationRows({ betGrades: settledBetRows, decisionIndex, executionIndex });
@@ -727,7 +753,7 @@ function main() {
   const payload = {
     schema: 'tierededge_canonical_v2',
     generated_at_utc: generatedAtUtc,
-    last_updated_ct: runtimeStatus?.freshness_anchor?.timestamp_ct || latestRuntime?.run_at_ct || null,
+    last_updated_ct: formatCtTimestamp(payloadBuildMs),
     current_status: {
       Bankroll: formatMoney(lastRecordedBankroll),
       Phase: parsePhase(lastRecordedBankroll),
@@ -737,6 +763,7 @@ function main() {
       'CLV Coverage': clvCoverageSummary.clv_coverage_pct_label,
       'Override Count (month)': monthlyOverrideCount,
       'Post-Mortem Status': postMortemStatus.current_status,
+      'Invalid Hunt Runs': invalidHuntRuns.length,
       'Model Daily Exposure (latest hunt)': latestModelExposure,
       'Circuit Breaker': 'OFF',
     },
@@ -790,8 +817,21 @@ function main() {
         missing_coverage: weeklyTruth.missing_coverage,
       },
     },
+    recommendation_learning_scope: {
+      excluded_invalid_run_count: invalidRunScope.invalid_run_ids.length,
+      excluded_invalid_row_count: invalidRunScope.excluded_row_count,
+      excluded_run_ids: invalidRunScope.invalid_run_ids,
+      recent_excluded_rows: invalidRunScope.excluded_rows.slice().reverse().slice(0, 10),
+    },
+    hunt_audit_summary: {
+      invalid_run_count: invalidHuntRuns.length,
+      latest_invalid_run: latestInvalidHunt,
+      recent_invalid_runs: invalidHuntRuns.slice(0, 10),
+    },
     pass_band: passBand,
+    raw_pass_band_history: decisions.filter((row) => row.decision_kind === 'PASS').slice().reverse().slice(0, 25),
     suppressed_candidates: suppressed,
+    raw_suppressed_history: decisions.filter((row) => row.decision_kind === 'SUPPRESSED').slice().reverse().slice(0, 25),
     passed_opportunity_tracker: {
       total_count: passBand.length,
       graded_count: passGradeResolved.length,
@@ -800,11 +840,12 @@ function main() {
       net_counterfactual_pl_if_bet: passNet,
     },
     daily_rejection_summary: {
-      'Total Markets Checked': decisions.filter((row) => row.target_date === latestDate).length,
-      'Total Rejected': decisions.filter((row) => row.target_date === latestDate && row.final_decision === 'SIT').length,
-      'no_edge': decisions.filter((row) => row.target_date === latestDate && row.rejection_reason === 'no_edge').length,
-      'low_confidence': decisions.filter((row) => row.target_date === latestDate && row.rejection_reason === 'low_confidence').length,
-      'Plays Recommended': decisions.filter((row) => row.target_date === latestDate && row.final_decision === 'BET').length,
+      'Total Markets Checked': validLearningDecisions.filter((row) => row.target_date === latestDate).length,
+      'Total Rejected': validLearningDecisions.filter((row) => row.target_date === latestDate && row.final_decision === 'SIT').length,
+      'no_edge': validLearningDecisions.filter((row) => row.target_date === latestDate && row.rejection_reason === 'no_edge').length,
+      'low_confidence': validLearningDecisions.filter((row) => row.target_date === latestDate && row.rejection_reason === 'low_confidence').length,
+      'Plays Recommended': validLearningDecisions.filter((row) => row.target_date === latestDate && row.final_decision === 'BET').length,
+      'Excluded Invalid Rows': invalidRunScope.excluded_rows.filter((row) => row.target_date === latestDate).length,
     },
     overall_betting_results: {
       count: settledPerformanceOverall.settled_bet_count,
@@ -899,6 +940,7 @@ function main() {
       execution_log_path: EXECUTION_LOG_PATH,
       override_log_path: OVERRIDE_LOG_PATH,
       post_mortem_log_path: POST_MORTEM_LOG_PATH,
+      hunt_audit_log_path: HUNT_AUDIT_LOG_PATH,
       ledger_validation_path: '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json',
       canonical_state_path: CORE_PATHS.canonicalState,
       public_data_path: CORE_PATHS.publicData,

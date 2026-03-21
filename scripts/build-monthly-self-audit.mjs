@@ -8,6 +8,7 @@ import {
   DEFAULT_NATIVE_PASS_LEDGER,
   DEFAULT_NATIVE_SUPPRESSED_LEDGER,
 } from './native-decision-log-utils.mjs';
+import { CORE_PATHS, readJsonl } from './core-ledger-utils.mjs';
 
 const DEFAULT_BETS_LEDGER = path.resolve(process.cwd(), 'data', 'bets-ledger.json');
 const DEFAULT_CANONICAL_STATE = path.resolve(process.cwd(), 'data', 'canonical-state.json');
@@ -237,6 +238,7 @@ function reportLines(audit) {
   lines.push(`Native bets: ${audit.native_coverage.counts.bets}`);
   lines.push(`Native passes: ${audit.native_coverage.counts.passes_zero_to_two}`);
   lines.push(`Native suppressed: ${audit.native_coverage.counts.suppressed_candidates}`);
+  lines.push(`Excluded invalid rows: ${audit.native_coverage.counts.excluded_invalid_rows ?? 0}`);
   lines.push('');
   for (const [key, bucket] of Object.entries(audit.buckets)) {
     lines.push(`${key}`);
@@ -274,11 +276,19 @@ const passedGrades = readJsonSafe(DEFAULT_PASSED_GRADES, { entries: {} })?.entri
 const canonicalState = readJsonSafe(DEFAULT_CANONICAL_STATE, {}) || {};
 const quantRows = canonicalState?.public_payload?.quant_performance?.per_bet || [];
 const settledBets = readJsonSafe(DEFAULT_BETS_LEDGER, {})?.rows || [];
+const invalidRunIds = new Set(
+  readJsonl(CORE_PATHS.huntAuditLog)
+    .filter((row) => String(row.invalid_status || '').toLowerCase().includes('invalid'))
+    .map((row) => String(row.run_id || '').trim())
+    .filter(Boolean)
+);
 
 const nativeDecisionRows = readNativeDecisionLedger(DEFAULT_NATIVE_ALL_LEDGER).filter((row) => inMonth(row, range));
-const nativeBetRows = readNativeDecisionLedger(DEFAULT_NATIVE_BETS_LEDGER).filter((row) => inMonth(row, range));
-const nativePassRows = readNativeDecisionLedger(DEFAULT_NATIVE_PASS_LEDGER).filter((row) => inMonth(row, range));
-const nativeSuppressedRows = readNativeDecisionLedger(DEFAULT_NATIVE_SUPPRESSED_LEDGER).filter((row) => inMonth(row, range));
+const excludedNativeRows = nativeDecisionRows.filter((row) => invalidRunIds.has(String(row.run_id || '').trim()));
+const validNativeDecisionRows = nativeDecisionRows.filter((row) => !invalidRunIds.has(String(row.run_id || '').trim()));
+const nativeBetRows = readNativeDecisionLedger(DEFAULT_NATIVE_BETS_LEDGER).filter((row) => inMonth(row, range) && !invalidRunIds.has(String(row.run_id || '').trim()));
+const nativePassRows = readNativeDecisionLedger(DEFAULT_NATIVE_PASS_LEDGER).filter((row) => inMonth(row, range) && !invalidRunIds.has(String(row.run_id || '').trim()));
+const nativeSuppressedRows = readNativeDecisionLedger(DEFAULT_NATIVE_SUPPRESSED_LEDGER).filter((row) => inMonth(row, range) && !invalidRunIds.has(String(row.run_id || '').trim()));
 
 const passRowsZeroToOne = nativePassRows
   .filter((row) => {
@@ -369,15 +379,20 @@ const audit = {
     timezone: 'America/Chicago',
   },
   native_coverage: {
-    status: nativeDecisionRows.length > 0 ? 'native_coverage_present' : 'no_native_decision_coverage',
+    status: validNativeDecisionRows.length > 0 ? 'native_coverage_present' : 'no_native_decision_coverage',
     counts: {
-      decision_observations: nativeDecisionRows.length,
+      decision_observations: validNativeDecisionRows.length,
       bets: nativeBetRows.length,
       passes_zero_to_two: nativePassRows.length,
       suppressed_candidates: nativeSuppressedRows.length,
+      excluded_invalid_rows: excludedNativeRows.length,
     },
   },
-  audit_status: nativeDecisionRows.length > 0 ? 'ready' : 'insufficient_native_coverage',
+  learning_scope: {
+    excluded_invalid_run_ids: Array.from(invalidRunIds),
+    excluded_invalid_row_count: excludedNativeRows.length,
+  },
+  audit_status: validNativeDecisionRows.length > 0 ? 'ready' : 'insufficient_native_coverage',
   buckets: {
     pass_band_0_to_1: summarizeRows(passRowsZeroToOne, { source: 'native_pass_ledger', nativeRowCount: passRowsZeroToOne.length }),
     pass_band_1_to_2: summarizeRows(passRowsOneToTwo, { source: 'native_pass_ledger', nativeRowCount: passRowsOneToTwo.length }),
@@ -386,7 +401,7 @@ const audit = {
     fun_sgp: summarizeRows(nativeFunSgpBets, { source: 'native_bets_ledger_with_exact_settlement_match', nativeRowCount: nativeFunSgpBets.length }),
   },
   rejection_stage_summary: summarizeRejectionStages(
-    nativeDecisionRows
+    validNativeDecisionRows
       .filter((row) => String(row.final_decision || '').toUpperCase() === 'SIT')
       .map((row) => {
         const grade = buildOutcomeFromGrade(row, passedGrades);
@@ -403,17 +418,20 @@ const audit = {
   notes: [],
 };
 
-if (nativeDecisionRows.length === 0) {
+if (validNativeDecisionRows.length === 0) {
   audit.notes.push('No native decision-time observation rows exist for this month. Pass/suppression learning is unavailable without native coverage.');
 }
 if (nativeBetRows.length === 0) {
   audit.notes.push('No native bet rows exist for this month. Actual-bet and FUN_SGP learning buckets are empty until native decision logging is used at hunt time.');
 }
-if (nativeDecisionRows.length > 0 && thresholdSuppressedRows.length === 0) {
+if (validNativeDecisionRows.length > 0 && thresholdSuppressedRows.length === 0) {
   audit.notes.push('No threshold-clearing suppressed native rows were recorded in this month window.');
 }
+if (excludedNativeRows.length > 0) {
+  audit.notes.push(`Excluded ${excludedNativeRows.length} native decision rows from invalidated runs: ${Array.from(invalidRunIds).join(', ')}.`);
+}
 
-audit.learning_verdict = nativeDecisionRows.length > 0
+audit.learning_verdict = validNativeDecisionRows.length > 0
   ? 'TieredEdge can learn from its own native decision records for this month window.'
   : 'TieredEdge cannot yet learn from itself for this month window because native decision-time coverage is absent.';
 

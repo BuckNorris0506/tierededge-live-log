@@ -1,5 +1,5 @@
 TIEREDGE DECISION
-Verdict: BLOCKED
-Run classification: post_mortem_required
-Why: Integrity gate failed: Post-mortem required after realized_loss_streak (-10.5). Canonical state sync failed.
-System health: FAIL
+Verdict: SIT
+Run classification: true_no_edge_sit
+Why: Latest scheduled hunt found no qualifying edges.
+System health: PASS

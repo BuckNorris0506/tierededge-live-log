@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { CORE_PATHS } from './core-ledger-utils.mjs';
 
 const SCRIPT_DIR = path.dirname(new URL(import.meta.url).pathname);
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');
@@ -27,6 +29,25 @@ function readJsonSafe(filePath, fallback = null) {
   }
 }
 
+function readJsonlSafe(filePath, fallback = []) {
+  try {
+    return fs.readFileSync(filePath, 'utf8')
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => {
+        try {
+          return JSON.parse(line);
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean);
+  } catch {
+    return fallback;
+  }
+}
+
 function readTextSafe(filePath, fallback = '') {
   try {
     return fs.readFileSync(filePath, 'utf8');
@@ -41,6 +62,10 @@ function statMsSafe(filePath) {
   } catch {
     return null;
   }
+}
+
+function readCanonicalHuntRun() {
+  return readJsonSafe(CORE_PATHS.canonicalHuntRun, null);
 }
 
 export function parseTimestampMs(input) {
@@ -106,6 +131,33 @@ function parseBettingStateLastUpdated(markdown) {
   return match ? match[1].trim() : null;
 }
 
+function readSecureOddsKeyStatus(envName = 'ODDS_API_KEY') {
+  try {
+    const stdout = execFileSync('env', [
+      '-u',
+      envName,
+      'node',
+      '/Users/jaredbuckman/.openclaw/workspace/tierededge_runtime/odds-key-cli.mjs',
+      'status',
+    ], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    const parsed = JSON.parse(String(stdout || '{}'));
+    return {
+      configured: parsed.configured === true,
+      provider: parsed.provider || null,
+      format_valid: parsed.format_valid === true,
+    };
+  } catch {
+    return {
+      configured: false,
+      provider: null,
+      format_valid: false,
+    };
+  }
+}
+
 function parseOddsApiConfig(markdown) {
   const envName =
     String(markdown || '').match(/^API_KEY_ENV=(.+)$/m)?.[1]?.trim()
@@ -113,19 +165,32 @@ function parseOddsApiConfig(markdown) {
     || 'ODDS_API_KEY';
   const envValue = process.env[envName] || null;
   const rawApiKey = String(markdown || '').match(/^API_KEY=(.+)$/m)?.[1]?.trim() || null;
-  const apiKey = (typeof envValue === 'string' && envValue.trim()) ? envValue.trim() : rawApiKey;
-  const hasEnvReference = Boolean(envName);
-  const keyPresent = Boolean(apiKey || hasEnvReference);
+  const envKey = (typeof envValue === 'string' && envValue.trim()) ? envValue.trim() : null;
+  const secureStatus = readSecureOddsKeyStatus(envName);
+  const apiKey = envKey || rawApiKey;
+  const keyPresent = Boolean(envKey || rawApiKey || secureStatus.configured);
   const baseUrl = String(markdown || '').match(/^BASE_URL=(.+)$/m)?.[1]?.trim() || null;
   const freeTierScan = String(markdown || '').match(/One full scan at (\d{1,2}:\d{2})\s*AM CT/i)?.[1] || null;
   const normalizedFreeTierScan = freeTierScan
     ? `${String(Number(freeTierScan.split(':')[0])).padStart(2, '0')}:${freeTierScan.split(':')[1]}`
     : null;
+  let apiKeySource = 'missing';
+  if (envKey) {
+    apiKeySource = 'environment';
+  } else if (rawApiKey) {
+    apiKeySource = 'config_file';
+  } else if (secureStatus.configured) {
+    apiKeySource = secureStatus.provider || 'secure_store';
+  } else if (envName) {
+    apiKeySource = 'environment_reference';
+  }
   return {
     key_present: keyPresent,
     key_suffix: apiKey ? apiKey.slice(-4) : null,
     api_key_env: envName,
-    api_key_source: apiKey === rawApiKey ? 'config_file' : (apiKey ? 'environment' : 'environment_reference'),
+    api_key_source: apiKeySource,
+    secure_key_present: secureStatus.configured,
+    secure_key_provider: secureStatus.provider,
     base_url: baseUrl,
     source_status: keyPresent ? 'present' : 'missing_api_key',
     free_tier_scan_ct: normalizedFreeTierScan,
@@ -262,9 +327,15 @@ function classifyGradingSummary(summary) {
     || /no action required/i.test(text)
     || /0 bets graded/i.test(text)
     || /no state updates required/i.test(text);
+  const nativeAppendFailed =
+    /native ledger append failed/i.test(text)
+    || /native append failed/i.test(text);
   return {
     requires_state_sync: !noStateChange,
-    plain_reason: noStateChange
+    native_append_failed: nativeAppendFailed,
+    plain_reason: nativeAppendFailed
+      ? 'Latest grading summary reported markdown updates after a native-ledger append failure.'
+      : noStateChange
       ? 'Latest grading run reported no state changes.'
       : 'Latest grading run implies bankroll or result updates.',
   };
@@ -448,14 +519,17 @@ function buildLatestCronAttempt(job) {
   };
 }
 
-function buildJobStatus(job, type) {
+function buildJobStatus(job, type, invalidSessionIds = new Set()) {
   if (!job) return null;
   const runFile = path.join(OPENCLAW_PATHS.runsDir, `${job.id}.jsonl`);
   const events = readRunEvents(runFile);
-  const latestFinished = summarizeRun(events[events.length - 1], type);
-  const latestSuccessful = summarizeRun([...events].reverse().find((event) => event.status === 'ok'), type);
+  const validEvents = events.filter((event) => !invalidSessionIds.has(String(event.sessionId || '').trim()));
+  const latestFinishedOverall = summarizeRun(events[events.length - 1], type);
+  const latestFinished = summarizeRun(validEvents[validEvents.length - 1], type);
+  const latestSuccessful = summarizeRun([...validEvents].reverse().find((event) => event.status === 'ok'), type);
   const successfulRuns = events
     .filter((event) => event.status === 'ok')
+    .filter((event) => !invalidSessionIds.has(String(event.sessionId || '').trim()))
     .map((event) => summarizeRun(event, type))
     .filter(Boolean);
   return {
@@ -466,6 +540,7 @@ function buildJobStatus(job, type) {
     schedule_tz: job.schedule?.tz || null,
     schedule_time_ct: extractCronTimeCt(job.schedule?.expr),
     payload_message: job.payload?.message || null,
+    latest_finished_overall: latestFinishedOverall,
     latest_finished: latestFinished,
     latest_successful: latestSuccessful,
     successful_runs: successfulRuns,
@@ -492,53 +567,116 @@ export function buildRuntimeStatus() {
   const byName = Object.fromEntries(jobs.map((job) => [job.name, job]));
   const bettingStateMarkdown = readTextSafe(OPENCLAW_PATHS.bettingState, '');
   const oddsApiConfig = parseOddsApiConfig(readTextSafe(OPENCLAW_PATHS.oddsApiConfig, ''));
+  const invalidSessionIds = new Set(
+    readJsonlSafe(path.resolve(REPO_ROOT, 'data', 'hunt-audit-log.jsonl'), [])
+      .filter((row) => String(row.invalid_status || '').toLowerCase().includes('invalid'))
+      .flatMap((row) => [row.session_id, row.session_path])
+      .map((value) => String(value || '').trim())
+      .filter(Boolean)
+  );
   const stateLastUpdatedCt = parseBettingStateLastUpdated(bettingStateMarkdown);
   const stateLastUpdatedMs = parseTimestampMs(stateLastUpdatedCt);
 
   const jobStatuses = {
-    morning_edge_hunt: buildJobStatus(byName['morning-edge-hunt'], 'hunt'),
-    evening_grading: buildJobStatus(byName['evening-grading'], 'grading'),
-    friday_sgp: buildJobStatus(byName['friday-sgp'], 'hunt'),
-    weekly_review: buildJobStatus(byName['weekly-review'], 'grading'),
-    monthly_reload: buildJobStatus(byName['monthly-reload'], 'grading'),
+    morning_edge_hunt: buildJobStatus(byName['morning-edge-hunt'], 'hunt', invalidSessionIds),
+    evening_grading: buildJobStatus(byName['evening-grading'], 'grading', invalidSessionIds),
+    friday_sgp: buildJobStatus(byName['friday-sgp'], 'hunt', invalidSessionIds),
+    weekly_review: buildJobStatus(byName['weekly-review'], 'grading', invalidSessionIds),
+    monthly_reload: buildJobStatus(byName['monthly-reload'], 'grading', invalidSessionIds),
   };
 
   const latestHuntAttempt = buildLatestCronAttempt(byName['morning-edge-hunt']);
+  const latestCanonicalHuntRun = readCanonicalHuntRun();
+  const validLatestHuntAttempt = invalidSessionIds.has(String(latestHuntAttempt?.session_id || '').trim())
+    || invalidSessionIds.has(String(latestHuntAttempt?.session_file || '').trim())
+    ? null
+    : latestHuntAttempt;
+  const latestFinishedHuntOverall = jobStatuses.morning_edge_hunt?.latest_finished_overall || null;
   const latestFinishedHunt = jobStatuses.morning_edge_hunt?.latest_finished || null;
   const latestHunt = jobStatuses.morning_edge_hunt?.latest_successful || null;
   const latestGrading = jobStatuses.evening_grading?.latest_successful || null;
+  const latestFinishedOverallInvalidated =
+    Boolean(latestFinishedHuntOverall?.session_id)
+    && invalidSessionIds.has(String(latestFinishedHuntOverall.session_id || '').trim());
   const attemptMatchesFinishedSession =
-    Boolean(latestHuntAttempt?.session_id)
-    && latestHuntAttempt?.session_id === latestFinishedHunt?.session_id;
+    Boolean(validLatestHuntAttempt?.session_id)
+    && validLatestHuntAttempt?.session_id === latestFinishedHunt?.session_id;
   const useAttemptAsCurrentHunt =
     !attemptMatchesFinishedSession
-    && Number.isFinite(latestHuntAttempt?.updated_at_ms)
+    && Number.isFinite(validLatestHuntAttempt?.updated_at_ms)
     && (
       !Number.isFinite(latestFinishedHunt?.run_at_ms)
-      || latestHuntAttempt.updated_at_ms > latestFinishedHunt.run_at_ms
+      || validLatestHuntAttempt.updated_at_ms > latestFinishedHunt.run_at_ms
     );
   const latestCurrentHunt = useAttemptAsCurrentHunt
     ? {
-        status: latestHuntAttempt?.lock_exists ? 'running_or_stuck' : 'runtime_error',
+        status: validLatestHuntAttempt?.lock_exists ? 'running_or_stuck' : 'runtime_error',
         delivery_status: null,
-        error: latestHuntAttempt?.plain_reason || null,
-        run_at_ms: latestHuntAttempt?.updated_at_ms || null,
-        run_at_ct: latestHuntAttempt?.updated_at_ct || null,
-        date_key: extractDateKey(latestHuntAttempt?.updated_at_ct),
+        error: validLatestHuntAttempt?.plain_reason || null,
+        run_at_ms: validLatestHuntAttempt?.updated_at_ms || null,
+        run_at_ct: validLatestHuntAttempt?.updated_at_ct || null,
+        date_key: extractDateKey(validLatestHuntAttempt?.updated_at_ct),
         summary: null,
-        session_id: latestHuntAttempt?.session_id || null,
-        message_type: latestHuntAttempt?.message_type || 'UNKNOWN',
+        session_id: validLatestHuntAttempt?.session_id || null,
+        message_type: validLatestHuntAttempt?.message_type || 'UNKNOWN',
         has_actionable_bets: false,
         requires_state_sync: false,
-        data_failure_codes: latestHuntAttempt?.data_failure_codes || [],
-        data_status: (latestHuntAttempt?.data_failure_codes || []).length > 0 ? 'degraded_data' : 'unknown',
-        plain_reason: latestHuntAttempt?.plain_reason || null,
+        data_failure_codes: validLatestHuntAttempt?.data_failure_codes || [],
+        data_status: (validLatestHuntAttempt?.data_failure_codes || []).length > 0 ? 'degraded_data' : 'unknown',
+        plain_reason: validLatestHuntAttempt?.plain_reason || null,
       }
+    : latestFinishedOverallInvalidated
+      ? {
+          status: 'invalidated',
+          delivery_status: latestFinishedHuntOverall?.delivery_status || null,
+          error: 'Latest finished hunt was audit-invalidated.',
+          run_at_ms: latestFinishedHuntOverall?.run_at_ms || null,
+          run_at_ct: latestFinishedHuntOverall?.run_at_ct || null,
+          date_key: latestFinishedHuntOverall?.date_key || null,
+          summary: latestFinishedHuntOverall?.summary || null,
+          raw_summary: latestFinishedHuntOverall?.raw_summary || null,
+          session_id: latestFinishedHuntOverall?.session_id || null,
+          session_file: latestFinishedHuntOverall?.session_file || null,
+          message_type: 'INVALIDATED',
+          has_actionable_bets: false,
+          requires_state_sync: false,
+          data_failure_codes: [],
+          data_status: 'invalidated',
+          plain_reason: 'Latest finished hunt was audit-invalidated and excluded from canonical recommendation truth.',
+        }
     : (latestFinishedHunt || latestHunt || null);
   const normalizedLatestCurrentHunt =
     attemptMatchesFinishedSession && latestFinishedHunt
       ? latestFinishedHunt
       : latestCurrentHunt;
+  const canonicalRunAtMs = parseTimestampMs(latestCanonicalHuntRun?.generated_at_utc || latestCanonicalHuntRun?.run_at_ct);
+  const latestCurrentRunAtMs = normalizedLatestCurrentHunt?.run_at_ms;
+  const preferCanonicalHuntRun =
+    latestCanonicalHuntRun?.status === 'ok'
+    && Number.isFinite(canonicalRunAtMs)
+    && (!Number.isFinite(latestCurrentRunAtMs) || canonicalRunAtMs >= latestCurrentRunAtMs);
+  const effectiveLatestCurrentHunt = preferCanonicalHuntRun
+    ? {
+        status: latestCanonicalHuntRun.status,
+        delivery_status: 'repo_direct',
+        error: null,
+        run_at_ms: canonicalRunAtMs,
+        run_at_ct: latestCanonicalHuntRun.run_at_ct || formatCtTimestamp(canonicalRunAtMs),
+        date_key: extractDateKey(latestCanonicalHuntRun.run_at_ct || formatCtTimestamp(canonicalRunAtMs)),
+        summary: latestCanonicalHuntRun.summary || null,
+        raw_summary: latestCanonicalHuntRun.summary || null,
+        session_id: null,
+        session_file: null,
+        message_type: latestCanonicalHuntRun.message_type || 'UNKNOWN',
+        has_actionable_bets: latestCanonicalHuntRun.has_actionable_bets === true,
+        requires_state_sync: latestCanonicalHuntRun.requires_state_sync === true,
+        data_failure_codes: [],
+        data_status: 'verified',
+        plain_reason: latestCanonicalHuntRun.plain_reason || 'Latest repo-owned canonical hunt completed successfully.',
+        source: 'canonical_repo_hunt',
+        native_rows_appended: latestCanonicalHuntRun.native_rows_appended ?? null,
+      }
+    : normalizedLatestCurrentHunt;
 
   const huntAfterState = Number.isFinite(latestHunt?.run_at_ms) && Number.isFinite(stateLastUpdatedMs)
     ? latestHunt.run_at_ms > stateLastUpdatedMs
@@ -584,13 +722,16 @@ export function buildRuntimeStatus() {
   const warnings = computeConfigWarnings(jobStatuses, oddsApiConfig);
   if (blockingSyncGap) warnings.push('state_sync_gap');
   if (useAttemptAsCurrentHunt) warnings.push('newer_hunt_attempt_without_finished_artifact');
+  if (latestFinishedOverallInvalidated) warnings.push('latest_hunt_invalidated');
+  if (latestGrading?.native_append_failed) warnings.push('latest_grading_native_append_failed');
 
   return {
     generated_at_utc: new Date().toISOString(),
     jobs: jobStatuses,
-    latest_hunt_attempt: latestHuntAttempt,
-    latest_hunt_current: normalizedLatestCurrentHunt,
+    latest_hunt_attempt: validLatestHuntAttempt,
+    latest_hunt_current: effectiveLatestCurrentHunt,
     latest_successful_hunt: latestHunt,
+    latest_canonical_hunt_run: latestCanonicalHuntRun,
     latest_successful_grading: latestGrading,
     successful_hunt_days: [...new Set((jobStatuses.morning_edge_hunt?.successful_runs || [])
       .map((run) => run.date_key)

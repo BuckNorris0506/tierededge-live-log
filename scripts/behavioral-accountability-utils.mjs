@@ -330,7 +330,14 @@ function bucketTimeOfDay(timestampCt) {
 }
 
 function buildDecisionLookup() {
-  const decisions = readJsonl(CORE_PATHS.decisionLedger);
+  const invalidRunIds = new Set(
+    readJsonl(CORE_PATHS.huntAuditLog)
+      .filter((row) => String(row.invalid_status || '').toLowerCase().includes('invalid'))
+      .map((row) => String(row.run_id || '').trim())
+      .filter(Boolean)
+  );
+  const decisions = readJsonl(CORE_PATHS.decisionLedger)
+    .filter((row) => !invalidRunIds.has(String(row.run_id || '').trim()));
   const byRecId = new Map();
   const bySelectionDate = new Map();
   for (const row of decisions) {

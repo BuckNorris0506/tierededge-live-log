@@ -1,76 +1,77 @@
 MONTHLY SELF AUDIT — 2026-03
-Generated: 2026-03-17T13:36:50.194Z
+Generated: 2026-03-19T14:18:40.032Z
 
-Audit status: insufficient_native_coverage
-Native coverage status: no_native_decision_coverage
-Decision observations: 0
-Native bets: 0
-Native passes: 0
-Native suppressed: 0
+Audit status: ready
+Native coverage status: native_coverage_present
+Decision observations: 54
+Native bets: 54
+Native passes: 54
+Native suppressed: 54
+Excluded invalid rows: 5
 
 pass_band_0_to_1
 - source: native_pass_ledger
-- count: 0
-- settled_or_graded_count: 0
-- win_rate: N/A
-- hypothetical_units: N/A
-- hypothetical_roi: N/A
+- count: 8
+- settled_or_graded_count: 6
+- win_rate: 33.33
+- hypothetical_units: -1.04
+- hypothetical_roi: -13
 - positive_clv_rate: N/A
-- avg_raw_edge: N/A
-- avg_post_conf_edge: N/A
-- avg_confidence_penalty: N/A
-- avg_consensus_penalty: N/A
-- biggest_saves: none
-- biggest_misses: none
+- avg_raw_edge: 0.675
+- avg_post_conf_edge: 0.675
+- avg_confidence_penalty: 0
+- avg_consensus_penalty: 0.4037
+- biggest_saves: POR -1; Baylor -3.5 -1
+- biggest_misses: Washington Capitals 0.51; Ottawa Senators 0.45
 
 pass_band_1_to_2
 - source: native_pass_ledger
-- count: 0
-- settled_or_graded_count: 0
-- win_rate: N/A
-- hypothetical_units: N/A
-- hypothetical_roi: N/A
+- count: 19
+- settled_or_graded_count: 15
+- win_rate: 33.33
+- hypothetical_units: 4.26
+- hypothetical_roi: 22.42
 - positive_clv_rate: N/A
-- avg_raw_edge: N/A
-- avg_post_conf_edge: N/A
-- avg_confidence_penalty: N/A
-- avg_consensus_penalty: N/A
-- biggest_saves: none
-- biggest_misses: none
+- avg_raw_edge: 1.43
+- avg_post_conf_edge: 1.43
+- avg_confidence_penalty: 0
+- avg_consensus_penalty: 1.0105
+- biggest_saves: WAS -1; Denver Nuggets +7.5 -1; Hurricanes -1.5 -1
+- biggest_misses: MIA 6; Islanders 1.05; Florida Panthers 0.77
 
 threshold_clearing_suppressed
 - source: native_suppressed_ledger
-- count: 0
-- settled_or_graded_count: 0
-- win_rate: N/A
-- hypothetical_units: N/A
-- hypothetical_roi: N/A
+- count: 7
+- settled_or_graded_count: 3
+- win_rate: 33.33
+- hypothetical_units: 0.25
+- hypothetical_roi: 3.57
 - positive_clv_rate: N/A
-- avg_raw_edge: N/A
-- avg_post_conf_edge: N/A
-- avg_confidence_penalty: N/A
-- avg_consensus_penalty: N/A
-- biggest_saves: none
-- biggest_misses: none
+- avg_raw_edge: 3.8
+- avg_post_conf_edge: 3.8
+- avg_confidence_penalty: 0
+- avg_consensus_penalty: 3
+- biggest_saves: MEM -1; WSH -1
+- biggest_misses: VAN 2.25
 
 actual_bets_placed
 - source: native_bets_ledger_with_exact_settlement_match
-- count: 0
+- count: 51
 - settled_or_graded_count: 0
 - win_rate: N/A
 - hypothetical_units: N/A
 - hypothetical_roi: N/A
 - positive_clv_rate: N/A
-- avg_raw_edge: N/A
-- avg_post_conf_edge: N/A
-- avg_confidence_penalty: N/A
-- avg_consensus_penalty: N/A
+- avg_raw_edge: 1.7403
+- avg_post_conf_edge: 1.7403
+- avg_confidence_penalty: 0
+- avg_consensus_penalty: 1.2774
 - biggest_saves: none
 - biggest_misses: none
 
 fun_sgp
 - source: native_bets_ledger_with_exact_settlement_match
-- count: 0
+- count: 3
 - settled_or_graded_count: 0
 - win_rate: N/A
 - hypothetical_units: N/A
@@ -84,12 +85,11 @@ fun_sgp
 - biggest_misses: none
 
 REJECTION STAGE SUMMARY
-- confidence_gate: count=0, win_rate=N/A, hypothetical_units=N/A, avg_confidence_penalty=N/A
-- threshold_gate: count=0, win_rate=N/A, hypothetical_units=N/A, avg_confidence_penalty=N/A
+- confidence_gate: count=5, win_rate=50, hypothetical_units=1.25, avg_confidence_penalty=0
+- threshold_gate: count=27, win_rate=33.33, hypothetical_units=3.22, avg_confidence_penalty=0
 - risk_gate: count=0, win_rate=N/A, hypothetical_units=N/A, avg_confidence_penalty=N/A
 - integrity_gate: count=0, win_rate=N/A, hypothetical_units=N/A, avg_confidence_penalty=N/A
 
-Learning verdict: TieredEdge cannot yet learn from itself for this month window because native decision-time coverage is absent.
+Learning verdict: TieredEdge can learn from its own native decision records for this month window.
 Notes:
-- No native decision-time observation rows exist for this month. Pass/suppression learning is unavailable without native coverage.
-- No native bet rows exist for this month. Actual-bet and FUN_SGP learning buckets are empty until native decision logging is used at hunt time.
+- Excluded 5 native decision rows from invalidated runs: 20260319-0758-morning.

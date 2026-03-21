@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-17T13:36:50.194Z",
+  "generated_at_utc": "2026-03-19T14:18:40.032Z",
   "audit_month": "2026-03",
   "window": {
     "start_date": "2026-03-01",
@@ -7,83 +7,200 @@
     "timezone": "America/Chicago"
   },
   "native_coverage": {
-    "status": "no_native_decision_coverage",
+    "status": "native_coverage_present",
     "counts": {
-      "decision_observations": 0,
-      "bets": 0,
-      "passes_zero_to_two": 0,
-      "suppressed_candidates": 0
+      "decision_observations": 54,
+      "bets": 54,
+      "passes_zero_to_two": 54,
+      "suppressed_candidates": 54,
+      "excluded_invalid_rows": 5
     }
   },
-  "audit_status": "insufficient_native_coverage",
+  "learning_scope": {
+    "excluded_invalid_run_ids": [
+      "20260319-0758-morning"
+    ],
+    "excluded_invalid_row_count": 5
+  },
+  "audit_status": "ready",
   "buckets": {
     "pass_band_0_to_1": {
       "source": "native_pass_ledger",
-      "count": 0,
-      "settled_or_graded_count": 0,
-      "win_rate": null,
-      "hypothetical_units": null,
-      "hypothetical_roi": null,
+      "count": 8,
+      "settled_or_graded_count": 6,
+      "win_rate": 33.33,
+      "hypothetical_units": -1.04,
+      "hypothetical_roi": -13,
       "positive_clv_rate": null,
-      "average_raw_edge": null,
-      "average_post_conf_edge": null,
-      "average_confidence_penalty": null,
-      "average_consensus_penalty": null,
-      "biggest_saves": [],
-      "biggest_misses": [],
-      "native_row_count": 0
+      "average_raw_edge": 0.675,
+      "average_post_conf_edge": 0.675,
+      "average_confidence_penalty": 0,
+      "average_consensus_penalty": 0.4037,
+      "biggest_saves": [
+        {
+          "rec_id": "20260307-001",
+          "selection": "POR",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        },
+        {
+          "rec_id": "20260310-008",
+          "selection": "Baylor -3.5",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        }
+      ],
+      "biggest_misses": [
+        {
+          "rec_id": "20260309-004",
+          "selection": "Washington Capitals",
+          "units": 0.51,
+          "result": "win",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        },
+        {
+          "rec_id": "20260309-005",
+          "selection": "Ottawa Senators",
+          "units": 0.45,
+          "result": "win",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        }
+      ],
+      "native_row_count": 8
     },
     "pass_band_1_to_2": {
       "source": "native_pass_ledger",
-      "count": 0,
-      "settled_or_graded_count": 0,
-      "win_rate": null,
-      "hypothetical_units": null,
-      "hypothetical_roi": null,
+      "count": 19,
+      "settled_or_graded_count": 15,
+      "win_rate": 33.33,
+      "hypothetical_units": 4.26,
+      "hypothetical_roi": 22.42,
       "positive_clv_rate": null,
-      "average_raw_edge": null,
-      "average_post_conf_edge": null,
-      "average_confidence_penalty": null,
-      "average_consensus_penalty": null,
-      "biggest_saves": [],
-      "biggest_misses": [],
-      "native_row_count": 0
+      "average_raw_edge": 1.43,
+      "average_post_conf_edge": 1.43,
+      "average_confidence_penalty": 0,
+      "average_consensus_penalty": 1.0105,
+      "biggest_saves": [
+        {
+          "rec_id": "20260307-003",
+          "selection": "WAS",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        },
+        {
+          "rec_id": "20260309-001",
+          "selection": "Denver Nuggets +7.5",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        },
+        {
+          "rec_id": "20260310-005",
+          "selection": "Hurricanes -1.5",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        }
+      ],
+      "biggest_misses": [
+        {
+          "rec_id": "20260307-002",
+          "selection": "MIA",
+          "units": 6,
+          "result": "win",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        },
+        {
+          "rec_id": "20260312-002",
+          "selection": "Islanders",
+          "units": 1.05,
+          "result": "win",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        },
+        {
+          "rec_id": "20260310-004",
+          "selection": "Florida Panthers",
+          "units": 0.77,
+          "result": "win",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        }
+      ],
+      "native_row_count": 19
     },
     "threshold_clearing_suppressed": {
       "source": "native_suppressed_ledger",
-      "count": 0,
-      "settled_or_graded_count": 0,
-      "win_rate": null,
-      "hypothetical_units": null,
-      "hypothetical_roi": null,
+      "count": 7,
+      "settled_or_graded_count": 3,
+      "win_rate": 33.33,
+      "hypothetical_units": 0.25,
+      "hypothetical_roi": 3.57,
       "positive_clv_rate": null,
-      "average_raw_edge": null,
-      "average_post_conf_edge": null,
-      "average_confidence_penalty": null,
-      "average_consensus_penalty": null,
-      "biggest_saves": [],
-      "biggest_misses": [],
-      "native_row_count": 0
+      "average_raw_edge": 3.8,
+      "average_post_conf_edge": 3.8,
+      "average_confidence_penalty": 0,
+      "average_consensus_penalty": 3,
+      "biggest_saves": [
+        {
+          "rec_id": "20260307-004",
+          "selection": "MEM",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "confidence_gate",
+          "rejection_reason": "low_confidence"
+        },
+        {
+          "rec_id": "20260307-005",
+          "selection": "WSH",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "no_raw_edge",
+          "rejection_reason": "no_edge"
+        }
+      ],
+      "biggest_misses": [
+        {
+          "rec_id": "20260307-006",
+          "selection": "VAN",
+          "units": 2.25,
+          "result": "win",
+          "rejection_stage": "confidence_gate",
+          "rejection_reason": "low_confidence"
+        }
+      ],
+      "native_row_count": 7
     },
     "actual_bets_placed": {
       "source": "native_bets_ledger_with_exact_settlement_match",
-      "count": 0,
+      "count": 51,
       "settled_or_graded_count": 0,
       "win_rate": null,
       "hypothetical_units": null,
       "hypothetical_roi": null,
       "positive_clv_rate": null,
-      "average_raw_edge": null,
-      "average_post_conf_edge": null,
-      "average_confidence_penalty": null,
-      "average_consensus_penalty": null,
+      "average_raw_edge": 1.7403,
+      "average_post_conf_edge": 1.7403,
+      "average_confidence_penalty": 0,
+      "average_consensus_penalty": 1.2774,
       "biggest_saves": [],
       "biggest_misses": [],
-      "native_row_count": 0
+      "native_row_count": 51
     },
     "fun_sgp": {
       "source": "native_bets_ledger_with_exact_settlement_match",
-      "count": 0,
+      "count": 3,
       "settled_or_graded_count": 0,
       "win_rate": null,
       "hypothetical_units": null,
@@ -95,41 +212,109 @@
       "average_consensus_penalty": null,
       "biggest_saves": [],
       "biggest_misses": [],
-      "native_row_count": 0
+      "native_row_count": 3
     }
   },
   "rejection_stage_summary": {
     "confidence_gate": {
       "source": "native_decision_ledgers",
-      "count": 0,
-      "settled_or_graded_count": 0,
-      "win_rate": null,
-      "hypothetical_units": null,
-      "hypothetical_roi": null,
+      "count": 5,
+      "settled_or_graded_count": 2,
+      "win_rate": 50,
+      "hypothetical_units": 1.25,
+      "hypothetical_roi": 25,
       "positive_clv_rate": null,
-      "average_raw_edge": null,
-      "average_post_conf_edge": null,
-      "average_confidence_penalty": null,
-      "average_consensus_penalty": null,
-      "biggest_saves": [],
-      "biggest_misses": [],
-      "native_row_count": 0
+      "average_raw_edge": 4.24,
+      "average_post_conf_edge": 4.24,
+      "average_confidence_penalty": 0,
+      "average_consensus_penalty": 3.38,
+      "biggest_saves": [
+        {
+          "rec_id": "20260307-004",
+          "selection": "MEM",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "confidence_gate",
+          "rejection_reason": "low_confidence"
+        }
+      ],
+      "biggest_misses": [
+        {
+          "rec_id": "20260307-006",
+          "selection": "VAN",
+          "units": 2.25,
+          "result": "win",
+          "rejection_stage": "confidence_gate",
+          "rejection_reason": "low_confidence"
+        }
+      ],
+      "native_row_count": 5
     },
     "threshold_gate": {
       "source": "native_decision_ledgers",
-      "count": 0,
-      "settled_or_graded_count": 0,
-      "win_rate": null,
-      "hypothetical_units": null,
-      "hypothetical_roi": null,
+      "count": 27,
+      "settled_or_graded_count": 21,
+      "win_rate": 33.33,
+      "hypothetical_units": 3.22,
+      "hypothetical_roi": 11.93,
       "positive_clv_rate": null,
-      "average_raw_edge": null,
-      "average_post_conf_edge": null,
-      "average_confidence_penalty": null,
-      "average_consensus_penalty": null,
-      "biggest_saves": [],
-      "biggest_misses": [],
-      "native_row_count": 0
+      "average_raw_edge": 1.2063,
+      "average_post_conf_edge": 1.2063,
+      "average_confidence_penalty": 0,
+      "average_consensus_penalty": 0.8307,
+      "biggest_saves": [
+        {
+          "rec_id": "20260307-001",
+          "selection": "POR",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        },
+        {
+          "rec_id": "20260307-003",
+          "selection": "WAS",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        },
+        {
+          "rec_id": "20260309-001",
+          "selection": "Denver Nuggets +7.5",
+          "units": -1,
+          "result": "loss",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        }
+      ],
+      "biggest_misses": [
+        {
+          "rec_id": "20260307-002",
+          "selection": "MIA",
+          "units": 6,
+          "result": "win",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        },
+        {
+          "rec_id": "20260312-002",
+          "selection": "Islanders",
+          "units": 1.05,
+          "result": "win",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        },
+        {
+          "rec_id": "20260310-004",
+          "selection": "Florida Panthers",
+          "units": 0.77,
+          "result": "win",
+          "rejection_stage": "threshold_gate",
+          "rejection_reason": "no_edge"
+        }
+      ],
+      "native_row_count": 27
     },
     "risk_gate": {
       "source": "native_decision_ledgers",
@@ -165,8 +350,7 @@
     }
   },
   "notes": [
-    "No native decision-time observation rows exist for this month. Pass/suppression learning is unavailable without native coverage.",
-    "No native bet rows exist for this month. Actual-bet and FUN_SGP learning buckets are empty until native decision logging is used at hunt time."
+    "Excluded 5 native decision rows from invalidated runs: 20260319-0758-morning."
   ],
-  "learning_verdict": "TieredEdge cannot yet learn from itself for this month window because native decision-time coverage is absent."
+  "learning_verdict": "TieredEdge can learn from its own native decision records for this month window."
 }

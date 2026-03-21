@@ -452,6 +452,7 @@ function renderAccountability(data, range) {
   const rangeStats = data.rejection_reason_ranges?.[range] || { total_rejections: null, top_rejection_reasons: [] };
   const clv = data.analytics_summary?.clv_analytics || {};
   const overrides = data.behavioral_accountability?.overrides || {};
+  const learningScope = data.recommendation_learning_scope || {};
 
   const topReasons = (rangeStats.top_rejection_reasons || []).map((item) => {
     const match = String(item).match(/^([a-z_]+)\s*\((\d+)\)$/i);
@@ -467,6 +468,7 @@ function renderAccountability(data, range) {
     ['Recent results', data.lifetime_stats?.['Win Rate']],
     ['Passed opportunities', entries.length],
     ['Rejected opportunities', rangeStats.total_rejections],
+    ['Excluded invalid rows', learningScope.excluded_invalid_row_count ?? MISSING],
     ['Passed record if bet', record],
     ['Overrides this month', overrides.monthly_override_count ?? MISSING],
     ['Top rejection reasons', topReasons.join(', ') || MISSING],
@@ -667,6 +669,9 @@ function renderDiagnostics(data) {
   const weeklyTruth = accountability.weekly_truth_report_summary || {};
   const recentOverride = accountability.overrides?.recent_overrides?.[0] || null;
   const topBleeding = weeklyTruth.top_bleeding_categories?.[0] || null;
+  const huntAudit = data.hunt_audit_summary || {};
+  const latestInvalidRun = huntAudit.latest_invalid_run || null;
+  const learningScope = data.recommendation_learning_scope || {};
 
   const diagRows = [
     ['Run classification', data.decision_payload_v1?.run_classification || MISSING],
@@ -678,6 +683,11 @@ function renderDiagnostics(data) {
     ['Payload rebuild', health.payload_rebuild],
     ['Decision engine status', health.decision_engine_status],
     ['Post-mortem status', accountability.post_mortem?.current_status || MISSING],
+    ['Invalid hunt runs', huntAudit.invalid_run_count ?? MISSING],
+    ['Latest invalid hunt', latestInvalidRun ? `${latestInvalidRun.run_id} (${latestInvalidRun.invalid_status})` : MISSING],
+    ['Latest invalid reasons', latestInvalidRun ? (latestInvalidRun.reasons || []).join(', ') || MISSING : MISSING],
+    ['Learning rows excluded', learningScope.excluded_invalid_row_count ?? MISSING],
+    ['Learning run IDs excluded', (learningScope.excluded_run_ids || []).join(', ') || MISSING],
     ['Overrides this month', accountability.overrides?.monthly_override_count ?? MISSING],
     ['Blocked-run overrides', accountability.overrides?.blocked_run_override_count ?? MISSING],
     ['Off-model overrides', accountability.overrides?.off_model_override_count ?? MISSING],
@@ -701,13 +711,14 @@ function renderDiagnostics(data) {
       'Expected bankroll': integrity.diagnostics?.bankroll_continuity?.expected_bankroll ?? MISSING,
       'Bankroll delta': integrity.diagnostics?.bankroll_continuity?.delta ?? MISSING,
       'Raw fail codes': (integrity.reasons || []).join(', ') || MISSING,
+      'Recent invalid run IDs': (huntAudit.recent_invalid_runs || []).map((row) => row.run_id).join(', ') || MISSING,
     },
   ];
 
   renderTable(
     'diagnostics-table',
     diagTableRows,
-    ['Missing scan days', 'Duplicate rec IDs', 'Freshness hours', 'Latest data fail codes', 'Current bankroll', 'Expected bankroll', 'Bankroll delta', 'Raw fail codes'],
+    ['Missing scan days', 'Duplicate rec IDs', 'Freshness hours', 'Latest data fail codes', 'Current bankroll', 'Expected bankroll', 'Bankroll delta', 'Raw fail codes', 'Recent invalid run IDs'],
     'No diagnostics available.'
   );
 }

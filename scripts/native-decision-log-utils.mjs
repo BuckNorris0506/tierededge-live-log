@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { CORE_PATHS } from './core-ledger-utils.mjs';
+import { computeKellyBreakdown } from './tierededge-kelly-cli.mjs';
 
 export const DECISION_STAGE_VALUES = [
   'no_raw_edge',
@@ -41,9 +42,17 @@ export const NATIVE_DECISION_HEADERS = [
   'rejection_stage',
   'rejection_reason',
   'bet_class',
+  'bankroll_snapshot',
+  'kelly_stake',
   'include_in_core_strategy_metrics',
   'include_in_actual_bankroll',
 ];
+
+const TIER_THRESHOLDS = {
+  T1: 6,
+  T2: 4,
+  T3: 2,
+};
 
 export const DEFAULT_NATIVE_LEDGER_DIR = path.resolve(process.cwd(), 'data');
 export const DEFAULT_NATIVE_ALL_LEDGER = CORE_PATHS.decisionLedger;
@@ -103,6 +112,22 @@ function normalizeBetClass(value, finalDecision) {
   return finalDecision === 'BET' ? 'EDGE_BET' : 'EDGE_BET';
 }
 
+function deriveExpectedTier(edgePct) {
+  if (!Number.isFinite(edgePct)) return null;
+  if (edgePct >= 6) return 'T1';
+  if (edgePct >= 4) return 'T2';
+  if (edgePct >= 2) return 'T3';
+  return null;
+}
+
+function isTierBetClass(value) {
+  return ['T1', 'T2', 'T3'].includes(String(value || '').trim().toUpperCase());
+}
+
+function approxEqual(left, right, tolerance = 0.001) {
+  return Number.isFinite(left) && Number.isFinite(right) && Math.abs(left - right) <= tolerance;
+}
+
 function appendJsonl(filePath, rows) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   const existing = fs.existsSync(filePath)
@@ -149,6 +174,8 @@ export function normalizeNativeDecisionRow(input) {
   const rawEdgePct = round4(parseNumber(input.raw_edge_pct));
   const postConfEdgePct = round4(parseNumber(input.post_conf_edge_pct));
   const tierThresholdPct = round4(parseNumber(input.tier_threshold_pct)) ?? 2;
+  const bankrollSnapshot = parseNumber(input.bankroll_snapshot);
+  const kellyStake = parseNumber(input.kelly_stake);
   const normalized = {
     run_id: runId,
     rec_id: recId,
@@ -177,6 +204,8 @@ export function normalizeNativeDecisionRow(input) {
     rejection_stage: normalizeStage(input.rejection_stage, finalDecision, rawEdgePct),
     rejection_reason: finalDecision === 'BET' ? '' : String(input.rejection_reason || '').trim().toLowerCase(),
     bet_class: normalizeBetClass(input.bet_class, finalDecision),
+    bankroll_snapshot: bankrollSnapshot,
+    kelly_stake: kellyStake,
     include_in_core_strategy_metrics: normalizeBool(input.include_in_core_strategy_metrics, String(input.bet_class || '').trim().toUpperCase() !== 'FUN_SGP'),
     include_in_actual_bankroll: normalizeBool(input.include_in_actual_bankroll, finalDecision === 'BET'),
   };
@@ -184,6 +213,41 @@ export function normalizeNativeDecisionRow(input) {
   if (normalized.final_decision === 'SIT' && !DECISION_STAGE_VALUES.includes(normalized.rejection_stage)) {
     throw new Error(`invalid_rejection_stage:${normalized.rejection_stage}`);
   }
+
+  if (normalized.final_decision === 'BET' && normalized.post_conf_edge_pct !== null) {
+    const expectedTier = deriveExpectedTier(normalized.post_conf_edge_pct);
+    if (!expectedTier) {
+      throw new Error(`bet_below_t3_threshold:${normalized.rec_id}`);
+    }
+
+    const expectedThreshold = TIER_THRESHOLDS[expectedTier];
+    if (!approxEqual(normalized.tier_threshold_pct, expectedThreshold, 0.0001)) {
+      throw new Error(`tier_threshold_mismatch:${normalized.rec_id}:${normalized.tier_threshold_pct}->${expectedThreshold}`);
+    }
+
+    if (isTierBetClass(normalized.bet_class) && normalized.bet_class !== expectedTier) {
+      throw new Error(`tier_bet_class_mismatch:${normalized.rec_id}:${normalized.bet_class}->${expectedTier}`);
+    }
+
+    if ((normalized.kelly_stake !== null) !== (normalized.bankroll_snapshot !== null)) {
+      throw new Error(`kelly_metadata_incomplete:${normalized.rec_id}`);
+    }
+
+    if (normalized.kelly_stake !== null && normalized.bankroll_snapshot !== null) {
+      const tierForKelly = isTierBetClass(normalized.bet_class) ? normalized.bet_class : expectedTier;
+      const breakdown = computeKellyBreakdown({
+        bankroll: normalized.bankroll_snapshot,
+        american_odds: normalized.odds_american,
+        true_prob: normalized.post_conf_true_prob,
+        implied_prob_fair: normalized.devig_implied_prob,
+        tier: tierForKelly,
+      });
+      if (!approxEqual(normalized.kelly_stake, breakdown.final_stake, 0.001)) {
+        throw new Error(`kelly_stake_mismatch:${normalized.rec_id}:${normalized.kelly_stake}->${breakdown.final_stake}`);
+      }
+    }
+  }
+
   return normalized;
 }
 

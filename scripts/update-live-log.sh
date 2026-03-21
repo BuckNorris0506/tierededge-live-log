@@ -35,6 +35,16 @@ node scripts/build-standalone.mjs
 # GitHub Pages currently serves repo-root artifacts from main, not public/.
 # Keep root deploy artifacts in sync with the freshly built public outputs.
 rsync -a "$ROOT_DIR/public/" "$ROOT_DIR/"
+if ! node scripts/sync-hunt-job-state.mjs; then
+  echo "WARN: failed to sync hunt automation state from repo truth."
+fi
+# Refresh guarded source fingerprints after intentional hunt-job state sync.
+snapshot_source_state \
+  /Users/jaredbuckman/.openclaw/cron/jobs.json \
+  /Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md \
+  "$ROOT_DIR/data/decision-ledger.jsonl" \
+  "$ROOT_DIR/data/grading-ledger.jsonl" \
+  "$ROOT_DIR/data/bankroll-ledger.jsonl"
 if ! node scripts/validate-ledger-invariants.mjs --require-output-match; then
   echo "WARN: ledger validator failed postbuild; published state remains blocked."
 fi
