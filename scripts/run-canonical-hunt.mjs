@@ -1,7 +1,11 @@
 #!/usr/bin/env node
+import { execFile } from 'node:child_process';
+import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
+import os from 'node:os';
 import process from 'node:process';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { promisify } from 'node:util';
 import { appendNativeDecisionRows } from './native-decision-log-utils.mjs';
 import { computeKellyBreakdown } from './tierededge-kelly-cli.mjs';
 import { loadScanCoveragePolicy } from './scan-coverage-utils.mjs';
@@ -9,7 +13,11 @@ import { CORE_PATHS, formatMoney, parseNumber, readJson, readJsonl, round2, writ
 import { readHuntBlockStatus } from './hunt-block-status.mjs';
 import { formatCtTimestamp } from './openclaw-runtime-utils.mjs';
 
-const RUNTIME_KEY_STORE = '/Users/jaredbuckman/.openclaw/workspace/tierededge_runtime/api-key-store.mjs';
+const execFileAsync = promisify(execFile);
+const ODDS_KEY_SERVICE = 'tierededge-odds-api';
+const ODDS_KEY_ACCOUNT = 'default';
+const RUNTIME_SECURE_DIR = '/Users/jaredbuckman/.openclaw/workspace/memory/secure';
+const RUNTIME_SECURE_KEY_FILE = path.join(RUNTIME_SECURE_DIR, 'odds-api-key.enc.json');
 const SPORT_LABELS = {
   basketball_nba: 'NBA',
   basketball_ncaab: 'NCAAB',
@@ -173,10 +181,41 @@ function rankCandidates(a, b) {
 }
 
 async function loadOddsApiKey() {
-  const moduleUrl = pathToFileURL(path.resolve(RUNTIME_KEY_STORE)).href;
-  const runtime = await import(moduleUrl);
-  const result = await runtime.getOddsApiKey();
-  return result?.value || null;
+  const envKey = String(process.env.ODDS_API_KEY || '').trim();
+  if (envKey.length >= 16) return envKey;
+
+  if (process.platform === 'darwin') {
+    try {
+      const { stdout } = await execFileAsync('security', [
+        'find-generic-password',
+        '-a',
+        ODDS_KEY_ACCOUNT,
+        '-s',
+        ODDS_KEY_SERVICE,
+        '-w',
+      ]);
+      const keychainKey = String(stdout || '').trim();
+      if (keychainKey.length >= 16) return keychainKey;
+    } catch {
+      // fall through to encrypted local store
+    }
+  }
+
+  try {
+    const payload = JSON.parse(await fs.readFile(RUNTIME_SECURE_KEY_FILE, 'utf8'));
+    const localSecret = process.env.TIEREDGE_LOCAL_SECRET;
+    const fallback = `${os.userInfo().username}@${os.hostname()}`;
+    const key = crypto.createHash('sha256').update(localSecret || fallback).digest();
+    const iv = Buffer.from(payload.iv, 'base64');
+    const tag = Buffer.from(payload.tag, 'base64');
+    const data = Buffer.from(payload.data, 'base64');
+    const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+    decipher.setAuthTag(tag);
+    const decrypted = Buffer.concat([decipher.update(data), decipher.final()]).toString('utf8').trim();
+    return decrypted.length >= 16 ? decrypted : null;
+  } catch {
+    return null;
+  }
 }
 
 async function fetchOddsPayload({ sportKey, books, markets, apiKey }) {
