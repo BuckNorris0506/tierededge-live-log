@@ -125,7 +125,7 @@
     }
   },
   "book_sets": {
-    "executable_books": [
+    "owned_books": [
       "draftkings",
       "fanduel",
       "circa",

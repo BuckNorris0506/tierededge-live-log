@@ -190,12 +190,19 @@ function normalizeBookKey(value) {
   return slugify(raw);
 }
 
-function buildExecutableBookSet(policy) {
+function buildOwnedBookSet(policy) {
   return new Set(
-    (policy?.book_sets?.executable_books || [])
+    (policy?.book_sets?.owned_books || policy?.book_sets?.executable_books || [])
       .map((value) => normalizeBookKey(value))
       .filter(Boolean)
   );
+}
+
+function collectObservedBooks(source, observedBooks) {
+  for (const bookmaker of source?.bookmakers || []) {
+    const key = normalizeBookKey(bookmaker.key || bookmaker.title);
+    if (key) observedBooks.add(key);
+  }
 }
 
 function resolvePhase1NbaPointsProps(policy, args) {
@@ -362,7 +369,7 @@ function computePropConsensusMap(event, marketKey) {
   return consensus;
 }
 
-function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot, executableBooks }) {
+function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot, ownedBooks }) {
   const rows = [];
   const fairProbMap = computeFairProbMap((market.outcomes || []).map((outcome) => ({
     ...outcome,
@@ -411,7 +418,9 @@ function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, sca
       market_type: marketTypeLabel(market.key),
       selection: displaySelection(event, market.key, outcome),
       sportsbook: bookmaker.title || bookmaker.key || 'Unknown',
-      executable_book: executableBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
+      owned_book: ownedBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
+      live_feed_book: true,
+      actionable_book: ownedBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
       odds_american: String(outcome.price),
       odds_decimal: round2(americanToDecimal(outcome.price)),
       devig_implied_prob: devigProb,
@@ -443,7 +452,7 @@ function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, sca
   return rows;
 }
 
-function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot, executableBooks }) {
+function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot, ownedBooks }) {
   const rows = [];
   const freshMinutes = (() => {
     const lastUpdate = Date.parse(String(market?.last_update || bookmaker?.last_update || event?.commence_time || ''));
@@ -496,7 +505,9 @@ function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, s
         market_type: 'Player Points',
         selection: `${pair.player_name_raw} ${side === 'over' ? 'Over' : 'Under'} ${pair.line} Points`,
         sportsbook: bookmaker.title || bookmaker.key || 'Unknown',
-        executable_book: executableBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
+        owned_book: ownedBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
+        live_feed_book: true,
+        actionable_book: ownedBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
         player_name_raw: pair.player_name_raw,
         player_name_normalized: pair.player_name_normalized,
         player_id_canonical: `basketball_nba::${event.id || 'unknown-event'}::${slugify(pair.player_name_raw)}`,
@@ -583,10 +594,10 @@ function finalizeDecisions(rows) {
       row.kelly_stake = 0;
       continue;
     }
-    if (!row.executable_book) {
+    if (!row.actionable_book) {
       row.final_decision = 'SIT';
       row.rejection_stage = 'risk_gate';
-      row.rejection_reason = 'non_executable_book';
+      row.rejection_reason = 'research_only_non_owned_book';
       row.bet_permission_pass = false;
       row.include_in_actual_bankroll = false;
       row.kelly_stake = 0;
@@ -634,27 +645,44 @@ function buildConsensusMap(event, marketKey) {
   return consensus;
 }
 
-function summarizeRun({ appendedRows, selectedRows, sitRows, bankrollSnapshot, runId, scanTimeCt, reason = null, propSummary = null, propFeatureFlags = null, executableBooks = [] }) {
+function summarizeRun({
+  appendedRows,
+  selectedRows,
+  sitRows,
+  bankrollSnapshot,
+  runId,
+  scanTimeCt,
+  reason = null,
+  propSummary = null,
+  propFeatureFlags = null,
+  ownedBooks = [],
+  liveFeedBooks = [],
+  actionableBooksForRun = [],
+  feedUnavailableOwnedBooks = [],
+  researchOnlyBooks = [],
+}) {
   const grouped = { T1: [], T2: [], T3: [] };
   for (const row of selectedRows) {
     const tier = deriveTier(row.post_conf_edge_pct);
     if (tier) grouped[tier].push(row);
   }
   const researchOnlyRows = sitRows
-    .filter((row) => row.rejection_reason === 'non_executable_book')
+    .filter((row) => row.rejection_reason === 'research_only_non_owned_book')
     .sort(rankCandidates)
     .slice(0, 6);
   const actionableMisses = sitRows
-    .filter((row) => row.rejection_reason !== 'non_executable_book')
+    .filter((row) => row.actionable_book)
     .filter((row) => (row.post_conf_edge_pct ?? 0) >= 0.5 && (row.post_conf_edge_pct ?? 0) < 2)
     .sort(rankCandidates)
     .slice(0, 6);
   const lines = [];
   lines.push(`TIERED EDGE HUNT — ${todayCtDateKey()}`);
   lines.push(`Bankroll: ${formatMoney(bankrollSnapshot)} | Phase: STANDARD | Daily Exposure Used: 0%`);
-  if (executableBooks.length) {
-    lines.push(`Executable books: ${executableBooks.join(', ')}`);
-  }
+  lines.push(`Owned books: ${ownedBooks.join(', ') || 'none'}`);
+  lines.push(`Live feed books this run: ${liveFeedBooks.join(', ') || 'none'}`);
+  lines.push(`Actionable books this run: ${actionableBooksForRun.join(', ') || 'none'}`);
+  lines.push(`Owned but unavailable in feed: ${feedUnavailableOwnedBooks.join(', ') || 'none'}`);
+  lines.push(`Research-only books this run: ${researchOnlyBooks.join(', ') || 'none'}`);
   lines.push('');
   if (selectedRows.length === 0) {
     lines.push('RECOMMENDED PLAYS: None');
@@ -683,7 +711,7 @@ function summarizeRun({ appendedRows, selectedRows, sitRows, bankrollSnapshot, r
   }
   if (researchOnlyRows.length) {
     lines.push('');
-    lines.push('RESEARCH-ONLY NON-EXECUTABLE EDGES:');
+    lines.push('RESEARCH-ONLY NON-OWNED BOOK EDGES:');
     for (const row of researchOnlyRows) {
       lines.push(`- ${row.selection} @ ${row.odds_american} | ${row.sportsbook}: +${row.post_conf_edge_pct}% edge — research_only`);
     }
@@ -712,7 +740,11 @@ function summarizeRun({ appendedRows, selectedRows, sitRows, bankrollSnapshot, r
       : (reason || 'Canonical repo-owned hunt completed with verified odds and no qualifying edges.'),
     prop_feature_flags: propFeatureFlags,
     prop_summary: propSummary,
-    executable_books: executableBooks,
+    owned_books: ownedBooks,
+    live_feed_books: liveFeedBooks,
+    actionable_books_for_run: actionableBooksForRun,
+    feed_unavailable_owned_books: feedUnavailableOwnedBooks,
+    research_only_books: researchOnlyBooks,
     summary: lines.join('\n'),
     rows: {
       bet_rec_ids: selectedRows.map((row) => row.rec_id),
@@ -766,14 +798,15 @@ async function main() {
     ?? parseNumber(publicState?.bankroll_summary?.last_recorded_bankroll)
     ?? 0;
   const policy = loadScanCoveragePolicy();
-  const executableBooks = buildExecutableBookSet(policy);
+  const ownedBooksSet = buildOwnedBookSet(policy);
   const propFeatureFlags = resolvePhase1NbaPointsProps(policy, args);
   const targetDateKey = todayCtDateKey(runAt);
   const tierA = policy?.priority_tiers?.tier_a || {};
-  const books = [...new Set([...(tierA.default_books || []), ...(tierA.comparison_books || [])])];
+  const books = [...new Set([...(tierA.default_books || []), ...(tierA.comparison_books || []), ...ownedBooksSet])];
   const markets = tierA.markets || ['h2h', 'spreads', 'totals'];
   const rows = [];
   const todaysEventsBySport = new Map();
+  const observedBooks = new Set();
   const propSummary = {
     phase1_nba_points_props: {
       configured_enabled: propFeatureFlags.configured_enabled,
@@ -789,6 +822,7 @@ async function main() {
 
   for (const sportKey of tierA.sports || []) {
     const payload = await fetchOddsPayload({ sportKey, books, markets, apiKey });
+    for (const event of payload || []) collectObservedBooks(event, observedBooks);
     const todaysEvents = (payload || []).filter((event) => eventIsTodayCt(event, targetDateKey));
     todaysEventsBySport.set(sportKey, todaysEvents);
     for (const event of todaysEvents) {
@@ -806,7 +840,7 @@ async function main() {
               scanTimeCt,
               runId,
               bankrollSnapshot,
-              executableBooks,
+              ownedBooks: ownedBooksSet,
             }));
           }
         }
@@ -830,6 +864,7 @@ async function main() {
         markets: [propMarketKey],
         apiKey,
       });
+      collectObservedBooks(propPayload, observedBooks);
       const consensusMap = computePropConsensusMap(propPayload, propMarketKey);
       for (const bookmaker of propPayload.bookmakers || []) {
         for (const market of bookmaker.markets || []) {
@@ -842,7 +877,7 @@ async function main() {
             scanTimeCt,
             runId,
             bankrollSnapshot,
-            executableBooks,
+            ownedBooks: ownedBooksSet,
           }));
         }
       }
@@ -867,6 +902,11 @@ async function main() {
   propSummary.phase1_nba_points_props.native_rows_appended = propRows.length;
   const selectedRows = finalizedRows.filter((row) => row.final_decision === 'BET');
   const sitRows = finalizedRows.filter((row) => row.final_decision === 'SIT');
+  const ownedBooks = [...ownedBooksSet].sort();
+  const liveFeedBooks = [...observedBooks].sort();
+  const actionableBooksForRun = ownedBooks.filter((book) => observedBooks.has(book));
+  const feedUnavailableOwnedBooks = ownedBooks.filter((book) => !observedBooks.has(book));
+  const researchOnlyBooks = liveFeedBooks.filter((book) => !ownedBooksSet.has(book));
   const artifact = summarizeRun({
     appendedRows: finalizedRows,
     selectedRows,
@@ -876,7 +916,11 @@ async function main() {
     scanTimeCt,
     propSummary,
     propFeatureFlags,
-    executableBooks: [...executableBooks],
+    ownedBooks,
+    liveFeedBooks,
+    actionableBooksForRun,
+    feedUnavailableOwnedBooks,
+    researchOnlyBooks,
   });
   writeJson(CORE_PATHS.canonicalHuntRun, artifact);
 

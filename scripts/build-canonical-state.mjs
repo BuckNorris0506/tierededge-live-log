@@ -940,6 +940,13 @@ function main() {
         latest_run_enabled: latestCanonicalHuntRun?.prop_summary?.phase1_nba_points_props?.enabled_for_run ?? false,
       },
     },
+    sportsbook_scope: {
+      owned_books: scanCoveragePolicy?.book_sets?.owned_books || scanCoveragePolicy?.book_sets?.executable_books || [],
+      live_feed_books: latestCanonicalHuntRun?.live_feed_books || [],
+      actionable_books_for_run: latestCanonicalHuntRun?.actionable_books_for_run || [],
+      feed_unavailable_owned_books: latestCanonicalHuntRun?.feed_unavailable_owned_books || [],
+      research_only_books: latestCanonicalHuntRun?.research_only_books || [],
+    },
     latest_canonical_hunt_run: latestCanonicalHuntRun,
     runtime_status: runtimeStatus,
     canonical_truth: {
