@@ -102,6 +102,29 @@
     "props_enabled_default": false,
     "alt_lines_enabled_default": false
   },
+  "feature_flags": {
+    "phase1_nba_points_props": {
+      "enabled": false,
+      "league": "NBA",
+      "sport_key": "basketball_nba",
+      "market_key": "player_points",
+      "prop_type": "points",
+      "sides": [
+        "over",
+        "under"
+      ],
+      "main_line_only": true,
+      "alt_lines_allowed": false,
+      "trusted_books": [
+        "draftkings",
+        "fanduel",
+        "betmgm",
+        "caesars",
+        "betrivers",
+        "bet365"
+      ]
+    }
+  },
   "grading_reuse_policy": {
     "scores_cache_minutes": 360,
     "reuse_completed_scores": true

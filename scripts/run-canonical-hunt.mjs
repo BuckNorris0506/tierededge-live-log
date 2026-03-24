@@ -23,6 +23,7 @@ const SPORT_LABELS = {
   basketball_ncaab: 'NCAAB',
   icehockey_nhl: 'NHL',
 };
+const PHASE1_NBA_POINTS_PROP_KEY = 'player_points';
 const TIER_LIMITS = {
   T1: { maxBets: 2 },
   T2: { maxBets: 4 },
@@ -59,6 +60,13 @@ function normalizeName(value) {
     .toLowerCase()
     .replace(/&/g, 'and')
     .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function normalizePlayerName(value) {
+  return normalizeName(value)
+    .replace(/\b(jr|sr|ii|iii|iv)\b/g, '')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -118,6 +126,7 @@ function marketTypeLabel(key) {
   if (key === 'h2h') return 'ML';
   if (key === 'spreads') return 'Spread';
   if (key === 'totals') return 'Total';
+  if (key === PHASE1_NBA_POINTS_PROP_KEY) return 'Player Points';
   return key;
 }
 
@@ -140,6 +149,11 @@ function displaySelection(event, marketKey, outcome) {
   if (marketKey === 'h2h') return `${name} ML`;
   if (marketKey === 'spreads') return `${name} ${point > 0 ? '+' : ''}${point}`;
   if (marketKey === 'totals') return `${name} ${point}`;
+  if (marketKey === PHASE1_NBA_POINTS_PROP_KEY) {
+    const player = String(outcome?.description || '').trim();
+    const side = String(outcome?.name || '').trim();
+    return `${player} ${side} ${point} Points`;
+  }
   return name;
 }
 
@@ -161,6 +175,18 @@ function confidenceFromCoverage({ bookmakerCount, freshestMinutes }) {
   const freshnessPenalty = freshestMinutes == null ? 0.25 : freshestMinutes <= 10 ? 0 : freshestMinutes <= 20 ? 0.1 : 0.25;
   const adjustedOddsQuality = Math.max(0, oddsQuality - freshnessPenalty);
   return round2((0.4 * adjustedOddsQuality) + (0.3 * 0.5) + (0.3 * marketQuality));
+}
+
+function resolvePhase1NbaPointsProps(policy, args) {
+  const config = policy?.feature_flags?.phase1_nba_points_props || {};
+  const enabledByConfig = config.enabled === true;
+  const enabledByCli = args.enable_phase1_nba_points_props === true;
+  return {
+    configured_enabled: enabledByConfig,
+    enabled_for_run: enabledByConfig || enabledByCli,
+    enable_source: enabledByCli && !enabledByConfig ? 'cli_override' : 'config',
+    config,
+  };
 }
 
 function deriveTier(edgePct) {
@@ -234,6 +260,87 @@ async function fetchOddsPayload({ sportKey, books, markets, apiKey }) {
   return response.json();
 }
 
+async function fetchEventOddsPayload({ sportKey, eventId, books, markets, apiKey }) {
+  const url = new URL(`https://api.the-odds-api.com/v4/sports/${sportKey}/events/${eventId}/odds`);
+  url.searchParams.set('apiKey', apiKey);
+  url.searchParams.set('regions', 'us');
+  url.searchParams.set('markets', markets.join(','));
+  url.searchParams.set('bookmakers', books.join(','));
+  url.searchParams.set('oddsFormat', 'american');
+  url.searchParams.set('dateFormat', 'iso');
+  const response = await fetch(url);
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`event_odds_fetch_failed:${sportKey}:${eventId}:${response.status}:${text.slice(0, 160)}`);
+  }
+  return response.json();
+}
+
+function buildPlayerPropPairs(outcomes) {
+  const grouped = new Map();
+  for (const outcome of outcomes || []) {
+    const playerNameRaw = String(outcome?.description || '').trim();
+    const playerNameNormalized = normalizePlayerName(playerNameRaw);
+    const side = String(outcome?.name || '').trim().toLowerCase();
+    const line = normalizePoint(outcome?.point);
+    const price = parseNumber(outcome?.price);
+    if (!playerNameRaw || !playerNameNormalized || !['over', 'under'].includes(side) || line === null || !Number.isFinite(price)) {
+      continue;
+    }
+    const key = `${playerNameNormalized}::${line}`;
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        player_name_raw: playerNameRaw,
+        player_name_normalized: playerNameNormalized,
+        line,
+        over: null,
+        under: null,
+      });
+    }
+    grouped.get(key)[side] = outcome;
+  }
+  return [...grouped.values()].filter((pair) => pair.over && pair.under);
+}
+
+function computePropConsensusMap(event, marketKey) {
+  const grouped = new Map();
+  for (const bookmaker of event.bookmakers || []) {
+    for (const market of bookmaker.markets || []) {
+      if (market.key !== marketKey) continue;
+      for (const pair of buildPlayerPropPairs(market.outcomes || [])) {
+        const fairProbMap = computeFairProbMap([
+          { ...pair.over, key: `${pair.player_name_normalized}::${pair.line}::over` },
+          { ...pair.under, key: `${pair.player_name_normalized}::${pair.line}::under` },
+        ]);
+        for (const side of ['over', 'under']) {
+          const outcomeKeyValue = `${pair.player_name_normalized}::${pair.line}::${side}`;
+          const fairProb = fairProbMap.get(outcomeKeyValue);
+          if (!Number.isFinite(fairProb)) continue;
+          if (!grouped.has(outcomeKeyValue)) grouped.set(outcomeKeyValue, []);
+          grouped.get(outcomeKeyValue).push({
+            bookmaker: bookmaker.key,
+            fairProb,
+            player_name_raw: pair.player_name_raw,
+            line: pair.line,
+          });
+        }
+      }
+    }
+  }
+  const consensus = new Map();
+  for (const [key, entries] of grouped.entries()) {
+    const avgFairProb = entries.reduce((sum, entry) => sum + entry.fairProb, 0) / entries.length;
+    const sample = entries[0] || {};
+    consensus.set(key, {
+      avgFairProb,
+      bookmakerCount: entries.length,
+      player_name_raw: sample.player_name_raw || null,
+      line: sample.line ?? null,
+    });
+  }
+  return consensus;
+}
+
 function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot }) {
   const rows = [];
   const fairProbMap = computeFairProbMap((market.outcomes || []).map((outcome) => ({
@@ -273,10 +380,13 @@ function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, sca
       rec_id: `${runId}::${sportKey}::${slugify(event.id || buildEventLabel(event))}::${market.key}::${slugify(displaySelection(event, market.key, outcome))}::${slugify(bookmaker.title || bookmaker.key)}`,
       timestamp_ct: scanTimeCt,
       target_date: todayCtDateKey(),
+      market_family: 'main_market',
       sport: SPORT_LABELS[sportKey] || sportKey.toUpperCase(),
       league: SPORT_LABELS[sportKey] || sportKey.toUpperCase(),
       event_id: event.id || null,
       event_label: buildEventLabel(event),
+      event_home_team: event.home_team || null,
+      event_away_team: event.away_team || null,
       market_type: marketTypeLabel(market.key),
       selection: displaySelection(event, market.key, outcome),
       sportsbook: bookmaker.title || bookmaker.key || 'Unknown',
@@ -307,6 +417,102 @@ function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, sca
         latest_market_update: market.last_update || bookmaker.last_update || null,
       },
     });
+  }
+  return rows;
+}
+
+function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot }) {
+  const rows = [];
+  const freshMinutes = (() => {
+    const lastUpdate = Date.parse(String(market?.last_update || bookmaker?.last_update || event?.commence_time || ''));
+    return Number.isFinite(lastUpdate) ? round2((Date.now() - lastUpdate) / 60000) : null;
+  })();
+
+  for (const pair of buildPlayerPropPairs(market.outcomes || [])) {
+    const pairFairMap = computeFairProbMap([
+      { ...pair.over, key: `${pair.player_name_normalized}::${pair.line}::over` },
+      { ...pair.under, key: `${pair.player_name_normalized}::${pair.line}::under` },
+    ]);
+
+    for (const side of ['over', 'under']) {
+      const outcome = pair[side];
+      const key = `${pair.player_name_normalized}::${pair.line}::${side}`;
+      const candidateFair = asUnitProbability(pairFairMap.get(key));
+      const consensus = consensusMap.get(key);
+      const consensusFairProb = asUnitProbability(consensus?.avgFairProb);
+      if (!pair.player_name_raw || !pair.player_name_normalized || pair.line === null) continue;
+      if (!Number.isFinite(candidateFair) || !consensus || !Number.isFinite(consensusFairProb)) continue;
+      const preConfTrueProb = Number(consensusFairProb.toFixed(4));
+      const devigProb = Number(candidateFair.toFixed(4));
+      const edgePct = round2((consensusFairProb - candidateFair) * 100);
+      const confidenceScore = confidenceFromCoverage({
+        bookmakerCount: consensus.bookmakerCount,
+        freshestMinutes: freshMinutes,
+      });
+      const tier = deriveTier(edgePct);
+      const kelly = tier
+        ? computeKellyBreakdown({
+            bankroll: bankrollSnapshot,
+            american_odds: outcome.price,
+            true_prob: consensusFairProb,
+            implied_prob_fair: candidateFair,
+            tier,
+          })
+        : null;
+      rows.push({
+        run_id: runId,
+        rec_id: `${runId}::basketball_nba::${slugify(event.id || buildEventLabel(event))}::player-points::${slugify(pair.player_name_raw)}::${side}::${String(pair.line).replace('.', '-')}::${slugify(bookmaker.title || bookmaker.key)}`,
+        timestamp_ct: scanTimeCt,
+        target_date: todayCtDateKey(),
+        market_family: 'player_prop',
+        sport: 'NBA',
+        league: 'NBA',
+        event_id: event.id || null,
+        event_label: buildEventLabel(event),
+        event_home_team: event.home_team || null,
+        event_away_team: event.away_team || null,
+        market_type: 'Player Points',
+        selection: `${pair.player_name_raw} ${side === 'over' ? 'Over' : 'Under'} ${pair.line} Points`,
+        sportsbook: bookmaker.title || bookmaker.key || 'Unknown',
+        player_name_raw: pair.player_name_raw,
+        player_name_normalized: pair.player_name_normalized,
+        player_id_canonical: `basketball_nba::${event.id || 'unknown-event'}::${slugify(pair.player_name_raw)}`,
+        player_team: null,
+        opponent_team: null,
+        prop_type: 'points',
+        prop_side: side,
+        prop_line: pair.line,
+        line_key: `points::${side}::${pair.line}`,
+        is_alt_line: false,
+        odds_american: String(outcome.price),
+        odds_decimal: round2(americanToDecimal(outcome.price)),
+        devig_implied_prob: devigProb,
+        consensus_prob: Number(consensusFairProb.toFixed(4)),
+        pre_conf_true_prob: preConfTrueProb,
+        confidence_score: confidenceScore,
+        post_conf_true_prob: preConfTrueProb,
+        raw_edge_pct: edgePct,
+        post_conf_edge_pct: edgePct,
+        tier_threshold_pct: tier ? Number(tier.slice(1) === '1' ? 6 : tier.slice(1) === '2' ? 4 : 2) : 2,
+        price_edge_pass: Number.isFinite(edgePct) && edgePct >= 2,
+        bet_permission_pass: false,
+        final_decision: 'SIT',
+        rejection_stage: '',
+        rejection_reason: '',
+        bet_class: 'EDGE_BET',
+        bankroll_snapshot: bankrollSnapshot,
+        kelly_stake: kelly?.final_stake ?? 0,
+        include_in_core_strategy_metrics: true,
+        include_in_actual_bankroll: false,
+        analysis_meta: {
+          market_key: market.key,
+          bookmaker_key: bookmaker.key,
+          bookmaker_count: consensus.bookmakerCount,
+          latest_market_update: market.last_update || bookmaker.last_update || null,
+          prop_phase: 'phase1_nba_points_only',
+        },
+      });
+    }
   }
   return rows;
 }
@@ -396,7 +602,7 @@ function buildConsensusMap(event, marketKey) {
   return consensus;
 }
 
-function summarizeRun({ appendedRows, selectedRows, sitRows, bankrollSnapshot, runId, scanTimeCt, reason = null }) {
+function summarizeRun({ appendedRows, selectedRows, sitRows, bankrollSnapshot, runId, scanTimeCt, reason = null, propSummary = null, propFeatureFlags = null }) {
   const grouped = { T1: [], T2: [], T3: [] };
   for (const row of selectedRows) {
     const tier = deriveTier(row.post_conf_edge_pct);
@@ -457,6 +663,8 @@ function summarizeRun({ appendedRows, selectedRows, sitRows, bankrollSnapshot, r
     plain_reason: selectedRows.length > 0
       ? 'Canonical repo-owned hunt completed and appended native decision rows.'
       : (reason || 'Canonical repo-owned hunt completed with verified odds and no qualifying edges.'),
+    prop_feature_flags: propFeatureFlags,
+    prop_summary: propSummary,
     summary: lines.join('\n'),
     rows: {
       bet_rec_ids: selectedRows.map((row) => row.rec_id),
@@ -509,15 +717,30 @@ async function main() {
     ?? parseNumber(publicState?.bankroll_summary?.last_recorded_bankroll)
     ?? 0;
   const policy = loadScanCoveragePolicy();
+  const propFeatureFlags = resolvePhase1NbaPointsProps(policy, args);
   const targetDateKey = todayCtDateKey(runAt);
   const tierA = policy?.priority_tiers?.tier_a || {};
   const books = [...new Set([...(tierA.default_books || []), ...(tierA.comparison_books || [])])];
   const markets = tierA.markets || ['h2h', 'spreads', 'totals'];
   const rows = [];
+  const todaysEventsBySport = new Map();
+  const propSummary = {
+    phase1_nba_points_props: {
+      configured_enabled: propFeatureFlags.configured_enabled,
+      enabled_for_run: propFeatureFlags.enabled_for_run,
+      enable_source: propFeatureFlags.enable_source,
+      fetched_event_count: 0,
+      analyzed_row_count: 0,
+      selected_bet_count: 0,
+      sit_count: 0,
+      native_rows_appended: 0,
+    },
+  };
 
   for (const sportKey of tierA.sports || []) {
     const payload = await fetchOddsPayload({ sportKey, books, markets, apiKey });
     const todaysEvents = (payload || []).filter((event) => eventIsTodayCt(event, targetDateKey));
+    todaysEventsBySport.set(sportKey, todaysEvents);
     for (const event of todaysEvents) {
       for (const marketKey of markets) {
         const consensusMap = buildConsensusMap(event, marketKey);
@@ -540,6 +763,40 @@ async function main() {
     }
   }
 
+  if (propFeatureFlags.enabled_for_run) {
+    const propConfig = propFeatureFlags.config || {};
+    const propSportKey = propConfig.sport_key || 'basketball_nba';
+    const propMarketKey = propConfig.market_key || PHASE1_NBA_POINTS_PROP_KEY;
+    const propBooks = (propConfig.trusted_books || books).filter(Boolean);
+    const nbaEvents = todaysEventsBySport.get(propSportKey) || [];
+    propSummary.phase1_nba_points_props.fetched_event_count = nbaEvents.length;
+
+    for (const event of nbaEvents) {
+      const propPayload = await fetchEventOddsPayload({
+        sportKey: propSportKey,
+        eventId: event.id,
+        books: propBooks,
+        markets: [propMarketKey],
+        apiKey,
+      });
+      const consensusMap = computePropConsensusMap(propPayload, propMarketKey);
+      for (const bookmaker of propPayload.bookmakers || []) {
+        for (const market of bookmaker.markets || []) {
+          if (market.key !== propMarketKey) continue;
+          rows.push(...buildPhase1NbaPointPropRows({
+            event: propPayload,
+            bookmaker,
+            market,
+            consensusMap,
+            scanTimeCt,
+            runId,
+            bankrollSnapshot,
+          }));
+        }
+      }
+    }
+  }
+
   const bestByOutcome = new Map();
   for (const row of rows) {
     const key = `${row.event_id}::${row.market_type}::${row.selection}`;
@@ -550,7 +807,12 @@ async function main() {
   }
 
   const finalizedRows = finalizeDecisions([...bestByOutcome.values()]);
+  const propRows = finalizedRows.filter((row) => row.market_family === 'player_prop');
+  propSummary.phase1_nba_points_props.analyzed_row_count = propRows.length;
+  propSummary.phase1_nba_points_props.selected_bet_count = propRows.filter((row) => row.final_decision === 'BET').length;
+  propSummary.phase1_nba_points_props.sit_count = propRows.filter((row) => row.final_decision === 'SIT').length;
   appendNativeDecisionRows(finalizedRows);
+  propSummary.phase1_nba_points_props.native_rows_appended = propRows.length;
   const selectedRows = finalizedRows.filter((row) => row.final_decision === 'BET');
   const sitRows = finalizedRows.filter((row) => row.final_decision === 'SIT');
   const artifact = summarizeRun({
@@ -560,6 +822,8 @@ async function main() {
     bankrollSnapshot,
     runId,
     scanTimeCt,
+    propSummary,
+    propFeatureFlags,
   });
   writeJson(CORE_PATHS.canonicalHuntRun, artifact);
 

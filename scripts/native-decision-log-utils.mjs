@@ -19,13 +19,26 @@ export const NATIVE_DECISION_HEADERS = [
   'rec_id',
   'timestamp_ct',
   'target_date',
+  'market_family',
   'sport',
   'league',
   'event_id',
   'event_label',
+  'event_home_team',
+  'event_away_team',
   'market_type',
   'selection',
   'sportsbook',
+  'player_name_raw',
+  'player_name_normalized',
+  'player_id_canonical',
+  'player_team',
+  'opponent_team',
+  'prop_type',
+  'prop_side',
+  'prop_line',
+  'line_key',
+  'is_alt_line',
   'odds_american',
   'odds_decimal',
   'devig_implied_prob',
@@ -181,13 +194,26 @@ export function normalizeNativeDecisionRow(input) {
     rec_id: recId,
     timestamp_ct: timestampCt,
     target_date: targetDate,
+    market_family: String(input.market_family || 'main_market').trim() || 'main_market',
     sport: requireField(input, 'sport'),
     league: String(input.league || '').trim() || null,
     event_id: String(input.event_id || '').trim() || null,
     event_label: String(input.event_label || '').trim() || null,
+    event_home_team: String(input.event_home_team || '').trim() || null,
+    event_away_team: String(input.event_away_team || '').trim() || null,
     market_type: requireField(input, 'market_type'),
     selection: requireField(input, 'selection'),
     sportsbook: requireField(input, 'sportsbook'),
+    player_name_raw: String(input.player_name_raw || '').trim() || null,
+    player_name_normalized: String(input.player_name_normalized || '').trim() || null,
+    player_id_canonical: String(input.player_id_canonical || '').trim() || null,
+    player_team: String(input.player_team || '').trim() || null,
+    opponent_team: String(input.opponent_team || '').trim() || null,
+    prop_type: String(input.prop_type || '').trim() || null,
+    prop_side: String(input.prop_side || '').trim().toLowerCase() || null,
+    prop_line: round4(parseNumber(input.prop_line)),
+    line_key: String(input.line_key || '').trim() || null,
+    is_alt_line: normalizeBool(input.is_alt_line, false),
     odds_american: String(input.odds_american || '').trim() || null,
     odds_decimal: round4(parseNumber(input.odds_decimal)),
     devig_implied_prob: round4(parseNumber(input.devig_implied_prob)),
@@ -209,6 +235,18 @@ export function normalizeNativeDecisionRow(input) {
     include_in_core_strategy_metrics: normalizeBool(input.include_in_core_strategy_metrics, String(input.bet_class || '').trim().toUpperCase() !== 'FUN_SGP'),
     include_in_actual_bankroll: normalizeBool(input.include_in_actual_bankroll, finalDecision === 'BET'),
   };
+
+  if (normalized.market_family === 'player_prop') {
+    if (!normalized.player_name_raw || !normalized.player_name_normalized || !normalized.player_id_canonical) {
+      throw new Error(`missing_prop_identity:${normalized.rec_id}`);
+    }
+    if (!normalized.prop_type || !normalized.prop_side || normalized.prop_line === null || !normalized.line_key) {
+      throw new Error(`missing_prop_market_shape:${normalized.rec_id}`);
+    }
+    if (!['over', 'under'].includes(normalized.prop_side)) {
+      throw new Error(`invalid_prop_side:${normalized.rec_id}:${normalized.prop_side}`);
+    }
+  }
 
   if (normalized.final_decision === 'SIT' && !DECISION_STAGE_VALUES.includes(normalized.rejection_stage)) {
     throw new Error(`invalid_rejection_stage:${normalized.rejection_stage}`);

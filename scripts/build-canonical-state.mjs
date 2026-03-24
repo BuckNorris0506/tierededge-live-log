@@ -6,6 +6,7 @@ import { validateLedgerInvariants } from './validate-ledger-invariants.mjs';
 import { OVERRIDE_LOG_PATH, POST_MORTEM_LOG_PATH, getPostMortemStatus, readOverrideLog, readPostMortemLog, buildWeeklyTruthReport } from './behavioral-accountability-utils.mjs';
 import { getLatestBankrollAnnotatedGrade } from './bankroll-reconciliation-utils.mjs';
 import { formatCtTimestamp } from './openclaw-runtime-utils.mjs';
+import { loadScanCoveragePolicy } from './scan-coverage-utils.mjs';
 
 const HUNT_AUDIT_LOG_PATH = CORE_PATHS.huntAuditLog;
 
@@ -645,6 +646,8 @@ function main() {
   const overrideLog = readOverrideLog();
   const huntAuditLog = readJsonl(HUNT_AUDIT_LOG_PATH);
   const ledgerValidation = validateLedgerInvariants({ requireOutputMatch: false });
+  const latestCanonicalHuntRun = readJson(CORE_PATHS.canonicalHuntRun, null);
+  const scanCoveragePolicy = loadScanCoveragePolicy();
   const generatedAtUtc = new Date().toISOString();
   const invalidRunScope = buildInvalidRunScope(huntAuditLog, decisions);
   const validLearningDecisions = decisions.filter((row) => !invalidRunScope.invalid_run_id_set.has(String(row.run_id || '').trim()));
@@ -931,6 +934,13 @@ function main() {
       whatsapp_text: renderers.whatsapp,
       evening_grading_report_text: renderers.evening,
     },
+    prop_feature_flags: {
+      phase1_nba_points_props: {
+        ...(scanCoveragePolicy?.feature_flags?.phase1_nba_points_props || { enabled: false }),
+        latest_run_enabled: latestCanonicalHuntRun?.prop_summary?.phase1_nba_points_props?.enabled_for_run ?? false,
+      },
+    },
+    latest_canonical_hunt_run: latestCanonicalHuntRun,
     runtime_status: runtimeStatus,
     canonical_truth: {
       decision_ledger_path: CORE_PATHS.decisionLedger,
