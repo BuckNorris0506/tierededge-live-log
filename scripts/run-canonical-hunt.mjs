@@ -634,15 +634,27 @@ function buildConsensusMap(event, marketKey) {
   return consensus;
 }
 
-function summarizeRun({ appendedRows, selectedRows, sitRows, bankrollSnapshot, runId, scanTimeCt, reason = null, propSummary = null, propFeatureFlags = null }) {
+function summarizeRun({ appendedRows, selectedRows, sitRows, bankrollSnapshot, runId, scanTimeCt, reason = null, propSummary = null, propFeatureFlags = null, executableBooks = [] }) {
   const grouped = { T1: [], T2: [], T3: [] };
   for (const row of selectedRows) {
     const tier = deriveTier(row.post_conf_edge_pct);
     if (tier) grouped[tier].push(row);
   }
+  const researchOnlyRows = sitRows
+    .filter((row) => row.rejection_reason === 'non_executable_book')
+    .sort(rankCandidates)
+    .slice(0, 6);
+  const actionableMisses = sitRows
+    .filter((row) => row.rejection_reason !== 'non_executable_book')
+    .filter((row) => (row.post_conf_edge_pct ?? 0) >= 0.5 && (row.post_conf_edge_pct ?? 0) < 2)
+    .sort(rankCandidates)
+    .slice(0, 6);
   const lines = [];
   lines.push(`TIERED EDGE HUNT — ${todayCtDateKey()}`);
   lines.push(`Bankroll: ${formatMoney(bankrollSnapshot)} | Phase: STANDARD | Daily Exposure Used: 0%`);
+  if (executableBooks.length) {
+    lines.push(`Executable books: ${executableBooks.join(', ')}`);
+  }
   lines.push('');
   if (selectedRows.length === 0) {
     lines.push('RECOMMENDED PLAYS: None');
@@ -661,16 +673,19 @@ function summarizeRun({ appendedRows, selectedRows, sitRows, bankrollSnapshot, r
     }
   }
   lines.push('');
-  lines.push('SITTING OUT:');
-  const misses = sitRows
-    .filter((row) => (row.post_conf_edge_pct ?? 0) >= 0.5 && (row.post_conf_edge_pct ?? 0) < 2)
-    .sort(rankCandidates)
-    .slice(0, 6);
-  if (!misses.length) {
+  lines.push('EXECUTABLE CLOSE MISSES:');
+  if (!actionableMisses.length) {
     lines.push('- No qualifying edges >= +2% after consensus de-vig analysis.');
   } else {
-    for (const row of misses) {
+    for (const row of actionableMisses) {
       lines.push(`- ${row.selection} @ ${row.odds_american} | ${row.sportsbook}: +${row.post_conf_edge_pct}% edge — ${row.rejection_reason || 'No edge at current price'}`);
+    }
+  }
+  if (researchOnlyRows.length) {
+    lines.push('');
+    lines.push('RESEARCH-ONLY NON-EXECUTABLE EDGES:');
+    for (const row of researchOnlyRows) {
+      lines.push(`- ${row.selection} @ ${row.odds_american} | ${row.sportsbook}: +${row.post_conf_edge_pct}% edge — research_only`);
     }
   }
   lines.push('');
@@ -697,10 +712,12 @@ function summarizeRun({ appendedRows, selectedRows, sitRows, bankrollSnapshot, r
       : (reason || 'Canonical repo-owned hunt completed with verified odds and no qualifying edges.'),
     prop_feature_flags: propFeatureFlags,
     prop_summary: propSummary,
+    executable_books: executableBooks,
     summary: lines.join('\n'),
     rows: {
       bet_rec_ids: selectedRows.map((row) => row.rec_id),
       sit_rec_ids: sitRows.slice(0, 20).map((row) => row.rec_id),
+      research_only_rec_ids: researchOnlyRows.map((row) => row.rec_id),
     },
   };
 }
@@ -859,6 +876,7 @@ async function main() {
     scanTimeCt,
     propSummary,
     propFeatureFlags,
+    executableBooks: [...executableBooks],
   });
   writeJson(CORE_PATHS.canonicalHuntRun, artifact);
 

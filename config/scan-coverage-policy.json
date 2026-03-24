@@ -27,11 +27,11 @@
         "draftkings",
         "fanduel",
         "betmgm",
-        "caesars"
+        "bet365"
       ],
       "comparison_books": [
         "betrivers",
-        "bet365"
+        "caesars"
       ],
       "markets": [
         "h2h",
@@ -119,8 +119,7 @@
         "draftkings",
         "fanduel",
         "betmgm",
-        "caesars",
-        "betrivers",
+        "circa",
         "bet365"
       ]
     }
@@ -130,11 +129,11 @@
       "draftkings",
       "fanduel",
       "circa",
-      "betmgm"
+      "betmgm",
+      "bet365"
     ],
     "comparison_books": [
       "betrivers",
-      "bet365",
       "caesars"
     ]
   },
