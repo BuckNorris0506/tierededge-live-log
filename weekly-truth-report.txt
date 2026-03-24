@@ -1,5 +1,5 @@
 WEEKLY TRUTH REPORT
-Generated: 2026-03-24T23:30:17.825Z
+Generated: 2026-03-24T23:43:06.499Z
 Settled bets: 2
 Average edge at placement: N/A | Realized P/L: 95.77
 Override events: 0 | Blocked-run: 0 | Off-model: 0

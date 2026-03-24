@@ -1,15 +1,15 @@
 {
   "schema": "tierededge_canonical_hunt_run_v1",
-  "run_id": "canonical-hunt::2026-03-24::phase1-mlb-proof",
-  "generated_at_utc": "2026-03-24T23:30:04.339Z",
-  "run_at_ct": "2026-03-24 18:30",
+  "run_id": "canonical-hunt::2026-03-24::1836",
+  "generated_at_utc": "2026-03-24T23:36:29.638Z",
+  "run_at_ct": "2026-03-24 18:36",
   "status": "ok",
   "message_type": "BET",
   "requires_state_sync": false,
   "has_actionable_bets": true,
-  "native_rows_appended": 166,
-  "native_bets_appended": 3,
-  "native_sits_appended": 163,
+  "native_rows_appended": 160,
+  "native_bets_appended": 1,
+  "native_sits_appended": 159,
   "invalidated": false,
   "plain_reason": "Canonical repo-owned hunt completed and appended native decision rows.",
   "prop_feature_flags": {
@@ -84,34 +84,32 @@
   "research_only_books": [
     "betrivers"
   ],
-  "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT1:\n- [ ] Chicago Blackhawks +1.5 @ -102 | FanDuel\n  Timestamp (CT): 2026-03-24 18:30\n  True Prob: 59.4% | Implied Prob (de-vig): 47.3% | Edge: +12.05%\n  Kelly Stake: $188.50\n- [ ] Chicago Blackhawks ML @ 255 | FanDuel\n  Timestamp (CT): 2026-03-24 18:30\n  True Prob: 37.2% | Implied Prob (de-vig): 26.6% | Edge: +10.63%\n  Kelly Stake: $132.00\n\nT3:\n- [ ] Detroit Red Wings -1.5 @ 210 | BetMGM\n  Timestamp (CT): 2026-03-24 18:30\n  True Prob: 32.4% | Implied Prob (de-vig): 30.2% | Edge: +2.26%\n  Kelly Stake: $0.50\n\nEXECUTABLE CLOSE MISSES:\n- Carolina Hurricanes -1.5 @ 110 | BetMGM: +1.86% edge — no_edge\n- Montréal Canadiens +1.5 @ -125 | DraftKings: +1.86% edge — no_edge\n- Ottawa Senators +1.5 @ -230 | DraftKings: +1.86% edge — no_edge\n- Under 6.5 @ -125 | FanDuel: +1.85% edge — no_edge\n- Over 6.5 @ 110 | BetMGM: +1.76% edge — no_edge\n- Boston Bruins -2.5 @ 125 | FanDuel: +1.65% edge — no_edge\n\nVERDICT: 3 plays found | 163 sat out",
+  "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Ottawa Senators ML @ 130 | DraftKings\n  Timestamp (CT): 2026-03-24 18:36\n  True Prob: 43.8% | Implied Prob (de-vig): 41.1% | Edge: +2.72%\n  Kelly Stake: $1.50\n\nEXECUTABLE CLOSE MISSES:\n- Over 4.5 @ -110 | BetMGM: +1.77% edge — no_edge\n- Over 4.5 @ -140 | BetMGM: +1.75% edge — no_edge\n- Chicago Blackhawks +1.5 @ -230 | FanDuel: +1.75% edge — no_edge\n- New York Islanders ML @ -135 | BetMGM: +1.74% edge — no_edge\n- Detroit Red Wings -1.5 @ 195 | BetMGM: +1.72% edge — no_edge\n- Under 4.5 @ -102 | FanDuel: +1.7% edge — no_edge\n\nVERDICT: 1 plays found | 159 sat out",
   "rows": {
     "bet_rec_ids": [
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::e3b53c7d36e6b34c84b5d64084e8022d::spreads::chicago-blackhawks-1-5::fanduel",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::e3b53c7d36e6b34c84b5d64084e8022d::h2h::chicago-blackhawks-ml::fanduel",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::spreads::detroit-red-wings-1-5::betmgm"
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::h2h::ottawa-senators-ml::draftkings"
     ],
     "sit_rec_ids": [
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::h2h::montr-al-canadiens-ml::fanduel",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::e3b53c7d36e6b34c84b5d64084e8022d::h2h::new-york-islanders-ml::betmgm",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::e3b53c7d36e6b34c84b5d64084e8022d::spreads::new-york-islanders-1-5::betmgm",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::h2h::carolina-hurricanes-ml::betmgm",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::h2h::detroit-red-wings-ml::betmgm",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::totals::under-8-5::betmgm",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::totals::over-8-5::draftkings",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::h2h::ottawa-senators-ml::draftkings",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::basketball_nba::c4901bf9c9ebf81236d22ca4626b5a31::spreads::charlotte-hornets-23-5::fanduel",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::basketball_nba::c4901bf9c9ebf81236d22ca4626b5a31::spreads::sacramento-kings-23-5::draftkings",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::spreads::carolina-hurricanes-1-5::betmgm",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::spreads::montr-al-canadiens-1-5::draftkings",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::spreads::ottawa-senators-1-5::draftkings",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::8ac88260e7f6e514200daef093a10e95::totals::under-6-5::fanduel",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::8ac88260e7f6e514200daef093a10e95::totals::over-6-5::betmgm",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::basketball_nba::c4901bf9c9ebf81236d22ca4626b5a31::h2h::charlotte-hornets-ml::betrivers",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::8ac88260e7f6e514200daef093a10e95::spreads::boston-bruins-2-5::fanduel",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::321c46ee4915d84877d9116089323e6c::spreads::new-jersey-devils-1-5::betrivers",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::totals::under-4-5::fanduel",
-      "canonical-hunt::2026-03-24::phase1-mlb-proof::icehockey_nhl::c4562bec7d3dd2283876ab856c887765::h2h::minnesota-wild-ml::betrivers"
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::spreads::ottawa-senators-1-5::draftkings",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::8ac88260e7f6e514200daef093a10e95::totals::over-5-5::betmgm",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::totals::under-4-5::fanduel",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::c38fb7e74adb36818b56b38cad851d56::totals::over-4-5::betmgm",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::c4562bec7d3dd2283876ab856c887765::h2h::minnesota-wild-ml::betrivers",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::totals::over-4-5::betmgm",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::e3b53c7d36e6b34c84b5d64084e8022d::spreads::chicago-blackhawks-1-5::fanduel",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::e3b53c7d36e6b34c84b5d64084e8022d::h2h::new-york-islanders-ml::betmgm",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::spreads::detroit-red-wings-1-5::betmgm",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::c38fb7e74adb36818b56b38cad851d56::totals::under-4-5::fanduel",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::e3b53c7d36e6b34c84b5d64084e8022d::h2h::chicago-blackhawks-ml::fanduel",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::8ac88260e7f6e514200daef093a10e95::totals::under-5-5::fanduel",
+      "canonical-hunt::2026-03-24::1836::basketball_nba::c4901bf9c9ebf81236d22ca4626b5a31::h2h::charlotte-hornets-ml::betrivers",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::h2h::detroit-red-wings-ml::fanduel",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::e3b53c7d36e6b34c84b5d64084e8022d::spreads::new-york-islanders-1-5::betmgm",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::321c46ee4915d84877d9116089323e6c::spreads::new-jersey-devils-1-5::betrivers",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::c4562bec7d3dd2283876ab856c887765::h2h::tampa-bay-lightning-ml::draftkings",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::0a39e6dffc7507394d752f81e6147615::spreads::colorado-avalanche-1-5::betmgm",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::e3b53c7d36e6b34c84b5d64084e8022d::totals::under-6-5::fanduel",
+      "canonical-hunt::2026-03-24::1836::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::spreads::los-angeles-kings-1-5::draftkings"
     ],
     "research_only_rec_ids": []
   }
