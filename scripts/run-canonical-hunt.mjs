@@ -22,6 +22,7 @@ const SPORT_LABELS = {
   basketball_nba: 'NBA',
   basketball_ncaab: 'NCAAB',
   icehockey_nhl: 'NHL',
+  baseball_mlb: 'MLB',
 };
 const PHASE1_NBA_POINTS_PROP_KEY = 'player_points';
 const TIER_LIMITS = {
@@ -209,6 +210,18 @@ function resolvePhase1NbaPointsProps(policy, args) {
   const config = policy?.feature_flags?.phase1_nba_points_props || {};
   const enabledByConfig = config.enabled === true;
   const enabledByCli = args.enable_phase1_nba_points_props === true;
+  return {
+    configured_enabled: enabledByConfig,
+    enabled_for_run: enabledByConfig || enabledByCli,
+    enable_source: enabledByCli && !enabledByConfig ? 'cli_override' : 'config',
+    config,
+  };
+}
+
+function resolvePhase1MlbMoneylines(policy, args) {
+  const config = policy?.feature_flags?.phase1_mlb_moneylines || {};
+  const enabledByConfig = config.enabled === true;
+  const enabledByCli = args.enable_phase1_mlb_moneylines === true;
   return {
     configured_enabled: enabledByConfig,
     enabled_for_run: enabledByConfig || enabledByCli,
@@ -800,6 +813,7 @@ async function main() {
   const policy = loadScanCoveragePolicy();
   const ownedBooksSet = buildOwnedBookSet(policy);
   const propFeatureFlags = resolvePhase1NbaPointsProps(policy, args);
+  const mlbFeatureFlags = resolvePhase1MlbMoneylines(policy, args);
   const targetDateKey = todayCtDateKey(runAt);
   const tierA = policy?.priority_tiers?.tier_a || {};
   const books = [...new Set([...(tierA.default_books || []), ...(tierA.comparison_books || []), ...ownedBooksSet])];
@@ -808,6 +822,16 @@ async function main() {
   const todaysEventsBySport = new Map();
   const observedBooks = new Set();
   const propSummary = {
+    phase1_mlb_moneylines: {
+      configured_enabled: mlbFeatureFlags.configured_enabled,
+      enabled_for_run: mlbFeatureFlags.enabled_for_run,
+      enable_source: mlbFeatureFlags.enable_source,
+      fetched_event_count: 0,
+      analyzed_row_count: 0,
+      selected_bet_count: 0,
+      sit_count: 0,
+      native_rows_appended: 0,
+    },
     phase1_nba_points_props: {
       configured_enabled: propFeatureFlags.configured_enabled,
       enabled_for_run: propFeatureFlags.enabled_for_run,
@@ -833,6 +857,44 @@ async function main() {
             if (market.key !== marketKey) continue;
             rows.push(...buildMarketRows({
               sportKey,
+              event,
+              bookmaker,
+              market,
+              consensusMap,
+              scanTimeCt,
+              runId,
+              bankrollSnapshot,
+              ownedBooks: ownedBooksSet,
+            }));
+          }
+        }
+      }
+    }
+  }
+
+  if (mlbFeatureFlags.enabled_for_run) {
+    const mlbConfig = mlbFeatureFlags.config || {};
+    const mlbSportKey = mlbConfig.sport_key || 'baseball_mlb';
+    const mlbMarkets = (mlbConfig.markets || ['h2h']).filter(Boolean);
+    const mlbBooks = [...new Set([
+      ...((mlbConfig.trusted_books || []).filter(Boolean)),
+      ...((mlbConfig.comparison_books || []).filter(Boolean)),
+      ...ownedBooksSet,
+    ])];
+    const payload = await fetchOddsPayload({ sportKey: mlbSportKey, books: mlbBooks, markets: mlbMarkets, apiKey });
+    for (const event of payload || []) collectObservedBooks(event, observedBooks);
+    const todaysEvents = (payload || []).filter((event) => eventIsTodayCt(event, targetDateKey));
+    todaysEventsBySport.set(mlbSportKey, todaysEvents);
+    propSummary.phase1_mlb_moneylines.fetched_event_count = todaysEvents.length;
+
+    for (const event of todaysEvents) {
+      for (const marketKey of mlbMarkets) {
+        const consensusMap = buildConsensusMap(event, marketKey);
+        for (const bookmaker of event.bookmakers || []) {
+          for (const market of bookmaker.markets || []) {
+            if (market.key !== marketKey) continue;
+            rows.push(...buildMarketRows({
+              sportKey: mlbSportKey,
               event,
               bookmaker,
               market,
@@ -895,10 +957,15 @@ async function main() {
 
   const finalizedRows = finalizeDecisions([...bestByOutcome.values()]);
   const propRows = finalizedRows.filter((row) => row.market_family === 'player_prop');
+  const mlbRows = finalizedRows.filter((row) => row.sport === 'MLB' && row.market_family === 'main_market');
+  propSummary.phase1_mlb_moneylines.analyzed_row_count = mlbRows.length;
+  propSummary.phase1_mlb_moneylines.selected_bet_count = mlbRows.filter((row) => row.final_decision === 'BET').length;
+  propSummary.phase1_mlb_moneylines.sit_count = mlbRows.filter((row) => row.final_decision === 'SIT').length;
   propSummary.phase1_nba_points_props.analyzed_row_count = propRows.length;
   propSummary.phase1_nba_points_props.selected_bet_count = propRows.filter((row) => row.final_decision === 'BET').length;
   propSummary.phase1_nba_points_props.sit_count = propRows.filter((row) => row.final_decision === 'SIT').length;
   appendNativeDecisionRows(finalizedRows);
+  propSummary.phase1_mlb_moneylines.native_rows_appended = mlbRows.length;
   propSummary.phase1_nba_points_props.native_rows_appended = propRows.length;
   const selectedRows = finalizedRows.filter((row) => row.final_decision === 'BET');
   const sitRows = finalizedRows.filter((row) => row.final_decision === 'SIT');

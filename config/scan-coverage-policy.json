@@ -103,6 +103,26 @@
     "alt_lines_enabled_default": false
   },
   "feature_flags": {
+    "phase1_mlb_moneylines": {
+      "enabled": true,
+      "league": "MLB",
+      "sport_key": "baseball_mlb",
+      "markets": [
+        "h2h"
+      ],
+      "market_scope": "moneylines_only",
+      "trusted_books": [
+        "draftkings",
+        "fanduel",
+        "betmgm",
+        "circa",
+        "bet365"
+      ],
+      "comparison_books": [
+        "betrivers",
+        "caesars"
+      ]
+    },
     "phase1_nba_points_props": {
       "enabled": false,
       "league": "NBA",

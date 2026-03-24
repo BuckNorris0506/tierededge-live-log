@@ -1,4 +1,4 @@
-*TIEREDGE SIT*
-Classification: true_no_edge_sit
-Why: Latest scheduled hunt found no qualifying edges.
+*TIEREDGE BET*
+Classification: bet_ready
+Why: Latest scheduled hunt produced actionable bets.
 Health: PASS

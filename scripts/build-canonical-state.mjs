@@ -935,6 +935,10 @@ function main() {
       evening_grading_report_text: renderers.evening,
     },
     prop_feature_flags: {
+      phase1_mlb_moneylines: {
+        ...(scanCoveragePolicy?.feature_flags?.phase1_mlb_moneylines || { enabled: false }),
+        latest_run_enabled: latestCanonicalHuntRun?.prop_summary?.phase1_mlb_moneylines?.enabled_for_run ?? false,
+      },
       phase1_nba_points_props: {
         ...(scanCoveragePolicy?.feature_flags?.phase1_nba_points_props || { enabled: false }),
         latest_run_enabled: latestCanonicalHuntRun?.prop_summary?.phase1_nba_points_props?.enabled_for_run ?? false,
