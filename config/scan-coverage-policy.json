@@ -125,6 +125,19 @@
       ]
     }
   },
+  "book_sets": {
+    "executable_books": [
+      "draftkings",
+      "fanduel",
+      "circa",
+      "betmgm"
+    ],
+    "comparison_books": [
+      "betrivers",
+      "bet365",
+      "caesars"
+    ]
+  },
   "grading_reuse_policy": {
     "scores_cache_minutes": 360,
     "reuse_completed_scores": true

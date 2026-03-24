@@ -177,6 +177,27 @@ function confidenceFromCoverage({ bookmakerCount, freshestMinutes }) {
   return round2((0.4 * adjustedOddsQuality) + (0.3 * 0.5) + (0.3 * marketQuality));
 }
 
+function normalizeBookKey(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return null;
+  if (raw === 'draftkings') return 'draftkings';
+  if (raw === 'fanduel') return 'fanduel';
+  if (raw === 'betmgm') return 'betmgm';
+  if (raw === 'betrivers') return 'betrivers';
+  if (raw === 'bet365') return 'bet365';
+  if (raw === 'caesars') return 'caesars';
+  if (raw === 'circa' || raw === 'circa sports' || raw === 'circasports') return 'circa';
+  return slugify(raw);
+}
+
+function buildExecutableBookSet(policy) {
+  return new Set(
+    (policy?.book_sets?.executable_books || [])
+      .map((value) => normalizeBookKey(value))
+      .filter(Boolean)
+  );
+}
+
 function resolvePhase1NbaPointsProps(policy, args) {
   const config = policy?.feature_flags?.phase1_nba_points_props || {};
   const enabledByConfig = config.enabled === true;
@@ -341,7 +362,7 @@ function computePropConsensusMap(event, marketKey) {
   return consensus;
 }
 
-function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot }) {
+function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot, executableBooks }) {
   const rows = [];
   const fairProbMap = computeFairProbMap((market.outcomes || []).map((outcome) => ({
     ...outcome,
@@ -390,6 +411,7 @@ function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, sca
       market_type: marketTypeLabel(market.key),
       selection: displaySelection(event, market.key, outcome),
       sportsbook: bookmaker.title || bookmaker.key || 'Unknown',
+      executable_book: executableBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
       odds_american: String(outcome.price),
       odds_decimal: round2(americanToDecimal(outcome.price)),
       devig_implied_prob: devigProb,
@@ -421,7 +443,7 @@ function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, sca
   return rows;
 }
 
-function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot }) {
+function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot, executableBooks }) {
   const rows = [];
   const freshMinutes = (() => {
     const lastUpdate = Date.parse(String(market?.last_update || bookmaker?.last_update || event?.commence_time || ''));
@@ -474,6 +496,7 @@ function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, s
         market_type: 'Player Points',
         selection: `${pair.player_name_raw} ${side === 'over' ? 'Over' : 'Under'} ${pair.line} Points`,
         sportsbook: bookmaker.title || bookmaker.key || 'Unknown',
+        executable_book: executableBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
         player_name_raw: pair.player_name_raw,
         player_name_normalized: pair.player_name_normalized,
         player_id_canonical: `basketball_nba::${event.id || 'unknown-event'}::${slugify(pair.player_name_raw)}`,
@@ -555,6 +578,15 @@ function finalizeDecisions(rows) {
       row.final_decision = 'SIT';
       row.rejection_stage = 'risk_gate';
       row.rejection_reason = 'exposure_cap_reached';
+      row.bet_permission_pass = false;
+      row.include_in_actual_bankroll = false;
+      row.kelly_stake = 0;
+      continue;
+    }
+    if (!row.executable_book) {
+      row.final_decision = 'SIT';
+      row.rejection_stage = 'risk_gate';
+      row.rejection_reason = 'non_executable_book';
       row.bet_permission_pass = false;
       row.include_in_actual_bankroll = false;
       row.kelly_stake = 0;
@@ -717,6 +749,7 @@ async function main() {
     ?? parseNumber(publicState?.bankroll_summary?.last_recorded_bankroll)
     ?? 0;
   const policy = loadScanCoveragePolicy();
+  const executableBooks = buildExecutableBookSet(policy);
   const propFeatureFlags = resolvePhase1NbaPointsProps(policy, args);
   const targetDateKey = todayCtDateKey(runAt);
   const tierA = policy?.priority_tiers?.tier_a || {};
@@ -756,6 +789,7 @@ async function main() {
               scanTimeCt,
               runId,
               bankrollSnapshot,
+              executableBooks,
             }));
           }
         }
@@ -791,6 +825,7 @@ async function main() {
             scanTimeCt,
             runId,
             bankrollSnapshot,
+            executableBooks,
           }));
         }
       }
