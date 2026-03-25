@@ -6,6 +6,7 @@
   "scripts": {
     "build:runtime": "node scripts/build-runtime-status.mjs",
     "build:execution": "node scripts/build-execution-board.mjs",
+    "build:clean-run-summary": "node scripts/build-clean-run-summary.mjs",
     "test:regression": "node scripts/tests/regression-washington-20260324.mjs",
     "validate:ledgers": "node scripts/validate-ledger-invariants.mjs",
     "build:canonical": "node scripts/build-canonical-state.mjs",

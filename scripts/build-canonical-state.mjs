@@ -7,6 +7,7 @@ import { OVERRIDE_LOG_PATH, POST_MORTEM_LOG_PATH, getPostMortemStatus, readOverr
 import { getLatestBankrollAnnotatedGrade } from './bankroll-reconciliation-utils.mjs';
 import { formatCtTimestamp } from './openclaw-runtime-utils.mjs';
 import { loadScanCoveragePolicy } from './scan-coverage-utils.mjs';
+import { buildCleanRunSummary } from './build-clean-run-summary.mjs';
 
 const HUNT_AUDIT_LOG_PATH = CORE_PATHS.huntAuditLog;
 const REJECTED_CLOSE_CAPTURE_LOG_PATH = CORE_PATHS.rejectedCloseCaptureLog;
@@ -815,6 +816,7 @@ function main() {
   const payloadBuildMs = Date.now();
   const freshnessHours = 0;
   const stateSyncGap = Boolean(runtimeStatus?.state_sync?.blocking_sync_gap);
+  const cleanRunSummary = buildCleanRunSummary({ decisions, huntAuditRows: huntAuditLog });
   const postMortemStatus = getPostMortemStatus(grading, readPostMortemLog());
   const invalidHuntRuns = huntAuditLog
     .filter((row) => String(row.invalid_status || '').toLowerCase().includes('invalid'))
@@ -989,6 +991,7 @@ function main() {
       'Excluded Invalid Rows': invalidRunScope.excluded_rows.filter((row) => row.target_date === latestDate).length,
     },
     rejected_opportunity_summary: rejectedOpportunitySummary,
+    clean_run_summary: cleanRunSummary,
     overall_betting_results: {
       count: settledPerformanceOverall.settled_bet_count,
       profit_loss: settledPerformanceOverall.realized_profit,
@@ -1102,6 +1105,7 @@ function main() {
       post_mortem_log_path: POST_MORTEM_LOG_PATH,
       hunt_audit_log_path: HUNT_AUDIT_LOG_PATH,
       rejected_close_capture_log_path: REJECTED_CLOSE_CAPTURE_LOG_PATH,
+      clean_run_summary_path: CORE_PATHS.cleanRunSummary,
       ledger_validation_path: '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json',
       canonical_state_path: CORE_PATHS.canonicalState,
       public_data_path: CORE_PATHS.publicData,

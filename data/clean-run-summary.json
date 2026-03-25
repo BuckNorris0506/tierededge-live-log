@@ -1,0 +1,41 @@
+{
+  "schema": "tierededge_clean_run_summary_v1",
+  "clean_window": {
+    "start_date": "2026-03-24",
+    "start_run_id": "canonical-hunt::2026-03-24::snapshot-integrity-proof",
+    "invalidated_runs_excluded": 4
+  },
+  "daily_breakdown": [
+    {
+      "date": "2026-03-24",
+      "total_runs": 2,
+      "valid_snapshots": 278,
+      "invalid_snapshot_count": 26,
+      "total_bets": 1,
+      "total_sits": 303,
+      "avg_edge_bet": 2.97,
+      "near_miss_count": 11,
+      "rejection_reason_distribution": {
+        "sub_minimum_kelly": 3,
+        "no_edge": 148,
+        "invalid_snapshot": 26,
+        "stale_market": 126
+      }
+    }
+  ],
+  "rolling_7_day_summary": {
+    "total_runs": 2,
+    "valid_snapshots": 278,
+    "invalid_snapshot_count": 26,
+    "total_bets": 1,
+    "total_sits": 303,
+    "avg_edge_bet": 2.97,
+    "near_miss_count": 11,
+    "rejection_reason_distribution": {
+      "sub_minimum_kelly": 3,
+      "no_edge": 148,
+      "invalid_snapshot": 26,
+      "stale_market": 126
+    }
+  }
+}
