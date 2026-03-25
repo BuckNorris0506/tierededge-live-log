@@ -9,6 +9,7 @@ import { formatCtTimestamp } from './openclaw-runtime-utils.mjs';
 import { loadScanCoveragePolicy } from './scan-coverage-utils.mjs';
 
 const HUNT_AUDIT_LOG_PATH = CORE_PATHS.huntAuditLog;
+const REJECTED_CLOSE_CAPTURE_LOG_PATH = CORE_PATHS.rejectedCloseCaptureLog;
 
 function parsePhase(bankroll) {
   if (!Number.isFinite(bankroll)) return 'UNKNOWN';
@@ -251,6 +252,21 @@ function americanToDecimal(odds) {
 function americanToImpliedProb(odds) {
   const decimal = americanToDecimal(odds);
   return Number.isFinite(decimal) ? 1 / decimal : null;
+}
+
+function buildRejectedCloseCaptureIndex(rows) {
+  const latestByRecId = new Map();
+  for (const row of rows || []) {
+    const recId = String(row.rec_id || '').trim();
+    if (!recId) continue;
+    const existing = latestByRecId.get(recId);
+    const existingTs = Date.parse(String(existing?.captured_at_utc || ''));
+    const nextTs = Date.parse(String(row.captured_at_utc || ''));
+    if (!existing || (Number.isFinite(nextTs) && (!Number.isFinite(existingTs) || nextTs >= existingTs))) {
+      latestByRecId.set(recId, row);
+    }
+  }
+  return latestByRecId;
 }
 
 function wilsonIntervalLabel(successes, total) {
@@ -632,11 +648,15 @@ function buildEdgeValidationSummary(settledValidationRows, clvCoverageSummary, e
   };
 }
 
-function deriveRejectedOpportunityRow(row) {
+function deriveRejectedOpportunityRow(row, rejectedCloseCaptureIndex) {
   const edge = parseNumber(row.post_conf_edge_pct) ?? 0;
   const threshold = parseNumber(row.tier_threshold_pct) ?? 2;
   const thresholdGap = parseNumber(row.threshold_gap_pct);
   const executableBook = row.executable_book ?? row.actionable_book ?? ['DraftKings', 'FanDuel', 'BetMGM', 'Circa', 'bet365'].includes(String(row.sportsbook || ''));
+  const closeCapture = rejectedCloseCaptureIndex.get(String(row.rec_id || '').trim()) || null;
+  const closeCaptureStatus = closeCapture?.close_capture_status
+    || row.close_capture_status
+    || (Object.prototype.hasOwnProperty.call(row, 'close_capture_status') ? 'pending' : 'not_available');
   const rejectionClass = (() => {
     if (row.rejection_class) return row.rejection_class;
     if (row.rejection_reason === 'research_only_non_owned_book') return 'non_executable_edge';
@@ -668,17 +688,47 @@ function deriveRejectedOpportunityRow(row) {
     rejection_reason: row.rejection_reason || null,
     rejection_class: rejectionClass,
     surfaced_as_closest_miss: Boolean(row.surfaced_as_closest_miss),
-    close_capture_status: row.close_capture_status || 'not_captured',
-    closing_odds_american: row.closing_odds_american || null,
-    closing_line: parseNumber(row.closing_line),
-    partial_backfill: !('threshold_gap_pct' in row) || !('rejection_class' in row) || !('surfaced_as_closest_miss' in row),
+    close_capture_status: closeCaptureStatus,
+    closing_odds_american: closeCapture?.closing_odds_american || row.closing_odds_american || null,
+    closing_implied_prob: parseNumber(closeCapture?.closing_implied_prob ?? row.closing_implied_prob),
+    closing_devig_prob: parseNumber(closeCapture?.closing_devig_prob ?? row.closing_devig_prob),
+    clv_delta_pct: parseNumber(closeCapture?.clv_delta_pct ?? row.clv_delta_pct),
+    clv_direction: closeCapture?.clv_direction || row.clv_direction || null,
+    closing_line: parseNumber(closeCapture?.closing_line ?? row.closing_line),
+    partial_backfill: !('threshold_gap_pct' in row) || !('rejection_class' in row) || !('surfaced_as_closest_miss' in row) || !Object.prototype.hasOwnProperty.call(row, 'close_capture_status'),
   };
 }
 
-function buildRejectedOpportunitySummary(decisions, latestDate) {
+function buildRejectedClvSummary(rejected, filterFn = () => true) {
+  const buckets = [
+    { key: '1.0_to_1.49', min: 1, max: 1.5 },
+    { key: '1.5_to_1.99', min: 1.5, max: 2 },
+    { key: '2.0_plus_rejected', min: 2, max: Infinity },
+  ];
+  return buckets.reduce((acc, bucket) => {
+    const rows = rejected
+      .filter(filterFn)
+      .filter((row) => row.edge_pct >= bucket.min && row.edge_pct < bucket.max)
+      .filter((row) => Number.isFinite(row.clv_delta_pct));
+    const avgClv = rows.length
+      ? round2(rows.reduce((sum, row) => sum + (parseNumber(row.clv_delta_pct) || 0), 0) / rows.length)
+      : null;
+    const positiveClvRate = rows.length
+      ? round2((rows.filter((row) => row.clv_direction === 'positive').length / rows.length) * 100)
+      : null;
+    acc[bucket.key] = {
+      count: rows.length,
+      avg_clv: avgClv,
+      win_rate_proxy: positiveClvRate,
+    };
+    return acc;
+  }, {});
+}
+
+function buildRejectedOpportunitySummary(decisions, latestDate, rejectedCloseCaptureIndex) {
   const rejected = (decisions || [])
     .filter((row) => row.final_decision === 'SIT')
-    .map(deriveRejectedOpportunityRow);
+    .map((row) => deriveRejectedOpportunityRow(row, rejectedCloseCaptureIndex));
 
   const nearMisses = rejected.filter((row) => row.edge_pct >= 1.5 && row.edge_pct < 2);
   const nearMissBand = (min, max) => rejected.filter((row) => row.edge_pct >= min && row.edge_pct < max);
@@ -704,6 +754,11 @@ function buildRejectedOpportunitySummary(decisions, latestDate) {
     rejection_reason_distribution: countBy(rejected, (row) => row.rejection_reason || 'unknown'),
     rejection_class_distribution: countBy(rejected, (row) => row.rejection_class || 'unknown'),
     latest_date_rejection_reason_distribution: countBy(rejected.filter((row) => row.target_date === latestDate), (row) => row.rejection_reason || 'unknown'),
+    close_capture_status_distribution: countBy(rejected, (row) => row.close_capture_status || 'unknown'),
+    rejected_clv_summary: {
+      all_rejected: buildRejectedClvSummary(rejected),
+      executable_only: buildRejectedClvSummary(rejected, (row) => row.executable_book),
+    },
     recent_rejected_opportunities_worth_review: rejected
       .filter((row) => row.executable_book)
       .filter((row) => row.rejection_class === 'near_miss' || row.rejection_class === 'sub_minimum_kelly' || row.rejection_class === 'risk_gate_rejected')
@@ -714,6 +769,7 @@ function buildRejectedOpportunitySummary(decisions, latestDate) {
 
 function main() {
   const decisions = readJsonl(CORE_PATHS.decisionLedger);
+  const rejectedCloseCaptureLog = readJsonl(REJECTED_CLOSE_CAPTURE_LOG_PATH);
   const grading = readJsonl(CORE_PATHS.gradingLedger);
   const bankrollEntries = readJsonl(CORE_PATHS.bankrollLedger);
   const runtimeStatus = readJson(CORE_PATHS.runtimeStatus, {});
@@ -729,6 +785,7 @@ function main() {
   const latestCanonicalHuntRun = readJson(CORE_PATHS.canonicalHuntRun, null);
   const scanCoveragePolicy = loadScanCoveragePolicy();
   const generatedAtUtc = new Date().toISOString();
+  const rejectedCloseCaptureIndex = buildRejectedCloseCaptureIndex(rejectedCloseCaptureLog);
   const invalidRunScope = buildInvalidRunScope(huntAuditLog, decisions);
   const validLearningDecisions = decisions.filter((row) => !invalidRunScope.invalid_run_id_set.has(String(row.run_id || '').trim()));
   const decisionIndex = buildDecisionIndex(validLearningDecisions);
@@ -819,7 +876,7 @@ function main() {
   const expectationSummary = buildExpectationSummary(settledValidationRows);
   const edgeValidationSummary = buildEdgeValidationSummary(settledValidationRows, clvCoverageSummary, expectationSummary);
   const latestModelExposure = parseDailyExposure(latestRuntime?.summary);
-  const rejectedOpportunitySummary = buildRejectedOpportunitySummary(validLearningDecisions, latestDate);
+  const rejectedOpportunitySummary = buildRejectedOpportunitySummary(validLearningDecisions, latestDate, rejectedCloseCaptureIndex);
 
   const decisionPayload = {
     verdict,
@@ -1044,6 +1101,7 @@ function main() {
       override_log_path: OVERRIDE_LOG_PATH,
       post_mortem_log_path: POST_MORTEM_LOG_PATH,
       hunt_audit_log_path: HUNT_AUDIT_LOG_PATH,
+      rejected_close_capture_log_path: REJECTED_CLOSE_CAPTURE_LOG_PATH,
       ledger_validation_path: '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json',
       canonical_state_path: CORE_PATHS.canonicalState,
       public_data_path: CORE_PATHS.publicData,

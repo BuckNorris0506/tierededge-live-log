@@ -1,7 +1,7 @@
 {
   "schema": "tierededge_canonical_v2",
-  "generated_at_utc": "2026-03-25T01:28:18.907Z",
-  "last_updated_ct": "2026-03-24 20:28 CT",
+  "generated_at_utc": "2026-03-25T01:56:43.929Z",
+  "last_updated_ct": "2026-03-24 20:56 CT",
   "current_status": {
     "Bankroll": "$1396.30",
     "Phase": "GROWTH",
@@ -655,7 +655,7 @@
       }
     },
     "weekly_truth_report_summary": {
-      "generated_at_utc": "2026-03-25T01:28:18.951Z",
+      "generated_at_utc": "2026-03-25T01:56:43.975Z",
       "settled_bet_count": 2,
       "top_bleeding_categories": [],
       "top_strongest_categories": [
@@ -3263,6 +3263,46 @@
       "invalid_snapshot": 26,
       "stale_market": 126
     },
+    "close_capture_status_distribution": {
+      "not_available": 2996,
+      "not_captured": 615
+    },
+    "rejected_clv_summary": {
+      "all_rejected": {
+        "1.0_to_1.49": {
+          "count": 0,
+          "avg_clv": null,
+          "win_rate_proxy": null
+        },
+        "1.5_to_1.99": {
+          "count": 0,
+          "avg_clv": null,
+          "win_rate_proxy": null
+        },
+        "2.0_plus_rejected": {
+          "count": 0,
+          "avg_clv": null,
+          "win_rate_proxy": null
+        }
+      },
+      "executable_only": {
+        "1.0_to_1.49": {
+          "count": 0,
+          "avg_clv": null,
+          "win_rate_proxy": null
+        },
+        "1.5_to_1.99": {
+          "count": 0,
+          "avg_clv": null,
+          "win_rate_proxy": null
+        },
+        "2.0_plus_rejected": {
+          "count": 0,
+          "avg_clv": null,
+          "win_rate_proxy": null
+        }
+      }
+    },
     "recent_rejected_opportunities_worth_review": [
       {
         "run_id": "canonical-hunt::2026-03-24::phase1-mlb-proof",
@@ -3285,8 +3325,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3311,8 +3355,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3339,6 +3387,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3363,8 +3415,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3389,8 +3445,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3417,6 +3477,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3443,6 +3507,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3469,6 +3537,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3495,6 +3567,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3519,8 +3595,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3547,6 +3627,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3573,6 +3657,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3597,8 +3685,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3623,8 +3715,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3649,8 +3745,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3677,6 +3777,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3701,8 +3805,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3727,8 +3835,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3755,6 +3867,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3781,6 +3897,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3805,8 +3925,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3831,8 +3955,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3857,8 +3985,12 @@
         "rejection_reason": "exposure_cap_reached",
         "rejection_class": "risk_gate_rejected",
         "surfaced_as_closest_miss": false,
-        "close_capture_status": "not_captured",
+        "close_capture_status": "not_available",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": true
       },
@@ -3885,6 +4017,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       },
@@ -3911,6 +4047,10 @@
         "surfaced_as_closest_miss": false,
         "close_capture_status": "not_captured",
         "closing_odds_american": null,
+        "closing_implied_prob": null,
+        "closing_devig_prob": null,
+        "clv_delta_pct": null,
+        "clv_direction": null,
         "closing_line": null,
         "partial_backfill": false
       }
@@ -5413,7 +5553,7 @@
       "bankroll_before": 1295.13,
       "bankroll_after": 1300.53,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T01:28:18.633Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T01:56:43.628Z",
       "legacy_bankroll_after_import": 1321.03
     },
     {
@@ -5456,7 +5596,7 @@
       "bankroll_before": 1305.63,
       "bankroll_after": 1295.13,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T01:28:18.633Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T01:56:43.628Z",
       "legacy_bankroll_after_import": 1315.63
     },
     {
@@ -5499,12 +5639,12 @@
       "bankroll_before": 1326.13,
       "bankroll_after": 1305.63,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T01:28:18.633Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T01:56:43.628Z",
       "legacy_bankroll_after_import": 1300.53
     }
   ],
   "ledger_validation": {
-    "generated_at_utc": "2026-03-25T01:28:18.906Z",
+    "generated_at_utc": "2026-03-25T01:56:43.928Z",
     "require_output_match": false,
     "passed": true,
     "run_classification": "ledger_integrity_pass",
@@ -5734,7 +5874,7 @@
     }
   },
   "runtime_status": {
-    "generated_at_utc": "2026-03-25T01:28:18.452Z",
+    "generated_at_utc": "2026-03-25T01:56:43.432Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -7151,7 +7291,7 @@
       },
       "passed_opportunity_grades": {
         "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-        "file_mtime_ct": "2026-03-24 20:25 CT"
+        "file_mtime_ct": "2026-03-24 20:28 CT"
       }
     },
     "state_sync": {
@@ -7172,6 +7312,7 @@
     "override_log_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/override-log.jsonl",
     "post_mortem_log_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/post-mortem-log.jsonl",
     "hunt_audit_log_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/hunt-audit-log.jsonl",
+    "rejected_close_capture_log_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/rejected-close-capture-log.jsonl",
     "ledger_validation_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json",
     "canonical_state_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/canonical-state.json",
     "public_data_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/public/data.json",

@@ -6,6 +6,7 @@
   "scripts": {
     "build:runtime": "node scripts/build-runtime-status.mjs",
     "build:execution": "node scripts/build-execution-board.mjs",
+    "test:regression": "node scripts/tests/regression-washington-20260324.mjs",
     "validate:ledgers": "node scripts/validate-ledger-invariants.mjs",
     "build:canonical": "node scripts/build-canonical-state.mjs",
     "build:data": "node scripts/build-live-log.mjs",
@@ -14,6 +15,7 @@
     "append:rec": "node scripts/append-recommendation-row.mjs",
     "append:native-decision": "node scripts/append-native-decision-log.mjs",
     "append:hunt-audit": "node scripts/append-hunt-audit-log.mjs",
+    "capture:closing-lines": "node scripts/capture-closing-lines.mjs",
     "audit:hunt-stakes": "node scripts/audit-hunt-stakes.mjs",
     "append:grading": "node scripts/append-grading-ledger.mjs",
     "append:bankroll-event": "node scripts/append-bankroll-event.mjs",

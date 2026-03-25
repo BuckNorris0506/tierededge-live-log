@@ -5,6 +5,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import process from 'node:process';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
 import { appendNativeDecisionRows } from './native-decision-log-utils.mjs';
 import { computeKellyBreakdown } from './tierededge-kelly-cli.mjs';
@@ -460,8 +461,12 @@ function createBaseRow({
     rejection_reason: '',
     rejection_class: '',
     surfaced_as_closest_miss: false,
-    close_capture_status: 'not_captured',
+    close_capture_status: 'pending',
     closing_odds_american: null,
+    closing_implied_prob: null,
+    closing_devig_prob: null,
+    clv_delta_pct: null,
+    clv_direction: null,
     closing_line: null,
     snapshot_status: 'not_validated',
     snapshot_max_spread_seconds: null,
@@ -887,8 +892,12 @@ function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, s
         rejection_reason: '',
         rejection_class: '',
         surfaced_as_closest_miss: false,
-        close_capture_status: 'not_captured',
+        close_capture_status: 'pending',
         closing_odds_american: null,
+        closing_implied_prob: null,
+        closing_devig_prob: null,
+        clv_delta_pct: null,
+        clv_direction: null,
         closing_line: null,
         snapshot_status: 'valid',
         snapshot_max_spread_seconds: 0,
@@ -1193,6 +1202,20 @@ function failureArtifact({ runId, scanTimeCt, reason }) {
   };
 }
 
+export {
+  buildConsensusBookSet,
+  buildConsensusContext,
+  buildMarketRows,
+  buildOwnedBookSet,
+  createBaseRow,
+  finalizeDecisions,
+  formatCtMinute,
+  normalizeBookKey,
+  resolveProbabilityPipeline,
+  resolveRiskControls,
+  todayCtDateKey,
+};
+
 async function main() {
   const args = parseArgs(process.argv);
   const runAt = new Date();
@@ -1423,14 +1446,18 @@ async function main() {
   console.log(artifact.summary);
 }
 
-main().catch((error) => {
-  const runAt = new Date();
-  const artifact = failureArtifact({
-    runId: `canonical-hunt::${todayCtDateKey(runAt)}::${formatCtMinute(runAt).slice(11).replace(':', '')}`,
-    scanTimeCt: formatCtMinute(runAt),
-    reason: error.message,
+const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isDirectRun) {
+  main().catch((error) => {
+    const runAt = new Date();
+    const artifact = failureArtifact({
+      runId: `canonical-hunt::${todayCtDateKey(runAt)}::${formatCtMinute(runAt).slice(11).replace(':', '')}`,
+      scanTimeCt: formatCtMinute(runAt),
+      reason: error.message,
+    });
+    writeJson(CORE_PATHS.canonicalHuntRun, artifact);
+    console.error(error.message);
+    process.exit(1);
   });
-  writeJson(CORE_PATHS.canonicalHuntRun, artifact);
-  console.error(error.message);
-  process.exit(1);
-});
+}
