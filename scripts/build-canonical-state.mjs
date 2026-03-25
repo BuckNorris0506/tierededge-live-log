@@ -12,6 +12,7 @@ import { buildCleanRunSummary } from './build-clean-run-summary.mjs';
 const HUNT_AUDIT_LOG_PATH = CORE_PATHS.huntAuditLog;
 const REJECTED_CLOSE_CAPTURE_LOG_PATH = CORE_PATHS.rejectedCloseCaptureLog;
 const REJECTED_CLOSE_CAPTURE_RUNS_PATH = CORE_PATHS.rejectedCloseCaptureRuns;
+const MISSED_EXECUTION_WINDOWS_PATH = CORE_PATHS.missedExecutionWindows;
 
 function parsePhase(bankroll) {
   if (!Number.isFinite(bankroll)) return 'UNKNOWN';
@@ -874,6 +875,38 @@ function buildNotificationSummary(notificationEvents) {
   };
 }
 
+function genericCountBy(rows, keyFn) {
+  return (rows || []).reduce((acc, row) => {
+    const key = keyFn(row);
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+}
+
+function buildMissedExecutionWindowSummary(rows) {
+  const items = (rows || []).filter((row) => normalizeText(row.execution_window_classification) === 'missed_execution_window');
+  return {
+    total_count: items.length,
+    by_sport: genericCountBy(items, (row) => row.sport || 'unknown'),
+    by_market_type: genericCountBy(items, (row) => row.market_type || 'unknown'),
+    by_book: genericCountBy(items, (row) => row.sportsbook || 'unknown'),
+    recent_rows: items.slice().reverse().slice(0, 25).map((row) => ({
+      recorded_at_utc: row.recorded_at_utc || null,
+      rec_id: row.rec_id || null,
+      run_id: row.run_id || null,
+      sport: row.sport || null,
+      market_type: row.market_type || null,
+      selection: row.selection || null,
+      sportsbook: row.sportsbook || null,
+      recommended_odds_american: row.recommended_odds_american ?? null,
+      current_odds_american: row.current_odds_american ?? null,
+      original_edge_pct: row.original_edge_pct ?? null,
+      current_execution_edge_estimate_pct: row.current_execution_edge_estimate_pct ?? null,
+      rejection_reason: row.rejection_reason || null,
+    })),
+  };
+}
+
 function buildPerformanceByMarket(decisions) {
   const groups = new Map();
   for (const row of decisions || []) {
@@ -1332,6 +1365,7 @@ function main() {
   const notificationEvents = readJsonl(CORE_PATHS.notificationEvents);
   const rejectedCloseCaptureLog = readJsonl(REJECTED_CLOSE_CAPTURE_LOG_PATH);
   const rejectedCloseCaptureRuns = readJsonl(REJECTED_CLOSE_CAPTURE_RUNS_PATH);
+  const missedExecutionWindows = readJsonl(MISSED_EXECUTION_WINDOWS_PATH);
   const grading = readJsonl(CORE_PATHS.gradingLedger);
   const bankrollEntries = readJsonl(CORE_PATHS.bankrollLedger);
   const runtimeStatus = readJson(CORE_PATHS.runtimeStatus, {});
@@ -1444,6 +1478,7 @@ function main() {
   const rejectedCloseCaptureAutomation = buildRejectedCloseCaptureAutomationSummary(rejectedCloseCaptureRuns, rejectedOpportunitySummary);
   const automationLockSummary = buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns);
   const notificationSummary = buildNotificationSummary(notificationEvents);
+  const missedExecutionWindowSummary = buildMissedExecutionWindowSummary(missedExecutionWindows);
   const sportsbookScope = {
     owned_books: scanCoveragePolicy?.book_sets?.owned_books || scanCoveragePolicy?.book_sets?.executable_books || [],
     live_feed_books: latestCanonicalHuntRun?.live_feed_books || [],
@@ -1586,6 +1621,7 @@ function main() {
       'Excluded Invalid Rows': invalidRunScope.excluded_rows.filter((row) => row.target_date === latestDate).length,
     },
     rejected_opportunity_summary: rejectedOpportunitySummary,
+    missed_execution_window_summary: missedExecutionWindowSummary,
     rejected_close_capture_automation: rejectedCloseCaptureAutomation,
     automation_lock_summary: automationLockSummary,
     notification_summary: notificationSummary,
@@ -1659,6 +1695,7 @@ function main() {
       operator_summary: executionBoard.operator_summary || [],
       operator_output_text: (executionBoard.operator_summary || []).join('\n\n'),
       recent_execution_log: executionLog.slice().reverse().slice(0, 25),
+      missed_execution_window_count: missedExecutionWindowSummary.total_count,
     },
     recent_execution_log: executionLog.slice().reverse().slice(0, 25),
     recent_reconciliation_events: reconciliationEvents.slice().reverse().slice(0, 25),
@@ -1701,6 +1738,7 @@ function main() {
       execution_board_path: EXECUTION_BOARD_PATH,
       execution_log_path: EXECUTION_LOG_PATH,
       override_log_path: OVERRIDE_LOG_PATH,
+      missed_execution_windows_path: MISSED_EXECUTION_WINDOWS_PATH,
       post_mortem_log_path: POST_MORTEM_LOG_PATH,
       hunt_audit_log_path: HUNT_AUDIT_LOG_PATH,
       rejected_close_capture_log_path: REJECTED_CLOSE_CAPTURE_LOG_PATH,

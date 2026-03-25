@@ -697,6 +697,37 @@ function buildOperatorLine(item) {
   ].filter(Boolean).join('\n');
 }
 
+function buildMissedExecutionWindowRows(items) {
+  return items
+    .filter((item) => item.execution?.execution_window_classification === 'missed_execution_window')
+    .map((item) => ({
+      window_id: `missed-window::${item.run_id || 'unknown'}::${item.rec_id || 'unknown'}`,
+      recorded_at_utc: new Date().toISOString(),
+      rec_id: item.rec_id || null,
+      run_id: item.run_id || null,
+      execution_window_classification: 'missed_execution_window',
+      sport: item.sport || null,
+      league: item.league || null,
+      market_type: item.market_type || null,
+      event_id: item.event_id || null,
+      event_label: item.event_label || null,
+      selection: item.selection || null,
+      sportsbook: item.recommended_book || null,
+      recommended_odds_american: item.recommended_odds_american ?? null,
+      current_odds_american: item.execution.current_odds_american ?? null,
+      line_worse_amount: item.execution.line_worse_amount ?? 0,
+      price_worse_cents: item.execution.price_worse_cents ?? null,
+      rejection_reason: item.execution.rejection_reason || null,
+      execution_status: item.execution.execution_status || null,
+      original_edge_pct: item.original_edge_pct ?? null,
+      tier_threshold_pct: item.tier_threshold_pct ?? null,
+      original_kelly_stake: item.original_kelly_stake ?? null,
+      current_execution_edge_estimate_pct: item.execution.current_execution_edge_estimate_pct ?? null,
+      quote_timestamp_utc: item.execution.odds_last_update || null,
+      source: 'execution_board',
+    }));
+}
+
 export async function buildExecutionBoard({ canonicalState, runtimeStatus, decisions, grading, bankrollEntries }) {
   const policy = loadExecutionPolicy();
   const startingBankroll = (bankrollEntries || [])
@@ -747,6 +778,7 @@ export async function buildExecutionBoard({ canonicalState, runtimeStatus, decis
     })();
     const execution = {
       execution_status: 'REJECT_EXECUTION',
+      execution_window_classification: 'not_missed_execution_window',
       rejection_reason: '',
       current_book: row.sportsbook,
       current_odds_american: null,
@@ -761,6 +793,7 @@ export async function buildExecutionBoard({ canonicalState, runtimeStatus, decis
       sub_min_stake: !stakeBreakdown || stakeBreakdown.final_stake <= 0,
       stake_breakdown: stakeBreakdown,
       tolerance_check: null,
+      current_execution_edge_estimate_pct: null,
     };
 
     if (blockedRun) {
@@ -822,6 +855,16 @@ export async function buildExecutionBoard({ canonicalState, runtimeStatus, decis
             execution.rejection_reason = 'odds_unavailable';
           } else if (quote.line_worse_amount > lineTolerance || (quote.price_worse_cents ?? 0) > priceTolerance) {
             execution.rejection_reason = 'line_moved_past_tolerance';
+            execution.execution_window_classification = 'missed_execution_window';
+            const recommendedTrueProb = asPercentProbability(row.post_conf_true_prob ?? row.pre_conf_true_prob);
+            const currentImpliedProb = Number.isFinite(parseNumber(quote.current_odds_american))
+              ? (parseNumber(quote.current_odds_american) > 0
+                ? 100 / (parseNumber(quote.current_odds_american) + 100)
+                : Math.abs(parseNumber(quote.current_odds_american)) / (Math.abs(parseNumber(quote.current_odds_american)) + 100))
+              : null;
+            execution.current_execution_edge_estimate_pct = Number.isFinite(recommendedTrueProb) && Number.isFinite(currentImpliedProb)
+              ? round2((recommendedTrueProb - currentImpliedProb) * 100)
+              : null;
           } else {
             execution.execution_status = 'APPROVED_TO_BET';
           }
@@ -849,6 +892,9 @@ export async function buildExecutionBoard({ canonicalState, runtimeStatus, decis
       recommended_odds_decimal: parseNumber(row.odds_decimal),
       true_probability_used: asPercentProbability(row.post_conf_true_prob ?? row.pre_conf_true_prob),
       implied_probability_used: asPercentProbability(row.devig_implied_prob),
+      original_edge_pct: parseNumber(row.post_conf_edge_pct),
+      tier_threshold_pct: parseNumber(row.tier_threshold_pct),
+      original_kelly_stake: stakeBreakdown?.final_stake ?? parseNumber(row.kelly_stake) ?? null,
       bet_class: row.bet_class,
       execution,
       operator_output: buildOperatorLine({
@@ -874,6 +920,15 @@ export async function buildExecutionBoard({ canonicalState, runtimeStatus, decis
     recommendations: items,
     operator_summary: items.map((item) => item.operator_output),
   };
+
+  const missedWindows = buildMissedExecutionWindowRows(items);
+  for (const row of missedWindows) {
+    try {
+      appendJsonl(CORE_PATHS.missedExecutionWindows, row, (entry) => String(entry.window_id || '').trim());
+    } catch (error) {
+      if (!String(error.message || '').startsWith('duplicate_row:')) throw error;
+    }
+  }
 
   fs.writeFileSync(EXECUTION_BOARD_PATH, `${JSON.stringify(result, null, 2)}\n`, 'utf8');
   return result;
