@@ -1012,12 +1012,17 @@ function buildBookUsefulnessSummary(decisions, ownedBooks, latestCanonicalHuntRu
     .sort()
     .map((book) => buildMetricsForBook(book));
 
+  const latestLiveFeedBooks = [...new Set((latestCanonicalHuntRun?.live_feed_books || []).map((book) => normalizeText(book)).filter(Boolean))].sort();
+  const latestOwnedBooks = normalizedOwned;
+  const latestActionableBooks = latestOwnedBooks.filter((book) => latestLiveFeedBooks.includes(book));
+  const latestFeedUnavailable = latestOwnedBooks.filter((book) => !latestLiveFeedBooks.includes(book));
+  const latestResearchOnly = latestLiveFeedBooks.filter((book) => !latestOwnedBooks.includes(book));
   const latestRunBooks = {
-    owned_books: latestCanonicalHuntRun?.owned_books || normalizedOwned,
-    live_feed_books: latestCanonicalHuntRun?.live_feed_books || [],
-    actionable_books_for_run: latestCanonicalHuntRun?.actionable_books_for_run || [],
-    feed_unavailable_owned_books: latestCanonicalHuntRun?.feed_unavailable_owned_books || [],
-    research_only_books: latestCanonicalHuntRun?.research_only_books || [],
+    owned_books: latestOwnedBooks,
+    live_feed_books: latestLiveFeedBooks,
+    actionable_books_for_run: latestActionableBooks,
+    feed_unavailable_owned_books: latestFeedUnavailable,
+    research_only_books: latestResearchOnly,
   };
 
   return {
