@@ -1591,6 +1591,7 @@ function main() {
     notification_summary: notificationSummary,
     clean_run_summary: cleanRunSummary,
     performance_by_market: performanceByMarket,
+    recommendation_timing_summary: operatorDashboard.recommendation_timing_summary,
     operator_dashboard: operatorDashboard,
     overall_betting_results: {
       count: settledPerformanceOverall.settled_bet_count,

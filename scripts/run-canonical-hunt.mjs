@@ -1227,6 +1227,7 @@ function summarizeRun({
   const formatUrgency = (row) => {
     const minutes = parseNumber(row.minutes_to_start);
     if (!Number.isFinite(minutes)) return `${row.urgency_tag || 'LATER'} | start unknown`;
+    if (minutes < 0) return `${row.urgency_tag || deriveUrgencyTag(minutes)} | started ${round2(Math.abs(minutes))} min ago`;
     return `${row.urgency_tag || deriveUrgencyTag(minutes)} | starts in ${round2(minutes)} min`;
   };
   const lines = [];

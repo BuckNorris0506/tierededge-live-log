@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-25T03:23:20.292Z",
+  "generated_at_utc": "2026-03-25T03:24:08.747Z",
   "jobs": {
     "morning_edge_hunt": {
       "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -1189,21 +1189,23 @@
   },
   "latest_hunt_current": {
     "status": "ok",
-    "delivery_status": "delivered",
+    "delivery_status": "repo_direct",
     "error": null,
-    "run_at_ms": 1774350121658,
-    "run_at_ct": "2026-03-24 06:02 CT",
+    "run_at_ms": 1774409017945,
+    "run_at_ct": "2026-03-24 22:23",
     "date_key": "2026-03-24",
-    "summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
-    "raw_summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
-    "session_id": "7fbfd4b1-8ff5-4c14-84dc-8a3370537276",
-    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/7fbfd4b1-8ff5-4c14-84dc-8a3370537276.jsonl",
-    "message_type": "UNKNOWN",
+    "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Calgary Flames ML @ 105 | BetMGM: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Los Angeles Kings ML @ -115 | FanDuel: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Phoenix Suns +3.5 @ -110 | BetMGM: +1.54% edge — stale_market | NOW | starts in -11.63 min\n- Edmonton Oilers -2.5 @ 100 | BetMGM: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Utah Mammoth +2.5 @ -120 | FanDuel: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Vancouver Canucks +1.5 @ 116 | FanDuel: +1.06% edge — stale_market | NOW | starts in -73.63 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "raw_summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Calgary Flames ML @ 105 | BetMGM: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Los Angeles Kings ML @ -115 | FanDuel: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Phoenix Suns +3.5 @ -110 | BetMGM: +1.54% edge — stale_market | NOW | starts in -11.63 min\n- Edmonton Oilers -2.5 @ 100 | BetMGM: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Utah Mammoth +2.5 @ -120 | FanDuel: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Vancouver Canucks +1.5 @ 116 | FanDuel: +1.06% edge — stale_market | NOW | starts in -73.63 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "session_id": null,
+    "session_file": null,
+    "message_type": "SIT",
     "has_actionable_bets": false,
     "requires_state_sync": false,
     "data_failure_codes": [],
-    "data_status": "unknown",
-    "plain_reason": "The latest scheduled scan could not be classified reliably."
+    "data_status": "verified",
+    "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
+    "source": "canonical_repo_hunt",
+    "native_rows_appended": 28
   },
   "latest_successful_hunt": {
     "status": "ok",
@@ -1225,17 +1227,236 @@
   },
   "latest_canonical_hunt_run": {
     "schema": "tierededge_canonical_hunt_run_v1",
-    "run_id": "canonical-hunt::2026-03-24::2212",
-    "generated_at_utc": "2026-03-25T03:12:45.753Z",
-    "run_at_ct": "2026-03-24 22:12",
-    "status": "failed",
-    "message_type": "BLOCKED",
+    "run_id": "canonical-hunt::2026-03-24::2223",
+    "generated_at_utc": "2026-03-25T03:23:37.945Z",
+    "run_at_ct": "2026-03-24 22:23",
+    "status": "ok",
+    "message_type": "SIT",
     "requires_state_sync": false,
     "has_actionable_bets": false,
-    "native_rows_appended": 0,
+    "native_rows_appended": 28,
+    "native_bets_appended": 0,
+    "native_sits_appended": 28,
     "invalidated": false,
-    "plain_reason": "fetch failed",
-    "summary": "TIERED EDGE HUNT — 2026-03-24\nCANNOT_VERIFY_ODDS — SIT\nReason: fetch failed"
+    "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
+    "prop_feature_flags": {
+      "configured_enabled": false,
+      "enabled_for_run": false,
+      "enable_source": "config",
+      "config": {
+        "enabled": false,
+        "league": "NBA",
+        "sport_key": "basketball_nba",
+        "market_key": "player_points",
+        "prop_type": "points",
+        "markets": [
+          "player_points"
+        ],
+        "min_book_count": 2,
+        "eligible_books": [
+          "draftkings",
+          "fanduel",
+          "betmgm",
+          "circa",
+          "bet365"
+        ],
+        "sides": [
+          "over",
+          "under"
+        ],
+        "main_line_only": true,
+        "alt_lines_allowed": false,
+        "trusted_books": [
+          "draftkings",
+          "fanduel",
+          "betmgm",
+          "circa",
+          "bet365"
+        ]
+      }
+    },
+    "prop_summary": {
+      "phase1_nba_spreads": {
+        "configured_enabled": true,
+        "enabled_for_run": true,
+        "enable_source": "config",
+        "fetched_event_count": 1,
+        "analyzed_row_count": 2,
+        "selected_bet_count": 0,
+        "sit_count": 2,
+        "native_rows_appended": 2,
+        "min_book_count": 2,
+        "eligible_books": [
+          "bet365",
+          "betmgm",
+          "circa",
+          "draftkings",
+          "fanduel"
+        ]
+      },
+      "phase1_mlb_moneylines": {
+        "configured_enabled": true,
+        "enabled_for_run": true,
+        "enable_source": "config",
+        "fetched_event_count": 0,
+        "analyzed_row_count": 0,
+        "selected_bet_count": 0,
+        "sit_count": 0,
+        "native_rows_appended": 0,
+        "min_book_count": 2,
+        "eligible_books": [
+          "bet365",
+          "betmgm",
+          "circa",
+          "draftkings",
+          "fanduel"
+        ]
+      },
+      "phase1_nba_points_props": {
+        "configured_enabled": false,
+        "enabled_for_run": false,
+        "enable_source": "config",
+        "fetched_event_count": 0,
+        "analyzed_row_count": 0,
+        "selected_bet_count": 0,
+        "sit_count": 0,
+        "native_rows_appended": 0,
+        "min_book_count": 2,
+        "eligible_books": [
+          "bet365",
+          "betmgm",
+          "circa",
+          "draftkings",
+          "fanduel"
+        ]
+      }
+    },
+    "owned_books": [
+      "bet365",
+      "betmgm",
+      "circa",
+      "draftkings",
+      "fanduel"
+    ],
+    "live_feed_books": [
+      "betmgm",
+      "betrivers",
+      "draftkings",
+      "fanduel"
+    ],
+    "actionable_books_for_run": [
+      "betmgm",
+      "draftkings",
+      "fanduel"
+    ],
+    "feed_unavailable_owned_books": [
+      "bet365",
+      "circa"
+    ],
+    "research_only_books": [
+      "betrivers"
+    ],
+    "urgency_thresholds": {
+      "NOW": "<= 15 minutes to start",
+      "SOON": "15 to 90 minutes to start",
+      "LATER": "> 90 minutes to start or unknown"
+    },
+    "selected_rows": [],
+    "executable_closest_misses": [
+      {
+        "rec_id": "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::calgary-flames-ml::betmgm",
+        "selection": "Calgary Flames ML",
+        "sportsbook": "BetMGM",
+        "odds_american": "105",
+        "post_conf_edge_pct": 1.83,
+        "rejection_reason": "stale_market",
+        "event_start_time": "2026-03-25T01:10:00Z",
+        "minutes_to_start": -133.63,
+        "urgency_tag": "NOW"
+      },
+      {
+        "rec_id": "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::los-angeles-kings-ml::fanduel",
+        "selection": "Los Angeles Kings ML",
+        "sportsbook": "FanDuel",
+        "odds_american": "-115",
+        "post_conf_edge_pct": 1.83,
+        "rejection_reason": "stale_market",
+        "event_start_time": "2026-03-25T01:10:00Z",
+        "minutes_to_start": -133.63,
+        "urgency_tag": "NOW"
+      },
+      {
+        "rec_id": "canonical-hunt::2026-03-24::2223::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::spreads::phoenix-suns-3-5::betmgm",
+        "selection": "Phoenix Suns +3.5",
+        "sportsbook": "BetMGM",
+        "odds_american": "-110",
+        "post_conf_edge_pct": 1.54,
+        "rejection_reason": "stale_market",
+        "event_start_time": "2026-03-25T03:12:00Z",
+        "minutes_to_start": -11.63,
+        "urgency_tag": "NOW"
+      },
+      {
+        "rec_id": "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::edmonton-oilers-2-5::betmgm",
+        "selection": "Edmonton Oilers -2.5",
+        "sportsbook": "BetMGM",
+        "odds_american": "100",
+        "post_conf_edge_pct": 1.12,
+        "rejection_reason": "stale_market",
+        "event_start_time": "2026-03-25T01:40:00Z",
+        "minutes_to_start": -103.63,
+        "urgency_tag": "NOW"
+      },
+      {
+        "rec_id": "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::utah-mammoth-2-5::fanduel",
+        "selection": "Utah Mammoth +2.5",
+        "sportsbook": "FanDuel",
+        "odds_american": "-120",
+        "post_conf_edge_pct": 1.12,
+        "rejection_reason": "stale_market",
+        "event_start_time": "2026-03-25T01:40:00Z",
+        "minutes_to_start": -103.63,
+        "urgency_tag": "NOW"
+      },
+      {
+        "rec_id": "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::spreads::vancouver-canucks-1-5::fanduel",
+        "selection": "Vancouver Canucks +1.5",
+        "sportsbook": "FanDuel",
+        "odds_american": "116",
+        "post_conf_edge_pct": 1.06,
+        "rejection_reason": "stale_market",
+        "event_start_time": "2026-03-25T02:10:00Z",
+        "minutes_to_start": -73.63,
+        "urgency_tag": "NOW"
+      }
+    ],
+    "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Calgary Flames ML @ 105 | BetMGM: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Los Angeles Kings ML @ -115 | FanDuel: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Phoenix Suns +3.5 @ -110 | BetMGM: +1.54% edge — stale_market | NOW | starts in -11.63 min\n- Edmonton Oilers -2.5 @ 100 | BetMGM: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Utah Mammoth +2.5 @ -120 | FanDuel: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Vancouver Canucks +1.5 @ 116 | FanDuel: +1.06% edge — stale_market | NOW | starts in -73.63 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "rows": {
+      "bet_rec_ids": [],
+      "sit_rec_ids": [
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::totals::over-5-5::betmgm",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::totals::under-5-5::fanduel",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::calgary-flames-ml::betmgm",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::los-angeles-kings-ml::fanduel",
+        "canonical-hunt::2026-03-24::2223::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::spreads::phoenix-suns-3-5::betmgm",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::edmonton-oilers-2-5::betmgm",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::utah-mammoth-2-5::fanduel",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::spreads::vancouver-canucks-1-5::fanduel",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::spreads::anaheim-ducks-1-5::betmgm",
+        "canonical-hunt::2026-03-24::2223::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::h2h::denver-nuggets-ml::draftkings",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::totals::under-8-5::fanduel",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::totals::over-8-5::betmgm",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::h2h::utah-mammoth-ml::fanduel",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::h2h::edmonton-oilers-ml::betmgm",
+        "canonical-hunt::2026-03-24::2223::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::h2h::phoenix-suns-ml::fanduel",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::h2h::vancouver-canucks-ml::betmgm",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::h2h::anaheim-ducks-ml::fanduel",
+        "canonical-hunt::2026-03-24::2223::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::spreads::denver-nuggets-3-5::fanduel",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::totals::under-6-5::fanduel",
+        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::totals::over-6-5::betmgm"
+      ],
+      "research_only_rec_ids": []
+    }
   },
   "latest_successful_grading": {
     "status": "ok",
@@ -1314,7 +1535,7 @@
     },
     "passed_opportunity_grades": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-      "file_mtime_ct": "2026-03-24 22:20 CT"
+      "file_mtime_ct": "2026-03-24 22:23 CT"
     }
   },
   "state_sync": {
