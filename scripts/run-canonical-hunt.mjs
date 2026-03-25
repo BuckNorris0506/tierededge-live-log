@@ -30,6 +30,8 @@ const TIER_LIMITS = {
   T2: { maxBets: 4 },
   T3: { maxBets: 6 },
 };
+const DEFAULT_SNAPSHOT_WINDOW_SECONDS = 30;
+const DEFAULT_CONSENSUS_MEDIAN_GUARD_PCT = 5;
 
 function parseArgs(argv) {
   const args = {};
@@ -191,12 +193,66 @@ function normalizeBookKey(value) {
   return slugify(raw);
 }
 
+function buildNormalizedBookSet(values = []) {
+  return new Set((values || []).map((value) => normalizeBookKey(value)).filter(Boolean));
+}
+
 function buildOwnedBookSet(policy) {
-  return new Set(
-    (policy?.book_sets?.owned_books || policy?.book_sets?.executable_books || [])
-      .map((value) => normalizeBookKey(value))
-      .filter(Boolean)
+  return buildNormalizedBookSet(policy?.book_sets?.owned_books || policy?.book_sets?.executable_books || []);
+}
+
+function buildConsensusBookSet(policy) {
+  return buildNormalizedBookSet(
+    policy?.book_sets?.consensus_books
+    || [
+      ...(policy?.priority_tiers?.tier_a?.default_books || []),
+      ...(policy?.priority_tiers?.tier_a?.comparison_books || []),
+      ...(policy?.book_sets?.comparison_books || []),
+      ...(policy?.book_sets?.owned_books || []),
+    ]
   );
+}
+
+function resolveProbabilityPipeline(policy) {
+  const config = policy?.probability_pipeline || {};
+  return {
+    snapshotWindowMs: (parseNumber(config.snapshot_window_seconds) || DEFAULT_SNAPSHOT_WINDOW_SECONDS) * 1000,
+    consensusMethod: String(config.consensus_method || 'trimmed_mean_with_median_guard').trim(),
+    consensusMedianGuardPct: parseNumber(config.consensus_median_guard_pct) || DEFAULT_CONSENSUS_MEDIAN_GUARD_PCT,
+  };
+}
+
+function median(values) {
+  if (!values.length) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 1
+    ? sorted[middle]
+    : (sorted[middle - 1] + sorted[middle]) / 2;
+}
+
+function trimmedMean(values) {
+  if (!values.length) return null;
+  if (values.length < 4) return median(values);
+  const sorted = [...values].sort((a, b) => a - b);
+  const trimmed = sorted.slice(1, -1);
+  return trimmed.reduce((sum, value) => sum + value, 0) / trimmed.length;
+}
+
+function computeStableConsensus(values, pipeline) {
+  const medianProb = median(values);
+  const consensusProb = pipeline.consensusMethod === 'median'
+    ? medianProb
+    : trimmedMean(values);
+  const deviationPct = Number.isFinite(consensusProb) && Number.isFinite(medianProb)
+    ? round2(Math.abs(consensusProb - medianProb) * 100)
+    : null;
+  return {
+    consensusProb,
+    medianProb,
+    deviationPct,
+    sane: deviationPct === null ? false : deviationPct <= pipeline.consensusMedianGuardPct,
+  };
 }
 
 function collectObservedBooks(source, observedBooks) {
@@ -343,6 +399,148 @@ function buildPlayerPropPairs(outcomes) {
   return [...grouped.values()].filter((pair) => pair.over && pair.under);
 }
 
+function createBaseRow({
+  sportKey,
+  event,
+  bookmaker,
+  market,
+  outcome,
+  scanTimeCt,
+  runId,
+  bankrollSnapshot,
+  ownedBooks,
+}) {
+  const bookKey = normalizeBookKey(bookmaker.key || bookmaker.title);
+  const actionableBook = ownedBooks.has(bookKey);
+  return {
+    run_id: runId,
+    rec_id: `${runId}::${sportKey}::${slugify(event.id || buildEventLabel(event))}::${market.key}::${slugify(displaySelection(event, market.key, outcome))}::${slugify(bookmaker.title || bookmaker.key)}`,
+    timestamp_ct: scanTimeCt,
+    target_date: todayCtDateKey(),
+    market_family: 'main_market',
+    sport: SPORT_LABELS[sportKey] || sportKey.toUpperCase(),
+    league: SPORT_LABELS[sportKey] || sportKey.toUpperCase(),
+    event_id: event.id || null,
+    event_label: buildEventLabel(event),
+    event_home_team: event.home_team || null,
+    event_away_team: event.away_team || null,
+    market_type: marketTypeLabel(market.key),
+    selection: displaySelection(event, market.key, outcome),
+    sportsbook: bookmaker.title || bookmaker.key || 'Unknown',
+    owned_book: actionableBook,
+    live_feed_book: true,
+    actionable_book: actionableBook,
+    odds_american: parseNumber(outcome.price) === null ? null : String(outcome.price),
+    odds_decimal: round2(americanToDecimal(outcome.price)),
+    devig_implied_prob: null,
+    consensus_prob: null,
+    pre_conf_true_prob: null,
+    confidence_score: null,
+    post_conf_true_prob: null,
+    raw_edge_pct: null,
+    post_conf_edge_pct: null,
+    tier_threshold_pct: 2,
+    threshold_gap_pct: null,
+    price_edge_pass: false,
+    executable_book: actionableBook,
+    bet_permission_pass: false,
+    final_decision: 'SIT',
+    rejection_stage: '',
+    rejection_reason: '',
+    rejection_class: '',
+    surfaced_as_closest_miss: false,
+    close_capture_status: 'not_captured',
+    closing_odds_american: null,
+    closing_line: null,
+    snapshot_status: 'not_validated',
+    snapshot_max_spread_seconds: null,
+    consensus_method: null,
+    consensus_book_count: null,
+    consensus_median_prob: null,
+    bet_class: 'EDGE_BET',
+    bankroll_snapshot: bankrollSnapshot,
+    kelly_stake: 0,
+    include_in_core_strategy_metrics: true,
+    include_in_actual_bankroll: false,
+  };
+}
+
+function invalidSnapshotRows({
+  sportKey,
+  event,
+  bookmaker,
+  market,
+  scanTimeCt,
+  runId,
+  bankrollSnapshot,
+  ownedBooks,
+  snapshotStatus,
+  snapshotMaxSpreadSeconds = null,
+  consensusMethod = null,
+}) {
+  return (market.outcomes || []).map((outcome) => ({
+    ...createBaseRow({
+      sportKey,
+      event,
+      bookmaker,
+      market,
+      outcome,
+      scanTimeCt,
+      runId,
+      bankrollSnapshot,
+      ownedBooks,
+    }),
+    rejection_stage: 'integrity_gate',
+    rejection_reason: 'invalid_snapshot',
+    rejection_class: 'stale_or_unverified_odds',
+    snapshot_status: snapshotStatus,
+    snapshot_max_spread_seconds: snapshotMaxSpreadSeconds,
+    consensus_method: consensusMethod,
+  }));
+}
+
+function buildValidatedMainMarketSnapshot({ bookmaker, market }) {
+  const bookKey = normalizeBookKey(bookmaker.key || bookmaker.title);
+  const timestampIso = String(market?.last_update || bookmaker?.last_update || '').trim();
+  const updateMs = Date.parse(timestampIso);
+  if (!bookKey || !Number.isFinite(updateMs)) {
+    return { valid: false, reason: 'missing_timestamp', bookKey, updateMs: null };
+  }
+  const keyedOutcomes = (market.outcomes || []).map((outcome) => ({
+    ...outcome,
+    key: outcomeKey(market.key, outcome),
+    price_num: parseNumber(outcome.price),
+  }));
+  if (keyedOutcomes.length !== 2) {
+    return { valid: false, reason: 'missing_counterpart', bookKey, updateMs };
+  }
+  if (keyedOutcomes.some((outcome) => !Number.isFinite(outcome.price_num))) {
+    return { valid: false, reason: 'unverified_odds', bookKey, updateMs };
+  }
+  const uniqueKeys = new Set(keyedOutcomes.map((outcome) => outcome.key));
+  if (uniqueKeys.size !== keyedOutcomes.length) {
+    return { valid: false, reason: 'duplicate_outcomes', bookKey, updateMs };
+  }
+  const fairProbMap = computeFairProbMap(keyedOutcomes.map((outcome) => ({
+    ...outcome,
+    price: outcome.price_num,
+  })));
+  if (fairProbMap.size !== 2) {
+    return { valid: false, reason: 'invalid_devig_pair', bookKey, updateMs };
+  }
+  return {
+    valid: true,
+    bookKey,
+    bookTitle: bookmaker.title || bookmaker.key || 'Unknown',
+    updateMs,
+    updateIso: timestampIso,
+    outcomesByKey: new Map(keyedOutcomes.map((outcome) => [outcome.key, {
+      fairProb: fairProbMap.get(outcome.key),
+      outcome,
+    }])),
+  };
+}
+
 function computePropConsensusMap(event, marketKey) {
   const grouped = new Map();
   for (const bookmaker of event.bookmakers || []) {
@@ -382,23 +580,155 @@ function computePropConsensusMap(event, marketKey) {
   return consensus;
 }
 
-function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, scanTimeCt, runId, bankrollSnapshot, ownedBooks }) {
-  const rows = [];
-  const fairProbMap = computeFairProbMap((market.outcomes || []).map((outcome) => ({
-    ...outcome,
-    key: outcomeKey(market.key, outcome),
-  })));
-  const freshMinutes = (() => {
-    const lastUpdate = Date.parse(String(market?.last_update || bookmaker?.last_update || event?.commence_time || ''));
-    return Number.isFinite(lastUpdate) ? round2((Date.now() - lastUpdate) / 60000) : null;
-  })();
+function buildConsensusContext({ event, marketKey, consensusBooks, pipeline }) {
+  const candidateSnapshots = new Map();
+  const consensusSnapshots = [];
+  for (const bookmaker of event.bookmakers || []) {
+    for (const market of bookmaker.markets || []) {
+      if (market.key !== marketKey) continue;
+      const snapshot = buildValidatedMainMarketSnapshot({ bookmaker, market });
+      const bookKey = snapshot.bookKey || normalizeBookKey(bookmaker.key || bookmaker.title);
+      candidateSnapshots.set(bookKey, snapshot);
+      if (snapshot.valid && consensusBooks.has(bookKey)) {
+        consensusSnapshots.push(snapshot);
+      }
+    }
+  }
+  if (!consensusSnapshots.length) {
+    return {
+      candidateSnapshots,
+      consensusByOutcome: new Map(),
+      maxSpreadSeconds: null,
+      syncedBookKeys: new Set(),
+      snapshotStatus: 'no_valid_consensus_books',
+    };
+  }
 
+  const freshestMs = Math.max(...consensusSnapshots.map((snapshot) => snapshot.updateMs));
+  const syncedSnapshots = consensusSnapshots.filter((snapshot) => (freshestMs - snapshot.updateMs) <= pipeline.snapshotWindowMs);
+  const syncedBookKeys = new Set(syncedSnapshots.map((snapshot) => snapshot.bookKey));
+  const minMs = Math.min(...syncedSnapshots.map((snapshot) => snapshot.updateMs));
+  const maxSpreadSeconds = round2((freshestMs - minMs) / 1000);
+  const grouped = new Map();
+
+  for (const snapshot of syncedSnapshots) {
+    for (const [key, entry] of snapshot.outcomesByKey.entries()) {
+      if (!grouped.has(key)) grouped.set(key, []);
+      grouped.get(key).push({
+        bookmaker: snapshot.bookKey,
+        fairProb: entry.fairProb,
+      });
+    }
+  }
+
+  const consensusByOutcome = new Map();
+  for (const [key, entries] of grouped.entries()) {
+    const stable = computeStableConsensus(entries.map((entry) => entry.fairProb), pipeline);
+    consensusByOutcome.set(key, {
+      consensusProb: stable.consensusProb,
+      medianProb: stable.medianProb,
+      sanityDeviationPct: stable.deviationPct,
+      sanityPass: stable.sane,
+      bookmakerCount: entries.length,
+      maxSpreadSeconds,
+    });
+  }
+
+  return {
+    candidateSnapshots,
+    consensusByOutcome,
+    maxSpreadSeconds,
+    syncedBookKeys,
+    snapshotStatus: 'valid',
+  };
+}
+
+function buildMarketRows({
+  sportKey,
+  event,
+  bookmaker,
+  market,
+  consensusContext,
+  pipeline,
+  scanTimeCt,
+  runId,
+  bankrollSnapshot,
+  ownedBooks,
+}) {
+  const bookKey = normalizeBookKey(bookmaker.key || bookmaker.title);
+  const snapshot = consensusContext.candidateSnapshots.get(bookKey);
+  if (!snapshot?.valid) {
+    return invalidSnapshotRows({
+      sportKey,
+      event,
+      bookmaker,
+      market,
+      scanTimeCt,
+      runId,
+      bankrollSnapshot,
+      ownedBooks,
+      snapshotStatus: `invalid_${snapshot?.reason || 'candidate_snapshot'}`,
+      snapshotMaxSpreadSeconds: consensusContext.maxSpreadSeconds,
+      consensusMethod: pipeline.consensusMethod,
+    });
+  }
+  if (!consensusContext.syncedBookKeys.has(bookKey)) {
+    return invalidSnapshotRows({
+      sportKey,
+      event,
+      bookmaker,
+      market,
+      scanTimeCt,
+      runId,
+      bankrollSnapshot,
+      ownedBooks,
+      snapshotStatus: 'desynchronized_snapshot',
+      snapshotMaxSpreadSeconds: consensusContext.maxSpreadSeconds,
+      consensusMethod: pipeline.consensusMethod,
+    });
+  }
+
+  const freshMinutes = round2((Date.now() - snapshot.updateMs) / 60000);
+  const rows = [];
   for (const outcome of market.outcomes || []) {
     const key = outcomeKey(market.key, outcome);
-    const candidateFair = asUnitProbability(fairProbMap.get(key));
-    const consensus = consensusMap.get(key);
-    const consensusFairProb = asUnitProbability(consensus?.avgFairProb);
-    if (!Number.isFinite(candidateFair) || !consensus || !Number.isFinite(consensusFairProb)) continue;
+    const candidateEntry = snapshot.outcomesByKey.get(key);
+    const consensus = consensusContext.consensusByOutcome.get(key);
+    if (!candidateEntry || !consensus || !Number.isFinite(consensus.consensusProb)) {
+      rows.push(...invalidSnapshotRows({
+        sportKey,
+        event,
+        bookmaker,
+        market,
+        scanTimeCt,
+        runId,
+        bankrollSnapshot,
+        ownedBooks,
+        snapshotStatus: 'missing_consensus_outcome',
+        snapshotMaxSpreadSeconds: consensusContext.maxSpreadSeconds,
+        consensusMethod: pipeline.consensusMethod,
+      }));
+      break;
+    }
+    if (!consensus.sanityPass) {
+      rows.push(...invalidSnapshotRows({
+        sportKey,
+        event,
+        bookmaker,
+        market,
+        scanTimeCt,
+        runId,
+        bankrollSnapshot,
+        ownedBooks,
+        snapshotStatus: 'consensus_sanity_rejected',
+        snapshotMaxSpreadSeconds: consensus.maxSpreadSeconds,
+        consensusMethod: pipeline.consensusMethod,
+      }));
+      break;
+    }
+
+    const candidateFair = asUnitProbability(candidateEntry.fairProb);
+    const consensusFairProb = asUnitProbability(consensus.consensusProb);
     const preConfTrueProb = Number(consensusFairProb.toFixed(4));
     const devigProb = Number(candidateFair.toFixed(4));
     const edgePct = round2((consensusFairProb - candidateFair) * 100);
@@ -417,25 +747,17 @@ function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, sca
         })
       : null;
     rows.push({
-      run_id: runId,
-      rec_id: `${runId}::${sportKey}::${slugify(event.id || buildEventLabel(event))}::${market.key}::${slugify(displaySelection(event, market.key, outcome))}::${slugify(bookmaker.title || bookmaker.key)}`,
-      timestamp_ct: scanTimeCt,
-      target_date: todayCtDateKey(),
-      market_family: 'main_market',
-      sport: SPORT_LABELS[sportKey] || sportKey.toUpperCase(),
-      league: SPORT_LABELS[sportKey] || sportKey.toUpperCase(),
-      event_id: event.id || null,
-      event_label: buildEventLabel(event),
-      event_home_team: event.home_team || null,
-      event_away_team: event.away_team || null,
-      market_type: marketTypeLabel(market.key),
-      selection: displaySelection(event, market.key, outcome),
-      sportsbook: bookmaker.title || bookmaker.key || 'Unknown',
-      owned_book: ownedBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
-      live_feed_book: true,
-      actionable_book: ownedBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
-      odds_american: String(outcome.price),
-      odds_decimal: round2(americanToDecimal(outcome.price)),
+      ...createBaseRow({
+        sportKey,
+        event,
+        bookmaker,
+        market,
+        outcome,
+        scanTimeCt,
+        runId,
+        bankrollSnapshot,
+        ownedBooks,
+      }),
       devig_implied_prob: devigProb,
       consensus_prob: Number(consensusFairProb.toFixed(4)),
       pre_conf_true_prob: preConfTrueProb,
@@ -446,27 +768,12 @@ function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, sca
       tier_threshold_pct: tier ? Number(tier.slice(1) === '1' ? 6 : tier.slice(1) === '2' ? 4 : 2) : 2,
       threshold_gap_pct: round2((tier ? Number(tier.slice(1) === '1' ? 6 : tier.slice(1) === '2' ? 4 : 2) : 2) - edgePct),
       price_edge_pass: Number.isFinite(edgePct) && edgePct >= 2,
-      executable_book: ownedBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
-      bet_permission_pass: false,
-      final_decision: 'SIT',
-      rejection_stage: '',
-      rejection_reason: '',
-      rejection_class: '',
-      surfaced_as_closest_miss: false,
-      close_capture_status: 'not_captured',
-      closing_odds_american: null,
-      closing_line: null,
-      bet_class: 'EDGE_BET',
-      bankroll_snapshot: bankrollSnapshot,
+      snapshot_status: 'valid',
+      snapshot_max_spread_seconds: consensus.maxSpreadSeconds,
+      consensus_method: pipeline.consensusMethod,
+      consensus_book_count: consensus.bookmakerCount,
+      consensus_median_prob: Number(consensus.medianProb.toFixed(4)),
       kelly_stake: kelly?.final_stake ?? 0,
-      include_in_core_strategy_metrics: true,
-      include_in_actual_bankroll: false,
-      analysis_meta: {
-        market_key: market.key,
-        bookmaker_key: bookmaker.key,
-        bookmaker_count: consensus.bookmakerCount,
-        latest_market_update: market.last_update || bookmaker.last_update || null,
-      },
     });
   }
   return rows;
@@ -560,6 +867,11 @@ function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, s
         close_capture_status: 'not_captured',
         closing_odds_american: null,
         closing_line: null,
+        snapshot_status: 'valid',
+        snapshot_max_spread_seconds: 0,
+        consensus_method: 'mean',
+        consensus_book_count: consensus.bookmakerCount,
+        consensus_median_prob: Number(consensusFairProb.toFixed(4)),
         bet_class: 'EDGE_BET',
         bankroll_snapshot: bankrollSnapshot,
         kelly_stake: kelly?.final_stake ?? 0,
@@ -582,6 +894,16 @@ function finalizeDecisions(rows) {
   const byTierCounts = { T1: 0, T2: 0, T3: 0 };
   const sorted = [...rows].sort(rankCandidates);
   for (const row of sorted) {
+    if (row.snapshot_status && row.snapshot_status !== 'valid') {
+      row.final_decision = 'SIT';
+      row.rejection_stage = 'integrity_gate';
+      row.rejection_reason = 'invalid_snapshot';
+      row.rejection_class = 'stale_or_unverified_odds';
+      row.bet_permission_pass = false;
+      row.include_in_actual_bankroll = false;
+      row.kelly_stake = 0;
+      continue;
+    }
     const edge = row.post_conf_edge_pct;
     const tier = deriveTier(edge);
     if (!tier) {
@@ -644,38 +966,6 @@ function finalizeDecisions(rows) {
     byTierCounts[tier] += 1;
   }
   return sorted;
-}
-
-function buildConsensusMap(event, marketKey) {
-  const grouped = new Map();
-  for (const bookmaker of event.bookmakers || []) {
-    for (const market of bookmaker.markets || []) {
-      if (market.key !== marketKey) continue;
-      const keyedOutcomes = (market.outcomes || []).map((outcome) => ({
-        ...outcome,
-        key: outcomeKey(market.key, outcome),
-      }));
-      const fairProbMap = computeFairProbMap(keyedOutcomes);
-      for (const outcome of keyedOutcomes) {
-        const fair = fairProbMap.get(outcome.key);
-        if (!Number.isFinite(fair)) continue;
-        if (!grouped.has(outcome.key)) grouped.set(outcome.key, []);
-        grouped.get(outcome.key).push({
-          bookmaker: bookmaker.key,
-          fairProb: fair,
-        });
-      }
-    }
-  }
-  const consensus = new Map();
-  for (const [key, entries] of grouped.entries()) {
-    const avgFairProb = entries.reduce((sum, entry) => sum + entry.fairProb, 0) / entries.length;
-    consensus.set(key, {
-      avgFairProb,
-      bookmakerCount: entries.length,
-    });
-  }
-  return consensus;
 }
 
 function summarizeRun({
@@ -851,11 +1141,13 @@ async function main() {
     ?? 0;
   const policy = loadScanCoveragePolicy();
   const ownedBooksSet = buildOwnedBookSet(policy);
+  const consensusBooksSet = buildConsensusBookSet(policy);
+  const probabilityPipeline = resolveProbabilityPipeline(policy);
   const propFeatureFlags = resolvePhase1NbaPointsProps(policy, args);
   const mlbFeatureFlags = resolvePhase1MlbMoneylines(policy, args);
   const targetDateKey = todayCtDateKey(runAt);
   const tierA = policy?.priority_tiers?.tier_a || {};
-  const books = [...new Set([...(tierA.default_books || []), ...(tierA.comparison_books || []), ...ownedBooksSet])];
+  const books = [...new Set([...(tierA.default_books || []), ...(tierA.comparison_books || []), ...ownedBooksSet, ...consensusBooksSet])];
   const markets = tierA.markets || ['h2h', 'spreads', 'totals'];
   const rows = [];
   const todaysEventsBySport = new Map();
@@ -890,7 +1182,12 @@ async function main() {
     todaysEventsBySport.set(sportKey, todaysEvents);
     for (const event of todaysEvents) {
       for (const marketKey of markets) {
-        const consensusMap = buildConsensusMap(event, marketKey);
+        const consensusContext = buildConsensusContext({
+          event,
+          marketKey,
+          consensusBooks: consensusBooksSet,
+          pipeline: probabilityPipeline,
+        });
         for (const bookmaker of event.bookmakers || []) {
           for (const market of bookmaker.markets || []) {
             if (market.key !== marketKey) continue;
@@ -899,7 +1196,8 @@ async function main() {
               event,
               bookmaker,
               market,
-              consensusMap,
+              consensusContext,
+              pipeline: probabilityPipeline,
               scanTimeCt,
               runId,
               bankrollSnapshot,
@@ -928,7 +1226,12 @@ async function main() {
 
     for (const event of todaysEvents) {
       for (const marketKey of mlbMarkets) {
-        const consensusMap = buildConsensusMap(event, marketKey);
+        const consensusContext = buildConsensusContext({
+          event,
+          marketKey,
+          consensusBooks: consensusBooksSet,
+          pipeline: probabilityPipeline,
+        });
         for (const bookmaker of event.bookmakers || []) {
           for (const market of bookmaker.markets || []) {
             if (market.key !== marketKey) continue;
@@ -937,7 +1240,8 @@ async function main() {
               event,
               bookmaker,
               market,
-              consensusMap,
+              consensusContext,
+              pipeline: probabilityPipeline,
               scanTimeCt,
               runId,
               bankrollSnapshot,

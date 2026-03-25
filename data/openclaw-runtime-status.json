@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-25T00:42:05.330Z",
+  "generated_at_utc": "2026-03-25T01:25:09.620Z",
   "jobs": {
     "morning_edge_hunt": {
       "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -1191,11 +1191,11 @@
     "status": "ok",
     "delivery_status": "repo_direct",
     "error": null,
-    "run_at_ms": 1774399316754,
-    "run_at_ct": "2026-03-24 19:41",
+    "run_at_ms": 1774401891015,
+    "run_at_ct": "2026-03-24 20:24",
     "date_key": "2026-03-24",
-    "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Orlando Magic ML @ 186 | FanDuel\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 36.8% | Implied Prob (de-vig): 33.0% | Edge: +3.81%\n  Kelly Stake: $8.00\n- [ ] Montréal Canadiens -1.5 @ 128 | FanDuel\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 44.9% | Implied Prob (de-vig): 41.2% | Edge: +3.73%\n  Kelly Stake: $5.00\n- [ ] Under 4.5 @ 168 | FanDuel\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 38.2% | Implied Prob (de-vig): 35.0% | Edge: +3.21%\n  Kelly Stake: $4.00\n- [ ] Wichita St Shockers ML @ 270 | DraftKings\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 27.6% | Implied Prob (de-vig): 25.5% | Edge: +2.09%\n  Kelly Stake: $2.00\n- [ ] Carolina Hurricanes ML @ 270 | BetMGM\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 27.8% | Implied Prob (de-vig): 25.8% | Edge: +2.03%\n  Kelly Stake: $3.00\n\nEXECUTABLE CLOSE MISSES:\n- New Orleans Pelicans ML @ 400 | BetMGM: +1.94% edge — no_edge\n- Ottawa Senators -2.5 @ 115 | BetMGM: +1.93% edge — no_edge\n- Tulsa Golden Hurricane ML @ -295 | FanDuel: +1.91% edge — no_edge\n- Wichita St Shockers +4.5 @ -102 | BetMGM: +1.9% edge — no_edge\n- Tulsa Golden Hurricane -4.5 @ -108 | FanDuel: +1.9% edge — no_edge\n- Washington Capitals ML @ -113 | FanDuel: +1.9% edge — no_edge\n\nVERDICT: 5 plays found | 149 sat out",
-    "raw_summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Orlando Magic ML @ 186 | FanDuel\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 36.8% | Implied Prob (de-vig): 33.0% | Edge: +3.81%\n  Kelly Stake: $8.00\n- [ ] Montréal Canadiens -1.5 @ 128 | FanDuel\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 44.9% | Implied Prob (de-vig): 41.2% | Edge: +3.73%\n  Kelly Stake: $5.00\n- [ ] Under 4.5 @ 168 | FanDuel\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 38.2% | Implied Prob (de-vig): 35.0% | Edge: +3.21%\n  Kelly Stake: $4.00\n- [ ] Wichita St Shockers ML @ 270 | DraftKings\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 27.6% | Implied Prob (de-vig): 25.5% | Edge: +2.09%\n  Kelly Stake: $2.00\n- [ ] Carolina Hurricanes ML @ 270 | BetMGM\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 27.8% | Implied Prob (de-vig): 25.8% | Edge: +2.03%\n  Kelly Stake: $3.00\n\nEXECUTABLE CLOSE MISSES:\n- New Orleans Pelicans ML @ 400 | BetMGM: +1.94% edge — no_edge\n- Ottawa Senators -2.5 @ 115 | BetMGM: +1.93% edge — no_edge\n- Tulsa Golden Hurricane ML @ -295 | FanDuel: +1.91% edge — no_edge\n- Wichita St Shockers +4.5 @ -102 | BetMGM: +1.9% edge — no_edge\n- Tulsa Golden Hurricane -4.5 @ -108 | FanDuel: +1.9% edge — no_edge\n- Washington Capitals ML @ -113 | FanDuel: +1.9% edge — no_edge\n\nVERDICT: 5 plays found | 149 sat out",
+    "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Toronto Maple Leafs -1.5 @ 175 | BetMGM\n  Timestamp (CT): 2026-03-24 20:24\n  True Prob: 37.1% | Implied Prob (de-vig): 34.1% | Edge: +2.97%\n  Kelly Stake: $3.50\n\nEXECUTABLE CLOSE MISSES:\n- Ottawa Senators -1.5 @ 195 | BetMGM: +1.7% edge — no_edge\n- Detroit Red Wings +1.5 @ -220 | DraftKings: +1.7% edge — no_edge\n- Montréal Canadiens -1.5 @ 135 | BetMGM: +1.63% edge — no_edge\n- Carolina Hurricanes +1.5 @ -154 | DraftKings: +1.63% edge — no_edge\n- Tampa Bay Lightning ML @ 210 | BetMGM: +1.55% edge — no_edge\n- Minnesota Wild ML @ -238 | DraftKings: +1.55% edge — no_edge\n\nVERDICT: 1 plays found | 153 sat out",
+    "raw_summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Toronto Maple Leafs -1.5 @ 175 | BetMGM\n  Timestamp (CT): 2026-03-24 20:24\n  True Prob: 37.1% | Implied Prob (de-vig): 34.1% | Edge: +2.97%\n  Kelly Stake: $3.50\n\nEXECUTABLE CLOSE MISSES:\n- Ottawa Senators -1.5 @ 195 | BetMGM: +1.7% edge — no_edge\n- Detroit Red Wings +1.5 @ -220 | DraftKings: +1.7% edge — no_edge\n- Montréal Canadiens -1.5 @ 135 | BetMGM: +1.63% edge — no_edge\n- Carolina Hurricanes +1.5 @ -154 | DraftKings: +1.63% edge — no_edge\n- Tampa Bay Lightning ML @ 210 | BetMGM: +1.55% edge — no_edge\n- Minnesota Wild ML @ -238 | DraftKings: +1.55% edge — no_edge\n\nVERDICT: 1 plays found | 153 sat out",
     "session_id": null,
     "session_file": null,
     "message_type": "BET",
@@ -1227,16 +1227,16 @@
   },
   "latest_canonical_hunt_run": {
     "schema": "tierededge_canonical_hunt_run_v1",
-    "run_id": "canonical-hunt::2026-03-24::rejection-schema-proof",
-    "generated_at_utc": "2026-03-25T00:41:56.754Z",
-    "run_at_ct": "2026-03-24 19:41",
+    "run_id": "canonical-hunt::2026-03-24::snapshot-integrity-proof",
+    "generated_at_utc": "2026-03-25T01:24:51.015Z",
+    "run_at_ct": "2026-03-24 20:24",
     "status": "ok",
     "message_type": "BET",
     "requires_state_sync": false,
     "has_actionable_bets": true,
     "native_rows_appended": 154,
-    "native_bets_appended": 5,
-    "native_sits_appended": 149,
+    "native_bets_appended": 1,
+    "native_sits_appended": 153,
     "invalidated": false,
     "plain_reason": "Canonical repo-owned hunt completed and appended native decision rows.",
     "prop_feature_flags": {
@@ -1311,36 +1311,32 @@
     "research_only_books": [
       "betrivers"
     ],
-    "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Orlando Magic ML @ 186 | FanDuel\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 36.8% | Implied Prob (de-vig): 33.0% | Edge: +3.81%\n  Kelly Stake: $8.00\n- [ ] Montréal Canadiens -1.5 @ 128 | FanDuel\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 44.9% | Implied Prob (de-vig): 41.2% | Edge: +3.73%\n  Kelly Stake: $5.00\n- [ ] Under 4.5 @ 168 | FanDuel\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 38.2% | Implied Prob (de-vig): 35.0% | Edge: +3.21%\n  Kelly Stake: $4.00\n- [ ] Wichita St Shockers ML @ 270 | DraftKings\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 27.6% | Implied Prob (de-vig): 25.5% | Edge: +2.09%\n  Kelly Stake: $2.00\n- [ ] Carolina Hurricanes ML @ 270 | BetMGM\n  Timestamp (CT): 2026-03-24 19:41\n  True Prob: 27.8% | Implied Prob (de-vig): 25.8% | Edge: +2.03%\n  Kelly Stake: $3.00\n\nEXECUTABLE CLOSE MISSES:\n- New Orleans Pelicans ML @ 400 | BetMGM: +1.94% edge — no_edge\n- Ottawa Senators -2.5 @ 115 | BetMGM: +1.93% edge — no_edge\n- Tulsa Golden Hurricane ML @ -295 | FanDuel: +1.91% edge — no_edge\n- Wichita St Shockers +4.5 @ -102 | BetMGM: +1.9% edge — no_edge\n- Tulsa Golden Hurricane -4.5 @ -108 | FanDuel: +1.9% edge — no_edge\n- Washington Capitals ML @ -113 | FanDuel: +1.9% edge — no_edge\n\nVERDICT: 5 plays found | 149 sat out",
+    "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Toronto Maple Leafs -1.5 @ 175 | BetMGM\n  Timestamp (CT): 2026-03-24 20:24\n  True Prob: 37.1% | Implied Prob (de-vig): 34.1% | Edge: +2.97%\n  Kelly Stake: $3.50\n\nEXECUTABLE CLOSE MISSES:\n- Ottawa Senators -1.5 @ 195 | BetMGM: +1.7% edge — no_edge\n- Detroit Red Wings +1.5 @ -220 | DraftKings: +1.7% edge — no_edge\n- Montréal Canadiens -1.5 @ 135 | BetMGM: +1.63% edge — no_edge\n- Carolina Hurricanes +1.5 @ -154 | DraftKings: +1.63% edge — no_edge\n- Tampa Bay Lightning ML @ 210 | BetMGM: +1.55% edge — no_edge\n- Minnesota Wild ML @ -238 | DraftKings: +1.55% edge — no_edge\n\nVERDICT: 1 plays found | 153 sat out",
     "rows": {
       "bet_rec_ids": [
-        "canonical-hunt::2026-03-24::rejection-schema-proof::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::h2h::orlando-magic-ml::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::spreads::montr-al-canadiens-1-5::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::8ac88260e7f6e514200daef093a10e95::totals::under-4-5::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::basketball_ncaab::5b8426555586aae5f7ed2a20c2262c86::h2h::wichita-st-shockers-ml::draftkings",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::h2h::carolina-hurricanes-ml::betmgm"
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::8ac88260e7f6e514200daef093a10e95::spreads::toronto-maple-leafs-1-5::betmgm"
       ],
       "sit_rec_ids": [
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::h2h::montr-al-canadiens-ml::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::spreads::detroit-red-wings-2-5::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::spreads::carolina-hurricanes-1-5::draftkings",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::c38fb7e74adb36818b56b38cad851d56::spreads::florida-panthers-1-5::betmgm",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::totals::under-7-5::draftkings",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::h2h::cleveland-cavaliers-ml::draftkings",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::totals::over-7-5::betmgm",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::3978c8cb74be58dbfd560b5a920c202e::spreads::philadelphia-flyers-1-5::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::totals::over-241-5::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::321c46ee4915d84877d9116089323e6c::totals::under-8-5::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::totals::under-241-5::betrivers",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::321c46ee4915d84877d9116089323e6c::totals::over-8-5::betmgm",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::321c46ee4915d84877d9116089323e6c::spreads::new-jersey-devils-1-5::betmgm",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::321c46ee4915d84877d9116089323e6c::spreads::dallas-stars-1-5::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::spreads::orlando-magic-4-5::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::spreads::cleveland-cavaliers-4-5::betmgm",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::basketball_nba::3ffbb865981907829bb58d7f86351ba0::h2h::new-orleans-pelicans-ml::betmgm",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::spreads::ottawa-senators-2-5::betmgm",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::basketball_ncaab::5b8426555586aae5f7ed2a20c2262c86::h2h::tulsa-golden-hurricane-ml::fanduel",
-        "canonical-hunt::2026-03-24::rejection-schema-proof::basketball_ncaab::5b8426555586aae5f7ed2a20c2262c86::spreads::wichita-st-shockers-4-5::betmgm"
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::8ac88260e7f6e514200daef093a10e95::spreads::boston-bruins-1-5::draftkings",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::3978c8cb74be58dbfd560b5a920c202e::spreads::philadelphia-flyers-2-5::draftkings",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::3978c8cb74be58dbfd560b5a920c202e::spreads::columbus-blue-jackets-2-5::betmgm",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::spreads::ottawa-senators-1-5::betmgm",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::spreads::detroit-red-wings-1-5::draftkings",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::totals::over-6-5::betrivers",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::spreads::montr-al-canadiens-1-5::betmgm",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::spreads::carolina-hurricanes-1-5::draftkings",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::c4562bec7d3dd2283876ab856c887765::h2h::tampa-bay-lightning-ml::betmgm",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::c4562bec7d3dd2283876ab856c887765::h2h::minnesota-wild-ml::draftkings",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::h2h::detroit-red-wings-ml::draftkings",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::d6742168b83a5f7b60921f4a77422d4d::h2h::ottawa-senators-ml::betmgm",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::utah-mammoth-1-5::betrivers",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::totals::under-6-5::draftkings",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::b51774fa8e39ee424d20cf28862fa8e6::totals::over-6-5::betmgm",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::351e519c57cfbc590c31ddf7456f12fe::spreads::nashville-predators-4-5::draftkings",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::351e519c57cfbc590c31ddf7456f12fe::spreads::san-jose-sharks-4-5::betmgm",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::totals::over-6-5::betrivers",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::058954c285fbfd3f7ecc651b36c4700b::spreads::winnipeg-jets-2-5::draftkings",
+        "canonical-hunt::2026-03-24::snapshot-integrity-proof::icehockey_nhl::058954c285fbfd3f7ecc651b36c4700b::spreads::vegas-golden-knights-2-5::betmgm"
       ],
       "research_only_rec_ids": []
     }
@@ -1422,7 +1418,7 @@
     },
     "passed_opportunity_grades": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-      "file_mtime_ct": "2026-03-24 18:43 CT"
+      "file_mtime_ct": "2026-03-24 19:42 CT"
     }
   },
   "state_sync": {

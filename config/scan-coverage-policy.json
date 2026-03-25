@@ -152,10 +152,26 @@
       "betmgm",
       "bet365"
     ],
+    "consensus_books": [
+      "draftkings",
+      "fanduel",
+      "betmgm",
+      "bet365",
+      "betrivers",
+      "caesars"
+    ],
     "comparison_books": [
       "betrivers",
       "caesars"
     ]
+  },
+  "probability_pipeline": {
+    "snapshot_window_seconds": 30,
+    "consensus_method": "trimmed_mean_with_median_guard",
+    "consensus_median_guard_pct": 5,
+    "require_two_sided_market": true,
+    "reject_partial_markets": true,
+    "fail_closed_on_invalid_snapshot": true
   },
   "grading_reuse_policy": {
     "scores_cache_minutes": 360,
