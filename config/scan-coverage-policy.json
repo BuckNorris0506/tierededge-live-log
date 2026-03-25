@@ -173,6 +173,13 @@
     "reject_partial_markets": true,
     "fail_closed_on_invalid_snapshot": true
   },
+  "risk_controls": {
+    "main_market_edge_anomaly_pct": 7,
+    "max_stake_pct_per_bet": 3,
+    "max_total_exposure_pct_per_run": 9,
+    "reject_started_events": true,
+    "minimum_minutes_to_start": 15
+  },
   "grading_reuse_policy": {
     "scores_cache_minutes": 360,
     "reuse_completed_scores": true

@@ -222,6 +222,17 @@ function resolveProbabilityPipeline(policy) {
   };
 }
 
+function resolveRiskControls(policy) {
+  const config = policy?.risk_controls || {};
+  return {
+    mainMarketEdgeAnomalyPct: parseNumber(config.main_market_edge_anomaly_pct) || 7,
+    maxStakePctPerBet: (parseNumber(config.max_stake_pct_per_bet) || 3) / 100,
+    maxTotalExposurePctPerRun: (parseNumber(config.max_total_exposure_pct_per_run) || 9) / 100,
+    rejectStartedEvents: config.reject_started_events !== false,
+    minimumMinutesToStart: parseNumber(config.minimum_minutes_to_start) || 15,
+  };
+}
+
 function median(values) {
   if (!values.length) return null;
   const sorted = [...values].sort((a, b) => a - b);
@@ -477,6 +488,7 @@ function invalidSnapshotRows({
   snapshotStatus,
   snapshotMaxSpreadSeconds = null,
   consensusMethod = null,
+  rejectionClass = 'invalid_snapshot',
 }) {
   return (market.outcomes || []).map((outcome) => ({
     ...createBaseRow({
@@ -492,7 +504,7 @@ function invalidSnapshotRows({
     }),
     rejection_stage: 'integrity_gate',
     rejection_reason: 'invalid_snapshot',
-    rejection_class: 'stale_or_unverified_odds',
+    rejection_class: rejectionClass,
     snapshot_status: snapshotStatus,
     snapshot_max_spread_seconds: snapshotMaxSpreadSeconds,
     consensus_method: consensusMethod,
@@ -670,6 +682,7 @@ function buildMarketRows({
       snapshotStatus: `invalid_${snapshot?.reason || 'candidate_snapshot'}`,
       snapshotMaxSpreadSeconds: consensusContext.maxSpreadSeconds,
       consensusMethod: pipeline.consensusMethod,
+      rejectionClass: snapshot?.reason === 'missing_counterpart' ? 'missing_two_sided_market' : 'invalid_snapshot',
     });
   }
   if (!consensusContext.syncedBookKeys.has(bookKey)) {
@@ -685,6 +698,7 @@ function buildMarketRows({
       snapshotStatus: 'desynchronized_snapshot',
       snapshotMaxSpreadSeconds: consensusContext.maxSpreadSeconds,
       consensusMethod: pipeline.consensusMethod,
+      rejectionClass: 'stale_market',
     });
   }
 
@@ -707,6 +721,7 @@ function buildMarketRows({
         snapshotStatus: 'missing_consensus_outcome',
         snapshotMaxSpreadSeconds: consensusContext.maxSpreadSeconds,
         consensusMethod: pipeline.consensusMethod,
+        rejectionClass: 'invalid_snapshot',
       }));
       break;
     }
@@ -723,6 +738,7 @@ function buildMarketRows({
         snapshotStatus: 'consensus_sanity_rejected',
         snapshotMaxSpreadSeconds: consensus.maxSpreadSeconds,
         consensusMethod: pipeline.consensusMethod,
+        rejectionClass: 'invalid_snapshot',
       }));
       break;
     }
@@ -774,6 +790,13 @@ function buildMarketRows({
       consensus_book_count: consensus.bookmakerCount,
       consensus_median_prob: Number(consensus.medianProb.toFixed(4)),
       kelly_stake: kelly?.final_stake ?? 0,
+      analysis_meta: {
+        market_key: market.key,
+        bookmaker_key: bookmaker.key,
+        bookmaker_count: consensus.bookmakerCount,
+        latest_market_update: snapshot.updateIso,
+        event_start_utc: event.commence_time || null,
+      },
     });
   }
   return rows;
@@ -882,6 +905,7 @@ function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, s
           bookmaker_key: bookmaker.key,
           bookmaker_count: consensus.bookmakerCount,
           latest_market_update: market.last_update || bookmaker.last_update || null,
+          event_start_utc: event.commence_time || null,
           prop_phase: 'phase1_nba_points_only',
         },
       });
@@ -890,8 +914,15 @@ function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, s
   return rows;
 }
 
-function finalizeDecisions(rows) {
+function minutesToStart(row) {
+  const startMs = Date.parse(String(row?.analysis_meta?.event_start_utc || ''));
+  if (!Number.isFinite(startMs)) return null;
+  return round2((startMs - Date.now()) / 60000);
+}
+
+function finalizeDecisions(rows, riskControls) {
   const byTierCounts = { T1: 0, T2: 0, T3: 0 };
+  let totalExposure = 0;
   const sorted = [...rows].sort(rankCandidates);
   for (const row of sorted) {
     if (row.snapshot_status && row.snapshot_status !== 'valid') {
@@ -904,7 +935,38 @@ function finalizeDecisions(rows) {
       row.kelly_stake = 0;
       continue;
     }
+    const minutesUntilStart = minutesToStart(row);
+    if (riskControls.rejectStartedEvents && minutesUntilStart !== null && minutesUntilStart <= 0) {
+      row.final_decision = 'SIT';
+      row.rejection_stage = 'integrity_gate';
+      row.rejection_reason = 'stale_market';
+      row.rejection_class = 'stale_market';
+      row.bet_permission_pass = false;
+      row.include_in_actual_bankroll = false;
+      row.kelly_stake = 0;
+      continue;
+    }
+    if (minutesUntilStart !== null && minutesUntilStart < riskControls.minimumMinutesToStart) {
+      row.final_decision = 'SIT';
+      row.rejection_stage = 'integrity_gate';
+      row.rejection_reason = 'stale_market';
+      row.rejection_class = 'stale_market';
+      row.bet_permission_pass = false;
+      row.include_in_actual_bankroll = false;
+      row.kelly_stake = 0;
+      continue;
+    }
     const edge = row.post_conf_edge_pct;
+    if (row.market_family === 'main_market' && Number.isFinite(edge) && edge > riskControls.mainMarketEdgeAnomalyPct) {
+      row.final_decision = 'SIT';
+      row.rejection_stage = 'integrity_gate';
+      row.rejection_reason = 'edge_anomaly';
+      row.rejection_class = 'edge_anomaly';
+      row.bet_permission_pass = false;
+      row.include_in_actual_bankroll = false;
+      row.kelly_stake = 0;
+      continue;
+    }
     const tier = deriveTier(edge);
     if (!tier) {
       row.final_decision = 'SIT';
@@ -915,6 +977,10 @@ function finalizeDecisions(rows) {
       row.include_in_actual_bankroll = false;
       row.kelly_stake = 0;
       continue;
+    }
+    const stakeCap = round2((parseNumber(row.bankroll_snapshot) || 0) * riskControls.maxStakePctPerBet);
+    if (stakeCap > 0) {
+      row.kelly_stake = round2(Math.min(parseNumber(row.kelly_stake) || 0, stakeCap));
     }
     if ((row.confidence_score ?? 0) < 0.6) {
       row.final_decision = 'SIT';
@@ -947,6 +1013,19 @@ function finalizeDecisions(rows) {
       row.kelly_stake = 0;
       continue;
     }
+    const bankroll = parseNumber(row.bankroll_snapshot) || 0;
+    const maxRunExposure = bankroll * riskControls.maxTotalExposurePctPerRun;
+    const proposedTotalExposure = totalExposure + (parseNumber(row.kelly_stake) || 0);
+    if (maxRunExposure > 0 && proposedTotalExposure > maxRunExposure + 0.001) {
+      row.final_decision = 'SIT';
+      row.rejection_stage = 'risk_gate';
+      row.rejection_reason = 'exposure_cap_reached';
+      row.rejection_class = 'risk_gate_rejected';
+      row.bet_permission_pass = false;
+      row.include_in_actual_bankroll = false;
+      row.kelly_stake = 0;
+      continue;
+    }
     if (!row.actionable_book) {
       row.final_decision = 'SIT';
       row.rejection_stage = 'risk_gate';
@@ -964,6 +1043,7 @@ function finalizeDecisions(rows) {
     row.bet_permission_pass = true;
     row.include_in_actual_bankroll = true;
     byTierCounts[tier] += 1;
+    totalExposure += parseNumber(row.kelly_stake) || 0;
   }
   return sorted;
 }
@@ -1143,6 +1223,7 @@ async function main() {
   const ownedBooksSet = buildOwnedBookSet(policy);
   const consensusBooksSet = buildConsensusBookSet(policy);
   const probabilityPipeline = resolveProbabilityPipeline(policy);
+  const riskControls = resolveRiskControls(policy);
   const propFeatureFlags = resolvePhase1NbaPointsProps(policy, args);
   const mlbFeatureFlags = resolvePhase1MlbMoneylines(policy, args);
   const targetDateKey = todayCtDateKey(runAt);
@@ -1298,7 +1379,7 @@ async function main() {
     }
   }
 
-  const finalizedRows = finalizeDecisions([...bestByOutcome.values()]);
+  const finalizedRows = finalizeDecisions([...bestByOutcome.values()], riskControls);
   markSurfacedRejectedRows(finalizedRows);
   const propRows = finalizedRows.filter((row) => row.market_family === 'player_prop');
   const mlbRows = finalizedRows.filter((row) => row.sport === 'MLB' && row.market_family === 'main_market');
