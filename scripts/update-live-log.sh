@@ -50,6 +50,17 @@ if ! node scripts/validate-ledger-invariants.mjs --require-output-match; then
   echo "WARN: ledger validator failed postbuild; published state remains blocked."
 fi
 
+NOTIFICATION_JSON="$(mktemp)"
+node scripts/evaluate-action-notifications.mjs --json > "$NOTIFICATION_JSON"
+NOTIFICATION_STATUS="$(node -e "const fs=require('fs'); const payload=JSON.parse(fs.readFileSync(process.argv[1],'utf8')); process.stdout.write(String(payload.status || 'no_alert'));" "$NOTIFICATION_JSON")"
+if [[ "$NOTIFICATION_STATUS" != "no_alert" ]]; then
+  node scripts/build-canonical-state.mjs
+  node scripts/build-live-log.mjs
+  node scripts/build-standalone.mjs
+  rsync -a "$ROOT_DIR/public/" "$ROOT_DIR/"
+fi
+rm -f "$NOTIFICATION_JSON"
+
 assert_source_state_unchanged
 
 echo "Live log data rebuilt (including standalone page)."

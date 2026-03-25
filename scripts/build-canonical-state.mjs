@@ -866,12 +866,21 @@ function buildNotificationSummary(notificationEvents) {
   );
   const sent = sorted.filter((row) => String(row.status || '').trim().toLowerCase() === 'sent');
   const latestSent = sent[0] || null;
+  const countBy = (key) => sorted.reduce((acc, row) => {
+    const bucket = String(row?.[key] || 'unknown').trim() || 'unknown';
+    acc[bucket] = (acc[bucket] || 0) + 1;
+    return acc;
+  }, {});
   return {
     last_notification_time_utc: latestSent?.created_at_utc || null,
     notification_type: latestSent?.notification_type || null,
+    notification_tier: latestSent?.notification_tier || null,
     triggering_reason: latestSent?.triggering_reason || null,
+    channel_used: latestSent?.channel_used || null,
     last_notification_status: sorted[0]?.status || 'not_run',
     sent_count: sent.length,
+    status_distribution: countBy('status'),
+    channel_distribution: countBy('channel_used'),
     recent_events: sorted.slice(0, 10),
   };
 }

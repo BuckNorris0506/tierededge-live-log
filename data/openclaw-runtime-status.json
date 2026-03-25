@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-25T03:34:57.210Z",
+  "generated_at_utc": "2026-03-25T19:27:30.173Z",
   "jobs": {
     "morning_edge_hunt": {
       "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -13,55 +13,55 @@
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1774350121658,
-        "run_at_ct": "2026-03-24 06:02 CT",
-        "date_key": "2026-03-24",
-        "summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
-        "raw_summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
-        "session_id": "7fbfd4b1-8ff5-4c14-84dc-8a3370537276",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/7fbfd4b1-8ff5-4c14-84dc-8a3370537276.jsonl",
-        "message_type": "UNKNOWN",
+        "run_at_ms": 1774436400015,
+        "run_at_ct": "2026-03-25 06:00 CT",
+        "date_key": "2026-03-25",
+        "summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Portland Trail Blazers -12.5 @ -105 | BetMGM: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Milwaukee Bucks +12.5 @ -108 | FanDuel: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Indiana Pacers ML @ 425 | BetMGM: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Los Angeles Lakers ML @ -510 | FanDuel: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Minnesota Timberwolves ML @ 106 | FanDuel: +0.55% edge — no_edge | LATER | starts in 879.61 min\n- Houston Rockets ML @ -120 | BetMGM: +0.55% edge — no_edge | LATER | starts in 879.61 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+        "raw_summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Portland Trail Blazers -12.5 @ -105 | BetMGM: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Milwaukee Bucks +12.5 @ -108 | FanDuel: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Indiana Pacers ML @ 425 | BetMGM: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Los Angeles Lakers ML @ -510 | FanDuel: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Minnesota Timberwolves ML @ 106 | FanDuel: +0.55% edge — no_edge | LATER | starts in 879.61 min\n- Houston Rockets ML @ -120 | BetMGM: +0.55% edge — no_edge | LATER | starts in 879.61 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+        "session_id": "9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9.jsonl",
+        "message_type": "SIT",
         "has_actionable_bets": false,
         "requires_state_sync": false,
         "data_failure_codes": [],
-        "data_status": "unknown",
-        "plain_reason": "The latest scheduled scan could not be classified reliably."
+        "data_status": "verified",
+        "plain_reason": "The latest scheduled scan found no qualifying edges."
       },
       "latest_finished": {
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1774350121658,
-        "run_at_ct": "2026-03-24 06:02 CT",
-        "date_key": "2026-03-24",
-        "summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
-        "raw_summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
-        "session_id": "7fbfd4b1-8ff5-4c14-84dc-8a3370537276",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/7fbfd4b1-8ff5-4c14-84dc-8a3370537276.jsonl",
-        "message_type": "UNKNOWN",
+        "run_at_ms": 1774436400015,
+        "run_at_ct": "2026-03-25 06:00 CT",
+        "date_key": "2026-03-25",
+        "summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Portland Trail Blazers -12.5 @ -105 | BetMGM: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Milwaukee Bucks +12.5 @ -108 | FanDuel: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Indiana Pacers ML @ 425 | BetMGM: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Los Angeles Lakers ML @ -510 | FanDuel: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Minnesota Timberwolves ML @ 106 | FanDuel: +0.55% edge — no_edge | LATER | starts in 879.61 min\n- Houston Rockets ML @ -120 | BetMGM: +0.55% edge — no_edge | LATER | starts in 879.61 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+        "raw_summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Portland Trail Blazers -12.5 @ -105 | BetMGM: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Milwaukee Bucks +12.5 @ -108 | FanDuel: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Indiana Pacers ML @ 425 | BetMGM: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Los Angeles Lakers ML @ -510 | FanDuel: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Minnesota Timberwolves ML @ 106 | FanDuel: +0.55% edge — no_edge | LATER | starts in 879.61 min\n- Houston Rockets ML @ -120 | BetMGM: +0.55% edge — no_edge | LATER | starts in 879.61 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+        "session_id": "9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9.jsonl",
+        "message_type": "SIT",
         "has_actionable_bets": false,
         "requires_state_sync": false,
         "data_failure_codes": [],
-        "data_status": "unknown",
-        "plain_reason": "The latest scheduled scan could not be classified reliably."
+        "data_status": "verified",
+        "plain_reason": "The latest scheduled scan found no qualifying edges."
       },
       "latest_successful": {
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1774350121658,
-        "run_at_ct": "2026-03-24 06:02 CT",
-        "date_key": "2026-03-24",
-        "summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
-        "raw_summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
-        "session_id": "7fbfd4b1-8ff5-4c14-84dc-8a3370537276",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/7fbfd4b1-8ff5-4c14-84dc-8a3370537276.jsonl",
-        "message_type": "UNKNOWN",
+        "run_at_ms": 1774436400015,
+        "run_at_ct": "2026-03-25 06:00 CT",
+        "date_key": "2026-03-25",
+        "summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Portland Trail Blazers -12.5 @ -105 | BetMGM: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Milwaukee Bucks +12.5 @ -108 | FanDuel: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Indiana Pacers ML @ 425 | BetMGM: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Los Angeles Lakers ML @ -510 | FanDuel: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Minnesota Timberwolves ML @ 106 | FanDuel: +0.55% edge — no_edge | LATER | starts in 879.61 min\n- Houston Rockets ML @ -120 | BetMGM: +0.55% edge — no_edge | LATER | starts in 879.61 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+        "raw_summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Portland Trail Blazers -12.5 @ -105 | BetMGM: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Milwaukee Bucks +12.5 @ -108 | FanDuel: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Indiana Pacers ML @ 425 | BetMGM: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Los Angeles Lakers ML @ -510 | FanDuel: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Minnesota Timberwolves ML @ 106 | FanDuel: +0.55% edge — no_edge | LATER | starts in 879.61 min\n- Houston Rockets ML @ -120 | BetMGM: +0.55% edge — no_edge | LATER | starts in 879.61 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+        "session_id": "9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9.jsonl",
+        "message_type": "SIT",
         "has_actionable_bets": false,
         "requires_state_sync": false,
         "data_failure_codes": [],
-        "data_status": "unknown",
-        "plain_reason": "The latest scheduled scan could not be classified reliably."
+        "data_status": "verified",
+        "plain_reason": "The latest scheduled scan found no qualifying edges."
       },
       "successful_runs": [
         {
@@ -659,13 +659,31 @@
           "summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
           "raw_summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
           "session_id": "7fbfd4b1-8ff5-4c14-84dc-8a3370537276",
-          "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/7fbfd4b1-8ff5-4c14-84dc-8a3370537276.jsonl",
+          "session_file": null,
           "message_type": "UNKNOWN",
           "has_actionable_bets": false,
           "requires_state_sync": false,
           "data_failure_codes": [],
           "data_status": "unknown",
           "plain_reason": "The latest scheduled scan could not be classified reliably."
+        },
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1774436400015,
+          "run_at_ct": "2026-03-25 06:00 CT",
+          "date_key": "2026-03-25",
+          "summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Portland Trail Blazers -12.5 @ -105 | BetMGM: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Milwaukee Bucks +12.5 @ -108 | FanDuel: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Indiana Pacers ML @ 425 | BetMGM: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Los Angeles Lakers ML @ -510 | FanDuel: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Minnesota Timberwolves ML @ 106 | FanDuel: +0.55% edge — no_edge | LATER | starts in 879.61 min\n- Houston Rockets ML @ -120 | BetMGM: +0.55% edge — no_edge | LATER | starts in 879.61 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+          "raw_summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Portland Trail Blazers -12.5 @ -105 | BetMGM: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Milwaukee Bucks +12.5 @ -108 | FanDuel: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Indiana Pacers ML @ 425 | BetMGM: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Los Angeles Lakers ML @ -510 | FanDuel: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Minnesota Timberwolves ML @ 106 | FanDuel: +0.55% edge — no_edge | LATER | starts in 879.61 min\n- Houston Rockets ML @ -120 | BetMGM: +0.55% edge — no_edge | LATER | starts in 879.61 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+          "session_id": "9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9",
+          "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9.jsonl",
+          "message_type": "SIT",
+          "has_actionable_bets": false,
+          "requires_state_sync": false,
+          "data_failure_codes": [],
+          "data_status": "verified",
+          "plain_reason": "The latest scheduled scan found no qualifying edges."
         }
       ]
     },
@@ -681,13 +699,13 @@
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1774324800017,
-        "run_at_ct": "2026-03-23 23:00 CT",
-        "date_key": "2026-03-23",
-        "summary": "Based on the available data, here's the evening grading summary:\n\n---\n\n**EVENING GRADING — Monday, March 23, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- No pending bets found awaiting results.\n\n**Last Graded Activity:**\n- March 20, 2026 (Friday) — 2 bets graded\n  - FUN_SGP Parlay (Kentucky/Tennessee/Texas Tech): WIN (+$79.87)\n  - Texas Tech -7.5 Boosted: WIN (+$15.90)\n\n**Current Bankroll:** $1,399.05  \n**All-Time High:** $1,399.05  \n**Circuit Breaker:** OFF\n\n---\n\n**Note:** Native ledger files (execution-log.jsonl, grading-ledger.jsonl) are currently locked/resource deadlocked. The grading summary above is based on memory/betting-state.md which shows no pending bets since March 20. If there are any unsettled bets from March 21-23 that were placed via screenshot but not yet synced to the state file, they would need to be processed once file access is restored.\n\nNo grading actions required at this time.",
-        "raw_summary": "Based on the available data, here's the evening grading summary:\n\n---\n\n**EVENING GRADING — Monday, March 23, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- No pending bets found awaiting results.\n\n**Last Graded Activity:**\n- March 20, 2026 (Friday) — 2 bets graded\n  - FUN_SGP Parlay (Kentucky/Tennessee/Texas Tech): WIN (+$79.87)\n  - Texas Tech -7.5 Boosted: WIN (+$15.90)\n\n**Current Bankroll:** $1,399.05  \n**All-Time High:** $1,399.05  \n**Circuit Breaker:** OFF\n\n---\n\n**Note:** Native ledger files (execution-log.jsonl, grading-ledger.jsonl) are currently locked/resource deadlocked. The grading summary above is based on memory/betting-state.md which shows no pending bets since March 20. If there are any unsettled bets from March 21-23 that were placed via screenshot but not yet synced to the state file, they would need to be processed once file access is restored.\n\nNo grading actions required at this time.",
-        "session_id": "00abe2b6-46be-4f96-8f65-e2afe708d2f2",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/00abe2b6-46be-4f96-8f65-e2afe708d2f2.jsonl",
+        "run_at_ms": 1774411200010,
+        "run_at_ct": "2026-03-24 23:00 CT",
+        "date_key": "2026-03-24",
+        "summary": "Based on my review of the native ledgers, here is the evening grading summary:\n\n---\n\n**EVENING GRADING — March 24, 2026**\n\n**Pending Bets Scanned:** 0  \n**Bets Graded Tonight:** 0  \n**Bankroll:** $1,396.30 (reconciled from native ledger)\n\n---\n\n**All Bets Currently Graded:**\n\n| Date | Selection | Stake | Result | P/L |\n|------|-----------|-------|--------|-----|\n| Mar 17 | MIN Wild ML @ CHI | $10.00 | WIN | +$5.40 |\n| Mar 17 | BOS Bruins ML @ MTL | $20.50 | LOSS | -$20.50 |\n| Mar 17 | VGK Golden Knights ML | $10.50 | LOSS | -$10.50 |\n| Mar 20 | Texas Tech -7.5 (boost) | $10.00 | WIN | +$15.90 |\n| Mar 20 | NCAAB Parlay (3-leg) | $13.03 | WIN | +$79.87 |\n\n**Status:** No pending bets awaiting results. All executed bets have been graded and reconciled to the bankroll ledger.\n\n**Next Action:** None — awaiting new recommendations from tomorrow's edge hunt.",
+        "raw_summary": "Based on my review of the native ledgers, here is the evening grading summary:\n\n---\n\n**EVENING GRADING — March 24, 2026**\n\n**Pending Bets Scanned:** 0  \n**Bets Graded Tonight:** 0  \n**Bankroll:** $1,396.30 (reconciled from native ledger)\n\n---\n\n**All Bets Currently Graded:**\n\n| Date | Selection | Stake | Result | P/L |\n|------|-----------|-------|--------|-----|\n| Mar 17 | MIN Wild ML @ CHI | $10.00 | WIN | +$5.40 |\n| Mar 17 | BOS Bruins ML @ MTL | $20.50 | LOSS | -$20.50 |\n| Mar 17 | VGK Golden Knights ML | $10.50 | LOSS | -$10.50 |\n| Mar 20 | Texas Tech -7.5 (boost) | $10.00 | WIN | +$15.90 |\n| Mar 20 | NCAAB Parlay (3-leg) | $13.03 | WIN | +$79.87 |\n\n**Status:** No pending bets awaiting results. All executed bets have been graded and reconciled to the bankroll ledger.\n\n**Next Action:** None — awaiting new recommendations from tomorrow's edge hunt.",
+        "session_id": "c1da54d7-4c8d-4e6d-b53c-ff7caf70483b",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/c1da54d7-4c8d-4e6d-b53c-ff7caf70483b.jsonl",
         "requires_state_sync": false,
         "native_append_failed": false,
         "plain_reason": "Latest grading run reported no state changes."
@@ -696,13 +714,13 @@
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1774324800017,
-        "run_at_ct": "2026-03-23 23:00 CT",
-        "date_key": "2026-03-23",
-        "summary": "Based on the available data, here's the evening grading summary:\n\n---\n\n**EVENING GRADING — Monday, March 23, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- No pending bets found awaiting results.\n\n**Last Graded Activity:**\n- March 20, 2026 (Friday) — 2 bets graded\n  - FUN_SGP Parlay (Kentucky/Tennessee/Texas Tech): WIN (+$79.87)\n  - Texas Tech -7.5 Boosted: WIN (+$15.90)\n\n**Current Bankroll:** $1,399.05  \n**All-Time High:** $1,399.05  \n**Circuit Breaker:** OFF\n\n---\n\n**Note:** Native ledger files (execution-log.jsonl, grading-ledger.jsonl) are currently locked/resource deadlocked. The grading summary above is based on memory/betting-state.md which shows no pending bets since March 20. If there are any unsettled bets from March 21-23 that were placed via screenshot but not yet synced to the state file, they would need to be processed once file access is restored.\n\nNo grading actions required at this time.",
-        "raw_summary": "Based on the available data, here's the evening grading summary:\n\n---\n\n**EVENING GRADING — Monday, March 23, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- No pending bets found awaiting results.\n\n**Last Graded Activity:**\n- March 20, 2026 (Friday) — 2 bets graded\n  - FUN_SGP Parlay (Kentucky/Tennessee/Texas Tech): WIN (+$79.87)\n  - Texas Tech -7.5 Boosted: WIN (+$15.90)\n\n**Current Bankroll:** $1,399.05  \n**All-Time High:** $1,399.05  \n**Circuit Breaker:** OFF\n\n---\n\n**Note:** Native ledger files (execution-log.jsonl, grading-ledger.jsonl) are currently locked/resource deadlocked. The grading summary above is based on memory/betting-state.md which shows no pending bets since March 20. If there are any unsettled bets from March 21-23 that were placed via screenshot but not yet synced to the state file, they would need to be processed once file access is restored.\n\nNo grading actions required at this time.",
-        "session_id": "00abe2b6-46be-4f96-8f65-e2afe708d2f2",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/00abe2b6-46be-4f96-8f65-e2afe708d2f2.jsonl",
+        "run_at_ms": 1774411200010,
+        "run_at_ct": "2026-03-24 23:00 CT",
+        "date_key": "2026-03-24",
+        "summary": "Based on my review of the native ledgers, here is the evening grading summary:\n\n---\n\n**EVENING GRADING — March 24, 2026**\n\n**Pending Bets Scanned:** 0  \n**Bets Graded Tonight:** 0  \n**Bankroll:** $1,396.30 (reconciled from native ledger)\n\n---\n\n**All Bets Currently Graded:**\n\n| Date | Selection | Stake | Result | P/L |\n|------|-----------|-------|--------|-----|\n| Mar 17 | MIN Wild ML @ CHI | $10.00 | WIN | +$5.40 |\n| Mar 17 | BOS Bruins ML @ MTL | $20.50 | LOSS | -$20.50 |\n| Mar 17 | VGK Golden Knights ML | $10.50 | LOSS | -$10.50 |\n| Mar 20 | Texas Tech -7.5 (boost) | $10.00 | WIN | +$15.90 |\n| Mar 20 | NCAAB Parlay (3-leg) | $13.03 | WIN | +$79.87 |\n\n**Status:** No pending bets awaiting results. All executed bets have been graded and reconciled to the bankroll ledger.\n\n**Next Action:** None — awaiting new recommendations from tomorrow's edge hunt.",
+        "raw_summary": "Based on my review of the native ledgers, here is the evening grading summary:\n\n---\n\n**EVENING GRADING — March 24, 2026**\n\n**Pending Bets Scanned:** 0  \n**Bets Graded Tonight:** 0  \n**Bankroll:** $1,396.30 (reconciled from native ledger)\n\n---\n\n**All Bets Currently Graded:**\n\n| Date | Selection | Stake | Result | P/L |\n|------|-----------|-------|--------|-----|\n| Mar 17 | MIN Wild ML @ CHI | $10.00 | WIN | +$5.40 |\n| Mar 17 | BOS Bruins ML @ MTL | $20.50 | LOSS | -$20.50 |\n| Mar 17 | VGK Golden Knights ML | $10.50 | LOSS | -$10.50 |\n| Mar 20 | Texas Tech -7.5 (boost) | $10.00 | WIN | +$15.90 |\n| Mar 20 | NCAAB Parlay (3-leg) | $13.03 | WIN | +$79.87 |\n\n**Status:** No pending bets awaiting results. All executed bets have been graded and reconciled to the bankroll ledger.\n\n**Next Action:** None — awaiting new recommendations from tomorrow's edge hunt.",
+        "session_id": "c1da54d7-4c8d-4e6d-b53c-ff7caf70483b",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/c1da54d7-4c8d-4e6d-b53c-ff7caf70483b.jsonl",
         "requires_state_sync": false,
         "native_append_failed": false,
         "plain_reason": "Latest grading run reported no state changes."
@@ -711,13 +729,13 @@
         "status": "ok",
         "delivery_status": "delivered",
         "error": null,
-        "run_at_ms": 1774324800017,
-        "run_at_ct": "2026-03-23 23:00 CT",
-        "date_key": "2026-03-23",
-        "summary": "Based on the available data, here's the evening grading summary:\n\n---\n\n**EVENING GRADING — Monday, March 23, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- No pending bets found awaiting results.\n\n**Last Graded Activity:**\n- March 20, 2026 (Friday) — 2 bets graded\n  - FUN_SGP Parlay (Kentucky/Tennessee/Texas Tech): WIN (+$79.87)\n  - Texas Tech -7.5 Boosted: WIN (+$15.90)\n\n**Current Bankroll:** $1,399.05  \n**All-Time High:** $1,399.05  \n**Circuit Breaker:** OFF\n\n---\n\n**Note:** Native ledger files (execution-log.jsonl, grading-ledger.jsonl) are currently locked/resource deadlocked. The grading summary above is based on memory/betting-state.md which shows no pending bets since March 20. If there are any unsettled bets from March 21-23 that were placed via screenshot but not yet synced to the state file, they would need to be processed once file access is restored.\n\nNo grading actions required at this time.",
-        "raw_summary": "Based on the available data, here's the evening grading summary:\n\n---\n\n**EVENING GRADING — Monday, March 23, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- No pending bets found awaiting results.\n\n**Last Graded Activity:**\n- March 20, 2026 (Friday) — 2 bets graded\n  - FUN_SGP Parlay (Kentucky/Tennessee/Texas Tech): WIN (+$79.87)\n  - Texas Tech -7.5 Boosted: WIN (+$15.90)\n\n**Current Bankroll:** $1,399.05  \n**All-Time High:** $1,399.05  \n**Circuit Breaker:** OFF\n\n---\n\n**Note:** Native ledger files (execution-log.jsonl, grading-ledger.jsonl) are currently locked/resource deadlocked. The grading summary above is based on memory/betting-state.md which shows no pending bets since March 20. If there are any unsettled bets from March 21-23 that were placed via screenshot but not yet synced to the state file, they would need to be processed once file access is restored.\n\nNo grading actions required at this time.",
-        "session_id": "00abe2b6-46be-4f96-8f65-e2afe708d2f2",
-        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/00abe2b6-46be-4f96-8f65-e2afe708d2f2.jsonl",
+        "run_at_ms": 1774411200010,
+        "run_at_ct": "2026-03-24 23:00 CT",
+        "date_key": "2026-03-24",
+        "summary": "Based on my review of the native ledgers, here is the evening grading summary:\n\n---\n\n**EVENING GRADING — March 24, 2026**\n\n**Pending Bets Scanned:** 0  \n**Bets Graded Tonight:** 0  \n**Bankroll:** $1,396.30 (reconciled from native ledger)\n\n---\n\n**All Bets Currently Graded:**\n\n| Date | Selection | Stake | Result | P/L |\n|------|-----------|-------|--------|-----|\n| Mar 17 | MIN Wild ML @ CHI | $10.00 | WIN | +$5.40 |\n| Mar 17 | BOS Bruins ML @ MTL | $20.50 | LOSS | -$20.50 |\n| Mar 17 | VGK Golden Knights ML | $10.50 | LOSS | -$10.50 |\n| Mar 20 | Texas Tech -7.5 (boost) | $10.00 | WIN | +$15.90 |\n| Mar 20 | NCAAB Parlay (3-leg) | $13.03 | WIN | +$79.87 |\n\n**Status:** No pending bets awaiting results. All executed bets have been graded and reconciled to the bankroll ledger.\n\n**Next Action:** None — awaiting new recommendations from tomorrow's edge hunt.",
+        "raw_summary": "Based on my review of the native ledgers, here is the evening grading summary:\n\n---\n\n**EVENING GRADING — March 24, 2026**\n\n**Pending Bets Scanned:** 0  \n**Bets Graded Tonight:** 0  \n**Bankroll:** $1,396.30 (reconciled from native ledger)\n\n---\n\n**All Bets Currently Graded:**\n\n| Date | Selection | Stake | Result | P/L |\n|------|-----------|-------|--------|-----|\n| Mar 17 | MIN Wild ML @ CHI | $10.00 | WIN | +$5.40 |\n| Mar 17 | BOS Bruins ML @ MTL | $20.50 | LOSS | -$20.50 |\n| Mar 17 | VGK Golden Knights ML | $10.50 | LOSS | -$10.50 |\n| Mar 20 | Texas Tech -7.5 (boost) | $10.00 | WIN | +$15.90 |\n| Mar 20 | NCAAB Parlay (3-leg) | $13.03 | WIN | +$79.87 |\n\n**Status:** No pending bets awaiting results. All executed bets have been graded and reconciled to the bankroll ledger.\n\n**Next Action:** None — awaiting new recommendations from tomorrow's edge hunt.",
+        "session_id": "c1da54d7-4c8d-4e6d-b53c-ff7caf70483b",
+        "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/c1da54d7-4c8d-4e6d-b53c-ff7caf70483b.jsonl",
         "requires_state_sync": false,
         "native_append_failed": false,
         "plain_reason": "Latest grading run reported no state changes."
@@ -958,7 +976,22 @@
           "summary": "Based on the available data, here's the evening grading summary:\n\n---\n\n**EVENING GRADING — Monday, March 23, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- No pending bets found awaiting results.\n\n**Last Graded Activity:**\n- March 20, 2026 (Friday) — 2 bets graded\n  - FUN_SGP Parlay (Kentucky/Tennessee/Texas Tech): WIN (+$79.87)\n  - Texas Tech -7.5 Boosted: WIN (+$15.90)\n\n**Current Bankroll:** $1,399.05  \n**All-Time High:** $1,399.05  \n**Circuit Breaker:** OFF\n\n---\n\n**Note:** Native ledger files (execution-log.jsonl, grading-ledger.jsonl) are currently locked/resource deadlocked. The grading summary above is based on memory/betting-state.md which shows no pending bets since March 20. If there are any unsettled bets from March 21-23 that were placed via screenshot but not yet synced to the state file, they would need to be processed once file access is restored.\n\nNo grading actions required at this time.",
           "raw_summary": "Based on the available data, here's the evening grading summary:\n\n---\n\n**EVENING GRADING — Monday, March 23, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- No pending bets found awaiting results.\n\n**Last Graded Activity:**\n- March 20, 2026 (Friday) — 2 bets graded\n  - FUN_SGP Parlay (Kentucky/Tennessee/Texas Tech): WIN (+$79.87)\n  - Texas Tech -7.5 Boosted: WIN (+$15.90)\n\n**Current Bankroll:** $1,399.05  \n**All-Time High:** $1,399.05  \n**Circuit Breaker:** OFF\n\n---\n\n**Note:** Native ledger files (execution-log.jsonl, grading-ledger.jsonl) are currently locked/resource deadlocked. The grading summary above is based on memory/betting-state.md which shows no pending bets since March 20. If there are any unsettled bets from March 21-23 that were placed via screenshot but not yet synced to the state file, they would need to be processed once file access is restored.\n\nNo grading actions required at this time.",
           "session_id": "00abe2b6-46be-4f96-8f65-e2afe708d2f2",
-          "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/00abe2b6-46be-4f96-8f65-e2afe708d2f2.jsonl",
+          "session_file": null,
+          "requires_state_sync": false,
+          "native_append_failed": false,
+          "plain_reason": "Latest grading run reported no state changes."
+        },
+        {
+          "status": "ok",
+          "delivery_status": "delivered",
+          "error": null,
+          "run_at_ms": 1774411200010,
+          "run_at_ct": "2026-03-24 23:00 CT",
+          "date_key": "2026-03-24",
+          "summary": "Based on my review of the native ledgers, here is the evening grading summary:\n\n---\n\n**EVENING GRADING — March 24, 2026**\n\n**Pending Bets Scanned:** 0  \n**Bets Graded Tonight:** 0  \n**Bankroll:** $1,396.30 (reconciled from native ledger)\n\n---\n\n**All Bets Currently Graded:**\n\n| Date | Selection | Stake | Result | P/L |\n|------|-----------|-------|--------|-----|\n| Mar 17 | MIN Wild ML @ CHI | $10.00 | WIN | +$5.40 |\n| Mar 17 | BOS Bruins ML @ MTL | $20.50 | LOSS | -$20.50 |\n| Mar 17 | VGK Golden Knights ML | $10.50 | LOSS | -$10.50 |\n| Mar 20 | Texas Tech -7.5 (boost) | $10.00 | WIN | +$15.90 |\n| Mar 20 | NCAAB Parlay (3-leg) | $13.03 | WIN | +$79.87 |\n\n**Status:** No pending bets awaiting results. All executed bets have been graded and reconciled to the bankroll ledger.\n\n**Next Action:** None — awaiting new recommendations from tomorrow's edge hunt.",
+          "raw_summary": "Based on my review of the native ledgers, here is the evening grading summary:\n\n---\n\n**EVENING GRADING — March 24, 2026**\n\n**Pending Bets Scanned:** 0  \n**Bets Graded Tonight:** 0  \n**Bankroll:** $1,396.30 (reconciled from native ledger)\n\n---\n\n**All Bets Currently Graded:**\n\n| Date | Selection | Stake | Result | P/L |\n|------|-----------|-------|--------|-----|\n| Mar 17 | MIN Wild ML @ CHI | $10.00 | WIN | +$5.40 |\n| Mar 17 | BOS Bruins ML @ MTL | $20.50 | LOSS | -$20.50 |\n| Mar 17 | VGK Golden Knights ML | $10.50 | LOSS | -$10.50 |\n| Mar 20 | Texas Tech -7.5 (boost) | $10.00 | WIN | +$15.90 |\n| Mar 20 | NCAAB Parlay (3-leg) | $13.03 | WIN | +$79.87 |\n\n**Status:** No pending bets awaiting results. All executed bets have been graded and reconciled to the bankroll ledger.\n\n**Next Action:** None — awaiting new recommendations from tomorrow's edge hunt.",
+          "session_id": "c1da54d7-4c8d-4e6d-b53c-ff7caf70483b",
+          "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/c1da54d7-4c8d-4e6d-b53c-ff7caf70483b.jsonl",
           "requires_state_sync": false,
           "native_append_failed": false,
           "plain_reason": "Latest grading run reported no state changes."
@@ -1177,10 +1210,10 @@
     }
   },
   "latest_hunt_attempt": {
-    "session_id": "7fbfd4b1-8ff5-4c14-84dc-8a3370537276",
-    "updated_at_ms": 1774350121662,
-    "updated_at_ct": "2026-03-24 06:02 CT",
-    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/7fbfd4b1-8ff5-4c14-84dc-8a3370537276.jsonl",
+    "session_id": "9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9",
+    "updated_at_ms": 1774436400019,
+    "updated_at_ct": "2026-03-25 06:00 CT",
+    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9.jsonl",
     "lock_exists": false,
     "message_type": "UNKNOWN",
     "plain_reason": "Latest cron attempt could not be classified reliably.",
@@ -1191,11 +1224,11 @@
     "status": "ok",
     "delivery_status": "repo_direct",
     "error": null,
-    "run_at_ms": 1774409017945,
-    "run_at_ct": "2026-03-24 22:23",
-    "date_key": "2026-03-24",
-    "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Calgary Flames ML @ 105 | BetMGM: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Los Angeles Kings ML @ -115 | FanDuel: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Phoenix Suns +3.5 @ -110 | BetMGM: +1.54% edge — stale_market | NOW | starts in -11.63 min\n- Edmonton Oilers -2.5 @ 100 | BetMGM: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Utah Mammoth +2.5 @ -120 | FanDuel: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Vancouver Canucks +1.5 @ 116 | FanDuel: +1.06% edge — stale_market | NOW | starts in -73.63 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
-    "raw_summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Calgary Flames ML @ 105 | BetMGM: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Los Angeles Kings ML @ -115 | FanDuel: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Phoenix Suns +3.5 @ -110 | BetMGM: +1.54% edge — stale_market | NOW | starts in -11.63 min\n- Edmonton Oilers -2.5 @ 100 | BetMGM: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Utah Mammoth +2.5 @ -120 | FanDuel: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Vancouver Canucks +1.5 @ 116 | FanDuel: +1.06% edge — stale_market | NOW | starts in -73.63 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "run_at_ms": 1774464311129,
+    "run_at_ct": "2026-03-25 13:45",
+    "date_key": "2026-03-25",
+    "summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Indiana Pacers ML @ 375 | BetMGM: +1.19% edge — no_edge | LATER | starts in 264.82 min\n- New York Rangers -1.5 @ 200 | DraftKings: +1.12% edge — no_edge | LATER | starts in 294.82 min\n- Toronto Maple Leafs +1.5 @ -220 | BetMGM: +1.12% edge — no_edge | LATER | starts in 294.82 min\n- Dayton Flyers ML @ -320 | FanDuel: +1.08% edge — no_edge | LATER | starts in 254.82 min\n- Nevada Wolf Pack ML @ 330 | DraftKings: +1.05% edge — no_edge | LATER | starts in 374.82 min\n- Brooklyn Nets ML @ 490 | FanDuel: +0.98% edge — no_edge | LATER | starts in 444.82 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "raw_summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Indiana Pacers ML @ 375 | BetMGM: +1.19% edge — no_edge | LATER | starts in 264.82 min\n- New York Rangers -1.5 @ 200 | DraftKings: +1.12% edge — no_edge | LATER | starts in 294.82 min\n- Toronto Maple Leafs +1.5 @ -220 | BetMGM: +1.12% edge — no_edge | LATER | starts in 294.82 min\n- Dayton Flyers ML @ -320 | FanDuel: +1.08% edge — no_edge | LATER | starts in 254.82 min\n- Nevada Wolf Pack ML @ 330 | DraftKings: +1.05% edge — no_edge | LATER | starts in 374.82 min\n- Brooklyn Nets ML @ 490 | FanDuel: +0.98% edge — no_edge | LATER | starts in 444.82 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
     "session_id": null,
     "session_file": null,
     "message_type": "SIT",
@@ -1205,38 +1238,38 @@
     "data_status": "verified",
     "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
     "source": "canonical_repo_hunt",
-    "native_rows_appended": 28
+    "native_rows_appended": 146
   },
   "latest_successful_hunt": {
     "status": "ok",
     "delivery_status": "delivered",
     "error": null,
-    "run_at_ms": 1774350121658,
-    "run_at_ct": "2026-03-24 06:02 CT",
-    "date_key": "2026-03-24",
-    "summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
-    "raw_summary": "**RUNNER FAILURE**\n\nThe canonical edge hunt runner failed with a system-level error:\n\n```\nError: Unknown system error -11: Unknown system error -11, read\n    at Object.readSync (node:fs:735:18)\n    at tryReadSync (node:fs:415:20)\n    at readFileSync (node:fs:461:19)\n    ...\nNode.js v24.13.1\n(Command exited with code 1)\n```\n\n**Error Analysis:**\n- System error `-11` (EAGAIN) indicates a temporary resource unavailability\n- The failure occurs at the filesystem read level, before any hunt logic executes\n- This is a runtime/system issue, not a logic or data error\n\n**Impact:**\n- Edge hunt NOT executed\n- No recommendations generated\n- Decision ledger NOT updated\n\n**Recommended Actions:**\n1. Retry the hunt manually in a few minutes once system resources free up\n2. Check if another process is holding locks on the TieredEdge repo files\n3. Run `openclaw status` to verify system health\n\nTo retry: `node /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs`",
-    "session_id": "7fbfd4b1-8ff5-4c14-84dc-8a3370537276",
-    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/7fbfd4b1-8ff5-4c14-84dc-8a3370537276.jsonl",
-    "message_type": "UNKNOWN",
+    "run_at_ms": 1774436400015,
+    "run_at_ct": "2026-03-25 06:00 CT",
+    "date_key": "2026-03-25",
+    "summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Portland Trail Blazers -12.5 @ -105 | BetMGM: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Milwaukee Bucks +12.5 @ -108 | FanDuel: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Indiana Pacers ML @ 425 | BetMGM: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Los Angeles Lakers ML @ -510 | FanDuel: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Minnesota Timberwolves ML @ 106 | FanDuel: +0.55% edge — no_edge | LATER | starts in 879.61 min\n- Houston Rockets ML @ -120 | BetMGM: +0.55% edge — no_edge | LATER | starts in 879.61 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "raw_summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Portland Trail Blazers -12.5 @ -105 | BetMGM: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Milwaukee Bucks +12.5 @ -108 | FanDuel: +0.76% edge — no_edge | LATER | starts in 909.61 min\n- Indiana Pacers ML @ 425 | BetMGM: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Los Angeles Lakers ML @ -510 | FanDuel: +0.72% edge — no_edge | LATER | starts in 729.61 min\n- Minnesota Timberwolves ML @ 106 | FanDuel: +0.55% edge — no_edge | LATER | starts in 879.61 min\n- Houston Rockets ML @ -120 | BetMGM: +0.55% edge — no_edge | LATER | starts in 879.61 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "session_id": "9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9",
+    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/9c2b82f7-e57f-4dc2-ad16-fd0a139ee0b9.jsonl",
+    "message_type": "SIT",
     "has_actionable_bets": false,
     "requires_state_sync": false,
     "data_failure_codes": [],
-    "data_status": "unknown",
-    "plain_reason": "The latest scheduled scan could not be classified reliably."
+    "data_status": "verified",
+    "plain_reason": "The latest scheduled scan found no qualifying edges."
   },
   "latest_canonical_hunt_run": {
     "schema": "tierededge_canonical_hunt_run_v1",
-    "run_id": "canonical-hunt::2026-03-24::2223",
-    "generated_at_utc": "2026-03-25T03:23:37.945Z",
-    "run_at_ct": "2026-03-24 22:23",
+    "run_id": "canonical-hunt::2026-03-25::1345",
+    "generated_at_utc": "2026-03-25T18:45:11.129Z",
+    "run_at_ct": "2026-03-25 13:45",
     "status": "ok",
     "message_type": "SIT",
     "requires_state_sync": false,
     "has_actionable_bets": false,
-    "native_rows_appended": 28,
+    "native_rows_appended": 146,
     "native_bets_appended": 0,
-    "native_sits_appended": 28,
+    "native_sits_appended": 146,
     "invalidated": false,
     "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
     "prop_feature_flags": {
@@ -1258,7 +1291,8 @@
           "fanduel",
           "betmgm",
           "circa",
-          "bet365"
+          "bet365",
+          "caesars"
         ],
         "sides": [
           "over",
@@ -1271,12 +1305,32 @@
           "fanduel",
           "betmgm",
           "circa",
-          "bet365"
+          "bet365",
+          "caesars"
         ]
       }
     },
     "prop_summary": {
       "phase1_nba_spreads": {
+        "configured_enabled": true,
+        "enabled_for_run": true,
+        "enable_source": "config",
+        "fetched_event_count": 12,
+        "analyzed_row_count": 34,
+        "selected_bet_count": 0,
+        "sit_count": 34,
+        "native_rows_appended": 34,
+        "min_book_count": 2,
+        "eligible_books": [
+          "bet365",
+          "betmgm",
+          "caesars",
+          "circa",
+          "draftkings",
+          "fanduel"
+        ]
+      },
+      "phase1_mlb_moneylines": {
         "configured_enabled": true,
         "enabled_for_run": true,
         "enable_source": "config",
@@ -1289,24 +1343,7 @@
         "eligible_books": [
           "bet365",
           "betmgm",
-          "circa",
-          "draftkings",
-          "fanduel"
-        ]
-      },
-      "phase1_mlb_moneylines": {
-        "configured_enabled": true,
-        "enabled_for_run": true,
-        "enable_source": "config",
-        "fetched_event_count": 0,
-        "analyzed_row_count": 0,
-        "selected_bet_count": 0,
-        "sit_count": 0,
-        "native_rows_appended": 0,
-        "min_book_count": 2,
-        "eligible_books": [
-          "bet365",
-          "betmgm",
+          "caesars",
           "circa",
           "draftkings",
           "fanduel"
@@ -1325,6 +1362,7 @@
         "eligible_books": [
           "bet365",
           "betmgm",
+          "caesars",
           "circa",
           "draftkings",
           "fanduel"
@@ -1334,6 +1372,7 @@
     "owned_books": [
       "bet365",
       "betmgm",
+      "caesars",
       "circa",
       "draftkings",
       "fanduel"
@@ -1351,6 +1390,7 @@
     ],
     "feed_unavailable_owned_books": [
       "bet365",
+      "caesars",
       "circa"
     ],
     "research_only_books": [
@@ -1364,96 +1404,96 @@
     "selected_rows": [],
     "executable_closest_misses": [
       {
-        "rec_id": "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::calgary-flames-ml::betmgm",
-        "selection": "Calgary Flames ML",
+        "rec_id": "canonical-hunt::2026-03-25::1345::basketball_nba::3d71d6b6b1bc85b5ec831ae9dba2c93c::h2h::indiana-pacers-ml::betmgm",
+        "selection": "Indiana Pacers ML",
         "sportsbook": "BetMGM",
-        "odds_american": "105",
-        "post_conf_edge_pct": 1.83,
-        "rejection_reason": "stale_market",
-        "event_start_time": "2026-03-25T01:10:00Z",
-        "minutes_to_start": -133.63,
-        "urgency_tag": "NOW"
+        "odds_american": "375",
+        "post_conf_edge_pct": 1.19,
+        "rejection_reason": "no_edge",
+        "event_start_time": "2026-03-25T23:10:00Z",
+        "minutes_to_start": 264.82,
+        "urgency_tag": "LATER"
       },
       {
-        "rec_id": "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::los-angeles-kings-ml::fanduel",
-        "selection": "Los Angeles Kings ML",
-        "sportsbook": "FanDuel",
-        "odds_american": "-115",
-        "post_conf_edge_pct": 1.83,
-        "rejection_reason": "stale_market",
-        "event_start_time": "2026-03-25T01:10:00Z",
-        "minutes_to_start": -133.63,
-        "urgency_tag": "NOW"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-24::2223::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::spreads::phoenix-suns-3-5::betmgm",
-        "selection": "Phoenix Suns +3.5",
-        "sportsbook": "BetMGM",
-        "odds_american": "-110",
-        "post_conf_edge_pct": 1.54,
-        "rejection_reason": "stale_market",
-        "event_start_time": "2026-03-25T03:12:00Z",
-        "minutes_to_start": -11.63,
-        "urgency_tag": "NOW"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::edmonton-oilers-2-5::betmgm",
-        "selection": "Edmonton Oilers -2.5",
-        "sportsbook": "BetMGM",
-        "odds_american": "100",
+        "rec_id": "canonical-hunt::2026-03-25::1345::icehockey_nhl::91a31dec3fbc976904dd2e42901f5fa8::spreads::new-york-rangers-1-5::draftkings",
+        "selection": "New York Rangers -1.5",
+        "sportsbook": "DraftKings",
+        "odds_american": "200",
         "post_conf_edge_pct": 1.12,
-        "rejection_reason": "stale_market",
-        "event_start_time": "2026-03-25T01:40:00Z",
-        "minutes_to_start": -103.63,
-        "urgency_tag": "NOW"
+        "rejection_reason": "no_edge",
+        "event_start_time": "2026-03-25T23:40:00Z",
+        "minutes_to_start": 294.82,
+        "urgency_tag": "LATER"
       },
       {
-        "rec_id": "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::utah-mammoth-2-5::fanduel",
-        "selection": "Utah Mammoth +2.5",
-        "sportsbook": "FanDuel",
-        "odds_american": "-120",
+        "rec_id": "canonical-hunt::2026-03-25::1345::icehockey_nhl::91a31dec3fbc976904dd2e42901f5fa8::spreads::toronto-maple-leafs-1-5::betmgm",
+        "selection": "Toronto Maple Leafs +1.5",
+        "sportsbook": "BetMGM",
+        "odds_american": "-220",
         "post_conf_edge_pct": 1.12,
-        "rejection_reason": "stale_market",
-        "event_start_time": "2026-03-25T01:40:00Z",
-        "minutes_to_start": -103.63,
-        "urgency_tag": "NOW"
+        "rejection_reason": "no_edge",
+        "event_start_time": "2026-03-25T23:40:00Z",
+        "minutes_to_start": 294.82,
+        "urgency_tag": "LATER"
       },
       {
-        "rec_id": "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::spreads::vancouver-canucks-1-5::fanduel",
-        "selection": "Vancouver Canucks +1.5",
+        "rec_id": "canonical-hunt::2026-03-25::1345::basketball_ncaab::b9c52e0f4228b292b74bbf2be3bf4549::h2h::dayton-flyers-ml::fanduel",
+        "selection": "Dayton Flyers ML",
         "sportsbook": "FanDuel",
-        "odds_american": "116",
-        "post_conf_edge_pct": 1.06,
-        "rejection_reason": "stale_market",
-        "event_start_time": "2026-03-25T02:10:00Z",
-        "minutes_to_start": -73.63,
-        "urgency_tag": "NOW"
+        "odds_american": "-320",
+        "post_conf_edge_pct": 1.08,
+        "rejection_reason": "no_edge",
+        "event_start_time": "2026-03-25T23:00:00Z",
+        "minutes_to_start": 254.82,
+        "urgency_tag": "LATER"
+      },
+      {
+        "rec_id": "canonical-hunt::2026-03-25::1345::basketball_ncaab::0cf810433f027f2b1c9da531c3df1348::h2h::nevada-wolf-pack-ml::draftkings",
+        "selection": "Nevada Wolf Pack ML",
+        "sportsbook": "DraftKings",
+        "odds_american": "330",
+        "post_conf_edge_pct": 1.05,
+        "rejection_reason": "no_edge",
+        "event_start_time": "2026-03-26T01:00:00Z",
+        "minutes_to_start": 374.82,
+        "urgency_tag": "LATER"
+      },
+      {
+        "rec_id": "canonical-hunt::2026-03-25::1345::basketball_nba::f0853d396988ee8ea615897e136d22cb::h2h::brooklyn-nets-ml::fanduel",
+        "selection": "Brooklyn Nets ML",
+        "sportsbook": "FanDuel",
+        "odds_american": "490",
+        "post_conf_edge_pct": 0.98,
+        "rejection_reason": "no_edge",
+        "event_start_time": "2026-03-26T02:10:00Z",
+        "minutes_to_start": 444.82,
+        "urgency_tag": "LATER"
       }
     ],
-    "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Calgary Flames ML @ 105 | BetMGM: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Los Angeles Kings ML @ -115 | FanDuel: +1.83% edge — stale_market | NOW | starts in -133.63 min\n- Phoenix Suns +3.5 @ -110 | BetMGM: +1.54% edge — stale_market | NOW | starts in -11.63 min\n- Edmonton Oilers -2.5 @ 100 | BetMGM: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Utah Mammoth +2.5 @ -120 | FanDuel: +1.12% edge — stale_market | NOW | starts in -103.63 min\n- Vancouver Canucks +1.5 @ 116 | FanDuel: +1.06% edge — stale_market | NOW | starts in -73.63 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "summary": "TIERED EDGE HUNT — 2026-03-25\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Indiana Pacers ML @ 375 | BetMGM: +1.19% edge — no_edge | LATER | starts in 264.82 min\n- New York Rangers -1.5 @ 200 | DraftKings: +1.12% edge — no_edge | LATER | starts in 294.82 min\n- Toronto Maple Leafs +1.5 @ -220 | BetMGM: +1.12% edge — no_edge | LATER | starts in 294.82 min\n- Dayton Flyers ML @ -320 | FanDuel: +1.08% edge — no_edge | LATER | starts in 254.82 min\n- Nevada Wolf Pack ML @ 330 | DraftKings: +1.05% edge — no_edge | LATER | starts in 374.82 min\n- Brooklyn Nets ML @ 490 | FanDuel: +0.98% edge — no_edge | LATER | starts in 444.82 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
     "rows": {
       "bet_rec_ids": [],
       "sit_rec_ids": [
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::totals::over-5-5::betmgm",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::totals::under-5-5::fanduel",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::calgary-flames-ml::betmgm",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::los-angeles-kings-ml::fanduel",
-        "canonical-hunt::2026-03-24::2223::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::spreads::phoenix-suns-3-5::betmgm",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::edmonton-oilers-2-5::betmgm",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::utah-mammoth-2-5::fanduel",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::spreads::vancouver-canucks-1-5::fanduel",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::spreads::anaheim-ducks-1-5::betmgm",
-        "canonical-hunt::2026-03-24::2223::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::h2h::denver-nuggets-ml::draftkings",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::totals::under-8-5::fanduel",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::totals::over-8-5::betmgm",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::h2h::utah-mammoth-ml::fanduel",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::h2h::edmonton-oilers-ml::betmgm",
-        "canonical-hunt::2026-03-24::2223::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::h2h::phoenix-suns-ml::fanduel",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::h2h::vancouver-canucks-ml::betmgm",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::h2h::anaheim-ducks-ml::fanduel",
-        "canonical-hunt::2026-03-24::2223::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::spreads::denver-nuggets-3-5::fanduel",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::totals::under-6-5::fanduel",
-        "canonical-hunt::2026-03-24::2223::icehockey_nhl::e01ce333fee77885df691ec74a3a93e7::totals::over-6-5::betmgm"
+        "canonical-hunt::2026-03-25::1345::basketball_nba::bb33d3e33ac233af2a20161310f567f2::h2h::cleveland-cavaliers-ml::betrivers",
+        "canonical-hunt::2026-03-25::1345::basketball_nba::bcbad64f54906ae96b4be0ef54b453b4::h2h::san-antonio-spurs-ml::betrivers",
+        "canonical-hunt::2026-03-25::1345::basketball_nba::3d71d6b6b1bc85b5ec831ae9dba2c93c::h2h::indiana-pacers-ml::betmgm",
+        "canonical-hunt::2026-03-25::1345::icehockey_nhl::91a31dec3fbc976904dd2e42901f5fa8::spreads::new-york-rangers-1-5::draftkings",
+        "canonical-hunt::2026-03-25::1345::icehockey_nhl::91a31dec3fbc976904dd2e42901f5fa8::spreads::toronto-maple-leafs-1-5::betmgm",
+        "canonical-hunt::2026-03-25::1345::basketball_ncaab::b9c52e0f4228b292b74bbf2be3bf4549::h2h::dayton-flyers-ml::fanduel",
+        "canonical-hunt::2026-03-25::1345::basketball_ncaab::0cf810433f027f2b1c9da531c3df1348::h2h::nevada-wolf-pack-ml::draftkings",
+        "canonical-hunt::2026-03-25::1345::basketball_nba::24a4d71edcffcb5584a61d2aa89c66d8::h2h::los-angeles-clippers-ml::betrivers",
+        "canonical-hunt::2026-03-25::1345::basketball_nba::f0853d396988ee8ea615897e136d22cb::h2h::brooklyn-nets-ml::fanduel",
+        "canonical-hunt::2026-03-25::1345::icehockey_nhl::ab6aee6f5e7e50ae68276b27c22fd0b1::spreads::buffalo-sabres-1-5::draftkings",
+        "canonical-hunt::2026-03-25::1345::icehockey_nhl::ab6aee6f5e7e50ae68276b27c22fd0b1::spreads::boston-bruins-1-5::betmgm",
+        "canonical-hunt::2026-03-25::1345::basketball_nba::8aaad66627fe854cc273103047d880e6::totals::under-228-5::betmgm",
+        "canonical-hunt::2026-03-25::1345::basketball_nba::cf2665074fd82e7b5f2b4393f20afd32::h2h::houston-rockets-ml::betrivers",
+        "canonical-hunt::2026-03-25::1345::basketball_nba::dcd42c163a10db20aa31d9ee311c07bd::h2h::washington-wizards-ml::fanduel",
+        "canonical-hunt::2026-03-25::1345::basketball_ncaab::b9c52e0f4228b292b74bbf2be3bf4549::spreads::dayton-flyers-7-5::fanduel",
+        "canonical-hunt::2026-03-25::1345::basketball_ncaab::0cf810433f027f2b1c9da531c3df1348::h2h::auburn-tigers-ml::fanduel",
+        "canonical-hunt::2026-03-25::1345::basketball_nba::63b3c408cf1e55eb8d34aec686038a87::h2h::dallas-mavericks-ml::betmgm",
+        "canonical-hunt::2026-03-25::1345::basketball_nba::8aaad66627fe854cc273103047d880e6::h2h::atlanta-hawks-ml::fanduel",
+        "canonical-hunt::2026-03-25::1345::basketball_nba::277fee894c9dc5c623ed6a131bf513c7::totals::over-218-5::fanduel",
+        "canonical-hunt::2026-03-25::1345::basketball_ncaab::b9c52e0f4228b292b74bbf2be3bf4549::totals::over-140-5::fanduel"
       ],
       "research_only_rec_ids": []
     }
@@ -1462,13 +1502,13 @@
     "status": "ok",
     "delivery_status": "delivered",
     "error": null,
-    "run_at_ms": 1774324800017,
-    "run_at_ct": "2026-03-23 23:00 CT",
-    "date_key": "2026-03-23",
-    "summary": "Based on the available data, here's the evening grading summary:\n\n---\n\n**EVENING GRADING — Monday, March 23, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- No pending bets found awaiting results.\n\n**Last Graded Activity:**\n- March 20, 2026 (Friday) — 2 bets graded\n  - FUN_SGP Parlay (Kentucky/Tennessee/Texas Tech): WIN (+$79.87)\n  - Texas Tech -7.5 Boosted: WIN (+$15.90)\n\n**Current Bankroll:** $1,399.05  \n**All-Time High:** $1,399.05  \n**Circuit Breaker:** OFF\n\n---\n\n**Note:** Native ledger files (execution-log.jsonl, grading-ledger.jsonl) are currently locked/resource deadlocked. The grading summary above is based on memory/betting-state.md which shows no pending bets since March 20. If there are any unsettled bets from March 21-23 that were placed via screenshot but not yet synced to the state file, they would need to be processed once file access is restored.\n\nNo grading actions required at this time.",
-    "raw_summary": "Based on the available data, here's the evening grading summary:\n\n---\n\n**EVENING GRADING — Monday, March 23, 2026 (11:00 PM CT)**\n\n**Pending Bets Review:**\n- No pending bets found awaiting results.\n\n**Last Graded Activity:**\n- March 20, 2026 (Friday) — 2 bets graded\n  - FUN_SGP Parlay (Kentucky/Tennessee/Texas Tech): WIN (+$79.87)\n  - Texas Tech -7.5 Boosted: WIN (+$15.90)\n\n**Current Bankroll:** $1,399.05  \n**All-Time High:** $1,399.05  \n**Circuit Breaker:** OFF\n\n---\n\n**Note:** Native ledger files (execution-log.jsonl, grading-ledger.jsonl) are currently locked/resource deadlocked. The grading summary above is based on memory/betting-state.md which shows no pending bets since March 20. If there are any unsettled bets from March 21-23 that were placed via screenshot but not yet synced to the state file, they would need to be processed once file access is restored.\n\nNo grading actions required at this time.",
-    "session_id": "00abe2b6-46be-4f96-8f65-e2afe708d2f2",
-    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/00abe2b6-46be-4f96-8f65-e2afe708d2f2.jsonl",
+    "run_at_ms": 1774411200010,
+    "run_at_ct": "2026-03-24 23:00 CT",
+    "date_key": "2026-03-24",
+    "summary": "Based on my review of the native ledgers, here is the evening grading summary:\n\n---\n\n**EVENING GRADING — March 24, 2026**\n\n**Pending Bets Scanned:** 0  \n**Bets Graded Tonight:** 0  \n**Bankroll:** $1,396.30 (reconciled from native ledger)\n\n---\n\n**All Bets Currently Graded:**\n\n| Date | Selection | Stake | Result | P/L |\n|------|-----------|-------|--------|-----|\n| Mar 17 | MIN Wild ML @ CHI | $10.00 | WIN | +$5.40 |\n| Mar 17 | BOS Bruins ML @ MTL | $20.50 | LOSS | -$20.50 |\n| Mar 17 | VGK Golden Knights ML | $10.50 | LOSS | -$10.50 |\n| Mar 20 | Texas Tech -7.5 (boost) | $10.00 | WIN | +$15.90 |\n| Mar 20 | NCAAB Parlay (3-leg) | $13.03 | WIN | +$79.87 |\n\n**Status:** No pending bets awaiting results. All executed bets have been graded and reconciled to the bankroll ledger.\n\n**Next Action:** None — awaiting new recommendations from tomorrow's edge hunt.",
+    "raw_summary": "Based on my review of the native ledgers, here is the evening grading summary:\n\n---\n\n**EVENING GRADING — March 24, 2026**\n\n**Pending Bets Scanned:** 0  \n**Bets Graded Tonight:** 0  \n**Bankroll:** $1,396.30 (reconciled from native ledger)\n\n---\n\n**All Bets Currently Graded:**\n\n| Date | Selection | Stake | Result | P/L |\n|------|-----------|-------|--------|-----|\n| Mar 17 | MIN Wild ML @ CHI | $10.00 | WIN | +$5.40 |\n| Mar 17 | BOS Bruins ML @ MTL | $20.50 | LOSS | -$20.50 |\n| Mar 17 | VGK Golden Knights ML | $10.50 | LOSS | -$10.50 |\n| Mar 20 | Texas Tech -7.5 (boost) | $10.00 | WIN | +$15.90 |\n| Mar 20 | NCAAB Parlay (3-leg) | $13.03 | WIN | +$79.87 |\n\n**Status:** No pending bets awaiting results. All executed bets have been graded and reconciled to the bankroll ledger.\n\n**Next Action:** None — awaiting new recommendations from tomorrow's edge hunt.",
+    "session_id": "c1da54d7-4c8d-4e6d-b53c-ff7caf70483b",
+    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/c1da54d7-4c8d-4e6d-b53c-ff7caf70483b.jsonl",
     "requires_state_sync": false,
     "native_append_failed": false,
     "plain_reason": "Latest grading run reported no state changes."
@@ -1488,7 +1528,8 @@
     "2026-03-18",
     "2026-03-19",
     "2026-03-23",
-    "2026-03-24"
+    "2026-03-24",
+    "2026-03-25"
   ],
   "no_append_hunt_days": [
     "2026-03-07",
@@ -1503,7 +1544,8 @@
     "2026-03-16",
     "2026-03-17",
     "2026-03-18",
-    "2026-03-19"
+    "2026-03-19",
+    "2026-03-25"
   ],
   "next_edge_scan_ct": "06:00",
   "odds_api_config": {
@@ -1512,7 +1554,7 @@
     "api_key_env": "ODDS_API_KEY",
     "api_key_source": "environment",
     "secure_key_present": true,
-    "secure_key_provider": "macos_keychain",
+    "secure_key_provider": "local_encrypted_store",
     "base_url": "https://api.the-odds-api.com/v4",
     "source_status": "present",
     "free_tier_scan_ct": null,
@@ -1520,8 +1562,8 @@
   },
   "freshness_anchor": {
     "source": "latest_successful_hunt",
-    "timestamp_ct": "2026-03-24 06:02 CT",
-    "timestamp_ms": 1774350121658
+    "timestamp_ct": "2026-03-25 06:00 CT",
+    "timestamp_ms": 1774436400015
   },
   "state_files": {
     "betting_state": {
@@ -1535,7 +1577,7 @@
     },
     "passed_opportunity_grades": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-      "file_mtime_ct": "2026-03-24 22:30 CT"
+      "file_mtime_ct": "2026-03-25 09:15 CT"
     }
   },
   "state_sync": {
