@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-25T03:27:31.035Z",
+  "generated_at_utc": "2026-03-25T03:30:19.975Z",
   "window": "last_7_days",
   "settled_bet_count": 2,
   "expected_vs_realized_summary": {
@@ -17,6 +17,71 @@
     "missing_snapshot_count": 0,
     "missing_clv_count": 2
   },
+  "sportsbook_usefulness": [
+    {
+      "book": "bet365",
+      "owned_book": true,
+      "recommendations_count": 0,
+      "best_price_count": 0,
+      "executable_near_miss_count": 0,
+      "stale_or_missing_count": 0,
+      "rejected_non_executable_count": 0
+    },
+    {
+      "book": "betmgm",
+      "owned_book": true,
+      "recommendations_count": 8,
+      "best_price_count": 818,
+      "executable_near_miss_count": 22,
+      "stale_or_missing_count": 120,
+      "rejected_non_executable_count": 0
+    },
+    {
+      "book": "betrivers",
+      "owned_book": false,
+      "recommendations_count": 1,
+      "best_price_count": 1030,
+      "executable_near_miss_count": 0,
+      "stale_or_missing_count": 29,
+      "rejected_non_executable_count": 2
+    },
+    {
+      "book": "caesars",
+      "owned_book": true,
+      "recommendations_count": 0,
+      "best_price_count": 0,
+      "executable_near_miss_count": 0,
+      "stale_or_missing_count": 0,
+      "rejected_non_executable_count": 0
+    },
+    {
+      "book": "circa",
+      "owned_book": true,
+      "recommendations_count": 0,
+      "best_price_count": 0,
+      "executable_near_miss_count": 0,
+      "stale_or_missing_count": 0,
+      "rejected_non_executable_count": 0
+    },
+    {
+      "book": "draftkings",
+      "owned_book": true,
+      "recommendations_count": 4,
+      "best_price_count": 1008,
+      "executable_near_miss_count": 15,
+      "stale_or_missing_count": 119,
+      "rejected_non_executable_count": 0
+    },
+    {
+      "book": "fanduel",
+      "owned_book": true,
+      "recommendations_count": 11,
+      "best_price_count": 1062,
+      "executable_near_miss_count": 19,
+      "stale_or_missing_count": 166,
+      "rejected_non_executable_count": 0
+    }
+  ],
   "slices": {
     "sport_league": {
       "UNKNOWN / UNKNOWN": {

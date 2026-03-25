@@ -407,13 +407,79 @@ function addToGroup(map, key, row) {
   map.get(key).push(row);
 }
 
+function buildWeeklyBookUsefulnessSummary(decisionRows, ownedBooks = []) {
+  const normalizedOwned = [...new Set((ownedBooks || []).map((book) => normalize(book)).filter(Boolean))];
+  const seenBooks = new Set(normalizedOwned);
+  for (const row of decisionRows || []) {
+    const book = normalize(row.sportsbook);
+    if (book) seenBooks.add(book);
+  }
+
+  const groupKey = (row) => [
+    row.run_id || '',
+    row.event_id || row.event_label || '',
+    row.market_family || 'main_market',
+    row.market_type || '',
+    row.selection || '',
+  ].join('::');
+
+  const bestPriceWinnerByGroup = new Map();
+  for (const row of decisionRows || []) {
+    const book = normalize(row.sportsbook);
+    if (!book) continue;
+    const key = groupKey(row);
+    const existing = bestPriceWinnerByGroup.get(key);
+    const edge = parseNumber(row.post_conf_edge_pct) ?? Number.NEGATIVE_INFINITY;
+    if (!existing || edge > existing.edge || (edge === existing.edge && book.localeCompare(existing.book) < 0)) {
+      bestPriceWinnerByGroup.set(key, { book, edge });
+    }
+  }
+
+  return [...seenBooks]
+    .sort()
+    .map((book) => {
+      const rows = (decisionRows || []).filter((row) => normalize(row.sportsbook) === book);
+      return {
+        book,
+        owned_book: normalizedOwned.includes(book),
+        recommendations_count: rows.filter((row) => row.final_decision === 'BET').length,
+        best_price_count: [...bestPriceWinnerByGroup.values()].filter((entry) => entry.book === book).length,
+        executable_near_miss_count: rows.filter((row) =>
+          row.final_decision === 'SIT'
+          && Boolean(row.executable_book)
+          && (parseNumber(row.post_conf_edge_pct) || 0) >= 1.5
+          && (parseNumber(row.post_conf_edge_pct) || 0) < 2
+        ).length,
+        stale_or_missing_count: rows.filter((row) => ['stale_market', 'invalid_snapshot'].includes(normalize(row.rejection_reason))).length,
+        rejected_non_executable_count: rows.filter((row) => {
+          const reason = normalize(row.rejection_reason);
+          const klass = normalize(row.rejection_class);
+          return reason === 'research_only_non_owned_book' || reason === 'non_executable_book' || klass === 'non_executable_edge';
+        }).length,
+      };
+    });
+}
+
 export function buildWeeklyTruthReport() {
   const gradingRows = readJsonl(CORE_PATHS.gradingLedger);
   const executionRows = readExecutionLog();
   const overrideRows = readOverrideLog();
   const lookup = buildDecisionLookup();
+  const scanCoveragePolicy = readJson(path.join(REPO_ROOT, 'config', 'scan-coverage-policy.json'), {});
   const now = Date.now();
   const sevenDaysAgo = now - (7 * 24 * 60 * 60 * 1000);
+  const invalidRunIds = new Set(
+    readJsonl(CORE_PATHS.huntAuditLog)
+      .filter((row) => String(row.invalid_status || '').toLowerCase().includes('invalid'))
+      .map((row) => String(row.run_id || '').trim())
+      .filter(Boolean)
+  );
+  const recentDecisionRows = readJsonl(CORE_PATHS.decisionLedger)
+    .filter((row) => !invalidRunIds.has(String(row.run_id || '').trim()))
+    .filter((row) => {
+      const ts = Date.parse(String(row.timestamp_ct || '').replace(' CT', ''));
+      return Number.isFinite(ts) && ts >= sevenDaysAgo && ts <= now;
+    });
 
   const settledRows = gradingRows
     .filter((row) => normalize(row.grading_type) === 'bet')
@@ -504,6 +570,10 @@ export function buildWeeklyTruthReport() {
       missing_snapshot_count: executionRows.filter((row) => normalize(row.placement_snapshot_status) === 'snapshot_missing').length,
       missing_clv_count: settledRows.filter((row) => normalize(row.clv_status) === 'missing_clv_source').length,
     },
+    sportsbook_usefulness: buildWeeklyBookUsefulnessSummary(
+      recentDecisionRows,
+      scanCoveragePolicy?.book_sets?.owned_books || []
+    ),
     slices: Object.fromEntries(
       Object.entries(groups).map(([key, map]) => [
         key,
@@ -531,6 +601,12 @@ export function buildWeeklyTruthReport() {
     `Average edge at placement: ${report.expected_vs_realized_summary.average_edge_at_placement ?? 'N/A'} | Realized P/L: ${report.expected_vs_realized_summary.realized_pl}`,
     `Override events: ${report.override_totals.total_override_events} | Blocked-run: ${report.override_totals.blocked_run_override_count} | Off-model: ${report.override_totals.off_model_override_count}`,
     `Missing snapshot count: ${report.missing_coverage.missing_snapshot_count} | Missing CLV count: ${report.missing_coverage.missing_clv_count}`,
+    '',
+    'Sportsbook Usefulness:',
+    ...(report.sportsbook_usefulness.length
+      ? report.sportsbook_usefulness
+        .map((row) => `${row.book} | recs=${row.recommendations_count} | best=${row.best_price_count} | near_miss=${row.executable_near_miss_count} | stale_missing=${row.stale_or_missing_count}`)
+      : ['none']),
     '',
     'Top Bleeding Categories:',
     ...(report.top_bleeding_categories.length

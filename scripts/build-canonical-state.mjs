@@ -952,6 +952,80 @@ function buildPerformanceByMarket(decisions) {
     });
 }
 
+function buildBookUsefulnessSummary(decisions, ownedBooks, latestCanonicalHuntRun) {
+  const normalizedOwned = [...new Set((ownedBooks || []).map((book) => normalizeText(book)).filter(Boolean))];
+  const seenBooks = new Set(normalizedOwned);
+  for (const row of decisions || []) {
+    const book = normalizeText(row.sportsbook);
+    if (book) seenBooks.add(book);
+  }
+
+  const candidateRows = (decisions || []).filter((row) => row && typeof row === 'object');
+  const groupKey = (row) => [
+    row.run_id || '',
+    row.event_id || row.event_label || '',
+    row.market_family || 'main_market',
+    row.market_type || '',
+    row.selection || '',
+  ].join('::');
+
+  const bestPriceWinnerByGroup = new Map();
+  for (const row of candidateRows) {
+    const book = normalizeText(row.sportsbook);
+    if (!book) continue;
+    const key = groupKey(row);
+    const existing = bestPriceWinnerByGroup.get(key);
+    const edge = parseNumber(row.post_conf_edge_pct) ?? Number.NEGATIVE_INFINITY;
+    if (!existing || edge > existing.edge || (edge === existing.edge && book.localeCompare(existing.book) < 0)) {
+      bestPriceWinnerByGroup.set(key, { book, edge });
+    }
+  }
+
+  const buildMetricsForBook = (book) => {
+    const rows = candidateRows.filter((row) => normalizeText(row.sportsbook) === book);
+    const recommendations = rows.filter((row) => row.final_decision === 'BET');
+    const executableNearMisses = rows.filter((row) =>
+      row.final_decision === 'SIT'
+      && Boolean(row.executable_book)
+      && (parseNumber(row.post_conf_edge_pct) || 0) >= 1.5
+      && (parseNumber(row.post_conf_edge_pct) || 0) < 2
+    );
+    const staleOrMissing = rows.filter((row) => ['stale_market', 'invalid_snapshot'].includes(normalizeText(row.rejection_reason)));
+    const rejectedNonExecutable = rows.filter((row) => {
+      const reason = normalizeText(row.rejection_reason);
+      const klass = normalizeText(row.rejection_class);
+      return reason === 'research_only_non_owned_book' || reason === 'non_executable_book' || klass === 'non_executable_edge';
+    });
+    const bestPriceCount = [...bestPriceWinnerByGroup.values()].filter((entry) => entry.book === book).length;
+    return {
+      book,
+      owned_book: normalizedOwned.includes(book),
+      recommendations_count: recommendations.length,
+      best_price_count: bestPriceCount,
+      executable_near_miss_count: executableNearMisses.length,
+      stale_or_missing_count: staleOrMissing.length,
+      rejected_non_executable_count: rejectedNonExecutable.length,
+    };
+  };
+
+  const overall = [...seenBooks]
+    .sort()
+    .map((book) => buildMetricsForBook(book));
+
+  const latestRunBooks = {
+    owned_books: latestCanonicalHuntRun?.owned_books || normalizedOwned,
+    live_feed_books: latestCanonicalHuntRun?.live_feed_books || [],
+    actionable_books_for_run: latestCanonicalHuntRun?.actionable_books_for_run || [],
+    feed_unavailable_owned_books: latestCanonicalHuntRun?.feed_unavailable_owned_books || [],
+    research_only_books: latestCanonicalHuntRun?.research_only_books || [],
+  };
+
+  return {
+    overall,
+    latest_run_scope: latestRunBooks,
+  };
+}
+
 function countByReason(rows, reason) {
   return rows.filter((row) => normalizeText(row.rejection_reason) === normalizeText(reason)).length;
 }
@@ -1486,6 +1560,7 @@ function main() {
     feed_unavailable_owned_books: latestCanonicalHuntRun?.feed_unavailable_owned_books || [],
     research_only_books: latestCanonicalHuntRun?.research_only_books || [],
   };
+  const bookUsefulnessSummary = buildBookUsefulnessSummary(validLearningDecisions, sportsbookScope.owned_books, latestCanonicalHuntRun);
 
   const decisionPayload = {
     verdict,
@@ -1588,6 +1663,7 @@ function main() {
         top_strongest_categories: weeklyTruth.top_strongest_categories,
         override_totals: weeklyTruth.override_totals,
         missing_coverage: weeklyTruth.missing_coverage,
+        sportsbook_usefulness: weeklyTruth.sportsbook_usefulness || [],
       },
     },
     recommendation_learning_scope: {
@@ -1627,6 +1703,7 @@ function main() {
     notification_summary: notificationSummary,
     clean_run_summary: cleanRunSummary,
     performance_by_market: performanceByMarket,
+    book_usefulness_summary: bookUsefulnessSummary,
     recommendation_timing_summary: operatorDashboard.recommendation_timing_summary,
     operator_dashboard: operatorDashboard,
     overall_betting_results: {

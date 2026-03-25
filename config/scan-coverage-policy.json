@@ -116,7 +116,8 @@
         "fanduel",
         "betmgm",
         "circa",
-        "bet365"
+        "bet365",
+        "caesars"
       ]
     },
     "phase1_mlb_moneylines": {
@@ -132,7 +133,8 @@
         "fanduel",
         "betmgm",
         "circa",
-        "bet365"
+        "bet365",
+        "caesars"
       ],
       "market_scope": "moneylines_only",
       "trusted_books": [
@@ -140,7 +142,8 @@
         "fanduel",
         "betmgm",
         "circa",
-        "bet365"
+        "bet365",
+        "caesars"
       ],
       "comparison_books": [
         "betrivers",
@@ -162,7 +165,8 @@
         "fanduel",
         "betmgm",
         "circa",
-        "bet365"
+        "bet365",
+        "caesars"
       ],
       "sides": [
         "over",
@@ -175,7 +179,8 @@
         "fanduel",
         "betmgm",
         "circa",
-        "bet365"
+        "bet365",
+        "caesars"
       ]
     }
   },
@@ -185,7 +190,8 @@
       "fanduel",
       "circa",
       "betmgm",
-      "bet365"
+      "bet365",
+      "caesars"
     ],
     "consensus_books": [
       "draftkings",
