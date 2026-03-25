@@ -768,6 +768,51 @@ function buildRejectedOpportunitySummary(decisions, latestDate, rejectedCloseCap
   };
 }
 
+function buildPerformanceByMarket(decisions) {
+  const groups = new Map();
+  for (const row of decisions || []) {
+    const key = `${row.sport || 'UNKNOWN'}::${row.market_family || 'main_market'}::${row.market_type || 'UNKNOWN'}`;
+    if (!groups.has(key)) {
+      groups.set(key, {
+        sport: row.sport || 'UNKNOWN',
+        market_family: row.market_family || 'main_market',
+        market_type: row.market_type || 'UNKNOWN',
+        bets: 0,
+        sits: 0,
+        edge_values: [],
+        rejection_reason_distribution: {},
+      });
+    }
+    const group = groups.get(key);
+    if (row.final_decision === 'BET') group.bets += 1;
+    if (row.final_decision === 'SIT') group.sits += 1;
+    const edge = parseNumber(row.post_conf_edge_pct);
+    if (Number.isFinite(edge)) group.edge_values.push(edge);
+    if (row.final_decision === 'SIT') {
+      const reason = row.rejection_reason || 'unknown';
+      group.rejection_reason_distribution[reason] = (group.rejection_reason_distribution[reason] || 0) + 1;
+    }
+  }
+
+  return [...groups.values()]
+    .map((group) => ({
+      sport: group.sport,
+      market_family: group.market_family,
+      market_type: group.market_type,
+      bets: group.bets,
+      sits: group.sits,
+      avg_edge: group.edge_values.length
+        ? round2(group.edge_values.reduce((sum, value) => sum + value, 0) / group.edge_values.length)
+        : null,
+      rejection_reason_distribution: group.rejection_reason_distribution,
+    }))
+    .sort((a, b) => {
+      if (a.sport !== b.sport) return String(a.sport).localeCompare(String(b.sport));
+      if (a.market_family !== b.market_family) return String(a.market_family).localeCompare(String(b.market_family));
+      return String(a.market_type).localeCompare(String(b.market_type));
+    });
+}
+
 function main() {
   const decisions = readJsonl(CORE_PATHS.decisionLedger);
   const rejectedCloseCaptureLog = readJsonl(REJECTED_CLOSE_CAPTURE_LOG_PATH);
@@ -817,6 +862,7 @@ function main() {
   const freshnessHours = 0;
   const stateSyncGap = Boolean(runtimeStatus?.state_sync?.blocking_sync_gap);
   const cleanRunSummary = buildCleanRunSummary({ decisions, huntAuditRows: huntAuditLog });
+  const performanceByMarket = buildPerformanceByMarket(validLearningDecisions);
   const postMortemStatus = getPostMortemStatus(grading, readPostMortemLog());
   const invalidHuntRuns = huntAuditLog
     .filter((row) => String(row.invalid_status || '').toLowerCase().includes('invalid'))
@@ -992,6 +1038,7 @@ function main() {
     },
     rejected_opportunity_summary: rejectedOpportunitySummary,
     clean_run_summary: cleanRunSummary,
+    performance_by_market: performanceByMarket,
     overall_betting_results: {
       count: settledPerformanceOverall.settled_bet_count,
       profit_loss: settledPerformanceOverall.realized_profit,
@@ -1077,6 +1124,10 @@ function main() {
       evening_grading_report_text: renderers.evening,
     },
     prop_feature_flags: {
+      phase1_nba_spreads: {
+        ...(scanCoveragePolicy?.feature_flags?.phase1_nba_spreads || { enabled: false }),
+        latest_run_enabled: latestCanonicalHuntRun?.prop_summary?.phase1_nba_spreads?.enabled_for_run ?? false,
+      },
       phase1_mlb_moneylines: {
         ...(scanCoveragePolicy?.feature_flags?.phase1_mlb_moneylines || { enabled: false }),
         latest_run_enabled: latestCanonicalHuntRun?.prop_summary?.phase1_mlb_moneylines?.enabled_for_run ?? false,

@@ -286,6 +286,18 @@ function resolvePhase1NbaPointsProps(policy, args) {
   };
 }
 
+function resolvePhase1NbaSpreads(policy, args) {
+  const config = policy?.feature_flags?.phase1_nba_spreads || {};
+  const enabledByConfig = config.enabled === true;
+  const enabledByCli = args.enable_phase1_nba_spreads === true;
+  return {
+    configured_enabled: enabledByConfig,
+    enabled_for_run: enabledByConfig || enabledByCli,
+    enable_source: enabledByCli && !enabledByConfig ? 'cli_override' : 'config',
+    config,
+  };
+}
+
 function resolvePhase1MlbMoneylines(policy, args) {
   const config = policy?.feature_flags?.phase1_mlb_moneylines || {};
   const enabledByConfig = config.enabled === true;
@@ -295,6 +307,33 @@ function resolvePhase1MlbMoneylines(policy, args) {
     enabled_for_run: enabledByConfig || enabledByCli,
     enable_source: enabledByCli && !enabledByConfig ? 'cli_override' : 'config',
     config,
+  };
+}
+
+function buildEligibleBookSet(values = []) {
+  return buildNormalizedBookSet(values);
+}
+
+function buildFeatureMarketControl({ feature, fallbackConsensusBooks, fallbackOwnedBooks }) {
+  const eligibleBooks = buildEligibleBookSet(feature?.config?.eligible_books || feature?.config?.trusted_books || []);
+  return {
+    enabled_for_run: feature?.enabled_for_run === true,
+    minBookCount: parseNumber(feature?.config?.min_book_count) || 2,
+    eligibleBooks: eligibleBooks.size ? eligibleBooks : new Set(fallbackConsensusBooks || fallbackOwnedBooks || []),
+  };
+}
+
+function resolveMarketControl({ sportKey, marketKey, nbaSpreadsControl, mlbMoneylineControl, consensusBooksSet }) {
+  if (sportKey === 'basketball_nba' && marketKey === 'spreads' && nbaSpreadsControl.enabled_for_run) {
+    return nbaSpreadsControl;
+  }
+  if (sportKey === 'baseball_mlb' && marketKey === 'h2h' && mlbMoneylineControl.enabled_for_run) {
+    return mlbMoneylineControl;
+  }
+  return {
+    enabled_for_run: true,
+    minBookCount: 2,
+    eligibleBooks: new Set(consensusBooksSet),
   };
 }
 
@@ -558,9 +597,11 @@ function buildValidatedMainMarketSnapshot({ bookmaker, market }) {
   };
 }
 
-function computePropConsensusMap(event, marketKey) {
+function computePropConsensusMap(event, marketKey, control) {
   const grouped = new Map();
   for (const bookmaker of event.bookmakers || []) {
+    const normalizedBook = normalizeBookKey(bookmaker.key || bookmaker.title);
+    if (control?.eligibleBooks?.size && !control.eligibleBooks.has(normalizedBook)) continue;
     for (const market of bookmaker.markets || []) {
       if (market.key !== marketKey) continue;
       for (const pair of buildPlayerPropPairs(market.outcomes || [])) {
@@ -585,6 +626,7 @@ function computePropConsensusMap(event, marketKey) {
   }
   const consensus = new Map();
   for (const [key, entries] of grouped.entries()) {
+    if (entries.length < (control?.minBookCount || 2)) continue;
     const avgFairProb = entries.reduce((sum, entry) => sum + entry.fairProb, 0) / entries.length;
     const sample = entries[0] || {};
     consensus.set(key, {
@@ -597,10 +639,12 @@ function computePropConsensusMap(event, marketKey) {
   return consensus;
 }
 
-function buildConsensusContext({ event, marketKey, consensusBooks, pipeline }) {
+function buildConsensusContext({ event, marketKey, consensusBooks, pipeline, minBookCount = 2, eligibleBooks = null }) {
   const candidateSnapshots = new Map();
   const consensusSnapshots = [];
   for (const bookmaker of event.bookmakers || []) {
+    const normalizedBook = normalizeBookKey(bookmaker.key || bookmaker.title);
+    if (eligibleBooks?.size && !eligibleBooks.has(normalizedBook)) continue;
     for (const market of bookmaker.markets || []) {
       if (market.key !== marketKey) continue;
       const snapshot = buildValidatedMainMarketSnapshot({ bookmaker, market });
@@ -623,6 +667,15 @@ function buildConsensusContext({ event, marketKey, consensusBooks, pipeline }) {
 
   const freshestMs = Math.max(...consensusSnapshots.map((snapshot) => snapshot.updateMs));
   const syncedSnapshots = consensusSnapshots.filter((snapshot) => (freshestMs - snapshot.updateMs) <= pipeline.snapshotWindowMs);
+  if (syncedSnapshots.length < minBookCount) {
+    return {
+      candidateSnapshots,
+      consensusByOutcome: new Map(),
+      maxSpreadSeconds: null,
+      syncedBookKeys: new Set(syncedSnapshots.map((snapshot) => snapshot.bookKey)),
+      snapshotStatus: 'insufficient_valid_books',
+    };
+  }
   const syncedBookKeys = new Set(syncedSnapshots.map((snapshot) => snapshot.bookKey));
   const minMs = Math.min(...syncedSnapshots.map((snapshot) => snapshot.updateMs));
   const maxSpreadSeconds = round2((freshestMs - minMs) / 1000);
@@ -674,6 +727,22 @@ function buildMarketRows({
 }) {
   const bookKey = normalizeBookKey(bookmaker.key || bookmaker.title);
   const snapshot = consensusContext.candidateSnapshots.get(bookKey);
+  if (consensusContext.snapshotStatus !== 'valid') {
+    return invalidSnapshotRows({
+      sportKey,
+      event,
+      bookmaker,
+      market,
+      scanTimeCt,
+      runId,
+      bankrollSnapshot,
+      ownedBooks,
+      snapshotStatus: consensusContext.snapshotStatus,
+      snapshotMaxSpreadSeconds: consensusContext.maxSpreadSeconds,
+      consensusMethod: pipeline.consensusMethod,
+      rejectionClass: consensusContext.snapshotStatus === 'insufficient_valid_books' ? 'invalid_snapshot' : 'invalid_snapshot',
+    });
+  }
   if (!snapshot?.valid) {
     return invalidSnapshotRows({
       sportKey,
@@ -1248,7 +1317,23 @@ async function main() {
   const probabilityPipeline = resolveProbabilityPipeline(policy);
   const riskControls = resolveRiskControls(policy);
   const propFeatureFlags = resolvePhase1NbaPointsProps(policy, args);
+  const nbaSpreadsFeatureFlags = resolvePhase1NbaSpreads(policy, args);
   const mlbFeatureFlags = resolvePhase1MlbMoneylines(policy, args);
+  const nbaSpreadsControl = buildFeatureMarketControl({
+    feature: nbaSpreadsFeatureFlags,
+    fallbackConsensusBooks: consensusBooksSet,
+    fallbackOwnedBooks: ownedBooksSet,
+  });
+  const mlbMoneylineControl = buildFeatureMarketControl({
+    feature: mlbFeatureFlags,
+    fallbackConsensusBooks: consensusBooksSet,
+    fallbackOwnedBooks: ownedBooksSet,
+  });
+  const nbaPointsControl = buildFeatureMarketControl({
+    feature: propFeatureFlags,
+    fallbackConsensusBooks: consensusBooksSet,
+    fallbackOwnedBooks: ownedBooksSet,
+  });
   const targetDateKey = todayCtDateKey(runAt);
   const tierA = policy?.priority_tiers?.tier_a || {};
   const books = [...new Set([...(tierA.default_books || []), ...(tierA.comparison_books || []), ...ownedBooksSet, ...consensusBooksSet])];
@@ -1257,6 +1342,18 @@ async function main() {
   const todaysEventsBySport = new Map();
   const observedBooks = new Set();
   const propSummary = {
+    phase1_nba_spreads: {
+      configured_enabled: nbaSpreadsFeatureFlags.configured_enabled,
+      enabled_for_run: nbaSpreadsFeatureFlags.enabled_for_run,
+      enable_source: nbaSpreadsFeatureFlags.enable_source,
+      fetched_event_count: 0,
+      analyzed_row_count: 0,
+      selected_bet_count: 0,
+      sit_count: 0,
+      native_rows_appended: 0,
+      min_book_count: nbaSpreadsControl.minBookCount,
+      eligible_books: [...nbaSpreadsControl.eligibleBooks].sort(),
+    },
     phase1_mlb_moneylines: {
       configured_enabled: mlbFeatureFlags.configured_enabled,
       enabled_for_run: mlbFeatureFlags.enabled_for_run,
@@ -1266,6 +1363,8 @@ async function main() {
       selected_bet_count: 0,
       sit_count: 0,
       native_rows_appended: 0,
+      min_book_count: mlbMoneylineControl.minBookCount,
+      eligible_books: [...mlbMoneylineControl.eligibleBooks].sort(),
     },
     phase1_nba_points_props: {
       configured_enabled: propFeatureFlags.configured_enabled,
@@ -1276,6 +1375,8 @@ async function main() {
       selected_bet_count: 0,
       sit_count: 0,
       native_rows_appended: 0,
+      min_book_count: nbaPointsControl.minBookCount,
+      eligible_books: [...nbaPointsControl.eligibleBooks].sort(),
     },
   };
 
@@ -1284,15 +1385,29 @@ async function main() {
     for (const event of payload || []) collectObservedBooks(event, observedBooks);
     const todaysEvents = (payload || []).filter((event) => eventIsTodayCt(event, targetDateKey));
     todaysEventsBySport.set(sportKey, todaysEvents);
+    if (sportKey === 'basketball_nba' && nbaSpreadsFeatureFlags.enabled_for_run) {
+      propSummary.phase1_nba_spreads.fetched_event_count = todaysEvents.length;
+    }
     for (const event of todaysEvents) {
       for (const marketKey of markets) {
+        const marketControl = resolveMarketControl({
+          sportKey,
+          marketKey,
+          nbaSpreadsControl,
+          mlbMoneylineControl,
+          consensusBooksSet,
+        });
         const consensusContext = buildConsensusContext({
           event,
           marketKey,
-          consensusBooks: consensusBooksSet,
+          consensusBooks: marketControl.eligibleBooks,
           pipeline: probabilityPipeline,
+          minBookCount: marketControl.minBookCount,
+          eligibleBooks: marketControl.eligibleBooks,
         });
         for (const bookmaker of event.bookmakers || []) {
+          const normalizedBook = normalizeBookKey(bookmaker.key || bookmaker.title);
+          if (marketControl.eligibleBooks?.size && !marketControl.eligibleBooks.has(normalizedBook)) continue;
           for (const market of bookmaker.markets || []) {
             if (market.key !== marketKey) continue;
             rows.push(...buildMarketRows({
@@ -1318,9 +1433,8 @@ async function main() {
     const mlbSportKey = mlbConfig.sport_key || 'baseball_mlb';
     const mlbMarkets = (mlbConfig.markets || ['h2h']).filter(Boolean);
     const mlbBooks = [...new Set([
-      ...((mlbConfig.trusted_books || []).filter(Boolean)),
+      ...((mlbConfig.eligible_books || mlbConfig.trusted_books || []).filter(Boolean)),
       ...((mlbConfig.comparison_books || []).filter(Boolean)),
-      ...ownedBooksSet,
     ])];
     const payload = await fetchOddsPayload({ sportKey: mlbSportKey, books: mlbBooks, markets: mlbMarkets, apiKey });
     for (const event of payload || []) collectObservedBooks(event, observedBooks);
@@ -1333,10 +1447,14 @@ async function main() {
         const consensusContext = buildConsensusContext({
           event,
           marketKey,
-          consensusBooks: consensusBooksSet,
+          consensusBooks: mlbMoneylineControl.eligibleBooks,
           pipeline: probabilityPipeline,
+          minBookCount: mlbMoneylineControl.minBookCount,
+          eligibleBooks: mlbMoneylineControl.eligibleBooks,
         });
         for (const bookmaker of event.bookmakers || []) {
+          const normalizedBook = normalizeBookKey(bookmaker.key || bookmaker.title);
+          if (mlbMoneylineControl.eligibleBooks?.size && !mlbMoneylineControl.eligibleBooks.has(normalizedBook)) continue;
           for (const market of bookmaker.markets || []) {
             if (market.key !== marketKey) continue;
             rows.push(...buildMarketRows({
@@ -1361,7 +1479,9 @@ async function main() {
     const propConfig = propFeatureFlags.config || {};
     const propSportKey = propConfig.sport_key || 'basketball_nba';
     const propMarketKey = propConfig.market_key || PHASE1_NBA_POINTS_PROP_KEY;
-    const propBooks = (propConfig.trusted_books || books).filter(Boolean);
+    const propBooks = [...new Set([
+      ...((propConfig.eligible_books || propConfig.trusted_books || books).filter(Boolean)),
+    ])];
     const nbaEvents = todaysEventsBySport.get(propSportKey) || [];
     propSummary.phase1_nba_points_props.fetched_event_count = nbaEvents.length;
 
@@ -1374,8 +1494,10 @@ async function main() {
         apiKey,
       });
       collectObservedBooks(propPayload, observedBooks);
-      const consensusMap = computePropConsensusMap(propPayload, propMarketKey);
+      const consensusMap = computePropConsensusMap(propPayload, propMarketKey, nbaPointsControl);
       for (const bookmaker of propPayload.bookmakers || []) {
+        const normalizedBook = normalizeBookKey(bookmaker.key || bookmaker.title);
+        if (nbaPointsControl.eligibleBooks?.size && !nbaPointsControl.eligibleBooks.has(normalizedBook)) continue;
         for (const market of bookmaker.markets || []) {
           if (market.key !== propMarketKey) continue;
           rows.push(...buildPhase1NbaPointPropRows({
@@ -1405,7 +1527,11 @@ async function main() {
   const finalizedRows = finalizeDecisions([...bestByOutcome.values()], riskControls);
   markSurfacedRejectedRows(finalizedRows);
   const propRows = finalizedRows.filter((row) => row.market_family === 'player_prop');
+  const nbaSpreadRows = finalizedRows.filter((row) => row.sport === 'NBA' && row.market_family === 'main_market' && row.market_type === 'Spread');
   const mlbRows = finalizedRows.filter((row) => row.sport === 'MLB' && row.market_family === 'main_market');
+  propSummary.phase1_nba_spreads.analyzed_row_count = nbaSpreadRows.length;
+  propSummary.phase1_nba_spreads.selected_bet_count = nbaSpreadRows.filter((row) => row.final_decision === 'BET').length;
+  propSummary.phase1_nba_spreads.sit_count = nbaSpreadRows.filter((row) => row.final_decision === 'SIT').length;
   propSummary.phase1_mlb_moneylines.analyzed_row_count = mlbRows.length;
   propSummary.phase1_mlb_moneylines.selected_bet_count = mlbRows.filter((row) => row.final_decision === 'BET').length;
   propSummary.phase1_mlb_moneylines.sit_count = mlbRows.filter((row) => row.final_decision === 'SIT').length;
@@ -1413,6 +1539,7 @@ async function main() {
   propSummary.phase1_nba_points_props.selected_bet_count = propRows.filter((row) => row.final_decision === 'BET').length;
   propSummary.phase1_nba_points_props.sit_count = propRows.filter((row) => row.final_decision === 'SIT').length;
   appendNativeDecisionRows(finalizedRows);
+  propSummary.phase1_nba_spreads.native_rows_appended = nbaSpreadRows.length;
   propSummary.phase1_mlb_moneylines.native_rows_appended = mlbRows.length;
   propSummary.phase1_nba_points_props.native_rows_appended = propRows.length;
   const selectedRows = finalizedRows.filter((row) => row.final_decision === 'BET');

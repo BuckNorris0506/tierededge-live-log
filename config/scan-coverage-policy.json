@@ -103,12 +103,36 @@
     "alt_lines_enabled_default": false
   },
   "feature_flags": {
+    "phase1_nba_spreads": {
+      "enabled": true,
+      "league": "NBA",
+      "sport_key": "basketball_nba",
+      "markets": [
+        "spreads"
+      ],
+      "min_book_count": 2,
+      "eligible_books": [
+        "draftkings",
+        "fanduel",
+        "betmgm",
+        "circa",
+        "bet365"
+      ]
+    },
     "phase1_mlb_moneylines": {
       "enabled": true,
       "league": "MLB",
       "sport_key": "baseball_mlb",
       "markets": [
         "h2h"
+      ],
+      "min_book_count": 2,
+      "eligible_books": [
+        "draftkings",
+        "fanduel",
+        "betmgm",
+        "circa",
+        "bet365"
       ],
       "market_scope": "moneylines_only",
       "trusted_books": [
@@ -129,6 +153,17 @@
       "sport_key": "basketball_nba",
       "market_key": "player_points",
       "prop_type": "points",
+      "markets": [
+        "player_points"
+      ],
+      "min_book_count": 2,
+      "eligible_books": [
+        "draftkings",
+        "fanduel",
+        "betmgm",
+        "circa",
+        "bet365"
+      ],
       "sides": [
         "over",
         "under"
