@@ -632,6 +632,86 @@ function buildEdgeValidationSummary(settledValidationRows, clvCoverageSummary, e
   };
 }
 
+function deriveRejectedOpportunityRow(row) {
+  const edge = parseNumber(row.post_conf_edge_pct) ?? 0;
+  const threshold = parseNumber(row.tier_threshold_pct) ?? 2;
+  const thresholdGap = parseNumber(row.threshold_gap_pct);
+  const executableBook = row.executable_book ?? row.actionable_book ?? ['DraftKings', 'FanDuel', 'BetMGM', 'Circa', 'bet365'].includes(String(row.sportsbook || ''));
+  const rejectionClass = (() => {
+    if (row.rejection_class) return row.rejection_class;
+    if (row.rejection_reason === 'research_only_non_owned_book') return 'non_executable_edge';
+    if (row.rejection_reason === 'sub_minimum_kelly') return 'sub_minimum_kelly';
+    if (row.rejection_stage === 'risk_gate') return 'risk_gate_rejected';
+    if (row.rejection_reason === 'no_edge' && edge >= 1.5 && edge < threshold) return 'near_miss';
+    if (row.rejection_reason === 'no_edge') return 'no_edge';
+    if (row.rejection_reason === 'low_confidence') return 'other_meaningful_canonical';
+    return 'other_meaningful_canonical';
+  })();
+  return {
+    run_id: row.run_id || null,
+    timestamp_ct: row.timestamp_ct || null,
+    target_date: row.target_date || null,
+    sport: row.sport || null,
+    league: row.league || null,
+    market_type: row.market_type || null,
+    event_id: row.event_id || null,
+    event_label: row.event_label || null,
+    selection: row.selection || null,
+    sportsbook: row.sportsbook || null,
+    executable_book: Boolean(executableBook),
+    odds_american_at_decision: row.odds_american || null,
+    de_vig_implied_probability: parseNumber(row.devig_implied_prob),
+    true_probability: parseNumber(row.post_conf_true_prob ?? row.consensus_prob),
+    edge_pct: edge,
+    threshold_gap_pct: thresholdGap ?? round2(threshold - edge),
+    rejection_stage: row.rejection_stage || null,
+    rejection_reason: row.rejection_reason || null,
+    rejection_class: rejectionClass,
+    surfaced_as_closest_miss: Boolean(row.surfaced_as_closest_miss),
+    close_capture_status: row.close_capture_status || 'not_captured',
+    closing_odds_american: row.closing_odds_american || null,
+    closing_line: parseNumber(row.closing_line),
+    partial_backfill: !('threshold_gap_pct' in row) || !('rejection_class' in row) || !('surfaced_as_closest_miss' in row),
+  };
+}
+
+function buildRejectedOpportunitySummary(decisions, latestDate) {
+  const rejected = (decisions || [])
+    .filter((row) => row.final_decision === 'SIT')
+    .map(deriveRejectedOpportunityRow);
+
+  const nearMisses = rejected.filter((row) => row.edge_pct >= 1.5 && row.edge_pct < 2);
+  const nearMissBand = (min, max) => rejected.filter((row) => row.edge_pct >= min && row.edge_pct < max);
+  const countBy = (rows, keyFn) => rows.reduce((acc, row) => {
+    const key = keyFn(row);
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+
+  return {
+    total_rejected_rows: rejected.length,
+    partial_backfill_count: rejected.filter((row) => row.partial_backfill).length,
+    near_miss_counts_by_band: {
+      '1.0_to_1.49': nearMissBand(1, 1.5).length,
+      '1.5_to_1.99': nearMissBand(1.5, 2).length,
+      '2.0_plus_rejected': rejected.filter((row) => row.edge_pct >= 2).length,
+    },
+    executable_near_miss_counts_by_band: {
+      '1.0_to_1.49': nearMissBand(1, 1.5).filter((row) => row.executable_book).length,
+      '1.5_to_1.99': nearMissBand(1.5, 2).filter((row) => row.executable_book).length,
+      '2.0_plus_rejected': rejected.filter((row) => row.edge_pct >= 2 && row.executable_book).length,
+    },
+    rejection_reason_distribution: countBy(rejected, (row) => row.rejection_reason || 'unknown'),
+    rejection_class_distribution: countBy(rejected, (row) => row.rejection_class || 'unknown'),
+    latest_date_rejection_reason_distribution: countBy(rejected.filter((row) => row.target_date === latestDate), (row) => row.rejection_reason || 'unknown'),
+    recent_rejected_opportunities_worth_review: rejected
+      .filter((row) => row.executable_book)
+      .filter((row) => row.rejection_class === 'near_miss' || row.rejection_class === 'sub_minimum_kelly' || row.rejection_class === 'risk_gate_rejected')
+      .sort((a, b) => (b.edge_pct || 0) - (a.edge_pct || 0))
+      .slice(0, 25),
+  };
+}
+
 function main() {
   const decisions = readJsonl(CORE_PATHS.decisionLedger);
   const grading = readJsonl(CORE_PATHS.gradingLedger);
@@ -739,6 +819,7 @@ function main() {
   const expectationSummary = buildExpectationSummary(settledValidationRows);
   const edgeValidationSummary = buildEdgeValidationSummary(settledValidationRows, clvCoverageSummary, expectationSummary);
   const latestModelExposure = parseDailyExposure(latestRuntime?.summary);
+  const rejectedOpportunitySummary = buildRejectedOpportunitySummary(validLearningDecisions, latestDate);
 
   const decisionPayload = {
     verdict,
@@ -850,6 +931,7 @@ function main() {
       'Plays Recommended': validLearningDecisions.filter((row) => row.target_date === latestDate && row.final_decision === 'BET').length,
       'Excluded Invalid Rows': invalidRunScope.excluded_rows.filter((row) => row.target_date === latestDate).length,
     },
+    rejected_opportunity_summary: rejectedOpportunitySummary,
     overall_betting_results: {
       count: settledPerformanceOverall.settled_bet_count,
       profit_loss: settledPerformanceOverall.realized_profit,

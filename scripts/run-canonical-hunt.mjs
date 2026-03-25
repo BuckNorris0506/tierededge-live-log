@@ -444,11 +444,18 @@ function buildMarketRows({ sportKey, event, bookmaker, market, consensusMap, sca
       raw_edge_pct: edgePct,
       post_conf_edge_pct: edgePct,
       tier_threshold_pct: tier ? Number(tier.slice(1) === '1' ? 6 : tier.slice(1) === '2' ? 4 : 2) : 2,
+      threshold_gap_pct: round2((tier ? Number(tier.slice(1) === '1' ? 6 : tier.slice(1) === '2' ? 4 : 2) : 2) - edgePct),
       price_edge_pass: Number.isFinite(edgePct) && edgePct >= 2,
+      executable_book: ownedBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
       bet_permission_pass: false,
       final_decision: 'SIT',
       rejection_stage: '',
       rejection_reason: '',
+      rejection_class: '',
+      surfaced_as_closest_miss: false,
+      close_capture_status: 'not_captured',
+      closing_odds_american: null,
+      closing_line: null,
       bet_class: 'EDGE_BET',
       bankroll_snapshot: bankrollSnapshot,
       kelly_stake: kelly?.final_stake ?? 0,
@@ -541,11 +548,18 @@ function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, s
         raw_edge_pct: edgePct,
         post_conf_edge_pct: edgePct,
         tier_threshold_pct: tier ? Number(tier.slice(1) === '1' ? 6 : tier.slice(1) === '2' ? 4 : 2) : 2,
+        threshold_gap_pct: round2((tier ? Number(tier.slice(1) === '1' ? 6 : tier.slice(1) === '2' ? 4 : 2) : 2) - edgePct),
         price_edge_pass: Number.isFinite(edgePct) && edgePct >= 2,
+        executable_book: ownedBooks.has(normalizeBookKey(bookmaker.key || bookmaker.title)),
         bet_permission_pass: false,
         final_decision: 'SIT',
         rejection_stage: '',
         rejection_reason: '',
+        rejection_class: '',
+        surfaced_as_closest_miss: false,
+        close_capture_status: 'not_captured',
+        closing_odds_american: null,
+        closing_line: null,
         bet_class: 'EDGE_BET',
         bankroll_snapshot: bankrollSnapshot,
         kelly_stake: kelly?.final_stake ?? 0,
@@ -574,6 +588,7 @@ function finalizeDecisions(rows) {
       row.final_decision = 'SIT';
       row.rejection_stage = 'threshold_gate';
       row.rejection_reason = 'no_edge';
+      row.rejection_class = (row.post_conf_edge_pct ?? 0) >= 1.5 ? 'near_miss' : 'no_edge';
       row.bet_permission_pass = false;
       row.include_in_actual_bankroll = false;
       row.kelly_stake = 0;
@@ -583,6 +598,7 @@ function finalizeDecisions(rows) {
       row.final_decision = 'SIT';
       row.rejection_stage = 'confidence_gate';
       row.rejection_reason = 'low_confidence';
+      row.rejection_class = 'other_meaningful_canonical';
       row.bet_permission_pass = false;
       row.include_in_actual_bankroll = false;
       row.kelly_stake = 0;
@@ -593,6 +609,7 @@ function finalizeDecisions(rows) {
       row.final_decision = 'SIT';
       row.rejection_stage = 'risk_gate';
       row.rejection_reason = 'exposure_cap_reached';
+      row.rejection_class = 'risk_gate_rejected';
       row.bet_permission_pass = false;
       row.include_in_actual_bankroll = false;
       row.kelly_stake = 0;
@@ -601,7 +618,8 @@ function finalizeDecisions(rows) {
     if ((parseNumber(row.kelly_stake) || 0) < 0.5) {
       row.final_decision = 'SIT';
       row.rejection_stage = 'risk_gate';
-      row.rejection_reason = 'exposure_cap_reached';
+      row.rejection_reason = 'sub_minimum_kelly';
+      row.rejection_class = 'sub_minimum_kelly';
       row.bet_permission_pass = false;
       row.include_in_actual_bankroll = false;
       row.kelly_stake = 0;
@@ -611,6 +629,7 @@ function finalizeDecisions(rows) {
       row.final_decision = 'SIT';
       row.rejection_stage = 'risk_gate';
       row.rejection_reason = 'research_only_non_owned_book';
+      row.rejection_class = 'non_executable_edge';
       row.bet_permission_pass = false;
       row.include_in_actual_bankroll = false;
       row.kelly_stake = 0;
@@ -619,6 +638,7 @@ function finalizeDecisions(rows) {
     row.final_decision = 'BET';
     row.rejection_stage = '';
     row.rejection_reason = '';
+    row.rejection_class = '';
     row.bet_permission_pass = true;
     row.include_in_actual_bankroll = true;
     byTierCounts[tier] += 1;
@@ -765,6 +785,25 @@ function summarizeRun({
       research_only_rec_ids: researchOnlyRows.map((row) => row.rec_id),
     },
   };
+}
+
+function markSurfacedRejectedRows(rows) {
+  const sitRows = rows.filter((row) => row.final_decision === 'SIT');
+  const actionableMisses = sitRows
+    .filter((row) => row.actionable_book)
+    .filter((row) => (row.post_conf_edge_pct ?? 0) >= 0.5 && (row.post_conf_edge_pct ?? 0) < 2)
+    .sort(rankCandidates)
+    .slice(0, 6);
+  const researchOnlyRows = sitRows
+    .filter((row) => row.rejection_reason === 'research_only_non_owned_book')
+    .sort(rankCandidates)
+    .slice(0, 6);
+  for (const row of [...actionableMisses, ...researchOnlyRows]) {
+    row.surfaced_as_closest_miss = true;
+    if (!row.rejection_class && row.rejection_reason === 'no_edge' && (row.post_conf_edge_pct ?? 0) >= 1.5) {
+      row.rejection_class = 'near_miss';
+    }
+  }
 }
 
 function failureArtifact({ runId, scanTimeCt, reason }) {
@@ -956,6 +995,7 @@ async function main() {
   }
 
   const finalizedRows = finalizeDecisions([...bestByOutcome.values()]);
+  markSurfacedRejectedRows(finalizedRows);
   const propRows = finalizedRows.filter((row) => row.market_family === 'player_prop');
   const mlbRows = finalizedRows.filter((row) => row.sport === 'MLB' && row.market_family === 'main_market');
   propSummary.phase1_mlb_moneylines.analyzed_row_count = mlbRows.length;

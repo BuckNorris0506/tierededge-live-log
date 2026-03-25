@@ -49,11 +49,21 @@ export const NATIVE_DECISION_HEADERS = [
   'raw_edge_pct',
   'post_conf_edge_pct',
   'tier_threshold_pct',
+  'threshold_gap_pct',
   'price_edge_pass',
+  'executable_book',
+  'owned_book',
+  'live_feed_book',
+  'actionable_book',
   'bet_permission_pass',
   'final_decision',
   'rejection_stage',
   'rejection_reason',
+  'rejection_class',
+  'surfaced_as_closest_miss',
+  'close_capture_status',
+  'closing_odds_american',
+  'closing_line',
   'bet_class',
   'bankroll_snapshot',
   'kelly_stake',
@@ -93,6 +103,11 @@ function normalizeBool(value, fallback = false) {
   if (['true', '1', 'yes', 'y'].includes(raw)) return true;
   if (['false', '0', 'no', 'n'].includes(raw)) return false;
   return fallback;
+}
+
+function normalizeNullableString(value) {
+  const text = String(value || '').trim();
+  return text ? text : null;
 }
 
 function requireField(row, field) {
@@ -224,11 +239,21 @@ export function normalizeNativeDecisionRow(input) {
     raw_edge_pct: rawEdgePct,
     post_conf_edge_pct: postConfEdgePct,
     tier_threshold_pct: tierThresholdPct,
+    threshold_gap_pct: round4(parseNumber(input.threshold_gap_pct)) ?? (rawEdgePct === null ? null : round4(tierThresholdPct - rawEdgePct)),
     price_edge_pass: normalizeBool(input.price_edge_pass, rawEdgePct !== null && rawEdgePct >= tierThresholdPct),
+    executable_book: normalizeBool(input.executable_book, false),
+    owned_book: normalizeBool(input.owned_book, false),
+    live_feed_book: normalizeBool(input.live_feed_book, false),
+    actionable_book: normalizeBool(input.actionable_book, finalDecision === 'BET'),
     bet_permission_pass: normalizeBool(input.bet_permission_pass, finalDecision === 'BET'),
     final_decision: finalDecision,
     rejection_stage: normalizeStage(input.rejection_stage, finalDecision, rawEdgePct),
     rejection_reason: finalDecision === 'BET' ? '' : String(input.rejection_reason || '').trim().toLowerCase(),
+    rejection_class: finalDecision === 'BET' ? '' : String(input.rejection_class || '').trim().toLowerCase(),
+    surfaced_as_closest_miss: normalizeBool(input.surfaced_as_closest_miss, false),
+    close_capture_status: normalizeNullableString(input.close_capture_status) || 'not_captured',
+    closing_odds_american: normalizeNullableString(input.closing_odds_american),
+    closing_line: round4(parseNumber(input.closing_line)),
     bet_class: normalizeBetClass(input.bet_class, finalDecision),
     bankroll_snapshot: bankrollSnapshot,
     kelly_stake: kellyStake,
