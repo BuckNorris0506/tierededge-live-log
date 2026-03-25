@@ -858,6 +858,22 @@ function buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns)
   };
 }
 
+function buildNotificationSummary(notificationEvents) {
+  const sorted = [...(notificationEvents || [])].sort((a, b) =>
+    String(b.created_at_utc || '').localeCompare(String(a.created_at_utc || ''))
+  );
+  const sent = sorted.filter((row) => String(row.status || '').trim().toLowerCase() === 'sent');
+  const latestSent = sent[0] || null;
+  return {
+    last_notification_time_utc: latestSent?.created_at_utc || null,
+    notification_type: latestSent?.notification_type || null,
+    triggering_reason: latestSent?.triggering_reason || null,
+    last_notification_status: sorted[0]?.status || 'not_run',
+    sent_count: sent.length,
+    recent_events: sorted.slice(0, 10),
+  };
+}
+
 function buildPerformanceByMarket(decisions) {
   const groups = new Map();
   for (const row of decisions || []) {
@@ -1280,6 +1296,7 @@ function buildOperatorDashboard({
 function main() {
   const decisions = readJsonl(CORE_PATHS.decisionLedger);
   const canonicalHuntRuns = readJsonl(CORE_PATHS.canonicalHuntRuns);
+  const notificationEvents = readJsonl(CORE_PATHS.notificationEvents);
   const rejectedCloseCaptureLog = readJsonl(REJECTED_CLOSE_CAPTURE_LOG_PATH);
   const rejectedCloseCaptureRuns = readJsonl(REJECTED_CLOSE_CAPTURE_RUNS_PATH);
   const grading = readJsonl(CORE_PATHS.gradingLedger);
@@ -1393,6 +1410,7 @@ function main() {
   const rejectedOpportunitySummary = buildRejectedOpportunitySummary(validLearningDecisions, latestDate, rejectedCloseCaptureIndex);
   const rejectedCloseCaptureAutomation = buildRejectedCloseCaptureAutomationSummary(rejectedCloseCaptureRuns, rejectedOpportunitySummary);
   const automationLockSummary = buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns);
+  const notificationSummary = buildNotificationSummary(notificationEvents);
   const sportsbookScope = {
     owned_books: scanCoveragePolicy?.book_sets?.owned_books || scanCoveragePolicy?.book_sets?.executable_books || [],
     live_feed_books: latestCanonicalHuntRun?.live_feed_books || [],
@@ -1537,6 +1555,7 @@ function main() {
     rejected_opportunity_summary: rejectedOpportunitySummary,
     rejected_close_capture_automation: rejectedCloseCaptureAutomation,
     automation_lock_summary: automationLockSummary,
+    notification_summary: notificationSummary,
     clean_run_summary: cleanRunSummary,
     performance_by_market: performanceByMarket,
     operator_dashboard: operatorDashboard,

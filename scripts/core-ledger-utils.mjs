@@ -8,6 +8,7 @@ export const DATA_DIR = path.resolve(REPO_ROOT, 'data');
 export const CORE_PATHS = {
   decisionLedger: path.join(DATA_DIR, 'decision-ledger.jsonl'),
   canonicalHuntRuns: path.join(DATA_DIR, 'canonical-hunt-runs.jsonl'),
+  notificationEvents: path.join(DATA_DIR, 'notification-events.jsonl'),
   rejectedCloseCaptureLog: path.join(DATA_DIR, 'rejected-close-capture-log.jsonl'),
   rejectedCloseCaptureRuns: path.join(DATA_DIR, 'rejected-close-capture-runs.jsonl'),
   cleanRunSummary: path.join(DATA_DIR, 'clean-run-summary.json'),
