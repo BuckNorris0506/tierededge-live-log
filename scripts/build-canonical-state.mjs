@@ -885,6 +885,26 @@ function buildNotificationSummary(notificationEvents) {
   };
 }
 
+function buildTelegramOperatorSummary(telegramOperatorEvents, notificationSummary) {
+  const sorted = [...(telegramOperatorEvents || [])].sort((a, b) =>
+    String(b.inbound_timestamp_utc || '').localeCompare(String(a.inbound_timestamp_utc || ''))
+  );
+  const accepted = sorted.filter((row) => normalizeText(row.auth_status) === 'accepted');
+  const rejected = sorted.filter((row) => normalizeText(row.auth_status) === 'rejected');
+  const latest = sorted[0] || null;
+  const latestAccepted = accepted[0] || null;
+  return {
+    last_inbound_telegram_command: latestAccepted?.resolved_command || latestAccepted?.command || null,
+    last_inbound_command_time_utc: latestAccepted?.inbound_timestamp_utc || null,
+    last_command_status: latestAccepted?.delivery_status || null,
+    last_outbound_alert_time_utc: notificationSummary?.last_notification_time_utc || null,
+    last_outbound_alert_type: notificationSummary?.notification_type || null,
+    accepted_command_count: accepted.length,
+    rejected_attempt_count: rejected.length,
+    recent_events: sorted.slice(0, 10),
+  };
+}
+
 function genericCountBy(rows, keyFn) {
   return (rows || []).reduce((acc, row) => {
     const key = keyFn(row);
@@ -1452,6 +1472,7 @@ function main() {
   const decisions = readJsonl(CORE_PATHS.decisionLedger);
   const canonicalHuntRuns = readJsonl(CORE_PATHS.canonicalHuntRuns);
   const notificationEvents = readJsonl(CORE_PATHS.notificationEvents);
+  const telegramOperatorEvents = readJsonl(CORE_PATHS.telegramOperatorEvents);
   const rejectedCloseCaptureLog = readJsonl(REJECTED_CLOSE_CAPTURE_LOG_PATH);
   const rejectedCloseCaptureRuns = readJsonl(REJECTED_CLOSE_CAPTURE_RUNS_PATH);
   const missedExecutionWindows = readJsonl(MISSED_EXECUTION_WINDOWS_PATH);
@@ -1568,6 +1589,7 @@ function main() {
   const rejectedCloseCaptureAutomation = buildRejectedCloseCaptureAutomationSummary(rejectedCloseCaptureRuns, rejectedOpportunitySummary);
   const automationLockSummary = buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns);
   const notificationSummary = buildNotificationSummary(notificationEvents);
+  const telegramOperatorSummary = buildTelegramOperatorSummary(telegramOperatorEvents, notificationSummary);
   const missedExecutionWindowSummary = buildMissedExecutionWindowSummary(missedExecutionWindows);
   const sportsbookScope = {
     owned_books: scanCoveragePolicy?.book_sets?.owned_books || scanCoveragePolicy?.book_sets?.executable_books || [],
@@ -1727,6 +1749,7 @@ function main() {
     rejected_close_capture_automation: rejectedCloseCaptureAutomation,
     automation_lock_summary: automationLockSummary,
     notification_summary: notificationSummary,
+    telegram_operator_summary: telegramOperatorSummary,
     clean_run_summary: cleanRunSummary,
     performance_by_market: performanceByMarket,
     book_usefulness_summary: bookUsefulnessSummary,

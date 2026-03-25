@@ -2,6 +2,7 @@
 import crypto from 'node:crypto';
 import { CORE_PATHS, appendJsonl, parseNumber, readJson, readJsonl, round2 } from './core-ledger-utils.mjs';
 import { sendTelegramMessage } from './telegram-alert-utils.mjs';
+import { commandKeyboard } from './operator-dispatcher.mjs';
 
 function parseArgs(argv) {
   const args = {};
@@ -109,6 +110,44 @@ function buildActionableCandidate(state, rows) {
   };
 }
 
+function buildTestTierACandidate() {
+  const boardSignature = [
+    {
+      rec_id: 'test-rec::telegram-tier-a',
+      event_id: 'test-event::telegram-tier-a',
+      event_label: 'TieredEdge Notification Test @ Telegram',
+      selection: 'Denver Nuggets ML',
+      sportsbook: 'DraftKings',
+      odds_american: -110,
+      edge_pct: 2.34,
+      minutes_to_start: 25,
+      urgency_tag: 'SOON',
+    },
+  ];
+
+  return {
+    tier: 'A',
+    type: 'actionable',
+    reason: 'notification_delivery_test',
+    trigger: 'test_tier_a',
+    run_id: 'test::tierededge::telegram-tier-a',
+    channel_preference: 'telegram',
+    board_signature: boardSignature,
+    is_test: true,
+    message: [
+      'TIERED EDGE — ACTION REQUIRED',
+      '',
+      '[TEST ONLY — NOT A REAL BET]',
+      'Run: test::tierededge::telegram-tier-a',
+      '',
+      'Game: TieredEdge Notification Test @ Telegram',
+      'Play: Denver Nuggets ML @ DraftKings',
+      'Edge: +2.34%',
+      'Start: 25 minutes (SOON)',
+    ].join('\n'),
+  };
+}
+
 function buildWarningCandidate(state, rows) {
   const run = state?.latest_canonical_hunt_run;
   const clean = state?.clean_run_summary?.rolling_7_day_summary || {};
@@ -169,7 +208,7 @@ async function deliverCandidate(candidate) {
   if (candidate.channel_preference !== 'telegram') {
     return { status: 'sent', channel_used: 'log_only', delivery_error: null };
   }
-  const result = await sendTelegramMessage(candidate.message);
+  const result = await sendTelegramMessage(candidate.message, { keyboard: commandKeyboard() });
   return {
     status: result.ok ? 'sent' : 'failed',
     channel_used: result.ok ? 'telegram' : 'telegram_failed',
@@ -184,7 +223,9 @@ async function main() {
   const notificationEvents = readJsonl(CORE_PATHS.notificationEvents);
   const now = new Date().toISOString();
 
-  const candidate = buildActionableCandidate(state, rows) || buildWarningCandidate(state, rows);
+  const candidate = args.test_tier_a
+    ? buildTestTierACandidate()
+    : (buildActionableCandidate(state, rows) || buildWarningCandidate(state, rows));
   if (!candidate) {
     if (args.json) {
       console.log(JSON.stringify({ status: 'no_alert' }, null, 2));
@@ -206,6 +247,7 @@ async function main() {
       notification_tier: candidate.tier,
       triggering_reason: candidate.reason,
       trigger: candidate.trigger,
+      test_marker: candidate.is_test === true,
       run_id: candidate.run_id,
       fingerprint,
       channel_used: candidate.channel_preference,
@@ -224,6 +266,7 @@ async function main() {
       notification_tier: candidate.tier,
       triggering_reason: candidate.reason,
       trigger: candidate.trigger,
+      test_marker: candidate.is_test === true,
       run_id: candidate.run_id,
       fingerprint,
       channel_used: delivery.channel_used,

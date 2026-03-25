@@ -9,6 +9,8 @@ export const CORE_PATHS = {
   decisionLedger: path.join(DATA_DIR, 'decision-ledger.jsonl'),
   canonicalHuntRuns: path.join(DATA_DIR, 'canonical-hunt-runs.jsonl'),
   notificationEvents: path.join(DATA_DIR, 'notification-events.jsonl'),
+  telegramOperatorEvents: path.join(DATA_DIR, 'telegram-operator-events.jsonl'),
+  telegramOperatorState: path.join(DATA_DIR, 'telegram-operator-state.json'),
   missedExecutionWindows: path.join(DATA_DIR, 'missed-execution-windows.jsonl'),
   rejectedCloseCaptureLog: path.join(DATA_DIR, 'rejected-close-capture-log.jsonl'),
   rejectedCloseCaptureRuns: path.join(DATA_DIR, 'rejected-close-capture-runs.jsonl'),

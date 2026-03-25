@@ -21,6 +21,8 @@
     "run:rejected-close-capture": "./scripts/run-rejected-close-capture.sh",
     "notify:actions": "node scripts/evaluate-action-notifications.mjs",
     "run:action-notification-check": "./scripts/run-action-notification-check.sh",
+    "telegram:operator": "node scripts/telegram-operator-bot.mjs",
+    "telegram:operator:run": "./scripts/run-telegram-operator-poll.sh",
     "audit:hunt-stakes": "node scripts/audit-hunt-stakes.mjs",
     "append:grading": "node scripts/append-grading-ledger.mjs",
     "append:bankroll-event": "node scripts/append-bankroll-event.mjs",

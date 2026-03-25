@@ -1,7 +1,7 @@
 {
   "schema": "tierededge_canonical_v2",
-  "generated_at_utc": "2026-03-25T19:27:30.936Z",
-  "last_updated_ct": "2026-03-25 14:27 CT",
+  "generated_at_utc": "2026-03-25T22:03:33.056Z",
+  "last_updated_ct": "2026-03-25 17:03 CT",
   "current_status": {
     "Bankroll": "$1396.30",
     "Phase": "GROWTH",
@@ -655,7 +655,7 @@
       }
     },
     "weekly_truth_report_summary": {
-      "generated_at_utc": "2026-03-25T19:27:31.038Z",
+      "generated_at_utc": "2026-03-25T22:03:33.156Z",
       "settled_bet_count": 2,
       "top_bleeding_categories": [],
       "top_strongest_categories": [
@@ -770,7 +770,7 @@
       ]
     },
     "weekly_operator_review_summary": {
-      "generated_at_utc": "2026-03-25T19:27:30.629Z",
+      "generated_at_utc": "2026-03-25T22:03:32.719Z",
       "window": "last_7_days",
       "run_truth": {
         "valid_runs": 38,
@@ -5344,21 +5344,68 @@
     }
   },
   "notification_summary": {
-    "last_notification_time_utc": "2026-03-25T03:17:51.534Z",
-    "notification_type": "warning",
-    "notification_tier": null,
-    "triggering_reason": "native_append_runner_failed",
-    "channel_used": null,
+    "last_notification_time_utc": "2026-03-25T21:28:47.752Z",
+    "notification_type": "actionable",
+    "notification_tier": "A",
+    "triggering_reason": "notification_delivery_test",
+    "channel_used": "telegram",
     "last_notification_status": "skipped_duplicate",
-    "sent_count": 1,
+    "sent_count": 2,
     "status_distribution": {
-      "skipped_duplicate": 2,
-      "sent": 1
+      "skipped_duplicate": 3,
+      "sent": 2,
+      "failed": 1
     },
     "channel_distribution": {
+      "telegram": 2,
+      "telegram_failed": 1,
       "unknown": 3
     },
     "recent_events": [
+      {
+        "notification_id": "notify::2026-03-25T21:28:56.415Z",
+        "created_at_utc": "2026-03-25T21:28:56.415Z",
+        "status": "skipped_duplicate",
+        "notification_type": "actionable",
+        "notification_tier": "A",
+        "triggering_reason": "notification_delivery_test",
+        "trigger": "test_tier_a",
+        "test_marker": true,
+        "run_id": "test::tierededge::telegram-tier-a",
+        "fingerprint": "3cb2453f4017a56b3c70",
+        "channel_used": "telegram",
+        "message": "TIERED EDGE — ACTION REQUIRED\n\n[TEST ONLY — NOT A REAL BET]\nRun: test::tierededge::telegram-tier-a\n\nGame: TieredEdge Notification Test @ Telegram\nPlay: Denver Nuggets ML @ DraftKings\nEdge: +2.34%\nStart: 25 minutes (SOON)"
+      },
+      {
+        "notification_id": "notify::2026-03-25T21:28:47.752Z",
+        "created_at_utc": "2026-03-25T21:28:47.752Z",
+        "status": "sent",
+        "notification_type": "actionable",
+        "notification_tier": "A",
+        "triggering_reason": "notification_delivery_test",
+        "trigger": "test_tier_a",
+        "test_marker": true,
+        "run_id": "test::tierededge::telegram-tier-a",
+        "fingerprint": "3cb2453f4017a56b3c70",
+        "channel_used": "telegram",
+        "delivery_error": null,
+        "message": "TIERED EDGE — ACTION REQUIRED\n\n[TEST ONLY — NOT A REAL BET]\nRun: test::tierededge::telegram-tier-a\n\nGame: TieredEdge Notification Test @ Telegram\nPlay: Denver Nuggets ML @ DraftKings\nEdge: +2.34%\nStart: 25 minutes (SOON)"
+      },
+      {
+        "notification_id": "notify::2026-03-25T21:28:36.588Z",
+        "created_at_utc": "2026-03-25T21:28:36.588Z",
+        "status": "failed",
+        "notification_type": "actionable",
+        "notification_tier": "A",
+        "triggering_reason": "notification_delivery_test",
+        "trigger": "test_tier_a",
+        "test_marker": true,
+        "run_id": "test::tierededge::telegram-tier-a",
+        "fingerprint": "3cb2453f4017a56b3c70",
+        "channel_used": "telegram_failed",
+        "delivery_error": "fetch failed",
+        "message": "TIERED EDGE — ACTION REQUIRED\n\n[TEST ONLY — NOT A REAL BET]\nRun: test::tierededge::telegram-tier-a\n\nGame: TieredEdge Notification Test @ Telegram\nPlay: Denver Nuggets ML @ DraftKings\nEdge: +2.34%\nStart: 25 minutes (SOON)"
+      },
       {
         "notification_id": "notify::2026-03-25T03:20:01.565Z",
         "created_at_utc": "2026-03-25T03:20:01.565Z",
@@ -5388,6 +5435,96 @@
         "run_id": "canonical-hunt::2026-03-24::2212",
         "fingerprint": "98adda8ea99c837a",
         "message": "TIEREDGE WARNING — 2026-03-24 22:12\nRun: canonical-hunt::2026-03-24::2212\nReasons: native_append_runner_failed"
+      }
+    ]
+  },
+  "telegram_operator_summary": {
+    "last_inbound_telegram_command": "STATUS",
+    "last_inbound_command_time_utc": "2026-03-25T22:03:25.800Z",
+    "last_command_status": "sent",
+    "last_outbound_alert_time_utc": "2026-03-25T21:28:47.752Z",
+    "last_outbound_alert_type": "actionable",
+    "accepted_command_count": 3,
+    "rejected_attempt_count": 1,
+    "recent_events": [
+      {
+        "telegram_event_id": "telegram-operator::2026-03-25T22:03:25.800Z::1774476205800",
+        "inbound_timestamp_utc": "2026-03-25T22:03:25.800Z",
+        "telegram_update_id": 1774476205800,
+        "chat_id": "8657197389",
+        "raw_text": "STATUS",
+        "outbound_timestamp_utc": "2026-03-25T22:03:25.804Z",
+        "command": "STATUS",
+        "resolved_command": "STATUS",
+        "auth_status": "accepted",
+        "response_type": "status",
+        "run_id": "canonical-hunt::2026-03-25::1345",
+        "notification_tier": null,
+        "duplicate_suppression_status": null,
+        "outbound_channel": "telegram",
+        "delivery_status": "sent",
+        "delivery_error": null,
+        "legacy_alias_used": false,
+        "last_outbound_alert_time": "2026-03-25T03:17:51.534Z",
+        "last_outbound_alert_type": "warning"
+      },
+      {
+        "telegram_event_id": "telegram-operator::2026-03-25T22:03:18.474Z::419781024",
+        "inbound_timestamp_utc": "2026-03-25T22:03:18.474Z",
+        "telegram_update_id": 419781024,
+        "chat_id": "8657197389",
+        "raw_text": "test",
+        "outbound_timestamp_utc": "2026-03-25T22:03:18.478Z",
+        "command": "TEST",
+        "resolved_command": null,
+        "auth_status": "accepted",
+        "response_type": "unsupported_command",
+        "run_id": "canonical-hunt::2026-03-25::1345",
+        "notification_tier": null,
+        "duplicate_suppression_status": null,
+        "outbound_channel": "telegram",
+        "delivery_status": "sent",
+        "delivery_error": null,
+        "legacy_alias_used": false,
+        "last_outbound_alert_time": "2026-03-25T03:17:51.534Z",
+        "last_outbound_alert_type": "warning"
+      },
+      {
+        "telegram_event_id": "telegram-operator::2026-03-25T22:03:17.951Z::419781023",
+        "inbound_timestamp_utc": "2026-03-25T22:03:17.951Z",
+        "telegram_update_id": 419781023,
+        "chat_id": "8657197389",
+        "raw_text": "/start",
+        "outbound_timestamp_utc": "2026-03-25T22:03:17.963Z",
+        "command": "/START",
+        "resolved_command": null,
+        "auth_status": "accepted",
+        "response_type": "unsupported_command",
+        "run_id": "canonical-hunt::2026-03-25::1345",
+        "notification_tier": null,
+        "duplicate_suppression_status": null,
+        "outbound_channel": "telegram",
+        "delivery_status": "sent",
+        "delivery_error": null,
+        "legacy_alias_used": false,
+        "last_outbound_alert_time": "2026-03-25T03:17:51.534Z",
+        "last_outbound_alert_type": "warning"
+      },
+      {
+        "telegram_event_id": "telegram-operator::2026-03-25T22:02:06.231Z::1774476126231",
+        "inbound_timestamp_utc": "2026-03-25T22:02:06.231Z",
+        "telegram_update_id": 1774476126231,
+        "chat_id": "999999999",
+        "raw_text": "STATUS",
+        "outbound_timestamp_utc": null,
+        "command": "STATUS",
+        "auth_status": "rejected",
+        "response_type": "unauthorized",
+        "run_id": null,
+        "notification_tier": null,
+        "duplicate_suppression_status": null,
+        "outbound_channel": "telegram",
+        "delivery_status": "rejected_unauthorized"
       }
     ]
   },
@@ -5803,7 +5940,7 @@
   },
   "operator_dashboard": {
     "schema": "tierededge_operator_dashboard_v1",
-    "generated_at_utc": "2026-03-25T19:27:30.947Z",
+    "generated_at_utc": "2026-03-25T22:03:33.069Z",
     "top_level_sections": [
       {
         "key": "system_health",
@@ -8320,7 +8457,7 @@
       "bankroll_before": 1295.13,
       "bankroll_after": 1300.53,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T19:27:30.430Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T22:03:32.499Z",
       "legacy_bankroll_after_import": 1321.03
     },
     {
@@ -8363,7 +8500,7 @@
       "bankroll_before": 1305.63,
       "bankroll_after": 1295.13,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T19:27:30.430Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T22:03:32.499Z",
       "legacy_bankroll_after_import": 1315.63
     },
     {
@@ -8406,12 +8543,12 @@
       "bankroll_before": 1326.13,
       "bankroll_after": 1305.63,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T19:27:30.430Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T22:03:32.499Z",
       "legacy_bankroll_after_import": 1300.53
     }
   ],
   "ledger_validation": {
-    "generated_at_utc": "2026-03-25T19:27:30.935Z",
+    "generated_at_utc": "2026-03-25T22:03:33.056Z",
     "require_output_match": false,
     "passed": true,
     "run_classification": "ledger_integrity_pass",
@@ -8810,7 +8947,7 @@
     }
   },
   "runtime_status": {
-    "generated_at_utc": "2026-03-25T19:27:30.173Z",
+    "generated_at_utc": "2026-03-25T22:03:32.206Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
