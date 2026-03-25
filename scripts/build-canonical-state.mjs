@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
-import { CORE_PATHS, readJson, readJsonl, writeJson, parseNumber, round2, formatMoney } from './core-ledger-utils.mjs';
+import { CORE_PATHS, readJson, readJsonl, writeJson, parseNumber, round2, formatMoney, toCtIsoDate } from './core-ledger-utils.mjs';
 import { EXECUTION_BOARD_PATH, EXECUTION_LOG_PATH, readExecutionLog } from './execution-layer-utils.mjs';
 import { validateLedgerInvariants } from './validate-ledger-invariants.mjs';
 import { OVERRIDE_LOG_PATH, POST_MORTEM_LOG_PATH, getPostMortemStatus, readOverrideLog, readPostMortemLog, buildWeeklyTruthReport } from './behavioral-accountability-utils.mjs';
@@ -11,6 +11,7 @@ import { buildCleanRunSummary } from './build-clean-run-summary.mjs';
 
 const HUNT_AUDIT_LOG_PATH = CORE_PATHS.huntAuditLog;
 const REJECTED_CLOSE_CAPTURE_LOG_PATH = CORE_PATHS.rejectedCloseCaptureLog;
+const REJECTED_CLOSE_CAPTURE_RUNS_PATH = CORE_PATHS.rejectedCloseCaptureRuns;
 
 function parsePhase(bankroll) {
   if (!Number.isFinite(bankroll)) return 'UNKNOWN';
@@ -655,9 +656,27 @@ function deriveRejectedOpportunityRow(row, rejectedCloseCaptureIndex) {
   const thresholdGap = parseNumber(row.threshold_gap_pct);
   const executableBook = row.executable_book ?? row.actionable_book ?? ['DraftKings', 'FanDuel', 'BetMGM', 'Circa', 'bet365'].includes(String(row.sportsbook || ''));
   const closeCapture = rejectedCloseCaptureIndex.get(String(row.rec_id || '').trim()) || null;
-  const closeCaptureStatus = closeCapture?.close_capture_status
-    || row.close_capture_status
-    || (Object.prototype.hasOwnProperty.call(row, 'close_capture_status') ? 'pending' : 'not_available');
+  const partialBackfill = !('threshold_gap_pct' in row)
+    || !('rejection_class' in row)
+    || !('surfaced_as_closest_miss' in row)
+    || !Object.prototype.hasOwnProperty.call(row, 'close_capture_status')
+    || String(row.close_capture_status || '').trim().toLowerCase() === 'not_captured';
+  const rawCloseStatus = String(closeCapture?.close_capture_status || row.close_capture_status || '').trim().toLowerCase();
+  const closeCaptureStatus = (() => {
+    if (partialBackfill && closeCapture?.close_capture_status === 'failed') return 'not_available';
+    if (closeCapture?.failure_reason === 'historical_close_unavailable') return 'not_available';
+    if (String(closeCapture?.failure_reason || '').includes(':404:')) return 'not_available';
+    if (closeCapture?.close_capture_status === 'failed' && closeCapture?.failure_reason === 'close_not_found' && String(row.target_date || '') < toCtIsoDate(new Date())) {
+      return 'not_available';
+    }
+    if (closeCapture) return rawCloseStatus || 'captured';
+    if (!Object.prototype.hasOwnProperty.call(row, 'close_capture_status')) return 'not_available';
+    if (rawCloseStatus === 'not_captured') return 'not_available';
+    if (['pending', 'captured', 'failed', 'not_available', 'insufficient_market_match'].includes(rawCloseStatus)) {
+      return rawCloseStatus;
+    }
+    return 'not_available';
+  })();
   const rejectionClass = (() => {
     if (row.rejection_class) return row.rejection_class;
     if (row.rejection_reason === 'research_only_non_owned_book') return 'non_executable_edge';
@@ -670,8 +689,10 @@ function deriveRejectedOpportunityRow(row, rejectedCloseCaptureIndex) {
   })();
   return {
     run_id: row.run_id || null,
+    rec_id: row.rec_id || null,
     timestamp_ct: row.timestamp_ct || null,
     target_date: row.target_date || null,
+    market_family: row.market_family || 'main_market',
     sport: row.sport || null,
     league: row.league || null,
     market_type: row.market_type || null,
@@ -691,12 +712,16 @@ function deriveRejectedOpportunityRow(row, rejectedCloseCaptureIndex) {
     surfaced_as_closest_miss: Boolean(row.surfaced_as_closest_miss),
     close_capture_status: closeCaptureStatus,
     closing_odds_american: closeCapture?.closing_odds_american || row.closing_odds_american || null,
+    closing_odds_decimal: parseNumber(closeCapture?.closing_odds_decimal ?? row.closing_odds_decimal),
     closing_implied_prob: parseNumber(closeCapture?.closing_implied_prob ?? row.closing_implied_prob),
     closing_devig_prob: parseNumber(closeCapture?.closing_devig_prob ?? row.closing_devig_prob),
+    closing_snapshot_time_utc: closeCapture?.closing_snapshot_time_utc || row.closing_snapshot_time_utc || null,
+    closing_book: closeCapture?.closing_book || row.closing_book || null,
     clv_delta_pct: parseNumber(closeCapture?.clv_delta_pct ?? row.clv_delta_pct),
-    clv_direction: closeCapture?.clv_direction || row.clv_direction || null,
+    clv_direction: closeCapture?.clv_direction || row.clv_direction || 'unknown',
+    close_match_quality: closeCapture?.close_match_quality || row.close_match_quality || 'insufficient_match',
     closing_line: parseNumber(closeCapture?.closing_line ?? row.closing_line),
-    partial_backfill: !('threshold_gap_pct' in row) || !('rejection_class' in row) || !('surfaced_as_closest_miss' in row) || !Object.prototype.hasOwnProperty.call(row, 'close_capture_status'),
+    partial_backfill: partialBackfill,
   };
 }
 
@@ -709,18 +734,27 @@ function buildRejectedClvSummary(rejected, filterFn = () => true) {
   return buckets.reduce((acc, bucket) => {
     const rows = rejected
       .filter(filterFn)
-      .filter((row) => row.edge_pct >= bucket.min && row.edge_pct < bucket.max)
-      .filter((row) => Number.isFinite(row.clv_delta_pct));
-    const avgClv = rows.length
-      ? round2(rows.reduce((sum, row) => sum + (parseNumber(row.clv_delta_pct) || 0), 0) / rows.length)
+      .filter((row) => row.edge_pct >= bucket.min && row.edge_pct < bucket.max);
+    const captured = rows.filter((row) => Number.isFinite(row.clv_delta_pct));
+    const avgClv = captured.length
+      ? round2(captured.reduce((sum, row) => sum + (parseNumber(row.clv_delta_pct) || 0), 0) / captured.length)
       : null;
-    const positiveClvRate = rows.length
-      ? round2((rows.filter((row) => row.clv_direction === 'positive').length / rows.length) * 100)
+    const positiveClvRate = captured.length
+      ? round2((captured.filter((row) => row.clv_direction === 'positive').length / captured.length) * 100)
+      : null;
+    const negativeClvRate = captured.length
+      ? round2((captured.filter((row) => row.clv_direction === 'negative').length / captured.length) * 100)
+      : null;
+    const exactMatchRate = captured.length
+      ? round2((captured.filter((row) => row.close_match_quality === 'exact_same_book_same_market').length / captured.length) * 100)
       : null;
     acc[bucket.key] = {
       count: rows.length,
-      avg_clv: avgClv,
-      win_rate_proxy: positiveClvRate,
+      captured_count: captured.length,
+      avg_clv_delta_pct: avgClv,
+      positive_clv_rate: positiveClvRate,
+      negative_clv_rate: negativeClvRate,
+      exact_match_rate: exactMatchRate,
     };
     return acc;
   }, {});
@@ -738,10 +772,22 @@ function buildRejectedOpportunitySummary(decisions, latestDate, rejectedCloseCap
     acc[key] = (acc[key] || 0) + 1;
     return acc;
   }, {});
+  const eligible = rejected.filter((row) => row.close_capture_status !== 'not_available');
+  const captured = eligible.filter((row) => row.close_capture_status === 'captured' && Number.isFinite(row.clv_delta_pct));
+  const exactMatches = captured.filter((row) => row.close_match_quality === 'exact_same_book_same_market');
+  const proxyMatches = captured.filter((row) => row.close_match_quality === 'proxy_only');
+  const strongestByDirection = (direction) => captured
+    .filter((row) => row.clv_direction === direction)
+    .sort((a, b) => direction === 'positive'
+      ? (b.clv_delta_pct || 0) - (a.clv_delta_pct || 0)
+      : (a.clv_delta_pct || 0) - (b.clv_delta_pct || 0))
+    .slice(0, 10);
 
   return {
     total_rejected_rows: rejected.length,
+    total_eligible_rejected_rows: eligible.length,
     partial_backfill_count: rejected.filter((row) => row.partial_backfill).length,
+    coverage_pct: rejected.length ? round2((eligible.length / rejected.length) * 100) : null,
     near_miss_counts_by_band: {
       '1.0_to_1.49': nearMissBand(1, 1.5).length,
       '1.5_to_1.99': nearMissBand(1.5, 2).length,
@@ -756,15 +802,38 @@ function buildRejectedOpportunitySummary(decisions, latestDate, rejectedCloseCap
     rejection_class_distribution: countBy(rejected, (row) => row.rejection_class || 'unknown'),
     latest_date_rejection_reason_distribution: countBy(rejected.filter((row) => row.target_date === latestDate), (row) => row.rejection_reason || 'unknown'),
     close_capture_status_distribution: countBy(rejected, (row) => row.close_capture_status || 'unknown'),
+    captured_count: captured.length,
+    failed_count: eligible.filter((row) => row.close_capture_status === 'failed').length,
+    exact_match_count: exactMatches.length,
+    proxy_count: proxyMatches.length,
+    insufficient_match_count: eligible.filter((row) => row.close_capture_status === 'insufficient_market_match').length,
     rejected_clv_summary: {
       all_rejected: buildRejectedClvSummary(rejected),
       executable_only: buildRejectedClvSummary(rejected, (row) => row.executable_book),
     },
+    recent_strongest_positive_rejected_clv: strongestByDirection('positive'),
+    recent_strongest_negative_rejected_clv: strongestByDirection('negative'),
     recent_rejected_opportunities_worth_review: rejected
       .filter((row) => row.executable_book)
       .filter((row) => row.rejection_class === 'near_miss' || row.rejection_class === 'sub_minimum_kelly' || row.rejection_class === 'risk_gate_rejected')
       .sort((a, b) => (b.edge_pct || 0) - (a.edge_pct || 0))
       .slice(0, 25),
+  };
+}
+
+function buildRejectedCloseCaptureAutomationSummary(runRows, rejectedSummary) {
+  const sortedRuns = [...(runRows || [])].sort((a, b) =>
+    String(b.completed_at_utc || b.started_at_utc || '').localeCompare(String(a.completed_at_utc || a.started_at_utc || ''))
+  );
+  const latest = sortedRuns[0] || null;
+  return {
+    last_run_time_utc: latest?.completed_at_utc || latest?.started_at_utc || null,
+    last_run_status: latest?.status || 'not_run',
+    rows_scanned: parseNumber(latest?.rows_scanned) || 0,
+    rows_captured: parseNumber(latest?.captured) || 0,
+    rows_failed: parseNumber(latest?.failed) || 0,
+    rows_still_pending: parseNumber(latest?.rows_still_pending) ?? parseNumber(rejectedSummary?.close_capture_status_distribution?.pending) ?? 0,
+    recent_runs: sortedRuns.slice(0, 10),
   };
 }
 
@@ -813,9 +882,384 @@ function buildPerformanceByMarket(decisions) {
     });
 }
 
+function countByReason(rows, reason) {
+  return rows.filter((row) => normalizeText(row.rejection_reason) === normalizeText(reason)).length;
+}
+
+function listOrNone(values) {
+  return Array.isArray(values) && values.length ? values.join(', ') : 'None';
+}
+
+function formatCardPercent(value) {
+  return value === null || value === undefined || !Number.isFinite(value) ? 'Insufficient data' : `${round2(value)}%`;
+}
+
+function compactMarketsScannedSummary(rows) {
+  const groups = new Map();
+  for (const row of rows || []) {
+    const sport = row.sport || 'Unknown';
+    const market = row.market_type || 'Unknown';
+    const key = `${sport} ${market}`;
+    groups.set(key, (groups.get(key) || 0) + 1);
+  }
+  return [...groups.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([label, count]) => `${label} (${count})`);
+}
+
+function buildActionFlags({
+  todayCt,
+  latestCanonicalHuntRun,
+  decisionPayload,
+  latestRunRows,
+  latestRunInvalidated,
+  nativeAppendStatus,
+  ledgerValidation,
+  bankrollDifference,
+  clvAnalytics,
+  rejectedSummary,
+  latestFeedUnavailableOwnedBooks,
+}) {
+  const flags = [];
+  const latestRunDate = String(latestCanonicalHuntRun?.run_at_ct || '').slice(0, 10) || null;
+  const validSnapshotCount = latestRunRows.filter((row) => row.snapshot_status === 'valid').length;
+  const invalidSnapshotCount = latestRunRows.filter((row) => normalizeText(row.rejection_reason) === 'invalid_snapshot').length;
+  const staleMarketCount = latestRunRows.filter((row) => normalizeText(row.rejection_reason) === 'stale_market').length;
+  const invalidSnapshotPct = latestRunRows.length ? round2((invalidSnapshotCount / latestRunRows.length) * 100) : 0;
+  const staleMarketPct = latestRunRows.length ? round2((staleMarketCount / latestRunRows.length) * 100) : 0;
+  const nearMissClv = rejectedSummary?.rejected_clv_summary?.executable_only?.['1.5_to_1.99'] || {};
+  const propIdentityIssues = latestRunRows.filter((row) =>
+    row.market_family === 'player_prop' && (!row.player_id_canonical || !row.player_name_normalized)
+  ).length;
+
+  if (!latestCanonicalHuntRun || latestRunDate !== todayCt) {
+    flags.push({ level: 'RED', code: 'no_valid_run_today', title: 'No valid run today', message: 'No canonical hunt run is recorded for today.' });
+  }
+  if (latestRunInvalidated) {
+    flags.push({ level: 'RED', code: 'latest_run_invalidated', title: 'Latest run invalidated', message: 'The latest hunt is not trustworthy and should not drive action.' });
+  }
+  if (nativeAppendStatus !== 'succeeded') {
+    flags.push({ level: 'RED', code: 'native_append_failure', title: 'Native append failure', message: `Latest hunt append status: ${nativeAppendStatus}.` });
+  }
+  if (!ledgerValidation?.passed) {
+    flags.push({ level: 'RED', code: 'validator_fail', title: 'Validator failed', message: 'Ledger validation is failing. Trust the plumbing before the board.' });
+  }
+  if (Math.abs(bankrollDifference || 0) > 0.009) {
+    flags.push({ level: 'RED', code: 'bankroll_exposure_mismatch', title: 'Bankroll mismatch', message: `Bankroll difference is ${formatMoney(bankrollDifference)}.` });
+  }
+  if (decisionPayload?.verdict === 'BLOCKED' || decisionPayload?.system_health === 'FAIL') {
+    flags.push({ level: 'RED', code: 'latest_run_blocked', title: 'Latest run blocked or degraded', message: decisionPayload?.why || 'Latest run is blocked.' });
+  }
+  if (latestRunRows.length && invalidSnapshotPct > 25) {
+    flags.push({ level: 'RED', code: 'invalid_snapshot_spike', title: 'Invalid snapshot spike', message: `${invalidSnapshotCount} of ${latestRunRows.length} rows (${invalidSnapshotPct}%) failed snapshot integrity.` });
+  }
+  if (latestRunRows.length && staleMarketPct > 35) {
+    flags.push({ level: 'RED', code: 'stale_market_spike', title: 'Stale market spike', message: `${staleMarketCount} of ${latestRunRows.length} rows (${staleMarketPct}%) were rejected as stale.` });
+  }
+
+  if (Array.isArray(latestFeedUnavailableOwnedBooks) && latestFeedUnavailableOwnedBooks.length) {
+    flags.push({ level: 'YELLOW', code: 'owned_books_missing_from_feed', title: 'Owned books missing from feed', message: listOrNone(latestFeedUnavailableOwnedBooks) });
+  }
+  if ((clvAnalytics?.coverage_pct || 0) < 50) {
+    flags.push({ level: 'YELLOW', code: 'low_clv_coverage', title: 'Low CLV coverage', message: `Settled-bet CLV coverage is ${clvAnalytics?.coverage_pct_label || 'Insufficient data'}.` });
+  }
+  if ((nearMissClv.captured_count || 0) >= 10 && (nearMissClv.positive_clv_rate || 0) >= 60) {
+    flags.push({ level: 'YELLOW', code: 'rejected_clv_threshold_pressure', title: 'Rejected CLV pressure building', message: `Executable 1.5–1.99% rejects are showing ${formatCardPercent(nearMissClv.positive_clv_rate)} positive CLV on ${nearMissClv.captured_count} captured rows.` });
+  }
+  if (propIdentityIssues > 0) {
+    flags.push({ level: 'YELLOW', code: 'prop_identity_issues', title: 'Prop identity issues', message: `${propIdentityIssues} prop rows are missing canonical player identity fields.` });
+  }
+  if (decisionPayload?.verdict === 'SIT' && latestRunRows.filter((row) => row.final_decision === 'BET').length === 0 && validSnapshotCount > 0) {
+    flags.push({ level: 'INFO', code: 'clean_sit_day', title: 'Clean SIT day', message: 'The latest hunt completed cleanly and found no actionable executable edges.' });
+  }
+  if (latestCanonicalHuntRun?.prop_summary?.phase1_mlb_moneylines?.enabled_for_run
+    && (latestCanonicalHuntRun?.prop_summary?.phase1_mlb_moneylines?.fetched_event_count || 0) === 0) {
+    flags.push({ level: 'INFO', code: 'mlb_no_live_events', title: 'MLB enabled, no live events returned', message: 'MLB moneylines are enabled, but the live feed returned no MLB events for the latest run.' });
+  }
+
+  const order = { RED: 0, YELLOW: 1, INFO: 2 };
+  return flags.sort((a, b) => order[a.level] - order[b.level] || a.title.localeCompare(b.title));
+}
+
+function buildOperatorDashboard({
+  payloadBuildMs,
+  decisionPayload,
+  latestCanonicalHuntRun,
+  validLearningDecisions,
+  latestDate,
+  rejectedSummary,
+  rejectedCloseCaptureAutomation,
+  settledPerformanceOverall,
+  clvAnalytics,
+  openRiskSummary,
+  sportsbookScope,
+  performanceByMarket,
+  ledgerValidation,
+  bankrollSummary,
+  bankrollDifference,
+  huntAuditSummary,
+}) {
+  const todayCt = toCtIsoDate(payloadBuildMs);
+  const latestRunId = latestCanonicalHuntRun?.run_id || null;
+  const latestRunRows = latestRunId
+    ? validLearningDecisions.filter((row) => String(row.run_id || '').trim() === String(latestRunId).trim())
+    : [];
+  const todayRows = validLearningDecisions.filter((row) => row.target_date === latestDate);
+  const todayRejectedRows = todayRows.filter((row) => row.final_decision === 'SIT');
+  const latestRunBets = latestRunRows.filter((row) => row.final_decision === 'BET' && row.actionable_book !== false);
+  const latestRunSits = latestRunRows.filter((row) => row.final_decision === 'SIT');
+  const validSnapshotCount = latestRunRows.filter((row) => row.snapshot_status === 'valid').length;
+  const invalidSnapshotCount = latestRunRows.filter((row) => normalizeText(row.rejection_reason) === 'invalid_snapshot').length;
+  const staleMarketCount = latestRunRows.filter((row) => normalizeText(row.rejection_reason) === 'stale_market').length;
+  const edgeAnomalyCount = latestRunRows.filter((row) => normalizeText(row.rejection_reason) === 'edge_anomaly').length;
+  const actionableRecommendationsCount = latestRunBets.length;
+  const totalRecommendedExposureValue = round2(latestRunBets.reduce((sum, row) => sum + (parseNumber(row.kelly_stake) || 0), 0)) || 0;
+  const executableRows = latestRunRows.filter((row) => row.executable_book);
+  const bestExecutableEdgeToday = executableRows.length
+    ? Math.max(...executableRows.map((row) => parseNumber(row.post_conf_edge_pct) || 0))
+    : null;
+  const executableClosestMisses = latestRunRows.filter((row) => row.final_decision === 'SIT' && row.executable_book && row.surfaced_as_closest_miss);
+  const marketsScannedSummary = compactMarketsScannedSummary(latestRunRows);
+  const todayNearMiss = (min, max, executableOnly = false) => todayRejectedRows
+    .filter((row) => {
+      const edge = parseNumber(row.post_conf_edge_pct) || 0;
+      return edge >= min && edge < max && (!executableOnly || row.executable_book);
+    }).length;
+  const rejectedBandClv = rejectedSummary?.rejected_clv_summary?.executable_only?.['1.5_to_1.99'] || {};
+  const rejectedCoveragePct = rejectedSummary?.total_eligible_rejected_rows
+    ? round2(((rejectedSummary?.captured_count || 0) / rejectedSummary.total_eligible_rejected_rows) * 100)
+    : null;
+  const rejectedExactMatchRate = rejectedSummary?.captured_count
+    ? round2(((rejectedSummary?.exact_match_count || 0) / rejectedSummary.captured_count) * 100)
+    : null;
+  const nativeAppendStatus = (() => {
+    if (!latestCanonicalHuntRun) return 'missing_run_artifact';
+    if (latestCanonicalHuntRun.status !== 'ok') return 'runner_failed';
+    if (Number.isFinite(parseNumber(latestCanonicalHuntRun.native_rows_appended))) return 'succeeded';
+    return 'append_missing';
+  })();
+  const latestRunInvalidated = Boolean(latestCanonicalHuntRun?.invalidated);
+  const flags = buildActionFlags({
+    todayCt,
+    latestCanonicalHuntRun,
+    decisionPayload,
+    latestRunRows,
+    latestRunInvalidated,
+    nativeAppendStatus,
+    ledgerValidation,
+    bankrollDifference,
+    clvAnalytics,
+    rejectedSummary,
+    latestFeedUnavailableOwnedBooks: sportsbookScope.feed_unavailable_owned_books,
+  });
+
+  return {
+    schema: 'tierededge_operator_dashboard_v1',
+    generated_at_utc: new Date(payloadBuildMs).toISOString(),
+    top_level_sections: [
+      {
+        key: 'system_health',
+        title: 'SYSTEM HEALTH',
+        cards: [
+          {
+            key: 'run_status',
+            label: 'Run Status',
+            metrics: [
+              { label: 'latest_run_id', value: latestCanonicalHuntRun?.run_id || latestCanonicalHuntRun?.generated_at_utc || null },
+              { label: 'latest_run_status', value: latestCanonicalHuntRun?.status || 'Insufficient data' },
+              { label: 'verdict', value: decisionPayload?.verdict || null },
+              { label: 'run_classification', value: decisionPayload?.run_classification || null },
+            ],
+          },
+          {
+            key: 'trust_status',
+            label: 'Trust Status',
+            metrics: [
+              { label: 'system_health', value: decisionPayload?.system_health || null },
+              { label: 'native_append_status', value: nativeAppendStatus },
+              { label: 'latest_run_invalidated', value: latestRunInvalidated ? 'yes' : 'no' },
+            ],
+          },
+          {
+            key: 'integrity_snapshot',
+            label: 'Integrity Snapshot',
+            metrics: [
+              { label: 'valid_snapshot_count', value: validSnapshotCount },
+              { label: 'invalid_snapshot_count', value: invalidSnapshotCount },
+              { label: 'stale_market_count', value: staleMarketCount },
+            ],
+          },
+        ],
+      },
+      {
+        key: 'todays_hunt',
+        title: 'TODAY’S HUNT',
+        cards: [
+          {
+            key: 'actionable_board',
+            label: 'Actionable Board',
+            metrics: [
+              { label: 'actionable_recommendations_count', value: actionableRecommendationsCount },
+              { label: 'total_recommended_exposure', value: formatMoney(totalRecommendedExposureValue) },
+              { label: 'best_executable_edge_today', value: bestExecutableEdgeToday === null ? null : `${round2(bestExecutableEdgeToday)}%` },
+            ],
+          },
+          {
+            key: 'hunt_quality',
+            label: 'Hunt Quality',
+            metrics: [
+              { label: 'total_sits', value: latestRunSits.length },
+              { label: 'executable_closest_misses_count', value: executableClosestMisses.length },
+              { label: 'books_actually_scanned_today', value: listOrNone(sportsbookScope.live_feed_books) },
+            ],
+          },
+          {
+            key: 'coverage_gaps',
+            label: 'Coverage Gaps',
+            metrics: [
+              { label: 'feed_unavailable_owned_books', value: listOrNone(sportsbookScope.feed_unavailable_owned_books) },
+              { label: 'markets_scanned_by_sport_market', value: marketsScannedSummary.length ? marketsScannedSummary.join(' • ') : null },
+            ],
+          },
+        ],
+      },
+      {
+        key: 'rejected_opportunity_learning',
+        title: 'REJECTED OPPORTUNITY LEARNING',
+        cards: [
+          {
+            key: 'near_miss_pressure',
+            label: 'Near-Miss Pressure',
+            metrics: [
+              { label: 'near_miss_count_1.0_to_1.49', value: todayNearMiss(1, 1.5) },
+              { label: 'near_miss_count_1.5_to_1.99', value: todayNearMiss(1.5, 2) },
+              { label: 'executable_near_miss_count_1.5_to_1.99', value: todayNearMiss(1.5, 2, true) },
+            ],
+          },
+          {
+            key: 'rejected_clv_signal',
+            label: 'Rejected CLV Signal',
+            metrics: [
+              { label: 'captured_rejected_clv_count', value: rejectedBandClv.captured_count ?? 0 },
+              { label: 'avg_rejected_clv_1.5_to_1.99', value: rejectedBandClv.avg_clv_delta_pct === null ? null : `${round2(rejectedBandClv.avg_clv_delta_pct)}%` },
+              { label: 'positive_rejected_clv_rate_1.5_to_1.99', value: rejectedBandClv.positive_clv_rate === null ? null : `${round2(rejectedBandClv.positive_clv_rate)}%` },
+            ],
+          },
+          {
+            key: 'rejected_clv_coverage',
+            label: 'Rejected CLV Coverage',
+            metrics: [
+              { label: 'rejected_close_capture_coverage_pct', value: rejectedCoveragePct === null ? null : `${round2(rejectedCoveragePct)}%` },
+              { label: 'exact_match_rate', value: rejectedExactMatchRate === null ? null : `${round2(rejectedExactMatchRate)}%` },
+              { label: 'partial_backfill_count', value: rejectedSummary?.partial_backfill_count ?? null },
+            ],
+          },
+        ],
+      },
+      {
+        key: 'recent_bet_truth',
+        title: 'RECENT BET TRUTH',
+        cards: [
+          {
+            key: 'bankroll_truth',
+            label: 'Bankroll Truth',
+            metrics: [
+              { label: 'bankroll', value: bankrollSummary.actual_bankroll },
+              { label: 'open_exposure', value: openRiskSummary.open_exposure_pct_of_bankroll },
+              { label: 'pending_bets_count', value: openRiskSummary.pending_ticket_count },
+            ],
+          },
+          {
+            key: 'settled_performance',
+            label: 'Settled Performance',
+            metrics: [
+              { label: 'settled_bet_count', value: settledPerformanceOverall.settled_bet_count },
+              { label: 'realized_p_l', value: settledPerformanceOverall.realized_profit },
+              { label: 'sample_size_status', value: settledPerformanceOverall.sample_size_status },
+            ],
+          },
+          {
+            key: 'clv_truth',
+            label: 'CLV Truth',
+            metrics: [
+              { label: 'clv_coverage_pct', value: clvAnalytics.coverage_pct_label },
+              { label: 'positive_clv_rate', value: clvAnalytics.positive_clv_rate_label },
+              { label: 'average_clv_delta', value: clvAnalytics.average_clv_price_delta_label },
+            ],
+          },
+        ],
+      },
+      {
+        key: 'watchlist_action_flags',
+        title: 'WATCHLIST / ACTION FLAGS',
+        cards: [
+          {
+            key: 'action_flags',
+            label: 'Action Flags',
+            metrics: [
+              { label: 'red', value: flags.filter((flag) => flag.level === 'RED').length },
+              { label: 'yellow', value: flags.filter((flag) => flag.level === 'YELLOW').length },
+              { label: 'info', value: flags.filter((flag) => flag.level === 'INFO').length },
+            ],
+          },
+        ],
+      },
+    ],
+    action_flags: flags,
+    drilldowns: {
+      rejected_opportunity_detail: (rejectedSummary?.recent_rejected_opportunities_worth_review || []).slice(0, 25).map((row) => ({
+        timestamp_ct: row.timestamp_ct,
+        sport: row.sport,
+        market_type: row.market_type,
+        selection: row.selection,
+        sportsbook: row.sportsbook,
+        executable_book: row.executable_book ? 'yes' : 'no',
+        edge_pct: row.edge_pct === null ? null : `${round2(row.edge_pct)}%`,
+        rejection_reason: row.rejection_reason,
+        close_capture_status: row.close_capture_status,
+      })),
+      market_type_performance: (performanceByMarket || []).map((row) => ({
+        sport: row.sport,
+        market_family: row.market_family,
+        market_type: row.market_type,
+        bets: row.bets,
+        sits: row.sits,
+        avg_edge: row.avg_edge === null ? null : `${round2(row.avg_edge)}%`,
+        rejection_reasons: Object.entries(row.rejection_reason_distribution || {})
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 3)
+          .map(([reason, count]) => `${reason} (${count})`)
+          .join(', '),
+      })),
+      snapshot_integrity_failures: latestRunRows
+        .filter((row) => normalizeText(row.rejection_reason) === 'invalid_snapshot' || normalizeText(row.rejection_reason) === 'stale_market')
+        .slice(0, 25)
+        .map((row) => ({
+          timestamp_ct: row.timestamp_ct,
+          sport: row.sport,
+          market_type: row.market_type,
+          selection: row.selection,
+          sportsbook: row.sportsbook,
+          snapshot_status: row.snapshot_status || null,
+          rejection_reason: row.rejection_reason,
+          spread_seconds: row.snapshot_max_spread_seconds ?? null,
+        })),
+    },
+    hidden_troubleshooting: {
+      edge_anomaly_count: edgeAnomalyCount,
+      invalid_snapshot_count: invalidSnapshotCount,
+      stale_market_count: staleMarketCount,
+      latest_hunt_invalid_run_count: huntAuditSummary?.invalid_run_count ?? 0,
+      latest_close_capture_run_time_utc: rejectedCloseCaptureAutomation?.last_run_time_utc || null,
+      latest_close_capture_run_status: rejectedCloseCaptureAutomation?.last_run_status || null,
+    },
+  };
+}
+
 function main() {
   const decisions = readJsonl(CORE_PATHS.decisionLedger);
   const rejectedCloseCaptureLog = readJsonl(REJECTED_CLOSE_CAPTURE_LOG_PATH);
+  const rejectedCloseCaptureRuns = readJsonl(REJECTED_CLOSE_CAPTURE_RUNS_PATH);
   const grading = readJsonl(CORE_PATHS.gradingLedger);
   const bankrollEntries = readJsonl(CORE_PATHS.bankrollLedger);
   const runtimeStatus = readJson(CORE_PATHS.runtimeStatus, {});
@@ -925,6 +1369,14 @@ function main() {
   const edgeValidationSummary = buildEdgeValidationSummary(settledValidationRows, clvCoverageSummary, expectationSummary);
   const latestModelExposure = parseDailyExposure(latestRuntime?.summary);
   const rejectedOpportunitySummary = buildRejectedOpportunitySummary(validLearningDecisions, latestDate, rejectedCloseCaptureIndex);
+  const rejectedCloseCaptureAutomation = buildRejectedCloseCaptureAutomationSummary(rejectedCloseCaptureRuns, rejectedOpportunitySummary);
+  const sportsbookScope = {
+    owned_books: scanCoveragePolicy?.book_sets?.owned_books || scanCoveragePolicy?.book_sets?.executable_books || [],
+    live_feed_books: latestCanonicalHuntRun?.live_feed_books || [],
+    actionable_books_for_run: latestCanonicalHuntRun?.actionable_books_for_run || [],
+    feed_unavailable_owned_books: latestCanonicalHuntRun?.feed_unavailable_owned_books || [],
+    research_only_books: latestCanonicalHuntRun?.research_only_books || [],
+  };
 
   const decisionPayload = {
     verdict,
@@ -938,6 +1390,29 @@ function main() {
   };
 
   const renderers = buildDecisionTexts({ decision_payload_v1: decisionPayload });
+  const operatorDashboard = buildOperatorDashboard({
+    payloadBuildMs,
+    decisionPayload,
+    latestCanonicalHuntRun,
+    validLearningDecisions,
+    latestDate,
+    rejectedSummary: rejectedOpportunitySummary,
+    rejectedCloseCaptureAutomation,
+    settledPerformanceOverall,
+    clvAnalytics,
+    openRiskSummary,
+    sportsbookScope,
+    performanceByMarket,
+    ledgerValidation,
+    bankrollSummary: {
+      actual_bankroll: formatMoney(actualBankroll),
+      last_recorded_bankroll: formatMoney(lastRecordedBankroll),
+    },
+    bankrollDifference,
+    huntAuditSummary: {
+      invalid_run_count: invalidHuntRuns.length,
+    },
+  });
 
   const payload = {
     schema: 'tierededge_canonical_v2',
@@ -1037,8 +1512,10 @@ function main() {
       'Excluded Invalid Rows': invalidRunScope.excluded_rows.filter((row) => row.target_date === latestDate).length,
     },
     rejected_opportunity_summary: rejectedOpportunitySummary,
+    rejected_close_capture_automation: rejectedCloseCaptureAutomation,
     clean_run_summary: cleanRunSummary,
     performance_by_market: performanceByMarket,
+    operator_dashboard: operatorDashboard,
     overall_betting_results: {
       count: settledPerformanceOverall.settled_bet_count,
       profit_loss: settledPerformanceOverall.realized_profit,
@@ -1137,13 +1614,7 @@ function main() {
         latest_run_enabled: latestCanonicalHuntRun?.prop_summary?.phase1_nba_points_props?.enabled_for_run ?? false,
       },
     },
-    sportsbook_scope: {
-      owned_books: scanCoveragePolicy?.book_sets?.owned_books || scanCoveragePolicy?.book_sets?.executable_books || [],
-      live_feed_books: latestCanonicalHuntRun?.live_feed_books || [],
-      actionable_books_for_run: latestCanonicalHuntRun?.actionable_books_for_run || [],
-      feed_unavailable_owned_books: latestCanonicalHuntRun?.feed_unavailable_owned_books || [],
-      research_only_books: latestCanonicalHuntRun?.research_only_books || [],
-    },
+    sportsbook_scope: sportsbookScope,
     latest_canonical_hunt_run: latestCanonicalHuntRun,
     runtime_status: runtimeStatus,
     canonical_truth: {

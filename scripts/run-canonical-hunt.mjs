@@ -202,6 +202,25 @@ function buildOwnedBookSet(policy) {
   return buildNormalizedBookSet(policy?.book_sets?.owned_books || policy?.book_sets?.executable_books || []);
 }
 
+function resolveOwnedBookSet(policy, args) {
+  if (args.owned_books) {
+    return buildNormalizedBookSet(String(args.owned_books).split(',').map((value) => value.trim()).filter(Boolean));
+  }
+  return buildOwnedBookSet(policy);
+}
+
+function eventMatchesFilter(event, filterValue) {
+  const filter = normalizeName(filterValue);
+  if (!filter) return true;
+  const haystack = [
+    event?.id,
+    event?.home_team,
+    event?.away_team,
+    buildEventLabel(event),
+  ].map((value) => normalizeName(value)).join(' ');
+  return haystack.includes(filter);
+}
+
 function buildConsensusBookSet(policy) {
   return buildNormalizedBookSet(
     policy?.book_sets?.consensus_books
@@ -502,10 +521,14 @@ function createBaseRow({
     surfaced_as_closest_miss: false,
     close_capture_status: 'pending',
     closing_odds_american: null,
+    closing_odds_decimal: null,
     closing_implied_prob: null,
     closing_devig_prob: null,
+    closing_snapshot_time_utc: null,
+    closing_book: null,
     clv_delta_pct: null,
-    clv_direction: null,
+    clv_direction: 'unknown',
+    close_match_quality: 'insufficient_match',
     closing_line: null,
     snapshot_status: 'not_validated',
     snapshot_max_spread_seconds: null,
@@ -981,10 +1004,14 @@ function buildPhase1NbaPointPropRows({ event, bookmaker, market, consensusMap, s
         surfaced_as_closest_miss: false,
         close_capture_status: 'pending',
         closing_odds_american: null,
+        closing_odds_decimal: null,
         closing_implied_prob: null,
         closing_devig_prob: null,
+        closing_snapshot_time_utc: null,
+        closing_book: null,
         clv_delta_pct: null,
-        clv_direction: null,
+        clv_direction: 'unknown',
+        close_match_quality: 'insufficient_match',
         closing_line: null,
         snapshot_status: 'valid',
         snapshot_max_spread_seconds: 0,
@@ -1330,7 +1357,7 @@ async function main() {
     ?? parseNumber(publicState?.bankroll_summary?.last_recorded_bankroll)
     ?? 0;
   const policy = loadScanCoveragePolicy();
-  const ownedBooksSet = buildOwnedBookSet(policy);
+  const ownedBooksSet = resolveOwnedBookSet(policy, args);
   const consensusBooksSet = buildConsensusBookSet(policy);
   const probabilityPipeline = resolveProbabilityPipeline(policy);
   const riskControls = resolveRiskControls(policy);
@@ -1353,6 +1380,7 @@ async function main() {
     fallbackOwnedBooks: ownedBooksSet,
   });
   const targetDateKey = todayCtDateKey(runAt);
+  const eventFilter = String(args.event_filter || args.team_filter || '').trim();
   const tierA = policy?.priority_tiers?.tier_a || {};
   const books = [...new Set([...(tierA.default_books || []), ...(tierA.comparison_books || []), ...ownedBooksSet, ...consensusBooksSet])];
   const markets = tierA.markets || ['h2h', 'spreads', 'totals'];
@@ -1401,7 +1429,9 @@ async function main() {
   for (const sportKey of tierA.sports || []) {
     const payload = await fetchOddsPayload({ sportKey, books, markets, apiKey });
     for (const event of payload || []) collectObservedBooks(event, observedBooks);
-    const todaysEvents = (payload || []).filter((event) => eventIsTodayCt(event, targetDateKey));
+    const todaysEvents = (payload || [])
+      .filter((event) => eventIsTodayCt(event, targetDateKey))
+      .filter((event) => eventMatchesFilter(event, eventFilter));
     todaysEventsBySport.set(sportKey, todaysEvents);
     if (sportKey === 'basketball_nba' && nbaSpreadsFeatureFlags.enabled_for_run) {
       propSummary.phase1_nba_spreads.fetched_event_count = todaysEvents.length;
@@ -1457,7 +1487,9 @@ async function main() {
     ])];
     const payload = await fetchOddsPayload({ sportKey: mlbSportKey, books: mlbBooks, markets: mlbMarkets, apiKey });
     for (const event of payload || []) collectObservedBooks(event, observedBooks);
-    const todaysEvents = (payload || []).filter((event) => eventIsTodayCt(event, targetDateKey));
+    const todaysEvents = (payload || [])
+      .filter((event) => eventIsTodayCt(event, targetDateKey))
+      .filter((event) => eventMatchesFilter(event, eventFilter));
     todaysEventsBySport.set(mlbSportKey, todaysEvents);
     propSummary.phase1_mlb_moneylines.fetched_event_count = todaysEvents.length;
 

@@ -63,10 +63,14 @@ export const NATIVE_DECISION_HEADERS = [
   'surfaced_as_closest_miss',
   'close_capture_status',
   'closing_odds_american',
+  'closing_odds_decimal',
   'closing_implied_prob',
   'closing_devig_prob',
+  'closing_snapshot_time_utc',
+  'closing_book',
   'clv_delta_pct',
   'clv_direction',
+  'close_match_quality',
   'closing_line',
   'snapshot_status',
   'snapshot_max_spread_seconds',
@@ -117,6 +121,37 @@ function normalizeBool(value, fallback = false) {
 function normalizeNullableString(value) {
   const text = String(value || '').trim();
   return text ? text : null;
+}
+
+function normalizeCloseCaptureStatus(value, finalDecision) {
+  const normalized = String(value || '').trim().toLowerCase();
+  const allowed = new Set([
+    'pending',
+    'captured',
+    'failed',
+    'not_available',
+    'insufficient_market_match',
+  ]);
+  if (allowed.has(normalized)) return normalized;
+  if (normalized === 'not_captured') return 'not_available';
+  return finalDecision === 'SIT' ? 'pending' : 'not_available';
+}
+
+function normalizeClvDirection(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  const allowed = new Set(['positive', 'negative', 'neutral', 'unknown']);
+  return allowed.has(normalized) ? normalized : 'unknown';
+}
+
+function normalizeCloseMatchQuality(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  const allowed = new Set([
+    'exact_same_book_same_market',
+    'exact_market_cross_book',
+    'proxy_only',
+    'insufficient_match',
+  ]);
+  return allowed.has(normalized) ? normalized : 'insufficient_match';
 }
 
 function requireField(row, field) {
@@ -260,12 +295,16 @@ export function normalizeNativeDecisionRow(input) {
     rejection_reason: finalDecision === 'BET' ? '' : String(input.rejection_reason || '').trim().toLowerCase(),
     rejection_class: finalDecision === 'BET' ? '' : String(input.rejection_class || '').trim().toLowerCase(),
     surfaced_as_closest_miss: normalizeBool(input.surfaced_as_closest_miss, false),
-    close_capture_status: normalizeNullableString(input.close_capture_status) || (finalDecision === 'SIT' ? 'pending' : 'not_available'),
+    close_capture_status: normalizeCloseCaptureStatus(input.close_capture_status, finalDecision),
     closing_odds_american: normalizeNullableString(input.closing_odds_american),
+    closing_odds_decimal: round4(parseNumber(input.closing_odds_decimal)),
     closing_implied_prob: round4(parseNumber(input.closing_implied_prob)),
     closing_devig_prob: round4(parseNumber(input.closing_devig_prob)),
+    closing_snapshot_time_utc: normalizeNullableString(input.closing_snapshot_time_utc),
+    closing_book: normalizeNullableString(input.closing_book),
     clv_delta_pct: round4(parseNumber(input.clv_delta_pct)),
-    clv_direction: normalizeNullableString(input.clv_direction),
+    clv_direction: normalizeClvDirection(input.clv_direction),
+    close_match_quality: normalizeCloseMatchQuality(input.close_match_quality),
     closing_line: round4(parseNumber(input.closing_line)),
     snapshot_status: normalizeNullableString(input.snapshot_status) || 'not_validated',
     snapshot_max_spread_seconds: round4(parseNumber(input.snapshot_max_spread_seconds)),

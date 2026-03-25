@@ -3,161 +3,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TieredEdge Live Bet Log</title>
-  <meta name="description" content="TieredEdge public transparency log for tracked betting decisions." />
+  <title>TieredEdge Operator Dashboard</title>
+  <meta name="description" content="Operator-grade TieredEdge dashboard for system health, daily hunt trust, rejected-opportunity learning, and recent bet truth." />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <header class="top">
     <div class="shell top-inner">
       <div>
-        <p class="kicker">PUBLIC TRANSPARENCY LOG</p>
-        <h1>TieredEdge Live Bet Log</h1>
-        <p class="subhead">Public transparency log for tracked bets, sits, grading, and process discipline.</p>
+        <p class="kicker">OPERATOR CONSOLE</p>
+        <h1>TieredEdge Daily Dashboard</h1>
+        <p class="subhead">Small, truth-first monitoring for system health, today’s hunt, rejected-opportunity learning, and recent bet truth.</p>
       </div>
       <div class="meta" id="meta"></div>
     </div>
   </header>
 
   <main class="shell">
-    <section class="cards" id="summary-cards"></section>
-    <section class="cards cards-support" id="support-cards"></section>
-
-    <section class="panel featured" id="bets-section">
-      <h2 id="bets-title">Today's Bets</h2>
-      <div class="table-wrap">
-        <table id="bets-table"></table>
-      </div>
-    </section>
-
-    <section class="split">
-      <section class="panel" id="pending-section">
-        <h2>Pending Bets</h2>
-        <div class="table-wrap">
-          <table id="pending-table"></table>
-        </div>
-      </section>
-
-      <section class="panel" id="rejection-summary-section">
-        <h2>Daily Rejection Summary</h2>
-        <ul id="rejection-summary-list"></ul>
-      </section>
-    </section>
-
-    <section class="split">
-      <section class="panel" id="execution-quality-section">
-        <h2>Execution Quality</h2>
-        <ul id="execution-quality-list"></ul>
-      </section>
-
-      <section class="panel" id="recent-totals-section">
-        <h2>Weekly Totals</h2>
-        <ul id="recent-totals-list"></ul>
-      </section>
-    </section>
-
-    <section class="split">
-      <section class="panel" id="quant-performance-section">
-        <h2>Performance vs Expectation</h2>
-        <ul id="quant-performance-list"></ul>
-      </section>
-      <section class="panel" id="edge-quality-section">
-        <h2>Signal Quality</h2>
-        <ul id="edge-quality-list"></ul>
-      </section>
-    </section>
-
-    <section class="split">
-      <section class="panel" id="bankroll-contribution-policy-section">
-        <h2>Bankroll Contribution Policy</h2>
-        <ul id="bankroll-contribution-policy-list"></ul>
-      </section>
-      <section class="panel" id="bankroll-composition-section">
-        <h2>Bankroll Overview</h2>
-        <ul id="bankroll-composition-list"></ul>
-      </section>
-    </section>
-
-    <section class="panel" id="accountability-section">
-      <h2>Accountability / History</h2>
-      <div class="range-controls">
-        <button type="button" class="range-btn" data-range="today">Today</button>
-        <button type="button" class="range-btn" data-range="last_7">Last 7</button>
-        <button type="button" class="range-btn" data-range="all_time">All-time</button>
-      </div>
-      <ul id="accountability-list"></ul>
-    </section>
-
-    <section class="panel" id="rejected-opportunities-section">
-      <h2>Rejected Opportunities (Today)</h2>
-      <div class="table-wrap">
-        <table id="rejected-opportunities-table"></table>
-      </div>
-    </section>
-
-    <section class="split">
-      <section class="panel" id="scan-budget-section">
-        <h2>Scan Budget</h2>
-        <ul id="scan-budget-list"></ul>
-      </section>
-      <section class="panel" id="scan-priority-section">
-        <h2>Scan Priority / Cache Policy</h2>
-        <ul id="scan-priority-list"></ul>
-      </section>
-    </section>
-
-    <section class="panel" id="actionable-board-section">
-      <h2>Actionable Edge Board</h2>
-      <div class="table-wrap">
-        <table id="actionable-board-table"></table>
-      </div>
-    </section>
-
-    <section class="split split-stacked">
-      <section class="panel" id="live-execution-section">
-        <h2>Live Execution Board</h2>
-        <ul id="live-execution-summary-list"></ul>
-        <div class="table-wrap">
-          <table id="live-execution-table"></table>
-        </div>
-      </section>
-      <section class="panel" id="execution-log-section">
-        <h2>Execution Log</h2>
-        <div class="table-wrap">
-          <table id="execution-log-table"></table>
-        </div>
-      </section>
-    </section>
-
-    <section class="split split-stacked">
-      <section class="panel" id="pass-band-section">
-        <h2>0% To 2% Pass Band</h2>
-        <div class="table-wrap">
-          <table id="pass-band-table"></table>
-        </div>
-      </section>
-      <section class="panel" id="suppressed-board-section">
-        <h2>Suppressed Candidates</h2>
-        <div class="table-wrap">
-          <table id="suppressed-board-table"></table>
-        </div>
-      </section>
-    </section>
-
-    <section class="panel diagnostics" id="diagnostics-section">
-      <details>
-        <summary>Technical Diagnostics</summary>
-        <p class="diag-note">This section contains internal system checks used to validate data integrity.</p>
-        <ul id="diagnostics-list"></ul>
-        <div class="table-wrap">
-          <table id="diagnostics-table"></table>
-        </div>
-      </details>
-    </section>
+    <section id="dashboard-root"></section>
+    <section id="drilldowns-root"></section>
   </main>
 
   <footer class="shell foot">
-    <p>Methodology: this page tracks bets, sits, CLV, and rejected opportunities without cherry-picking.</p>
+    <p>Operator view uses canonical/public truth only. Missing metrics are shown honestly as insufficient data.</p>
   </footer>
 
   <script src="./app.js"></script>
