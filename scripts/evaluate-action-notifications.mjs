@@ -49,7 +49,7 @@ function buildActionableCandidate(state, rows) {
   );
   if (!actionable.length) return null;
   const selections = actionable.slice(0, 5).map((row) =>
-    `${row.selection} @ ${row.odds_american} | ${row.sportsbook} | ${round2(parseNumber(row.post_conf_edge_pct) || 0)}% edge | $${Number(parseNumber(row.kelly_stake) || 0).toFixed(2)}`
+    `${row.selection} @ ${row.odds_american} | ${row.sportsbook} | ${round2(parseNumber(row.post_conf_edge_pct) || 0)}% edge | $${Number(parseNumber(row.kelly_stake) || 0).toFixed(2)} | ${String(row.urgency_tag || 'LATER').toUpperCase()}${Number.isFinite(parseNumber(row.minutes_to_start)) ? ` (${round2(parseNumber(row.minutes_to_start))} min)` : ''}`
   );
   return {
     type: 'actionable',
@@ -151,4 +151,3 @@ function main() {
 }
 
 main();
-

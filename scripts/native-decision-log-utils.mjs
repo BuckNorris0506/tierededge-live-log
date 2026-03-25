@@ -26,6 +26,9 @@ export const NATIVE_DECISION_HEADERS = [
   'event_label',
   'event_home_team',
   'event_away_team',
+  'event_start_time',
+  'minutes_to_start',
+  'urgency_tag',
   'market_type',
   'selection',
   'sportsbook',
@@ -121,6 +124,12 @@ function normalizeBool(value, fallback = false) {
 function normalizeNullableString(value) {
   const text = String(value || '').trim();
   return text ? text : null;
+}
+
+function normalizeUrgencyTag(value) {
+  const normalized = String(value || '').trim().toUpperCase();
+  const allowed = new Set(['NOW', 'SOON', 'LATER']);
+  return allowed.has(normalized) ? normalized : 'LATER';
 }
 
 function normalizeCloseCaptureStatus(value, finalDecision) {
@@ -260,6 +269,9 @@ export function normalizeNativeDecisionRow(input) {
     event_label: String(input.event_label || '').trim() || null,
     event_home_team: String(input.event_home_team || '').trim() || null,
     event_away_team: String(input.event_away_team || '').trim() || null,
+    event_start_time: normalizeNullableString(input.event_start_time),
+    minutes_to_start: round4(parseNumber(input.minutes_to_start)),
+    urgency_tag: normalizeUrgencyTag(input.urgency_tag),
     market_type: requireField(input, 'market_type'),
     selection: requireField(input, 'selection'),
     sportsbook: requireField(input, 'sportsbook'),

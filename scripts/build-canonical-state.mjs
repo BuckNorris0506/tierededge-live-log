@@ -949,6 +949,7 @@ function buildActionFlags({
   latestCanonicalHuntRun,
   decisionPayload,
   latestRunRows,
+  latestRunBets,
   latestRunInvalidated,
   nativeAppendStatus,
   ledgerValidation,
@@ -999,6 +1000,17 @@ function buildActionFlags({
   }
   if ((clvAnalytics?.coverage_pct || 0) < 50) {
     flags.push({ level: 'YELLOW', code: 'low_clv_coverage', title: 'Low CLV coverage', message: `Settled-bet CLV coverage is ${clvAnalytics?.coverage_pct_label || 'Insufficient data'}.` });
+  }
+  if (latestRunBets.some((row) => ['NOW', 'SOON'].includes(String(row.urgency_tag || '').toUpperCase()))) {
+    const soonest = [...latestRunBets]
+      .filter((row) => ['NOW', 'SOON'].includes(String(row.urgency_tag || '').toUpperCase()))
+      .sort((left, right) => (parseNumber(left.minutes_to_start) ?? Number.POSITIVE_INFINITY) - (parseNumber(right.minutes_to_start) ?? Number.POSITIVE_INFINITY))[0];
+    flags.push({
+      level: 'YELLOW',
+      code: 'executable_edge_starts_soon',
+      title: 'Executable edge starts soon',
+      message: `${soonest.selection} starts in ${round2(parseNumber(soonest.minutes_to_start) || 0)} minutes (${soonest.urgency_tag}).`,
+    });
   }
   if ((nearMissClv.captured_count || 0) >= 10 && (nearMissClv.positive_clv_rate || 0) >= 60) {
     flags.push({ level: 'YELLOW', code: 'rejected_clv_threshold_pressure', title: 'Rejected CLV pressure building', message: `Executable 1.5–1.99% rejects are showing ${formatCardPercent(nearMissClv.positive_clv_rate)} positive CLV on ${nearMissClv.captured_count} captured rows.` });
@@ -1057,6 +1069,24 @@ function buildOperatorDashboard({
     : null;
   const executableClosestMisses = latestRunRows.filter((row) => row.final_decision === 'SIT' && row.executable_book && row.surfaced_as_closest_miss);
   const marketsScannedSummary = compactMarketsScannedSummary(latestRunRows);
+  const soonExecutableRecommendations = latestRunBets.filter((row) => ['NOW', 'SOON'].includes(String(row.urgency_tag || '').toUpperCase()));
+  const soonestActionableRecommendation = [...soonExecutableRecommendations]
+    .sort((left, right) => (parseNumber(left.minutes_to_start) ?? Number.POSITIVE_INFINITY) - (parseNumber(right.minutes_to_start) ?? Number.POSITIVE_INFINITY))[0] || null;
+  const urgencySummary = {
+    thresholds: latestCanonicalHuntRun?.urgency_thresholds || {
+      NOW: '<= 15 minutes to start',
+      SOON: '15 to 90 minutes to start',
+      LATER: '> 90 minutes to start or unknown',
+    },
+    soon_actionable_count: soonExecutableRecommendations.length,
+    soonest_actionable: soonestActionableRecommendation ? {
+      selection: soonestActionableRecommendation.selection,
+      sportsbook: soonestActionableRecommendation.sportsbook,
+      event_start_time: soonestActionableRecommendation.event_start_time || null,
+      minutes_to_start: soonestActionableRecommendation.minutes_to_start,
+      urgency_tag: soonestActionableRecommendation.urgency_tag || 'LATER',
+    } : null,
+  };
   const todayNearMiss = (min, max, executableOnly = false) => todayRejectedRows
     .filter((row) => {
       const edge = parseNumber(row.post_conf_edge_pct) || 0;
@@ -1081,6 +1111,7 @@ function buildOperatorDashboard({
     latestCanonicalHuntRun,
     decisionPayload,
     latestRunRows,
+    latestRunBets,
     latestRunInvalidated,
     nativeAppendStatus,
     ledgerValidation,
@@ -1139,6 +1170,7 @@ function buildOperatorDashboard({
               { label: 'actionable_recommendations_count', value: actionableRecommendationsCount },
               { label: 'total_recommended_exposure', value: formatMoney(totalRecommendedExposureValue) },
               { label: 'best_executable_edge_today', value: bestExecutableEdgeToday === null ? null : `${round2(bestExecutableEdgeToday)}%` },
+              { label: 'soon_actionable_count', value: urgencySummary.soon_actionable_count },
             ],
           },
           {
@@ -1243,6 +1275,7 @@ function buildOperatorDashboard({
       },
     ],
     action_flags: flags,
+    recommendation_timing_summary: urgencySummary,
     drilldowns: {
       rejected_opportunity_detail: (rejectedSummary?.recent_rejected_opportunities_worth_review || []).slice(0, 25).map((row) => ({
         timestamp_ct: row.timestamp_ct,

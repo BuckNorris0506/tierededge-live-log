@@ -1056,11 +1056,22 @@ function minutesToStart(row) {
   return round2((startMs - Date.now()) / 60000);
 }
 
+function deriveUrgencyTag(minutesUntilStart) {
+  if (!Number.isFinite(minutesUntilStart)) return 'LATER';
+  if (minutesUntilStart <= 15) return 'NOW';
+  if (minutesUntilStart <= 90) return 'SOON';
+  return 'LATER';
+}
+
 function finalizeDecisions(rows, riskControls) {
   const byTierCounts = { T1: 0, T2: 0, T3: 0 };
   let totalExposure = 0;
   const sorted = [...rows].sort(rankCandidates);
   for (const row of sorted) {
+    const minutesUntilStart = minutesToStart(row);
+    row.event_start_time = row?.analysis_meta?.event_start_utc || null;
+    row.minutes_to_start = minutesUntilStart;
+    row.urgency_tag = deriveUrgencyTag(minutesUntilStart);
     if (row.snapshot_status && row.snapshot_status !== 'valid') {
       row.final_decision = 'SIT';
       row.rejection_stage = 'integrity_gate';
@@ -1071,7 +1082,6 @@ function finalizeDecisions(rows, riskControls) {
       row.kelly_stake = 0;
       continue;
     }
-    const minutesUntilStart = minutesToStart(row);
     if (riskControls.rejectStartedEvents && minutesUntilStart !== null && minutesUntilStart <= 0) {
       row.final_decision = 'SIT';
       row.rejection_stage = 'integrity_gate';
@@ -1214,6 +1224,11 @@ function summarizeRun({
     .filter((row) => (row.post_conf_edge_pct ?? 0) >= 0.5 && (row.post_conf_edge_pct ?? 0) < 2)
     .sort(rankCandidates)
     .slice(0, 6);
+  const formatUrgency = (row) => {
+    const minutes = parseNumber(row.minutes_to_start);
+    if (!Number.isFinite(minutes)) return `${row.urgency_tag || 'LATER'} | start unknown`;
+    return `${row.urgency_tag || deriveUrgencyTag(minutes)} | starts in ${round2(minutes)} min`;
+  };
   const lines = [];
   lines.push(`TIERED EDGE HUNT — ${todayCtDateKey()}`);
   lines.push(`Bankroll: ${formatMoney(bankrollSnapshot)} | Phase: STANDARD | Daily Exposure Used: 0%`);
@@ -1234,6 +1249,7 @@ function summarizeRun({
       for (const row of grouped[tier]) {
         lines.push(`- [ ] ${row.selection} @ ${row.odds_american} | ${row.sportsbook}`);
         lines.push(`  Timestamp (CT): ${row.timestamp_ct}`);
+        lines.push(`  Start: ${row.event_start_time || 'unknown'} | Urgency: ${formatUrgency(row)}`);
         lines.push(`  True Prob: ${(row.post_conf_true_prob * 100).toFixed(1)}% | Implied Prob (de-vig): ${(row.devig_implied_prob * 100).toFixed(1)}% | Edge: +${row.post_conf_edge_pct}%`);
         lines.push(`  Kelly Stake: ${formatMoney(parseNumber(row.kelly_stake) || 0)}`);
       }
@@ -1245,14 +1261,14 @@ function summarizeRun({
     lines.push('- No qualifying edges >= +2% after consensus de-vig analysis.');
   } else {
     for (const row of actionableMisses) {
-      lines.push(`- ${row.selection} @ ${row.odds_american} | ${row.sportsbook}: +${row.post_conf_edge_pct}% edge — ${row.rejection_reason || 'No edge at current price'}`);
+      lines.push(`- ${row.selection} @ ${row.odds_american} | ${row.sportsbook}: +${row.post_conf_edge_pct}% edge — ${row.rejection_reason || 'No edge at current price'} | ${formatUrgency(row)}`);
     }
   }
   if (researchOnlyRows.length) {
     lines.push('');
     lines.push('RESEARCH-ONLY NON-OWNED BOOK EDGES:');
     for (const row of researchOnlyRows) {
-      lines.push(`- ${row.selection} @ ${row.odds_american} | ${row.sportsbook}: +${row.post_conf_edge_pct}% edge — research_only`);
+      lines.push(`- ${row.selection} @ ${row.odds_american} | ${row.sportsbook}: +${row.post_conf_edge_pct}% edge — research_only | ${formatUrgency(row)}`);
     }
   }
   lines.push('');
@@ -1284,6 +1300,35 @@ function summarizeRun({
     actionable_books_for_run: actionableBooksForRun,
     feed_unavailable_owned_books: feedUnavailableOwnedBooks,
     research_only_books: researchOnlyBooks,
+    urgency_thresholds: {
+      NOW: '<= 15 minutes to start',
+      SOON: '15 to 90 minutes to start',
+      LATER: '> 90 minutes to start or unknown',
+    },
+    selected_rows: selectedRows.map((row) => ({
+      rec_id: row.rec_id,
+      selection: row.selection,
+      sportsbook: row.sportsbook,
+      odds_american: row.odds_american,
+      post_conf_edge_pct: row.post_conf_edge_pct,
+      kelly_stake: row.kelly_stake,
+      event_start_time: row.event_start_time || null,
+      minutes_to_start: row.minutes_to_start,
+      urgency_tag: row.urgency_tag || 'LATER',
+      actionable_book: row.actionable_book,
+      executable_book: row.executable_book,
+    })),
+    executable_closest_misses: actionableMisses.map((row) => ({
+      rec_id: row.rec_id,
+      selection: row.selection,
+      sportsbook: row.sportsbook,
+      odds_american: row.odds_american,
+      post_conf_edge_pct: row.post_conf_edge_pct,
+      rejection_reason: row.rejection_reason || 'no_edge',
+      event_start_time: row.event_start_time || null,
+      minutes_to_start: row.minutes_to_start,
+      urgency_tag: row.urgency_tag || 'LATER',
+    })),
     summary: lines.join('\n'),
     rows: {
       bet_rec_ids: selectedRows.map((row) => row.rec_id),
