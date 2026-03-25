@@ -1,31 +1,48 @@
 #!/bin/zsh
 
-LOCK_DIR="${TMPDIR:-/tmp}/tierededge-live-log.lock"
-LOCK_META_FILE="$LOCK_DIR/owner"
+LOCK_BASE_DIR="${TMPDIR:-/tmp}/tierededge-automation-locks"
 LOCK_MAX_AGE_SECONDS=900
 
 typeset -ga TIEREDGE_SOURCE_SNAPSHOTS
+typeset -ga TIEREDGE_HELD_LOCKS
+
+lock_dir_for() {
+  local lock_name="${1:-live-log}"
+  echo "${LOCK_BASE_DIR}/${lock_name}.lock"
+}
+
+lock_meta_file_for() {
+  local lock_name="${1:-live-log}"
+  echo "$(lock_dir_for "$lock_name")/owner"
+}
 
 lock_owner_pid() {
-  if [[ -f "$LOCK_META_FILE" ]]; then
-    awk -F= '/^pid=/{print $2}' "$LOCK_META_FILE" 2>/dev/null
+  local lock_name="${1:-live-log}"
+  local lock_meta_file
+  lock_meta_file="$(lock_meta_file_for "$lock_name")"
+  if [[ -f "$lock_meta_file" ]]; then
+    awk -F= '/^pid=/{print $2}' "$lock_meta_file" 2>/dev/null
   fi
 }
 
 lock_owner_started_at() {
-  if [[ -f "$LOCK_META_FILE" ]]; then
-    awk -F= '/^started_at=/{print $2}' "$LOCK_META_FILE" 2>/dev/null
+  local lock_name="${1:-live-log}"
+  local lock_meta_file
+  lock_meta_file="$(lock_meta_file_for "$lock_name")"
+  if [[ -f "$lock_meta_file" ]]; then
+    awk -F= '/^started_at=/{print $2}' "$lock_meta_file" 2>/dev/null
   fi
 }
 
 lock_is_stale() {
+  local lock_name="${1:-live-log}"
   local pid started_at started_epoch now age
-  pid="$(lock_owner_pid)"
+  pid="$(lock_owner_pid "$lock_name")"
   if [[ -n "$pid" ]] && ! kill -0 "$pid" 2>/dev/null; then
     return 0
   fi
 
-  started_at="$(lock_owner_started_at)"
+  started_at="$(lock_owner_started_at "$lock_name")"
   if [[ -z "$started_at" ]]; then
     return 1
   fi
@@ -38,52 +55,105 @@ lock_is_stale() {
   [[ "$age" -gt "$LOCK_MAX_AGE_SECONDS" ]]
 }
 
-clear_stale_live_log_lock() {
-  rm -f "$LOCK_META_FILE" 2>/dev/null || true
-  rmdir "$LOCK_DIR" 2>/dev/null || true
+clear_named_lock() {
+  local lock_name="${1:-live-log}"
+  local lock_dir lock_meta_file
+  lock_dir="$(lock_dir_for "$lock_name")"
+  lock_meta_file="$(lock_meta_file_for "$lock_name")"
+  rm -f "$lock_meta_file" 2>/dev/null || true
+  rmdir "$lock_dir" 2>/dev/null || true
 }
 
-acquire_live_log_lock() {
-  local owner="${1:-unknown}"
-  if [[ "${TIEREDEDGE_LOCK_HELD:-0}" == "1" ]]; then
+clear_stale_live_log_lock() {
+  clear_named_lock "live-log"
+}
+
+lock_is_held_here() {
+  local lock_name="${1:-live-log}"
+  local held
+  for held in "${TIEREDGE_HELD_LOCKS[@]:-}"; do
+    if [[ "$held" == "$lock_name" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+acquire_named_lock() {
+  local lock_name="${1:-live-log}"
+  local owner="${2:-unknown}"
+  local lock_dir lock_meta_file
+  lock_dir="$(lock_dir_for "$lock_name")"
+  lock_meta_file="$(lock_meta_file_for "$lock_name")"
+
+  mkdir -p "$LOCK_BASE_DIR"
+
+  if lock_is_held_here "$lock_name"; then
     return 0
   fi
 
-  if [[ -d "$LOCK_DIR" ]] && lock_is_stale; then
-    echo "WARN: removing stale live-log lock." >&2
-    if [[ -f "$LOCK_META_FILE" ]]; then
-      cat "$LOCK_META_FILE" >&2
+  if [[ -d "$lock_dir" ]] && lock_is_stale "$lock_name"; then
+    echo "WARN: removing stale ${lock_name} lock." >&2
+    if [[ -f "$lock_meta_file" ]]; then
+      cat "$lock_meta_file" >&2
     fi
-    clear_stale_live_log_lock
+    clear_named_lock "$lock_name"
   fi
 
-  if mkdir "$LOCK_DIR" 2>/dev/null; then
+  if mkdir "$lock_dir" 2>/dev/null; then
     {
+      echo "lock_name=$lock_name"
       echo "owner=$owner"
       echo "pid=$$"
       echo "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
       echo "cwd=$(pwd)"
-    } > "$LOCK_META_FILE"
-    export TIEREDEDGE_LOCK_HELD=1
-    trap release_live_log_lock EXIT INT TERM
+    } > "$lock_meta_file"
+    TIEREDGE_HELD_LOCKS+=("$lock_name")
+    trap release_all_named_locks EXIT INT TERM
     return 0
   fi
 
-  echo "ABORT: live-log automation lock is already held." >&2
-  if [[ -f "$LOCK_META_FILE" ]]; then
+  echo "ABORT: ${lock_name} lock is already held." >&2
+  if [[ -f "$lock_meta_file" ]]; then
     echo "Lock owner metadata:" >&2
-    cat "$LOCK_META_FILE" >&2
+    cat "$lock_meta_file" >&2
   fi
   return 1
 }
 
-release_live_log_lock() {
-  if [[ "${TIEREDEDGE_LOCK_HELD:-0}" != "1" ]]; then
+release_named_lock() {
+  local lock_name="${1:-live-log}"
+  local remaining=()
+  local held
+  for held in "${TIEREDGE_HELD_LOCKS[@]:-}"; do
+    if [[ "$held" == "$lock_name" ]]; then
+      clear_named_lock "$lock_name"
+    else
+      remaining+=("$held")
+    fi
+  done
+  TIEREDGE_HELD_LOCKS=("${remaining[@]}")
+}
+
+release_all_named_locks() {
+  local held_locks=("${TIEREDGE_HELD_LOCKS[@]}")
+  local held
+  if (( ${#TIEREDGE_HELD_LOCKS[@]} == 0 )); then
     return 0
   fi
-  rm -f "$LOCK_META_FILE" 2>/dev/null || true
-  rmdir "$LOCK_DIR" 2>/dev/null || true
-  unset TIEREDEDGE_LOCK_HELD
+  for held in "${held_locks[@]}"; do
+    clear_named_lock "$held"
+  done
+  TIEREDGE_HELD_LOCKS=()
+}
+
+acquire_live_log_lock() {
+  local owner="${1:-unknown}"
+  acquire_named_lock "live-log" "$owner"
+}
+
+release_live_log_lock() {
+  release_named_lock "live-log"
 }
 
 snapshot_source_state() {

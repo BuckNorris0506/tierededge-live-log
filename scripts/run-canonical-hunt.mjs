@@ -10,7 +10,8 @@ import { promisify } from 'node:util';
 import { appendNativeDecisionRows } from './native-decision-log-utils.mjs';
 import { computeKellyBreakdown } from './tierededge-kelly-cli.mjs';
 import { loadScanCoveragePolicy } from './scan-coverage-utils.mjs';
-import { CORE_PATHS, formatMoney, parseNumber, readJson, readJsonl, round2, writeJson } from './core-ledger-utils.mjs';
+import { acquireNamedLock, clearNamedLock } from './automation-lock-utils.mjs';
+import { CORE_PATHS, appendJsonl, formatMoney, parseNumber, readJson, readJsonl, round2, writeJson } from './core-ledger-utils.mjs';
 import { readHuntBlockStatus } from './hunt-block-status.mjs';
 import { formatCtTimestamp } from './openclaw-runtime-utils.mjs';
 
@@ -49,6 +50,18 @@ function parseArgs(argv) {
     i += 1;
   }
   return args;
+}
+
+function appendCanonicalHuntRun(row) {
+  const nextRow = {
+    attempt_id: row.attempt_id || `${row.run_id || 'unknown'}::${row.started_at_utc || new Date().toISOString()}::${row.status || 'unknown'}`,
+    ...row,
+  };
+  appendJsonl(
+    CORE_PATHS.canonicalHuntRuns,
+    nextRow,
+    (existing) => String(existing.attempt_id || `${existing.run_id || 'unknown'}::${existing.started_at_utc || ''}::${existing.status || 'unknown'}`).trim(),
+  );
 }
 
 function slugify(value) {
@@ -1335,6 +1348,50 @@ async function main() {
   const runAt = new Date();
   const runId = args.run_id || `canonical-hunt::${todayCtDateKey(runAt)}::${formatCtMinute(runAt).slice(11).replace(':', '')}`;
   const scanTimeCt = formatCtMinute(runAt);
+  const huntLock = await acquireNamedLock('canonical-hunt', 'run-canonical-hunt.mjs');
+  if (!huntLock.acquired) {
+    appendCanonicalHuntRun({
+      run_id: runId,
+      run_at_ct: scanTimeCt,
+      started_at_utc: runAt.toISOString(),
+      completed_at_utc: new Date().toISOString(),
+      status: 'skipped_due_to_active_lock',
+      lock_name: 'canonical-hunt',
+      stale_recovered: false,
+      native_rows_appended: 0,
+    });
+    const summary = `TIERED EDGE HUNT — ${todayCtDateKey(runAt)}\nSKIPPED: skipped_due_to_active_lock (canonical-hunt)`;
+    if (args.json) {
+      console.log(JSON.stringify({ status: 'skipped_due_to_active_lock', lock_name: 'canonical-hunt', run_id: runId }, null, 2));
+    } else {
+      console.log(summary);
+    }
+    return;
+  }
+
+  const liveLogLock = await acquireNamedLock('live-log', 'run-canonical-hunt.mjs');
+  if (!liveLogLock.acquired) {
+    await clearNamedLock('canonical-hunt');
+    appendCanonicalHuntRun({
+      run_id: runId,
+      run_at_ct: scanTimeCt,
+      started_at_utc: runAt.toISOString(),
+      completed_at_utc: new Date().toISOString(),
+      status: 'skipped_due_to_active_lock',
+      lock_name: 'live-log',
+      stale_recovered: false,
+      native_rows_appended: 0,
+    });
+    const summary = `TIERED EDGE HUNT — ${todayCtDateKey(runAt)}\nSKIPPED: skipped_due_to_active_lock (live-log)`;
+    if (args.json) {
+      console.log(JSON.stringify({ status: 'skipped_due_to_active_lock', lock_name: 'live-log', run_id: runId }, null, 2));
+    } else {
+      console.log(summary);
+    }
+    return;
+  }
+
+  try {
   const blockStatus = readHuntBlockStatus();
   if (blockStatus.blocked) {
     throw new Error(`hunt_blocked:${blockStatus.reason_class}:${blockStatus.reason}`);
@@ -1617,12 +1674,29 @@ async function main() {
     researchOnlyBooks,
   });
   writeJson(CORE_PATHS.canonicalHuntRun, artifact);
+  appendCanonicalHuntRun({
+    run_id: runId,
+    run_at_ct: scanTimeCt,
+    started_at_utc: runAt.toISOString(),
+    completed_at_utc: new Date().toISOString(),
+    status: artifact.status || 'ok',
+    message_type: artifact.message_type || null,
+    native_rows_appended: artifact.native_rows_appended ?? 0,
+    native_bets_appended: artifact.native_bets_appended ?? 0,
+    native_sits_appended: artifact.native_sits_appended ?? 0,
+    lock_name: 'canonical-hunt',
+    stale_recovered: Boolean(huntLock.staleRecovered || liveLogLock.staleRecovered),
+  });
 
   if (args.json) {
     console.log(JSON.stringify(artifact, null, 2));
     return;
   }
   console.log(artifact.summary);
+  } finally {
+    await clearNamedLock('live-log');
+    await clearNamedLock('canonical-hunt');
+  }
 }
 
 const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
@@ -1630,12 +1704,26 @@ const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process
 if (isDirectRun) {
   main().catch((error) => {
     const runAt = new Date();
+    const runId = `canonical-hunt::${todayCtDateKey(runAt)}::${formatCtMinute(runAt).slice(11).replace(':', '')}`;
     const artifact = failureArtifact({
-      runId: `canonical-hunt::${todayCtDateKey(runAt)}::${formatCtMinute(runAt).slice(11).replace(':', '')}`,
+      runId,
       scanTimeCt: formatCtMinute(runAt),
       reason: error.message,
     });
     writeJson(CORE_PATHS.canonicalHuntRun, artifact);
+    appendCanonicalHuntRun({
+      run_id: runId,
+      run_at_ct: formatCtMinute(runAt),
+      started_at_utc: runAt.toISOString(),
+      completed_at_utc: new Date().toISOString(),
+      status: 'failed',
+      message_type: artifact.message_type || null,
+      native_rows_appended: 0,
+      native_bets_appended: 0,
+      native_sits_appended: 0,
+      lock_name: 'canonical-hunt',
+      failure_reason: error.message,
+    });
     console.error(error.message);
     process.exit(1);
   });

@@ -837,6 +837,27 @@ function buildRejectedCloseCaptureAutomationSummary(runRows, rejectedSummary) {
   };
 }
 
+function buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns) {
+  const summarize = (rows) => {
+    const sorted = [...(rows || [])].sort((a, b) =>
+      String(b.completed_at_utc || b.started_at_utc || '').localeCompare(String(a.completed_at_utc || a.started_at_utc || ''))
+    );
+    const latest = sorted[0] || null;
+    const skipped = sorted.filter((row) => String(row.status || '').trim().toLowerCase() === 'skipped_due_to_active_lock');
+    return {
+      last_run_time_utc: latest?.completed_at_utc || latest?.started_at_utc || null,
+      last_run_status: latest?.status || 'not_run',
+      last_skip_time_utc: skipped[0]?.completed_at_utc || skipped[0]?.started_at_utc || null,
+      skipped_due_to_active_lock_count: skipped.length,
+      recent_skips: skipped.slice(0, 10),
+    };
+  };
+  return {
+    canonical_hunt: summarize(canonicalHuntRuns),
+    rejected_close_capture: summarize(rejectedCloseCaptureRuns),
+  };
+}
+
 function buildPerformanceByMarket(decisions) {
   const groups = new Map();
   for (const row of decisions || []) {
@@ -1258,6 +1279,7 @@ function buildOperatorDashboard({
 
 function main() {
   const decisions = readJsonl(CORE_PATHS.decisionLedger);
+  const canonicalHuntRuns = readJsonl(CORE_PATHS.canonicalHuntRuns);
   const rejectedCloseCaptureLog = readJsonl(REJECTED_CLOSE_CAPTURE_LOG_PATH);
   const rejectedCloseCaptureRuns = readJsonl(REJECTED_CLOSE_CAPTURE_RUNS_PATH);
   const grading = readJsonl(CORE_PATHS.gradingLedger);
@@ -1370,6 +1392,7 @@ function main() {
   const latestModelExposure = parseDailyExposure(latestRuntime?.summary);
   const rejectedOpportunitySummary = buildRejectedOpportunitySummary(validLearningDecisions, latestDate, rejectedCloseCaptureIndex);
   const rejectedCloseCaptureAutomation = buildRejectedCloseCaptureAutomationSummary(rejectedCloseCaptureRuns, rejectedOpportunitySummary);
+  const automationLockSummary = buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns);
   const sportsbookScope = {
     owned_books: scanCoveragePolicy?.book_sets?.owned_books || scanCoveragePolicy?.book_sets?.executable_books || [],
     live_feed_books: latestCanonicalHuntRun?.live_feed_books || [],
@@ -1513,6 +1536,7 @@ function main() {
     },
     rejected_opportunity_summary: rejectedOpportunitySummary,
     rejected_close_capture_automation: rejectedCloseCaptureAutomation,
+    automation_lock_summary: automationLockSummary,
     clean_run_summary: cleanRunSummary,
     performance_by_market: performanceByMarket,
     operator_dashboard: operatorDashboard,

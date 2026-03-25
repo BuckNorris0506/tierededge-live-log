@@ -36,6 +36,10 @@ function parseArgs(argv) {
   return args;
 }
 
+function appendCloseCaptureRun(row) {
+  appendJsonl(CLOSE_CAPTURE_RUNS_PATH, row, (existing) => String(existing.run_id || '').trim());
+}
+
 function todayCtDateKey(date = new Date()) {
   return new Intl.DateTimeFormat('en-CA', {
     timeZone: 'America/Chicago',
@@ -391,6 +395,37 @@ async function main() {
   const limit = Number(parseNumber(args.limit) || 0);
   const startedAt = new Date();
   const startedAtUtc = startedAt.toISOString();
+
+  if (args.skip_due_to_active_lock) {
+    const summary = {
+      status: 'skipped_due_to_active_lock',
+      pending_rows: 0,
+      rows_scanned: 0,
+      captured: 0,
+      failed: 0,
+      insufficient_market_match: 0,
+      rows_still_pending: 0,
+      output_path: CLOSE_CAPTURE_PATH,
+    };
+    appendCloseCaptureRun({
+      run_id: `rejected-close-run::${startedAtUtc}`,
+      started_at_utc: startedAtUtc,
+      completed_at_utc: new Date().toISOString(),
+      status: 'skipped_due_to_active_lock',
+      force,
+      limit: limit || null,
+      eligible_rows: 0,
+      rows_scanned: 0,
+      captured: 0,
+      failed: 0,
+      insufficient_market_match: 0,
+      rows_still_pending: 0,
+      output_path: CLOSE_CAPTURE_PATH,
+    });
+    console.log(JSON.stringify(summary, null, 2));
+    return;
+  }
+
   const rows = readJsonl(CORE_PATHS.decisionLedger);
   const invalidatedRunIds = new Set(
     readJsonl(CORE_PATHS.huntAuditLog)
@@ -427,7 +462,7 @@ async function main() {
       reason: 'No rejected rows currently pending close capture.',
       output_path: CLOSE_CAPTURE_PATH,
     };
-    appendJsonl(CLOSE_CAPTURE_RUNS_PATH, {
+    appendCloseCaptureRun({
       run_id: `rejected-close-run::${startedAtUtc}`,
       started_at_utc: startedAtUtc,
       completed_at_utc: new Date().toISOString(),
@@ -441,7 +476,7 @@ async function main() {
       insufficient_market_match: 0,
       rows_still_pending: 0,
       output_path: CLOSE_CAPTURE_PATH,
-    }, (row) => String(row.run_id || '').trim());
+    });
     console.log(JSON.stringify(summary, null, 2));
     return;
   }
@@ -530,7 +565,7 @@ async function main() {
     output_path: CLOSE_CAPTURE_PATH,
   };
 
-  appendJsonl(CLOSE_CAPTURE_RUNS_PATH, {
+  appendCloseCaptureRun({
     run_id: `rejected-close-run::${startedAtUtc}`,
     started_at_utc: startedAtUtc,
     completed_at_utc: new Date().toISOString(),
@@ -544,7 +579,7 @@ async function main() {
     insufficient_market_match: summary.insufficient_market_match,
     rows_still_pending: rowsStillPending,
     output_path: CLOSE_CAPTURE_PATH,
-  }, (row) => String(row.run_id || '').trim());
+  });
 
   console.log(JSON.stringify(summary, null, 2));
 }

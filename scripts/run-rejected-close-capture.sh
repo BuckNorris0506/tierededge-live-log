@@ -6,7 +6,16 @@ cd "$ROOT_DIR"
 
 source "$ROOT_DIR/scripts/load-tierededge-env.sh"
 source "$ROOT_DIR/scripts/live-log-automation-guard.sh"
-acquire_live_log_lock "run-rejected-close-capture.sh"
+
+if ! acquire_named_lock "rejected-close-capture" "run-rejected-close-capture.sh"; then
+  node scripts/capture-rejected-closing-lines.mjs --skip-due-to-active-lock
+  exit 0
+fi
+
+if ! acquire_live_log_lock "run-rejected-close-capture.sh"; then
+  node scripts/capture-rejected-closing-lines.mjs --skip-due-to-active-lock
+  exit 0
+fi
 
 node scripts/capture-rejected-closing-lines.mjs
-TIEREDEDGE_LOCK_HELD=1 "$ROOT_DIR/scripts/update-live-log.sh"
+"$ROOT_DIR/scripts/update-live-log.sh"
