@@ -720,6 +720,7 @@ function buildMarketRows({
   market,
   consensusContext,
   pipeline,
+  minBookCount = 2,
   scanTimeCt,
   runId,
   bankrollSnapshot,
@@ -794,6 +795,23 @@ function buildMarketRows({
         ownedBooks,
         snapshotStatus: 'missing_consensus_outcome',
         snapshotMaxSpreadSeconds: consensusContext.maxSpreadSeconds,
+        consensusMethod: pipeline.consensusMethod,
+        rejectionClass: 'invalid_snapshot',
+      }));
+      break;
+    }
+    if ((consensus.bookmakerCount || 0) < minBookCount) {
+      rows.push(...invalidSnapshotRows({
+        sportKey,
+        event,
+        bookmaker,
+        market,
+        scanTimeCt,
+        runId,
+        bankrollSnapshot,
+        ownedBooks,
+        snapshotStatus: 'insufficient_valid_books',
+        snapshotMaxSpreadSeconds: consensus.maxSpreadSeconds,
         consensusMethod: pipeline.consensusMethod,
         rejectionClass: 'invalid_snapshot',
       }));
@@ -1417,6 +1435,7 @@ async function main() {
               market,
               consensusContext,
               pipeline: probabilityPipeline,
+              minBookCount: marketControl.minBookCount,
               scanTimeCt,
               runId,
               bankrollSnapshot,
@@ -1464,6 +1483,7 @@ async function main() {
               market,
               consensusContext,
               pipeline: probabilityPipeline,
+              minBookCount: mlbMoneylineControl.minBookCount,
               scanTimeCt,
               runId,
               bankrollSnapshot,

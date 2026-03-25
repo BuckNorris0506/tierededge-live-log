@@ -1,7 +1,7 @@
 {
   "schema": "tierededge_canonical_v2",
-  "generated_at_utc": "2026-03-25T02:01:39.239Z",
-  "last_updated_ct": "2026-03-24 21:01 CT",
+  "generated_at_utc": "2026-03-25T02:02:19.253Z",
+  "last_updated_ct": "2026-03-24 21:02 CT",
   "current_status": {
     "Bankroll": "$1396.30",
     "Phase": "GROWTH",
@@ -655,7 +655,7 @@
       }
     },
     "weekly_truth_report_summary": {
-      "generated_at_utc": "2026-03-25T02:01:39.289Z",
+      "generated_at_utc": "2026-03-25T02:02:19.302Z",
       "settled_bet_count": 2,
       "top_bleeding_categories": [],
       "top_strongest_categories": [
@@ -3216,57 +3216,57 @@
     "net_counterfactual_pl_if_bet": -3
   },
   "daily_rejection_summary": {
-    "Total Markets Checked": 2132,
-    "Total Rejected": 2108,
-    "no_edge": 1805,
+    "Total Markets Checked": 2222,
+    "Total Rejected": 2198,
+    "no_edge": 1811,
     "low_confidence": 0,
     "Plays Recommended": 24,
     "Excluded Invalid Rows": 160
   },
   "rejected_opportunity_summary": {
-    "total_rejected_rows": 3701,
+    "total_rejected_rows": 3791,
     "partial_backfill_count": 2996,
     "near_miss_counts_by_band": {
-      "1.0_to_1.49": 328,
-      "1.5_to_1.99": 158,
-      "2.0_plus_rejected": 102
+      "1.0_to_1.49": 330,
+      "1.5_to_1.99": 160,
+      "2.0_plus_rejected": 103
     },
     "executable_near_miss_counts_by_band": {
-      "1.0_to_1.49": 225,
-      "1.5_to_1.99": 113,
-      "2.0_plus_rejected": 82
+      "1.0_to_1.49": 226,
+      "1.5_to_1.99": 115,
+      "2.0_plus_rejected": 83
     },
     "rejection_reason_distribution": {
-      "no_edge": 3381,
+      "no_edge": 3387,
       "low_confidence": 5,
       "no edge at current price": 2,
       "exposure_cap_reached": 61,
       "non_executable_book": 2,
       "sub_minimum_kelly": 20,
-      "invalid_snapshot": 34,
-      "stale_market": 196
+      "invalid_snapshot": 104,
+      "stale_market": 210
     },
     "rejection_class_distribution": {
-      "no_edge": 3231,
+      "no_edge": 3237,
       "near_miss": 150,
       "other_meaningful_canonical": 7,
       "risk_gate_rejected": 63,
       "sub_minimum_kelly": 20,
-      "stale_or_unverified_odds": 34,
-      "stale_market": 196
+      "stale_or_unverified_odds": 104,
+      "stale_market": 210
     },
     "latest_date_rejection_reason_distribution": {
       "exposure_cap_reached": 51,
-      "no_edge": 1805,
+      "no_edge": 1811,
       "non_executable_book": 2,
       "sub_minimum_kelly": 20,
-      "invalid_snapshot": 34,
-      "stale_market": 196
+      "invalid_snapshot": 104,
+      "stale_market": 210
     },
     "close_capture_status_distribution": {
       "not_available": 2996,
       "not_captured": 615,
-      "pending": 90
+      "pending": 180
     },
     "rejected_clv_summary": {
       "all_rejected": {
@@ -4067,34 +4067,34 @@
     "daily_breakdown": [
       {
         "date": "2026-03-24",
-        "total_runs": 3,
-        "valid_snapshots": 360,
-        "invalid_snapshot_count": 34,
+        "total_runs": 4,
+        "valid_snapshots": 380,
+        "invalid_snapshot_count": 104,
         "total_bets": 1,
-        "total_sits": 393,
+        "total_sits": 483,
         "avg_edge_bet": 2.97,
-        "near_miss_count": 15,
+        "near_miss_count": 17,
         "rejection_reason_distribution": {
           "sub_minimum_kelly": 3,
-          "no_edge": 160,
-          "invalid_snapshot": 34,
-          "stale_market": 196
+          "no_edge": 166,
+          "invalid_snapshot": 104,
+          "stale_market": 210
         }
       }
     ],
     "rolling_7_day_summary": {
-      "total_runs": 3,
-      "valid_snapshots": 360,
-      "invalid_snapshot_count": 34,
+      "total_runs": 4,
+      "valid_snapshots": 380,
+      "invalid_snapshot_count": 104,
       "total_bets": 1,
-      "total_sits": 393,
+      "total_sits": 483,
       "avg_edge_bet": 2.97,
-      "near_miss_count": 15,
+      "near_miss_count": 17,
       "rejection_reason_distribution": {
         "sub_minimum_kelly": 3,
-        "no_edge": 160,
-        "invalid_snapshot": 34,
-        "stale_market": 196
+        "no_edge": 166,
+        "invalid_snapshot": 104,
+        "stale_market": 210
       }
     }
   },
@@ -4155,14 +4155,14 @@
       "market_family": "main_market",
       "market_type": "ML",
       "bets": 4,
-      "sits": 257,
+      "sits": 263,
       "avg_edge": 0.82,
       "rejection_reason_distribution": {
-        "no_edge": 238,
+        "no_edge": 240,
         "low_confidence": 1,
         "exposure_cap_reached": 9,
         "sub_minimum_kelly": 1,
-        "stale_market": 8
+        "stale_market": 12
       }
     },
     {
@@ -4179,15 +4179,15 @@
       "market_family": "main_market",
       "market_type": "Spread",
       "bets": 7,
-      "sits": 543,
+      "sits": 551,
       "avg_edge": 0.2,
       "rejection_reason_distribution": {
-        "no_edge": 518,
+        "no_edge": 520,
         "low_confidence": 1,
         "exposure_cap_reached": 2,
         "sub_minimum_kelly": 2,
-        "invalid_snapshot": 8,
-        "stale_market": 12
+        "invalid_snapshot": 12,
+        "stale_market": 14
       }
     },
     {
@@ -4195,13 +4195,13 @@
       "market_family": "main_market",
       "market_type": "Total",
       "bets": 0,
-      "sits": 532,
-      "avg_edge": 0.18,
+      "sits": 544,
+      "avg_edge": 0.19,
       "rejection_reason_distribution": {
-        "no_edge": 510,
+        "no_edge": 512,
         "sub_minimum_kelly": 2,
-        "invalid_snapshot": 4,
-        "stale_market": 16
+        "invalid_snapshot": 12,
+        "stale_market": 18
       }
     },
     {
@@ -4232,11 +4232,11 @@
       "market_family": "main_market",
       "market_type": "ML",
       "bets": 3,
-      "sits": 131,
-      "avg_edge": 0.77,
+      "sits": 133,
+      "avg_edge": 0.78,
       "rejection_reason_distribution": {
         "no_edge": 125,
-        "stale_market": 6
+        "stale_market": 8
       }
     },
     {
@@ -4244,12 +4244,13 @@
       "market_family": "main_market",
       "market_type": "Spread",
       "bets": 2,
-      "sits": 171,
+      "sits": 175,
       "avg_edge": 0.52,
       "rejection_reason_distribution": {
         "low_confidence": 2,
         "no_edge": 159,
-        "stale_market": 10
+        "stale_market": 10,
+        "invalid_snapshot": 4
       }
     },
     {
@@ -4257,11 +4258,11 @@
       "market_family": "main_market",
       "market_type": "Total",
       "bets": 0,
-      "sits": 188,
+      "sits": 190,
       "avg_edge": 0.24,
       "rejection_reason_distribution": {
         "no_edge": 182,
-        "stale_market": 6
+        "stale_market": 8
       }
     },
     {
@@ -4269,7 +4270,7 @@
       "market_family": "main_market",
       "market_type": "ML",
       "bets": 9,
-      "sits": 443,
+      "sits": 461,
       "avg_edge": 0.89,
       "rejection_reason_distribution": {
         "no_edge": 385,
@@ -4278,7 +4279,7 @@
         "exposure_cap_reached": 8,
         "sub_minimum_kelly": 1,
         "stale_market": 42,
-        "invalid_snapshot": 4
+        "invalid_snapshot": 22
       }
     },
     {
@@ -4286,13 +4287,13 @@
       "market_family": "main_market",
       "market_type": "Spread",
       "bets": 5,
-      "sits": 479,
+      "sits": 497,
       "avg_edge": 0.94,
       "rejection_reason_distribution": {
         "no_edge": 407,
         "exposure_cap_reached": 11,
         "sub_minimum_kelly": 9,
-        "invalid_snapshot": 8,
+        "invalid_snapshot": 26,
         "stale_market": 44
       }
     },
@@ -4301,14 +4302,14 @@
       "market_family": "main_market",
       "market_type": "Total",
       "bets": 1,
-      "sits": 673,
+      "sits": 693,
       "avg_edge": 0.5,
       "rejection_reason_distribution": {
         "no_edge": 600,
         "exposure_cap_reached": 6,
         "sub_minimum_kelly": 5,
-        "invalid_snapshot": 10,
-        "stale_market": 52
+        "invalid_snapshot": 28,
+        "stale_market": 54
       }
     },
     {
@@ -5818,7 +5819,7 @@
       "bankroll_before": 1295.13,
       "bankroll_after": 1300.53,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T02:01:38.939Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T02:02:18.965Z",
       "legacy_bankroll_after_import": 1321.03
     },
     {
@@ -5861,7 +5862,7 @@
       "bankroll_before": 1305.63,
       "bankroll_after": 1295.13,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T02:01:38.939Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T02:02:18.965Z",
       "legacy_bankroll_after_import": 1315.63
     },
     {
@@ -5904,12 +5905,12 @@
       "bankroll_before": 1326.13,
       "bankroll_after": 1305.63,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T02:01:38.939Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T02:02:18.965Z",
       "legacy_bankroll_after_import": 1300.53
     }
   ],
   "ledger_validation": {
-    "generated_at_utc": "2026-03-25T02:01:39.238Z",
+    "generated_at_utc": "2026-03-25T02:02:19.252Z",
     "require_output_match": false,
     "passed": true,
     "run_classification": "ledger_integrity_pass",
@@ -6062,9 +6063,9 @@
   },
   "latest_canonical_hunt_run": {
     "schema": "tierededge_canonical_hunt_run_v1",
-    "run_id": "canonical-hunt::2026-03-25::market-control-proof",
-    "generated_at_utc": "2026-03-25T02:01:33.166Z",
-    "run_at_ct": "2026-03-24 21:01",
+    "run_id": "canonical-hunt::2026-03-25::market-control-proof-v2",
+    "generated_at_utc": "2026-03-25T02:02:03.685Z",
+    "run_at_ct": "2026-03-24 21:02",
     "status": "ok",
     "message_type": "SIT",
     "requires_state_sync": false,
@@ -6191,36 +6192,36 @@
     "research_only_books": [
       "betrivers"
     ],
-    "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Under 9.5 @ -178 | FanDuel: +1.85% edge — stale_market\n- Over 8.5 @ 1050 | BetMGM: +1.61% edge — stale_market\n- Under 8.5 @ -4000 | FanDuel: +1.61% edge — stale_market\n- Over 7.5 @ 115 | BetMGM: +1.59% edge — stale_market\n- Edmonton Oilers +1.5 @ -120 | DraftKings: +1.45% edge — stale_market\n- Washington Capitals +1.5 @ -152 | FanDuel: +1.38% edge — stale_market\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Over 8.5 @ 1050 | BetMGM: +1.61% edge — stale_market\n- Under 8.5 @ -4000 | FanDuel: +1.61% edge — stale_market\n- Saint Joseph's Hawks ML @ 220 | DraftKings: +1.1% edge — stale_market\n- Over 255.5 @ -106 | FanDuel: +0.96% edge — stale_market\n- Under 255.5 @ -115 | DraftKings: +0.96% edge — stale_market\n- New Orleans Pelicans ML @ 3300 | BetMGM: +0.84% edge — stale_market\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
     "rows": {
       "bet_rec_ids": [],
       "sit_rec_ids": [
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::calgary-flames-ml::fanduel",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::spreads::los-angeles-kings-1-5::betmgm",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::a2ed97ee6dbc9d2dfa6fb42709ed3251::spreads::st-louis-blues-1-5::betmgm",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::totals::under-6-5::betmgm",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::spreads::calgary-flames-1-5::fanduel",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::058954c285fbfd3f7ecc651b36c4700b::spreads::winnipeg-jets-2-5::draftkings",
-        "canonical-hunt::2026-03-25::market-control-proof::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::h2h::new-mexico-lobos-ml::fanduel",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::321c46ee4915d84877d9116089323e6c::totals::under-9-5::fanduel",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::0a39e6dffc7507394d752f81e6147615::totals::over-8-5::betmgm",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::0a39e6dffc7507394d752f81e6147615::totals::under-8-5::fanduel",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::c4562bec7d3dd2283876ab856c887765::totals::over-7-5::betmgm",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::edmonton-oilers-1-5::draftkings",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::a2ed97ee6dbc9d2dfa6fb42709ed3251::spreads::washington-capitals-1-5::fanduel",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::c4562bec7d3dd2283876ab856c887765::spreads::minnesota-wild-1-5::fanduel",
-        "canonical-hunt::2026-03-25::market-control-proof::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::h2h::cleveland-cavaliers-ml::betrivers",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::los-angeles-kings-ml::betmgm",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::a2ed97ee6dbc9d2dfa6fb42709ed3251::h2h::washington-capitals-ml::fanduel",
-        "canonical-hunt::2026-03-25::market-control-proof::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::h2h::saint-joseph-s-hawks-ml::draftkings",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::351e519c57cfbc590c31ddf7456f12fe::totals::over-9-5::fanduel",
-        "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::a2ed97ee6dbc9d2dfa6fb42709ed3251::h2h::st-louis-blues-ml::betmgm"
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::h2h::new-mexico-lobos-ml::fanduel",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::icehockey_nhl::0a39e6dffc7507394d752f81e6147615::totals::over-8-5::betmgm",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::icehockey_nhl::0a39e6dffc7507394d752f81e6147615::totals::under-8-5::fanduel",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::h2h::cleveland-cavaliers-ml::betrivers",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::h2h::saint-joseph-s-hawks-ml::draftkings",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::h2h::phoenix-suns-ml::betrivers",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::totals::over-255-5::fanduel",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::totals::under-255-5::draftkings",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::3ffbb865981907829bb58d7f86351ba0::h2h::new-orleans-pelicans-ml::betmgm",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::3ffbb865981907829bb58d7f86351ba0::h2h::new-york-knicks-ml::fanduel",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::h2h::orlando-magic-ml::draftkings",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::totals::over-157-5::draftkings",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::totals::under-232-5::draftkings",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::totals::over-232-5::fanduel",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::h2h::denver-nuggets-ml::draftkings",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::totals::under-157-5::betmgm",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::spreads::cleveland-cavaliers-8-5::fanduel",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::spreads::orlando-magic-8-5::draftkings",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::spreads::denver-nuggets-6-5::draftkings",
+        "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::spreads::phoenix-suns-6-5::draftkings"
       ],
       "research_only_rec_ids": []
     }
   },
   "runtime_status": {
-    "generated_at_utc": "2026-03-25T02:01:38.742Z",
+    "generated_at_utc": "2026-03-25T02:02:18.777Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -7412,11 +7413,11 @@
       "status": "ok",
       "delivery_status": "repo_direct",
       "error": null,
-      "run_at_ms": 1774404093166,
-      "run_at_ct": "2026-03-24 21:01",
+      "run_at_ms": 1774404123685,
+      "run_at_ct": "2026-03-24 21:02",
       "date_key": "2026-03-24",
-      "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Under 9.5 @ -178 | FanDuel: +1.85% edge — stale_market\n- Over 8.5 @ 1050 | BetMGM: +1.61% edge — stale_market\n- Under 8.5 @ -4000 | FanDuel: +1.61% edge — stale_market\n- Over 7.5 @ 115 | BetMGM: +1.59% edge — stale_market\n- Edmonton Oilers +1.5 @ -120 | DraftKings: +1.45% edge — stale_market\n- Washington Capitals +1.5 @ -152 | FanDuel: +1.38% edge — stale_market\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
-      "raw_summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Under 9.5 @ -178 | FanDuel: +1.85% edge — stale_market\n- Over 8.5 @ 1050 | BetMGM: +1.61% edge — stale_market\n- Under 8.5 @ -4000 | FanDuel: +1.61% edge — stale_market\n- Over 7.5 @ 115 | BetMGM: +1.59% edge — stale_market\n- Edmonton Oilers +1.5 @ -120 | DraftKings: +1.45% edge — stale_market\n- Washington Capitals +1.5 @ -152 | FanDuel: +1.38% edge — stale_market\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+      "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Over 8.5 @ 1050 | BetMGM: +1.61% edge — stale_market\n- Under 8.5 @ -4000 | FanDuel: +1.61% edge — stale_market\n- Saint Joseph's Hawks ML @ 220 | DraftKings: +1.1% edge — stale_market\n- Over 255.5 @ -106 | FanDuel: +0.96% edge — stale_market\n- Under 255.5 @ -115 | DraftKings: +0.96% edge — stale_market\n- New Orleans Pelicans ML @ 3300 | BetMGM: +0.84% edge — stale_market\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+      "raw_summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Over 8.5 @ 1050 | BetMGM: +1.61% edge — stale_market\n- Under 8.5 @ -4000 | FanDuel: +1.61% edge — stale_market\n- Saint Joseph's Hawks ML @ 220 | DraftKings: +1.1% edge — stale_market\n- Over 255.5 @ -106 | FanDuel: +0.96% edge — stale_market\n- Under 255.5 @ -115 | DraftKings: +0.96% edge — stale_market\n- New Orleans Pelicans ML @ 3300 | BetMGM: +0.84% edge — stale_market\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
       "session_id": null,
       "session_file": null,
       "message_type": "SIT",
@@ -7448,9 +7449,9 @@
     },
     "latest_canonical_hunt_run": {
       "schema": "tierededge_canonical_hunt_run_v1",
-      "run_id": "canonical-hunt::2026-03-25::market-control-proof",
-      "generated_at_utc": "2026-03-25T02:01:33.166Z",
-      "run_at_ct": "2026-03-24 21:01",
+      "run_id": "canonical-hunt::2026-03-25::market-control-proof-v2",
+      "generated_at_utc": "2026-03-25T02:02:03.685Z",
+      "run_at_ct": "2026-03-24 21:02",
       "status": "ok",
       "message_type": "SIT",
       "requires_state_sync": false,
@@ -7577,30 +7578,30 @@
       "research_only_books": [
         "betrivers"
       ],
-      "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Under 9.5 @ -178 | FanDuel: +1.85% edge — stale_market\n- Over 8.5 @ 1050 | BetMGM: +1.61% edge — stale_market\n- Under 8.5 @ -4000 | FanDuel: +1.61% edge — stale_market\n- Over 7.5 @ 115 | BetMGM: +1.59% edge — stale_market\n- Edmonton Oilers +1.5 @ -120 | DraftKings: +1.45% edge — stale_market\n- Washington Capitals +1.5 @ -152 | FanDuel: +1.38% edge — stale_market\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+      "summary": "TIERED EDGE HUNT — 2026-03-24\nBankroll: $1396.30 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Over 8.5 @ 1050 | BetMGM: +1.61% edge — stale_market\n- Under 8.5 @ -4000 | FanDuel: +1.61% edge — stale_market\n- Saint Joseph's Hawks ML @ 220 | DraftKings: +1.1% edge — stale_market\n- Over 255.5 @ -106 | FanDuel: +0.96% edge — stale_market\n- Under 255.5 @ -115 | DraftKings: +0.96% edge — stale_market\n- New Orleans Pelicans ML @ 3300 | BetMGM: +0.84% edge — stale_market\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
       "rows": {
         "bet_rec_ids": [],
         "sit_rec_ids": [
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::calgary-flames-ml::fanduel",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::spreads::los-angeles-kings-1-5::betmgm",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::a2ed97ee6dbc9d2dfa6fb42709ed3251::spreads::st-louis-blues-1-5::betmgm",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::totals::under-6-5::betmgm",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::spreads::calgary-flames-1-5::fanduel",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::058954c285fbfd3f7ecc651b36c4700b::spreads::winnipeg-jets-2-5::draftkings",
-          "canonical-hunt::2026-03-25::market-control-proof::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::h2h::new-mexico-lobos-ml::fanduel",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::321c46ee4915d84877d9116089323e6c::totals::under-9-5::fanduel",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::0a39e6dffc7507394d752f81e6147615::totals::over-8-5::betmgm",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::0a39e6dffc7507394d752f81e6147615::totals::under-8-5::fanduel",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::c4562bec7d3dd2283876ab856c887765::totals::over-7-5::betmgm",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::12f4644e10706c79b4bbc7e2ca3765be::spreads::edmonton-oilers-1-5::draftkings",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::a2ed97ee6dbc9d2dfa6fb42709ed3251::spreads::washington-capitals-1-5::fanduel",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::c4562bec7d3dd2283876ab856c887765::spreads::minnesota-wild-1-5::fanduel",
-          "canonical-hunt::2026-03-25::market-control-proof::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::h2h::cleveland-cavaliers-ml::betrivers",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::eaa7752f14bf975ca0d695298a7f33b8::h2h::los-angeles-kings-ml::betmgm",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::a2ed97ee6dbc9d2dfa6fb42709ed3251::h2h::washington-capitals-ml::fanduel",
-          "canonical-hunt::2026-03-25::market-control-proof::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::h2h::saint-joseph-s-hawks-ml::draftkings",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::351e519c57cfbc590c31ddf7456f12fe::totals::over-9-5::fanduel",
-          "canonical-hunt::2026-03-25::market-control-proof::icehockey_nhl::a2ed97ee6dbc9d2dfa6fb42709ed3251::h2h::st-louis-blues-ml::betmgm"
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::h2h::new-mexico-lobos-ml::fanduel",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::icehockey_nhl::0a39e6dffc7507394d752f81e6147615::totals::over-8-5::betmgm",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::icehockey_nhl::0a39e6dffc7507394d752f81e6147615::totals::under-8-5::fanduel",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::h2h::cleveland-cavaliers-ml::betrivers",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::h2h::saint-joseph-s-hawks-ml::draftkings",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::h2h::phoenix-suns-ml::betrivers",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::totals::over-255-5::fanduel",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::totals::under-255-5::draftkings",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::3ffbb865981907829bb58d7f86351ba0::h2h::new-orleans-pelicans-ml::betmgm",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::3ffbb865981907829bb58d7f86351ba0::h2h::new-york-knicks-ml::fanduel",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::h2h::orlando-magic-ml::draftkings",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::totals::over-157-5::draftkings",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::totals::under-232-5::draftkings",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::totals::over-232-5::fanduel",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::h2h::denver-nuggets-ml::draftkings",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_ncaab::96177e1055b0f7869167edf123edc5f8::totals::under-157-5::betmgm",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::spreads::cleveland-cavaliers-8-5::fanduel",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::6b03ae1305a70007dbaebefa0c8af0b7::spreads::orlando-magic-8-5::draftkings",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::spreads::denver-nuggets-6-5::draftkings",
+          "canonical-hunt::2026-03-25::market-control-proof-v2::basketball_nba::5cc255e5f9f9fefa4cc7e5316e16a519::spreads::phoenix-suns-6-5::draftkings"
         ],
         "research_only_rec_ids": []
       }
@@ -7682,7 +7683,7 @@
       },
       "passed_opportunity_grades": {
         "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-        "file_mtime_ct": "2026-03-24 20:58 CT"
+        "file_mtime_ct": "2026-03-24 21:01 CT"
       }
     },
     "state_sync": {
