@@ -1,0 +1,45 @@
+WEEKLY OPERATOR REVIEW
+Generated: 2026-03-25T03:34:57.576Z
+Window: last_7_days
+
+Valid runs: 27
+Invalidated runs: 4
+Total bets: 24
+Total sits: 3894
+Actual CLV: covered=0/2 | avg=N/A | positive=N/A%
+Rejected CLV 1.5–1.99: count=160 | captured=0 | avg=N/A
+Invalid snapshots: 148
+Stale markets: 286
+
+Top Rejection Reasons:
+- no_edge: 3375
+- stale_market: 286
+- invalid_snapshot: 148
+- exposure_cap_reached: 61
+- sub_minimum_kelly: 20
+
+Per-Book Usefulness:
+- bet365 | recs=0 | best=0 | near_miss=0 | stale_missing=0
+- betmgm | recs=8 | best=818 | near_miss=22 | stale_missing=120
+- betrivers | recs=1 | best=1030 | near_miss=0 | stale_missing=29
+- caesars | recs=0 | best=0 | near_miss=0 | stale_missing=0
+- circa | recs=0 | best=0 | near_miss=0 | stale_missing=0
+- draftkings | recs=4 | best=1008 | near_miss=15 | stale_missing=119
+- fanduel | recs=11 | best=1062 | near_miss=19 | stale_missing=166
+
+Market-Type Performance:
+- basketball_nba h2h | bets=0 | sits=3 | avg_edge=0.87
+- basketball_ncaab h2h | bets=0 | sits=2 | avg_edge=1.38
+- icehockey_nhl h2h | bets=0 | sits=1 | avg_edge=1
+- NBA ML | bets=3 | sits=269 | avg_edge=0.79
+- NBA Player Points | bets=2 | sits=276 | avg_edge=0.74
+- NBA Spread | bets=0 | sits=564 | avg_edge=0.19
+- NBA Total | bets=0 | sits=566 | avg_edge=0.19
+- NCAAB h2h | bets=0 | sits=2 | avg_edge=0.95
+
+Action Flags Seen:
+- RED latest_run_invalidated: 4 invalidated run(s) recorded this week.
+- RED invalid_snapshot_spike: 3 run(s) crossed the invalid snapshot spike threshold.
+- RED stale_market_spike: 4 run(s) crossed the stale market spike threshold.
+- YELLOW owned_books_missing_from_feed: Owned books with no observed pricing this week: circa, bet365, caesars
+- INFO clean_sit_day: 6 clean SIT run(s) recorded this week.

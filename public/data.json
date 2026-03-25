@@ -1,7 +1,7 @@
 {
   "schema": "tierededge_canonical_v2",
-  "generated_at_utc": "2026-03-25T03:30:49.445Z",
-  "last_updated_ct": "2026-03-24 22:30 CT",
+  "generated_at_utc": "2026-03-25T03:34:57.816Z",
+  "last_updated_ct": "2026-03-24 22:34 CT",
   "current_status": {
     "Bankroll": "$1396.30",
     "Phase": "GROWTH",
@@ -655,7 +655,7 @@
       }
     },
     "weekly_truth_report_summary": {
-      "generated_at_utc": "2026-03-25T03:30:49.525Z",
+      "generated_at_utc": "2026-03-25T03:34:57.897Z",
       "settled_bet_count": 2,
       "top_bleeding_categories": [],
       "top_strongest_categories": [
@@ -766,6 +766,103 @@
           "executable_near_miss_count": 19,
           "stale_or_missing_count": 166,
           "rejected_non_executable_count": 0
+        }
+      ]
+    },
+    "weekly_operator_review_summary": {
+      "generated_at_utc": "2026-03-25T03:34:57.576Z",
+      "window": "last_7_days",
+      "run_truth": {
+        "valid_runs": 27,
+        "invalidated_runs": 4
+      },
+      "hunt_totals": {
+        "total_bets": 24,
+        "total_sits": 3894
+      },
+      "actual_clv_summary": {
+        "settled_bet_count": 2,
+        "covered_count": 0,
+        "coverage_pct": 0,
+        "average_clv_delta": null,
+        "positive_clv_rate": null
+      },
+      "rejected_clv_summary": {
+        "1.0_to_1.49": {
+          "count": 334,
+          "captured_count": 0,
+          "avg_clv_delta_pct": null,
+          "positive_clv_rate": null
+        },
+        "1.5_to_1.99": {
+          "count": 160,
+          "captured_count": 0,
+          "avg_clv_delta_pct": null,
+          "positive_clv_rate": null
+        },
+        "2.0_plus_rejected": {
+          "count": 107,
+          "captured_count": 0,
+          "avg_clv_delta_pct": null,
+          "positive_clv_rate": null
+        }
+      },
+      "market_integrity": {
+        "invalid_snapshot_count": 148,
+        "stale_market_count": 286,
+        "top_rejection_reasons": [
+          {
+            "reason": "no_edge",
+            "count": 3375
+          },
+          {
+            "reason": "stale_market",
+            "count": 286
+          },
+          {
+            "reason": "invalid_snapshot",
+            "count": 148
+          },
+          {
+            "reason": "exposure_cap_reached",
+            "count": 61
+          },
+          {
+            "reason": "sub_minimum_kelly",
+            "count": 20
+          }
+        ]
+      },
+      "action_flags_seen": [
+        {
+          "level": "RED",
+          "code": "latest_run_invalidated",
+          "occurrences": 4,
+          "message": "4 invalidated run(s) recorded this week."
+        },
+        {
+          "level": "RED",
+          "code": "invalid_snapshot_spike",
+          "occurrences": 3,
+          "message": "3 run(s) crossed the invalid snapshot spike threshold."
+        },
+        {
+          "level": "RED",
+          "code": "stale_market_spike",
+          "occurrences": 4,
+          "message": "4 run(s) crossed the stale market spike threshold."
+        },
+        {
+          "level": "YELLOW",
+          "code": "owned_books_missing_from_feed",
+          "occurrences": 3,
+          "message": "Owned books with no observed pricing this week: circa, bet365, caesars"
+        },
+        {
+          "level": "INFO",
+          "code": "clean_sit_day",
+          "occurrences": 6,
+          "message": "6 clean SIT run(s) recorded this week."
         }
       ]
     }
@@ -4901,7 +4998,7 @@
   },
   "operator_dashboard": {
     "schema": "tierededge_operator_dashboard_v1",
-    "generated_at_utc": "2026-03-25T03:30:49.456Z",
+    "generated_at_utc": "2026-03-25T03:34:57.825Z",
     "top_level_sections": [
       {
         "key": "system_health",
@@ -7415,7 +7512,7 @@
       "bankroll_before": 1295.13,
       "bankroll_after": 1300.53,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T03:30:48.982Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T03:34:57.410Z",
       "legacy_bankroll_after_import": 1321.03
     },
     {
@@ -7458,7 +7555,7 @@
       "bankroll_before": 1305.63,
       "bankroll_after": 1295.13,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T03:30:48.982Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T03:34:57.410Z",
       "legacy_bankroll_after_import": 1315.63
     },
     {
@@ -7501,12 +7598,12 @@
       "bankroll_before": 1326.13,
       "bankroll_after": 1305.63,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-25T03:30:48.982Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-25T03:34:57.410Z",
       "legacy_bankroll_after_import": 1300.53
     }
   ],
   "ledger_validation": {
-    "generated_at_utc": "2026-03-25T03:30:49.443Z",
+    "generated_at_utc": "2026-03-25T03:34:57.815Z",
     "require_output_match": false,
     "passed": true,
     "run_classification": "ledger_integrity_pass",
@@ -7897,7 +7994,7 @@
     }
   },
   "runtime_status": {
-    "generated_at_utc": "2026-03-25T03:30:48.720Z",
+    "generated_at_utc": "2026-03-25T03:34:57.210Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -9457,6 +9554,7 @@
     "hunt_audit_log_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/hunt-audit-log.jsonl",
     "rejected_close_capture_log_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/rejected-close-capture-log.jsonl",
     "clean_run_summary_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/clean-run-summary.json",
+    "weekly_operator_review_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/weekly-operator-review.json",
     "ledger_validation_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json",
     "canonical_state_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/canonical-state.json",
     "public_data_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/public/data.json",

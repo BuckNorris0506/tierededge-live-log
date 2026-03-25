@@ -13,6 +13,7 @@ const HUNT_AUDIT_LOG_PATH = CORE_PATHS.huntAuditLog;
 const REJECTED_CLOSE_CAPTURE_LOG_PATH = CORE_PATHS.rejectedCloseCaptureLog;
 const REJECTED_CLOSE_CAPTURE_RUNS_PATH = CORE_PATHS.rejectedCloseCaptureRuns;
 const MISSED_EXECUTION_WINDOWS_PATH = CORE_PATHS.missedExecutionWindows;
+const WEEKLY_OPERATOR_REVIEW_PATH = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/weekly-operator-review.json';
 
 function parsePhase(bankroll) {
   if (!Number.isFinite(bankroll)) return 'UNKNOWN';
@@ -1458,6 +1459,7 @@ function main() {
   const huntAuditLog = readJsonl(HUNT_AUDIT_LOG_PATH);
   const ledgerValidation = validateLedgerInvariants({ requireOutputMatch: false });
   const latestCanonicalHuntRun = readJson(CORE_PATHS.canonicalHuntRun, null);
+  const weeklyOperatorReview = readJson(WEEKLY_OPERATOR_REVIEW_PATH, null);
   const scanCoveragePolicy = loadScanCoveragePolicy();
   const generatedAtUtc = new Date().toISOString();
   const rejectedCloseCaptureIndex = buildRejectedCloseCaptureIndex(rejectedCloseCaptureLog);
@@ -1670,6 +1672,16 @@ function main() {
         missing_coverage: weeklyTruth.missing_coverage,
         sportsbook_usefulness: weeklyTruth.sportsbook_usefulness || [],
       },
+      weekly_operator_review_summary: weeklyOperatorReview ? {
+        generated_at_utc: weeklyOperatorReview.generated_at_utc,
+        window: weeklyOperatorReview.window,
+        run_truth: weeklyOperatorReview.sections?.run_truth || {},
+        hunt_totals: weeklyOperatorReview.sections?.hunt_totals || {},
+        actual_clv_summary: weeklyOperatorReview.sections?.actual_clv_summary || {},
+        rejected_clv_summary: weeklyOperatorReview.sections?.rejected_clv_summary || {},
+        market_integrity: weeklyOperatorReview.sections?.market_integrity || {},
+        action_flags_seen: weeklyOperatorReview.sections?.action_flags_seen || [],
+      } : null,
     },
     recommendation_learning_scope: {
       excluded_invalid_run_count: invalidRunScope.invalid_run_ids.length,
@@ -1825,6 +1837,7 @@ function main() {
       hunt_audit_log_path: HUNT_AUDIT_LOG_PATH,
       rejected_close_capture_log_path: REJECTED_CLOSE_CAPTURE_LOG_PATH,
       clean_run_summary_path: CORE_PATHS.cleanRunSummary,
+      weekly_operator_review_path: WEEKLY_OPERATOR_REVIEW_PATH,
       ledger_validation_path: '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json',
       canonical_state_path: CORE_PATHS.canonicalState,
       public_data_path: CORE_PATHS.publicData,

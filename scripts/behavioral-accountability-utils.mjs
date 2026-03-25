@@ -21,6 +21,10 @@ export const WEEKLY_TRUTH_REPORT_JSON_PATH = path.join(REPO_ROOT, 'weekly-truth-
 export const WEEKLY_TRUTH_REPORT_TXT_PATH = path.join(REPO_ROOT, 'weekly-truth-report.txt');
 export const PUBLIC_WEEKLY_TRUTH_REPORT_JSON_PATH = path.join(REPO_ROOT, 'public', 'weekly-truth-report.json');
 export const PUBLIC_WEEKLY_TRUTH_REPORT_TXT_PATH = path.join(REPO_ROOT, 'public', 'weekly-truth-report.txt');
+export const WEEKLY_OPERATOR_REVIEW_JSON_PATH = path.join(REPO_ROOT, 'weekly-operator-review.json');
+export const WEEKLY_OPERATOR_REVIEW_TXT_PATH = path.join(REPO_ROOT, 'weekly-operator-review.txt');
+export const PUBLIC_WEEKLY_OPERATOR_REVIEW_JSON_PATH = path.join(REPO_ROOT, 'public', 'weekly-operator-review.json');
+export const PUBLIC_WEEKLY_OPERATOR_REVIEW_TXT_PATH = path.join(REPO_ROOT, 'public', 'weekly-operator-review.txt');
 
 const DEFAULT_POST_MORTEM_POLICY = {
   realized_loss_streak_threshold: -3,
@@ -29,6 +33,13 @@ const DEFAULT_POST_MORTEM_POLICY = {
 
 function normalize(value) {
   return String(value || '').trim().toLowerCase();
+}
+
+function parseTimestamp(value) {
+  if (!value) return null;
+  const normalized = String(value).replace(' CT', '');
+  const ms = Date.parse(normalized);
+  return Number.isFinite(ms) ? ms : null;
 }
 
 function unique(values) {
@@ -407,6 +418,20 @@ function addToGroup(map, key, row) {
   map.get(key).push(row);
 }
 
+function buildWindowContext() {
+  const now = Date.now();
+  const sevenDaysAgo = now - (7 * 24 * 60 * 60 * 1000);
+  return { now, sevenDaysAgo };
+}
+
+function rowInWindowByTimestamp(row, context, fields = ['timestamp_ct']) {
+  for (const field of fields) {
+    const ts = parseTimestamp(row?.[field]);
+    if (Number.isFinite(ts) && ts >= context.sevenDaysAgo && ts <= context.now) return true;
+  }
+  return false;
+}
+
 function buildWeeklyBookUsefulnessSummary(decisionRows, ownedBooks = []) {
   const normalizedOwned = [...new Set((ownedBooks || []).map((book) => normalize(book)).filter(Boolean))];
   const seenBooks = new Set(normalizedOwned);
@@ -635,5 +660,234 @@ export function writeWeeklyTruthReport() {
     post_mortem_log_path: POST_MORTEM_LOG_PATH,
     weekly_truth_report_path: WEEKLY_TRUTH_REPORT_JSON_PATH,
   });
+  return { report, text };
+}
+
+function buildWeeklyActualClvSummary(gradingRows, context) {
+  const settledRows = (gradingRows || [])
+    .filter((row) => normalize(row.grading_type) === 'bet')
+    .filter(isFinalBetRow)
+    .filter((row) => rowInWindowByTimestamp(row, context, ['timestamp_ct', 'date']));
+  const covered = settledRows.filter((row) => ['exact_close_found', 'proxy_close_found'].includes(normalize(row.clv_status)));
+  const deltas = covered.map((row) => parseNumber(row.clv_price_delta)).filter((value) => value !== null);
+  const positive = deltas.filter((value) => value > 0).length;
+  return {
+    settled_bet_count: settledRows.length,
+    covered_count: covered.length,
+    coverage_pct: settledRows.length ? round2((covered.length / settledRows.length) * 100) : null,
+    average_clv_delta: deltas.length ? round2(deltas.reduce((sum, value) => sum + value, 0) / deltas.length) : null,
+    positive_clv_rate: deltas.length ? round2((positive / deltas.length) * 100) : null,
+  };
+}
+
+function buildWeeklyRejectedClvSummary(rejectedRows) {
+  const buckets = [
+    { key: '1.0_to_1.49', min: 1, max: 1.5 },
+    { key: '1.5_to_1.99', min: 1.5, max: 2 },
+    { key: '2.0_plus_rejected', min: 2, max: Infinity },
+  ];
+  return Object.fromEntries(buckets.map((bucket) => {
+    const rows = rejectedRows.filter((row) => {
+      const edge = parseNumber(row.post_conf_edge_pct) || 0;
+      return edge >= bucket.min && edge < bucket.max;
+    });
+    const captured = rows.filter((row) => normalize(row.close_capture_status) === 'captured' && parseNumber(row.clv_delta_pct) !== null);
+    const deltas = captured.map((row) => parseNumber(row.clv_delta_pct)).filter((value) => value !== null);
+    const positive = deltas.filter((value) => value > 0).length;
+    return [bucket.key, {
+      count: rows.length,
+      captured_count: captured.length,
+      avg_clv_delta_pct: deltas.length ? round2(deltas.reduce((sum, value) => sum + value, 0) / deltas.length) : null,
+      positive_clv_rate: deltas.length ? round2((positive / deltas.length) * 100) : null,
+    }];
+  }));
+}
+
+function buildWeeklyActionFlags({ validRuns, invalidatedRuns, weeklyRows, latestOwnedBooks = [] }) {
+  const flags = [];
+  const runIds = [...new Set(validRuns.map((row) => String(row.run_id || '').trim()).filter(Boolean))];
+  const rowsByRun = new Map(runIds.map((runId) => [runId, weeklyRows.filter((row) => String(row.run_id || '').trim() === runId)]));
+  let invalidSnapshotSpikeCount = 0;
+  let staleMarketSpikeCount = 0;
+  let cleanSitDayCount = 0;
+
+  for (const runId of runIds) {
+    const rows = rowsByRun.get(runId) || [];
+    if (!rows.length) continue;
+    const invalidSnapshotCount = rows.filter((row) => normalize(row.rejection_reason) === 'invalid_snapshot').length;
+    const staleMarketCount = rows.filter((row) => normalize(row.rejection_reason) === 'stale_market').length;
+    const invalidPct = round2((invalidSnapshotCount / rows.length) * 100) || 0;
+    const stalePct = round2((staleMarketCount / rows.length) * 100) || 0;
+    if (invalidPct > 25) invalidSnapshotSpikeCount += 1;
+    if (stalePct > 35) staleMarketSpikeCount += 1;
+    if (rows.every((row) => row.final_decision !== 'BET') && rows.some((row) => row.snapshot_status === 'valid')) cleanSitDayCount += 1;
+  }
+
+  if (invalidatedRuns.length) {
+    flags.push({ level: 'RED', code: 'latest_run_invalidated', occurrences: invalidatedRuns.length, message: `${invalidatedRuns.length} invalidated run(s) recorded this week.` });
+  }
+  if (invalidSnapshotSpikeCount) {
+    flags.push({ level: 'RED', code: 'invalid_snapshot_spike', occurrences: invalidSnapshotSpikeCount, message: `${invalidSnapshotSpikeCount} run(s) crossed the invalid snapshot spike threshold.` });
+  }
+  if (staleMarketSpikeCount) {
+    flags.push({ level: 'RED', code: 'stale_market_spike', occurrences: staleMarketSpikeCount, message: `${staleMarketSpikeCount} run(s) crossed the stale market spike threshold.` });
+  }
+  const booksSeen = new Set(weeklyRows.map((row) => normalize(row.sportsbook)).filter(Boolean));
+  const feedMissing = latestOwnedBooks.filter((book) => !booksSeen.has(normalize(book)));
+  if (feedMissing.length) {
+    flags.push({ level: 'YELLOW', code: 'owned_books_missing_from_feed', occurrences: feedMissing.length, message: `Owned books with no observed pricing this week: ${feedMissing.join(', ')}` });
+  }
+  if (cleanSitDayCount) {
+    flags.push({ level: 'INFO', code: 'clean_sit_day', occurrences: cleanSitDayCount, message: `${cleanSitDayCount} clean SIT run(s) recorded this week.` });
+  }
+  return flags;
+}
+
+export function buildWeeklyOperatorReview() {
+  const context = buildWindowContext();
+  const gradingRows = readJsonl(CORE_PATHS.gradingLedger);
+  const huntAuditRows = readJsonl(CORE_PATHS.huntAuditLog);
+  const decisionRows = readJsonl(CORE_PATHS.decisionLedger);
+  const rejectedCloseCaptureRows = readJsonl(CORE_PATHS.rejectedCloseCaptureLog);
+  const scanCoveragePolicy = readJson(path.join(REPO_ROOT, 'config', 'scan-coverage-policy.json'), {});
+  const invalidRunIds = new Set(
+    huntAuditRows
+      .filter((row) => String(row.invalid_status || '').toLowerCase().includes('invalid'))
+      .map((row) => String(row.run_id || '').trim())
+      .filter(Boolean)
+  );
+  const weeklyInvalidatedRuns = huntAuditRows.filter((row) =>
+    String(row.invalid_status || '').toLowerCase().includes('invalid')
+    && rowInWindowByTimestamp(row, context, ['audit_timestamp_utc'])
+  );
+  const weeklyValidDecisionRows = decisionRows
+    .filter((row) => !invalidRunIds.has(String(row.run_id || '').trim()))
+    .filter((row) => rowInWindowByTimestamp(row, context, ['timestamp_ct']));
+  const closeCaptureIndex = new Map(
+    rejectedCloseCaptureRows
+      .filter((row) => row && row.rec_id)
+      .map((row) => [String(row.rec_id), row])
+  );
+  const weeklyRejectedRows = weeklyValidDecisionRows
+    .filter((row) => row.final_decision === 'SIT')
+    .map((row) => ({
+      ...row,
+      ...(closeCaptureIndex.get(String(row.rec_id || '')) || {}),
+    }));
+  const validRunIds = [...new Set(weeklyValidDecisionRows.map((row) => String(row.run_id || '').trim()).filter(Boolean))];
+  const marketTypePerformance = [...new Map(
+    weeklyValidDecisionRows
+      .reduce((acc, row) => {
+        const key = `${row.sport || 'UNKNOWN'}::${row.market_family || 'main_market'}::${row.market_type || 'UNKNOWN'}`;
+        if (!acc.has(key)) acc.set(key, []);
+        acc.get(key).push(row);
+        return acc;
+      }, new Map())
+      .entries()
+  )].map(([key, rows]) => {
+    const [sport, marketFamily, marketType] = key.split('::');
+    const edges = rows.map((row) => parseNumber(row.post_conf_edge_pct)).filter((value) => value !== null);
+    const reasons = rows.filter((row) => row.final_decision === 'SIT').reduce((acc, row) => {
+      const reason = row.rejection_reason || 'unknown';
+      acc[reason] = (acc[reason] || 0) + 1;
+      return acc;
+    }, {});
+    return {
+      sport,
+      market_family: marketFamily,
+      market_type: marketType,
+      bets: rows.filter((row) => row.final_decision === 'BET').length,
+      sits: rows.filter((row) => row.final_decision === 'SIT').length,
+      avg_edge: edges.length ? round2(edges.reduce((sum, value) => sum + value, 0) / edges.length) : null,
+      rejection_reasons: reasons,
+    };
+  }).sort((a, b) => (a.sport + a.market_type).localeCompare(b.sport + b.market_type));
+
+  const report = {
+    schema: 'tierededge_weekly_operator_review_v1',
+    generated_at_utc: new Date().toISOString(),
+    window: 'last_7_days',
+    sections: {
+      run_truth: {
+        valid_runs: validRunIds.length,
+        invalidated_runs: weeklyInvalidatedRuns.length,
+      },
+      hunt_totals: {
+        total_bets: weeklyValidDecisionRows.filter((row) => row.final_decision === 'BET').length,
+        total_sits: weeklyValidDecisionRows.filter((row) => row.final_decision === 'SIT').length,
+      },
+      actual_clv_summary: buildWeeklyActualClvSummary(gradingRows, context),
+      rejected_clv_summary: buildWeeklyRejectedClvSummary(weeklyRejectedRows),
+      market_integrity: {
+        invalid_snapshot_count: weeklyValidDecisionRows.filter((row) => normalize(row.rejection_reason) === 'invalid_snapshot').length,
+        stale_market_count: weeklyValidDecisionRows.filter((row) => normalize(row.rejection_reason) === 'stale_market').length,
+        top_rejection_reasons: Object.entries(weeklyRejectedRows.reduce((acc, row) => {
+          const reason = row.rejection_reason || 'unknown';
+          acc[reason] = (acc[reason] || 0) + 1;
+          return acc;
+        }, {})).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([reason, count]) => ({ reason, count })),
+      },
+      per_book_usefulness: buildWeeklyBookUsefulnessSummary(
+        weeklyValidDecisionRows,
+        scanCoveragePolicy?.book_sets?.owned_books || []
+      ),
+      market_type_performance: marketTypePerformance,
+      action_flags_seen: buildWeeklyActionFlags({
+        validRuns: weeklyValidDecisionRows,
+        invalidatedRuns: weeklyInvalidatedRuns,
+        weeklyRows: weeklyValidDecisionRows,
+        latestOwnedBooks: scanCoveragePolicy?.book_sets?.owned_books || [],
+      }),
+    },
+  };
+
+  const text = [
+    'WEEKLY OPERATOR REVIEW',
+    `Generated: ${report.generated_at_utc}`,
+    `Window: ${report.window}`,
+    '',
+    `Valid runs: ${report.sections.run_truth.valid_runs}`,
+    `Invalidated runs: ${report.sections.run_truth.invalidated_runs}`,
+    `Total bets: ${report.sections.hunt_totals.total_bets}`,
+    `Total sits: ${report.sections.hunt_totals.total_sits}`,
+    `Actual CLV: covered=${report.sections.actual_clv_summary.covered_count}/${report.sections.actual_clv_summary.settled_bet_count} | avg=${report.sections.actual_clv_summary.average_clv_delta ?? 'N/A'} | positive=${report.sections.actual_clv_summary.positive_clv_rate ?? 'N/A'}%`,
+    `Rejected CLV 1.5–1.99: count=${report.sections.rejected_clv_summary['1.5_to_1.99'].count} | captured=${report.sections.rejected_clv_summary['1.5_to_1.99'].captured_count} | avg=${report.sections.rejected_clv_summary['1.5_to_1.99'].avg_clv_delta_pct ?? 'N/A'}`,
+    `Invalid snapshots: ${report.sections.market_integrity.invalid_snapshot_count}`,
+    `Stale markets: ${report.sections.market_integrity.stale_market_count}`,
+    '',
+    'Top Rejection Reasons:',
+    ...(report.sections.market_integrity.top_rejection_reasons.length
+      ? report.sections.market_integrity.top_rejection_reasons.map((row) => `- ${row.reason}: ${row.count}`)
+      : ['- none']),
+    '',
+    'Per-Book Usefulness:',
+    ...(report.sections.per_book_usefulness.length
+      ? report.sections.per_book_usefulness.map((row) => `- ${row.book} | recs=${row.recommendations_count} | best=${row.best_price_count} | near_miss=${row.executable_near_miss_count} | stale_missing=${row.stale_or_missing_count}`)
+      : ['- none']),
+    '',
+    'Market-Type Performance:',
+    ...(report.sections.market_type_performance.length
+      ? report.sections.market_type_performance
+        .slice(0, 8)
+        .map((row) => `- ${row.sport} ${row.market_type} | bets=${row.bets} | sits=${row.sits} | avg_edge=${row.avg_edge ?? 'N/A'}`)
+      : ['- none']),
+    '',
+    'Action Flags Seen:',
+    ...(report.sections.action_flags_seen.length
+      ? report.sections.action_flags_seen.map((row) => `- ${row.level} ${row.code}: ${row.message}`)
+      : ['- none']),
+  ].join('\n');
+
+  return { report, text };
+}
+
+export function writeWeeklyOperatorReview() {
+  const { report, text } = buildWeeklyOperatorReview();
+  writeJson(WEEKLY_OPERATOR_REVIEW_JSON_PATH, report);
+  writeJson(PUBLIC_WEEKLY_OPERATOR_REVIEW_JSON_PATH, report);
+  writeJson(path.join(DATA_DIR, 'weekly-operator-review.json'), report);
+  fs.writeFileSync(WEEKLY_OPERATOR_REVIEW_TXT_PATH, `${text}\n`, 'utf8');
+  fs.writeFileSync(PUBLIC_WEEKLY_OPERATOR_REVIEW_TXT_PATH, `${text}\n`, 'utf8');
+  fs.writeFileSync(path.join(DATA_DIR, 'weekly-operator-review.txt'), `${text}\n`, 'utf8');
   return { report, text };
 }

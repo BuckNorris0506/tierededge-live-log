@@ -16,6 +16,7 @@ node scripts/backfill-override-log.mjs
 node scripts/backfill-execution-metadata.mjs
 node scripts/reconcile-grading-bankroll.mjs
 node scripts/build-weekly-truth-report.mjs
+node scripts/build-weekly-operator-review.mjs
 snapshot_source_state \
   /Users/jaredbuckman/.openclaw/cron/jobs.json \
   /Users/jaredbuckman/.openclaw/workspace/memory/odds-api-config.md \
