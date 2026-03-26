@@ -1,3 +1,9 @@
+import { buildTransportDiagnostics, buildTransportFailureError } from './fetch-diagnostics-utils.mjs';
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function resolveTelegramConfig() {
   const botToken = process.env.TIEREDGE_TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || '';
   const chatId = process.env.TIEREDGE_TELEGRAM_CHAT_ID || process.env.TELEGRAM_CHAT_ID || '';
@@ -7,7 +13,7 @@ function resolveTelegramConfig() {
   };
 }
 
-async function telegramRequest(method, payload) {
+async function telegramRequest(method, payload, options = {}) {
   const { botToken } = resolveTelegramConfig();
   if (!botToken) {
     return {
@@ -15,32 +21,84 @@ async function telegramRequest(method, payload) {
       error: 'telegram_config_missing',
     };
   }
+  const targetUrl = `https://api.telegram.org/bot${botToken}/${method}`;
+  const attempt = Number(options.attempt || 0);
   try {
-    const response = await fetch(`https://api.telegram.org/bot${botToken}/${method}`, {
+    const response = await fetch(targetUrl, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
       },
       body: JSON.stringify(payload),
     });
+    const rawText = await response.text();
+    let body = null;
+    try {
+      body = rawText ? JSON.parse(rawText) : null;
+    } catch {
+      body = null;
+    }
     if (!response.ok) {
+      const retryAfterSeconds = Number(body?.parameters?.retry_after);
+      if (response.status === 429 && attempt === 0 && Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0 && retryAfterSeconds <= 5) {
+        await sleep((retryAfterSeconds + 1) * 1000);
+        return telegramRequest(method, payload, { attempt: attempt + 1 });
+      }
       return {
         ok: false,
         error: `telegram_http_${response.status}`,
+        diagnostics: {
+          service: 'telegram',
+          request_method: 'POST',
+          request_target_domain: 'api.telegram.org',
+          request_path: new URL(targetUrl).pathname,
+          response_status: response.status,
+          retry_after_seconds: Number.isFinite(retryAfterSeconds) ? retryAfterSeconds : null,
+          response_description: body?.description || null,
+          primary_cause: response.status === 429 ? 'telegram_rate_limited' : 'telegram_http_error',
+          attempt,
+        },
       };
     }
-    const body = await response.json();
     if (!body?.ok) {
       return {
         ok: false,
         error: body?.description || 'telegram_api_rejected',
+        diagnostics: {
+          service: 'telegram',
+          request_method: 'POST',
+          request_target_domain: 'api.telegram.org',
+          request_path: new URL(targetUrl).pathname,
+          response_status: 200,
+          retry_after_seconds: Number.isFinite(Number(body?.parameters?.retry_after)) ? Number(body.parameters.retry_after) : null,
+          response_description: body?.description || null,
+          primary_cause: 'telegram_api_rejected',
+          attempt,
+        },
       };
     }
     return { ok: true, data: body.result ?? null };
   } catch (error) {
+    const wrapped = buildTransportFailureError({
+      prefix: `telegram_transport_failed:${method}`,
+      service: 'telegram',
+      targetUrl,
+      method: 'POST',
+      timeoutMs: null,
+      authEnvVars: ['TIEREDGE_TELEGRAM_BOT_TOKEN', 'TELEGRAM_BOT_TOKEN'],
+      error,
+    });
     return {
       ok: false,
-      error: error instanceof Error ? error.message : 'telegram_request_failed',
+      error: wrapped.message,
+      diagnostics: buildTransportDiagnostics({
+        service: 'telegram',
+        targetUrl,
+        method: 'POST',
+        timeoutMs: null,
+        authEnvVars: ['TIEREDGE_TELEGRAM_BOT_TOKEN', 'TELEGRAM_BOT_TOKEN'],
+        error,
+      }),
     };
   }
 }
@@ -68,9 +126,9 @@ export async function sendTelegramMessage(text, options = {}) {
   });
 }
 
-export async function fetchTelegramUpdates(offset = null) {
+export async function fetchTelegramUpdates(offset = null, timeoutSeconds = 20) {
   const payload = {
-    timeout: 0,
+    timeout: Number.isFinite(timeoutSeconds) ? Math.max(0, Math.floor(timeoutSeconds)) : 20,
     allowed_updates: ['message'],
   };
   if (Number.isFinite(offset)) payload.offset = offset;

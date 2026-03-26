@@ -8,6 +8,7 @@ const MORNING_HUNT_FALLBACK_ID = '2766547c-e6a0-40ca-a680-972c7842579c';
 const OPENCLAW_JOBS_PATH = '/Users/jaredbuckman/.openclaw/cron/jobs.json';
 const LIVE_LOG_REBUILD_SCRIPT = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/update-live-log.sh';
 const CANONICAL_HUNT_RUNNER = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs';
+const TELEGRAM_HUNT_WRAPPER = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-scheduled-canonical-hunt.sh';
 
 export const SUPPORTED_OPERATOR_COMMANDS = [
   'HELP',
@@ -66,6 +67,38 @@ function compactFlags(flags) {
   return grouped;
 }
 
+function renderGameLabel(row) {
+  if (String(row?.event_label || '').trim()) {
+    return String(row.event_label).trim();
+  }
+  const away = String(row?.event_away_team || '').trim();
+  const home = String(row?.event_home_team || '').trim();
+  if (away && home) {
+    return `${away} @ ${home}`;
+  }
+  if (home && away) {
+    return `${home} @ ${away}`;
+  }
+  return 'Unknown game';
+}
+
+function renderCanonicalPrice(value) {
+  const price = String(value || '').trim();
+  if (!price) return null;
+  if (price.startsWith('+') || price.startsWith('-')) return price;
+  if (/^\d+$/.test(price)) return `+${price}`;
+  return price;
+}
+
+function renderLineLabel(row) {
+  const price = renderCanonicalPrice(row?.odds_american);
+  const lineKey = String(row?.line_key || '').trim();
+  if (price && lineKey) return `${price} (${lineKey})`;
+  if (price) return price;
+  if (lineKey) return lineKey;
+  return 'Unknown';
+}
+
 function helpText() {
   return [
     'TIERED EDGE COMMANDS',
@@ -100,8 +133,11 @@ function statusText(state) {
 
 function formatRecommendation(row) {
   return [
-    `Game: ${row.event_label || 'Unknown game'}`,
+    `Game: ${renderGameLabel(row)}`,
     `Play: ${row.selection || 'Unknown selection'} @ ${row.sportsbook || 'Unknown book'}`,
+    `Line: ${renderLineLabel(row)}`,
+    `Tier: ${row.tier || 'Unknown'}`,
+    `Kelly Stake: ${Number.isFinite(parseNumber(row.kelly_stake)) ? `$${parseNumber(row.kelly_stake).toFixed(2)}` : 'Unknown'}`,
     `Edge: +${Number(parseNumber(row.post_conf_edge_pct) || 0).toFixed(2)}%`,
     `Start Time: ${row.event_start_time || 'Unknown'}`,
     `Start: ${Number.isFinite(parseNumber(row.minutes_to_start)) ? Math.max(0, Math.round(parseNumber(row.minutes_to_start))) : 'Unknown'} minutes (${String(row.urgency_tag || 'LATER').toUpperCase()})`,
@@ -112,13 +148,31 @@ function latestBoardText(state) {
   const run = state.latest_canonical_hunt_run || {};
   const selectedRows = Array.isArray(run.selected_rows) ? run.selected_rows : [];
   const misses = Array.isArray(run.executable_closest_misses) ? run.executable_closest_misses.slice(0, 3) : [];
+  const continuity = state.actionable_board_continuity_summary || {};
+  const currentContinuityMap = new Map(
+    (continuity.current_actionable_rows || []).map((row) => [String(row.rec_id || '').trim(), row]),
+  );
+  const priorContinuityRows = Array.isArray(continuity.prior_actionable_rows)
+    ? continuity.prior_actionable_rows.slice(0, 3)
+    : [];
+  const actionableBoardCard = state.operator_dashboard?.top_level_sections?.[1]?.cards?.[0] || {};
+  const totalExposureMetric = Array.isArray(actionableBoardCard.metrics)
+    ? actionableBoardCard.metrics.find((metric) => metric.label === 'total_recommended_exposure')
+    : null;
   const lines = ['TIERED EDGE BOARD', ''];
 
   if (selectedRows.length) {
     lines.push('ACTIONABLE PLAYS');
+    if (totalExposureMetric?.value) {
+      lines.push(`Total Recommended Exposure: ${totalExposureMetric.value}`);
+    }
     for (const row of selectedRows) {
+      const continuityRow = currentContinuityMap.get(String(row.rec_id || '').trim());
       lines.push('');
       lines.push(formatRecommendation(row));
+      if (continuityRow?.continuity_status) {
+        lines.push(`Continuity: ${String(continuityRow.continuity_status).toUpperCase()}`);
+      }
     }
   } else {
     lines.push('Verdict: SIT');
@@ -127,7 +181,24 @@ function latestBoardText(state) {
       lines.push('');
       lines.push('Closest Misses');
       for (const row of misses) {
-        lines.push(`- ${row.selection} @ ${row.sportsbook} | +${Number(parseNumber(row.post_conf_edge_pct) || 0).toFixed(2)}% | ${String(row.urgency_tag || 'LATER').toUpperCase()}`);
+        lines.push(`- ${row.selection} @ ${row.sportsbook} | ${renderLineLabel(row)} | +${Number(parseNumber(row.post_conf_edge_pct) || 0).toFixed(2)}% | ${String(row.urgency_tag || 'LATER').toUpperCase()}`);
+      }
+    }
+    if (priorContinuityRows.length) {
+      lines.push('');
+      lines.push('PREVIOUSLY ACTIONABLE');
+      for (const row of priorContinuityRows) {
+        const priorEdge = Number(parseNumber(row.prior_edge_pct) || 0).toFixed(2);
+        const currentEdge = Number.isFinite(parseNumber(row.current_edge_pct))
+          ? `now +${Number(parseNumber(row.current_edge_pct)).toFixed(2)}%`
+          : 'now N/A';
+        const priorPrice = renderCanonicalPrice(row.odds_american) || 'Unknown';
+        const currentPrice = renderCanonicalPrice(row.current_odds_american);
+        const lineDetails = currentPrice && currentPrice !== priorPrice
+          ? `${priorPrice} -> ${currentPrice}${row.line_key ? ` (${row.line_key})` : ''}`
+          : `${priorPrice}${row.line_key ? ` (${row.line_key})` : ''}`;
+        const reason = row.continuity_reason ? ` | reason: ${row.continuity_reason}` : '';
+        lines.push(`- ${row.selection} @ ${row.sportsbook} | line: ${lineDetails} | prior +${priorEdge}% | ${currentEdge} | status: ${row.continuity_status}${reason}`);
       }
     }
   }
@@ -203,31 +274,39 @@ function runHuntText(stateBefore) {
     };
   }
 
-  const runnerResult = spawnSync('node', [CANONICAL_HUNT_RUNNER], { encoding: 'utf8' });
-  if (runnerResult.status !== 0) {
+  const wrapperResult = spawnSync(TELEGRAM_HUNT_WRAPPER, ['--job-name', 'telegram-operator-run-hunt'], { encoding: 'utf8' });
+  let wrapperPayload = null;
+  if (String(wrapperResult.stdout || '').trim()) {
+    try {
+      wrapperPayload = JSON.parse(wrapperResult.stdout);
+    } catch {
+      wrapperPayload = null;
+    }
+  }
+
+  if (wrapperResult.status !== 0) {
     return {
       response_type: 'run_hunt_failed',
-      run_id: stateBefore?.latest_canonical_hunt_run?.run_id || null,
+      run_id: wrapperPayload?.run_id || stateBefore?.latest_canonical_hunt_run?.run_id || null,
       text: [
         'RUN HUNT',
         'Status: FAILED',
-        'Stage: canonical_runner',
-        `Reason: ${(runnerResult.stderr || runnerResult.stdout || 'Canonical hunt runner failed.').trim()}`,
+        'Stage: canonical_runner_or_rebuild',
+        `Reason: ${(wrapperResult.stderr || wrapperResult.stdout || 'Canonical hunt wrapper failed.').trim()}`,
         `Last known verdict: ${stateBefore.decision_payload_v1?.verdict || 'UNKNOWN'}`,
       ].join('\n'),
     };
   }
 
-  const rebuildResult = spawnSync(LIVE_LOG_REBUILD_SCRIPT, [], { encoding: 'utf8' });
-  if (rebuildResult.status !== 0) {
+  if (wrapperPayload?.status === 'skipped_due_to_active_lock') {
     return {
-      response_type: 'rebuild_failed',
-      run_id: stateBefore?.latest_canonical_hunt_run?.run_id || null,
+      response_type: 'blocked',
+      run_id: wrapperPayload?.run_id || stateBefore?.latest_canonical_hunt_run?.run_id || null,
       text: [
         'RUN HUNT',
-        'Status: FAILED',
-        'Stage: rebuild',
-        `Reason: ${(rebuildResult.stderr || rebuildResult.stdout || 'Live-log rebuild failed.').trim()}`,
+        'Status: SKIPPED',
+        'Stage: lock_guard',
+        `Reason: ${wrapperPayload?.lock_name || 'canonical-hunt'} already active.`,
       ].join('\n'),
     };
   }

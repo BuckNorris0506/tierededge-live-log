@@ -8,6 +8,7 @@ export const DATA_DIR = path.resolve(REPO_ROOT, 'data');
 export const CORE_PATHS = {
   decisionLedger: path.join(DATA_DIR, 'decision-ledger.jsonl'),
   canonicalHuntRuns: path.join(DATA_DIR, 'canonical-hunt-runs.jsonl'),
+  directAutomationRuns: path.join(DATA_DIR, 'direct-automation-runs.jsonl'),
   notificationEvents: path.join(DATA_DIR, 'notification-events.jsonl'),
   telegramOperatorEvents: path.join(DATA_DIR, 'telegram-operator-events.jsonl'),
   telegramOperatorState: path.join(DATA_DIR, 'telegram-operator-state.json'),

@@ -14,6 +14,7 @@ import { acquireNamedLock, clearNamedLock } from './automation-lock-utils.mjs';
 import { CORE_PATHS, appendJsonl, formatMoney, parseNumber, readJson, readJsonl, round2, writeJson } from './core-ledger-utils.mjs';
 import { readHuntBlockStatus } from './hunt-block-status.mjs';
 import { formatCtTimestamp } from './openclaw-runtime-utils.mjs';
+import { buildTransportFailureError } from './fetch-diagnostics-utils.mjs';
 
 const execFileAsync = promisify(execFile);
 const ODDS_KEY_SERVICE = 'tierededge-odds-api';
@@ -432,7 +433,20 @@ async function fetchOddsPayload({ sportKey, books, markets, apiKey }) {
   url.searchParams.set('bookmakers', books.join(','));
   url.searchParams.set('oddsFormat', 'american');
   url.searchParams.set('dateFormat', 'iso');
-  const response = await fetch(url);
+  let response;
+  try {
+    response = await fetch(url);
+  } catch (error) {
+    throw buildTransportFailureError({
+      prefix: `odds_transport_failed:${sportKey}`,
+      service: 'the-odds-api',
+      targetUrl: url,
+      method: 'GET',
+      timeoutMs: null,
+      authEnvVars: ['ODDS_API_KEY', 'THE_ODDS_API_KEY'],
+      error,
+    });
+  }
   if (!response.ok) {
     const text = await response.text();
     throw new Error(`odds_fetch_failed:${sportKey}:${response.status}:${text.slice(0, 160)}`);
@@ -448,7 +462,20 @@ async function fetchEventOddsPayload({ sportKey, eventId, books, markets, apiKey
   url.searchParams.set('bookmakers', books.join(','));
   url.searchParams.set('oddsFormat', 'american');
   url.searchParams.set('dateFormat', 'iso');
-  const response = await fetch(url);
+  let response;
+  try {
+    response = await fetch(url);
+  } catch (error) {
+    throw buildTransportFailureError({
+      prefix: `event_odds_transport_failed:${sportKey}:${eventId}`,
+      service: 'the-odds-api',
+      targetUrl: url,
+      method: 'GET',
+      timeoutMs: null,
+      authEnvVars: ['ODDS_API_KEY', 'THE_ODDS_API_KEY'],
+      error,
+    });
+  }
   if (!response.ok) {
     const text = await response.text();
     throw new Error(`event_odds_fetch_failed:${sportKey}:${eventId}:${response.status}:${text.slice(0, 160)}`);
@@ -1308,6 +1335,12 @@ function summarizeRun({
     },
     selected_rows: selectedRows.map((row) => ({
       rec_id: row.rec_id,
+      event_id: row.event_id || null,
+      event_label: row.event_label || null,
+      event_home_team: row.event_home_team || null,
+      event_away_team: row.event_away_team || null,
+      line_key: row.line_key || null,
+      tier: deriveTier(row.post_conf_edge_pct) || null,
       selection: row.selection,
       sportsbook: row.sportsbook,
       odds_american: row.odds_american,
@@ -1321,6 +1354,11 @@ function summarizeRun({
     })),
     executable_closest_misses: actionableMisses.map((row) => ({
       rec_id: row.rec_id,
+      event_id: row.event_id || null,
+      event_label: row.event_label || null,
+      event_home_team: row.event_home_team || null,
+      event_away_team: row.event_away_team || null,
+      line_key: row.line_key || null,
       selection: row.selection,
       sportsbook: row.sportsbook,
       odds_american: row.odds_american,
@@ -1358,7 +1396,7 @@ function markSurfacedRejectedRows(rows) {
   }
 }
 
-function failureArtifact({ runId, scanTimeCt, reason }) {
+function failureArtifact({ runId, scanTimeCt, reason, transportDiagnostics = null }) {
   return {
     schema: 'tierededge_canonical_hunt_run_v1',
     run_id: runId,
@@ -1371,6 +1409,7 @@ function failureArtifact({ runId, scanTimeCt, reason }) {
     native_rows_appended: 0,
     invalidated: false,
     plain_reason: reason,
+    transport_diagnostics: transportDiagnostics,
     summary: `TIERED EDGE HUNT — ${todayCtDateKey()}\nCANNOT_VERIFY_ODDS — SIT\nReason: ${reason}`,
   };
 }
@@ -1755,6 +1794,7 @@ if (isDirectRun) {
       runId,
       scanTimeCt: formatCtMinute(runAt),
       reason: error.message,
+      transportDiagnostics: error?.transport_diagnostics || null,
     });
     writeJson(CORE_PATHS.canonicalHuntRun, artifact);
     appendCanonicalHuntRun({
@@ -1769,8 +1809,16 @@ if (isDirectRun) {
       native_sits_appended: 0,
       lock_name: 'canonical-hunt',
       failure_reason: error.message,
+      transport_diagnostics: error?.transport_diagnostics || null,
     });
-    console.error(error.message);
+    if (error?.transport_diagnostics) {
+      console.error(JSON.stringify({
+        error: error.message,
+        transport_diagnostics: error.transport_diagnostics,
+      }));
+    } else {
+      console.error(error.message);
+    }
     process.exit(1);
   });
 }

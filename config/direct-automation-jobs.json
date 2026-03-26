@@ -1,0 +1,51 @@
+{
+  "schema": "tierededge_direct_automation_jobs_v1",
+  "scheduler": {
+    "type": "system_cron",
+    "timezone": "America/Chicago"
+  },
+  "jobs": [
+    {
+      "name": "telegram-operator-poll",
+      "schedule_expr": "* * * * *",
+      "entrypoint": "./scripts/run-telegram-operator-poll.sh",
+      "critical": true
+    },
+    {
+      "name": "morning-edge-hunt",
+      "schedule_expr": "0 6 * * *",
+      "entrypoint": "./scripts/run-scheduled-canonical-hunt.sh --job-name morning-edge-hunt",
+      "critical": true
+    },
+    {
+      "name": "midday-edge-hunt",
+      "schedule_expr": "0 12 * * *",
+      "entrypoint": "./scripts/run-scheduled-canonical-hunt.sh --job-name midday-edge-hunt",
+      "critical": true
+    },
+    {
+      "name": "afternoon-edge-hunt",
+      "schedule_expr": "0 15 * * *",
+      "entrypoint": "./scripts/run-scheduled-canonical-hunt.sh --job-name afternoon-edge-hunt",
+      "critical": true
+    },
+    {
+      "name": "rejected-close-capture-evening",
+      "schedule_expr": "35 23 * * *",
+      "entrypoint": "./scripts/run-rejected-close-capture.sh --job-name rejected-close-capture-evening",
+      "critical": true
+    },
+    {
+      "name": "rejected-close-capture-late-night",
+      "schedule_expr": "35 2 * * *",
+      "entrypoint": "./scripts/run-rejected-close-capture.sh --job-name rejected-close-capture-late-night",
+      "critical": true
+    },
+    {
+      "name": "rejected-close-capture-morning-cleanup",
+      "schedule_expr": "15 9 * * *",
+      "entrypoint": "./scripts/run-rejected-close-capture.sh --job-name rejected-close-capture-morning-cleanup",
+      "critical": true
+    }
+  ]
+}

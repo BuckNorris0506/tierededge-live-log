@@ -8,12 +8,14 @@ import { getLatestBankrollAnnotatedGrade } from './bankroll-reconciliation-utils
 import { formatCtTimestamp } from './openclaw-runtime-utils.mjs';
 import { loadScanCoveragePolicy } from './scan-coverage-utils.mjs';
 import { buildCleanRunSummary } from './build-clean-run-summary.mjs';
+import { loadDirectAutomationConfig } from './direct-automation-log-utils.mjs';
 
 const HUNT_AUDIT_LOG_PATH = CORE_PATHS.huntAuditLog;
 const REJECTED_CLOSE_CAPTURE_LOG_PATH = CORE_PATHS.rejectedCloseCaptureLog;
 const REJECTED_CLOSE_CAPTURE_RUNS_PATH = CORE_PATHS.rejectedCloseCaptureRuns;
 const MISSED_EXECUTION_WINDOWS_PATH = CORE_PATHS.missedExecutionWindows;
 const WEEKLY_OPERATOR_REVIEW_PATH = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/weekly-operator-review.json';
+const OPENCLAW_JOBS_PATH = '/Users/jaredbuckman/.openclaw/cron/jobs.json';
 
 function parsePhase(bankroll) {
   if (!Number.isFinite(bankroll)) return 'UNKNOWN';
@@ -84,10 +86,9 @@ function buildDecisionTexts(payload) {
     `System health: ${health}`,
   ].join('\n');
   const whatsapp = [
-    `*TIEREDGE ${verdict}*`,
-    `Classification: ${classification}`,
-    `Why: ${why}`,
-    `Health: ${health}`,
+    'WHATSAPP DISABLED',
+    'TieredEdge WhatsApp operations are disabled.',
+    'Use Telegram for operator commands and alerts.',
   ].join('\n');
   return { terminal, whatsapp, evening: terminal };
 }
@@ -860,6 +861,102 @@ function buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns)
   };
 }
 
+function buildDirectAutomationSummary(directAutomationRuns, directAutomationConfig) {
+  const sortedRuns = [...(directAutomationRuns || [])].sort((a, b) =>
+    String(b.completed_at_utc || b.started_at_utc || '').localeCompare(String(a.completed_at_utc || a.started_at_utc || ''))
+  );
+  const jobs = Array.isArray(directAutomationConfig?.jobs) ? directAutomationConfig.jobs : [];
+  const recentByJob = new Map();
+  for (const row of sortedRuns) {
+    const jobName = String(row.job_name || '').trim();
+    if (!jobName || recentByJob.has(jobName)) continue;
+    recentByJob.set(jobName, row);
+  }
+  return {
+    scheduler_type: directAutomationConfig?.scheduler?.type || 'system_cron',
+    timezone: directAutomationConfig?.scheduler?.timezone || 'America/Chicago',
+    model_backed_scheduler_in_critical_path: false,
+    total_runs_logged: sortedRuns.length,
+    critical_jobs: jobs.map((job) => {
+      const latest = recentByJob.get(String(job.name || '').trim()) || null;
+      return {
+        name: job.name,
+        critical: job.critical === true,
+        schedule_expr: job.schedule_expr || null,
+        entrypoint: job.entrypoint || null,
+        last_run_time_utc: latest?.completed_at_utc || latest?.started_at_utc || null,
+        last_status: latest?.status || 'not_run',
+        last_run_id: latest?.run_id || latest?.capture_run_id || null,
+        execution_mode: latest?.execution_mode || 'direct_local_command',
+      };
+    }),
+    recent_runs: sortedRuns.slice(0, 25),
+  };
+}
+
+function buildApiBurnReductionSummary(directAutomationConfig, openclawJobs) {
+  const directJobs = Array.isArray(directAutomationConfig?.jobs) ? directAutomationConfig.jobs : [];
+  const scheduledHuntTimes = directJobs
+    .filter((job) => ['morning-edge-hunt', 'midday-edge-hunt', 'afternoon-edge-hunt'].includes(String(job.name || '')))
+    .map((job) => {
+      const parts = String(job.schedule_expr || '').trim().split(/\s+/);
+      if (parts.length < 2) return null;
+      return `${String(parts[1]).padStart(2, '0')}:${String(parts[0]).padStart(2, '0')}`;
+    })
+    .filter(Boolean);
+  const activeModelBackedJobs = (openclawJobs || [])
+    .filter((job) => job?.enabled === true && String(job?.payload?.kind || '') === 'agentTurn')
+    .map((job) => ({
+      name: job.name,
+      schedule_expr: job?.schedule?.expr || null,
+      purpose: 'openclaw_agentturn',
+    }));
+  const disabledModelBackedJobs = (openclawJobs || [])
+    .filter((job) => job?.enabled === false && String(job?.payload?.kind || '') === 'agentTurn')
+    .map((job) => job.name)
+    .filter(Boolean);
+  const remainingModelApiDependentPaths = [
+    ...activeModelBackedJobs,
+    {
+      name: 'telegram-operator-poll',
+      schedule_expr: '* * * * *',
+      purpose: 'telegram_api_only',
+    },
+    {
+      name: 'run-canonical-hunt',
+      schedule_expr: scheduledHuntTimes.join(','),
+      purpose: 'odds_api_only',
+    },
+    {
+      name: 'rejected-close-capture',
+      schedule_expr: '23:35,02:35,09:15',
+      purpose: 'odds_api_only',
+    },
+  ];
+  return {
+    model_backed_usage_in_critical_path: false,
+    whatsapp_enabled: false,
+    scheduled_hunt_times: scheduledHuntTimes,
+    remaining_model_api_dependent_paths: remainingModelApiDependentPaths,
+    active_openclaw_agentturn_jobs: activeModelBackedJobs,
+    no_15_minute_hunt_loop: true,
+    api_burn_reduction_summary: {
+      direct_local_hunt_jobs: ['morning-edge-hunt', 'midday-edge-hunt', 'afternoon-edge-hunt'],
+      direct_local_close_capture_jobs: [
+        'rejected-close-capture-evening',
+        'rejected-close-capture-late-night',
+        'rejected-close-capture-morning-cleanup',
+      ],
+      disabled_whatsapp_surfaces: [
+        'whatsapp-operator-command',
+        'whatsapp-execution-ingestion',
+        'whatsapp-settled-ticket-ingestion',
+      ],
+      disabled_openclaw_routine_jobs: disabledModelBackedJobs,
+    },
+  };
+}
+
 function buildNotificationSummary(notificationEvents) {
   const sorted = [...(notificationEvents || [])].sort((a, b) =>
     String(b.created_at_utc || '').localeCompare(String(a.created_at_utc || ''))
@@ -1058,6 +1155,165 @@ function buildBookUsefulnessSummary(decisions, ownedBooks, latestCanonicalHuntRu
   return {
     overall,
     latest_run_scope: latestRunBooks,
+  };
+}
+
+function continuityMatchKey(row) {
+  return [
+    row.event_id || row.event_label || '',
+    row.market_family || 'main_market',
+    row.market_type || '',
+    row.selection || '',
+    row.sportsbook || '',
+    row.line_key || row.prop_line || '',
+  ].join('::');
+}
+
+function compactContinuityRow(row, overrides = {}) {
+  return {
+    rec_id: row.rec_id || null,
+    run_id: row.run_id || null,
+    event_id: row.event_id || null,
+    event_label: row.event_label || null,
+    event_home_team: row.event_home_team || null,
+    event_away_team: row.event_away_team || null,
+    market_family: row.market_family || null,
+    market_type: row.market_type || null,
+    selection: row.selection || null,
+    sportsbook: row.sportsbook || null,
+    line_key: overrides.line_key ?? row.line_key ?? null,
+    odds_american: overrides.odds_american ?? row.odds_american ?? null,
+    current_odds_american: overrides.current_odds_american ?? null,
+    prior_edge_pct: parseNumber(overrides.prior_edge_pct ?? row.post_conf_edge_pct),
+    current_edge_pct: parseNumber(overrides.current_edge_pct ?? null),
+    kelly_stake: parseNumber(overrides.kelly_stake ?? row.kelly_stake),
+    continuity_status: overrides.continuity_status || null,
+    continuity_reason: overrides.continuity_reason || null,
+    executable_book: overrides.executable_book ?? Boolean(row.executable_book),
+    actionable_book: overrides.actionable_book ?? Boolean(row.actionable_book),
+    still_pregame: overrides.still_pregame ?? (
+      parseNumber(row.minutes_to_start) === null ? null : (parseNumber(row.minutes_to_start) > 0)
+    ),
+    minutes_to_start: parseNumber(overrides.minutes_to_start ?? row.minutes_to_start),
+    urgency_tag: overrides.urgency_tag || row.urgency_tag || null,
+    event_start_time: overrides.event_start_time || row.event_start_time || null,
+  };
+}
+
+function buildActionableBoardContinuitySummary({ decisions, canonicalHuntRuns, invalidRunIds, latestCanonicalHuntRun }) {
+  const excluded = new Set((invalidRunIds || []).map((value) => String(value || '').trim()).filter(Boolean));
+  const orderedRunIds = [];
+  const seenRunIds = new Set();
+  for (const row of canonicalHuntRuns || []) {
+    const runId = String(row.run_id || '').trim();
+    if (!runId || seenRunIds.has(runId) || excluded.has(runId)) continue;
+    if (String(row.status || '').trim() !== 'ok') continue;
+    orderedRunIds.push(runId);
+    seenRunIds.add(runId);
+  }
+
+  const latestRunId = String(latestCanonicalHuntRun?.run_id || orderedRunIds[orderedRunIds.length - 1] || '').trim() || null;
+  if (!latestRunId) {
+    return {
+      latest_run_id: null,
+      latest_actionable_run_id: null,
+      counts_by_status: {
+        new_actionable: 0,
+        still_actionable: 0,
+        decayed_but_close: 0,
+        invalidated: 0,
+      },
+      current_actionable_rows: [],
+      prior_actionable_rows: [],
+    };
+  }
+
+  const latestIndex = orderedRunIds.lastIndexOf(latestRunId);
+  const previousActionableRunId = orderedRunIds
+    .slice(0, latestIndex === -1 ? orderedRunIds.length : latestIndex)
+    .reverse()
+    .find((runId) => (decisions || []).some((row) => row.run_id === runId && row.final_decision === 'BET')) || null;
+
+  const latestRunRows = (decisions || []).filter((row) => row.run_id === latestRunId);
+  const latestBetRows = latestRunRows.filter((row) => row.final_decision === 'BET');
+  const previousActionableRows = previousActionableRunId
+    ? (decisions || []).filter((row) => row.run_id === previousActionableRunId && row.final_decision === 'BET')
+    : [];
+
+  const previousByKey = new Map(previousActionableRows.map((row) => [continuityMatchKey(row), row]));
+  const latestByKey = new Map(latestRunRows.map((row) => [continuityMatchKey(row), row]));
+
+  const countsByStatus = {
+    new_actionable: 0,
+    still_actionable: 0,
+    decayed_but_close: 0,
+    invalidated: 0,
+  };
+  const currentActionableRows = [];
+  const priorOutcomeRows = [];
+
+  for (const row of latestBetRows) {
+    const key = continuityMatchKey(row);
+    const status = previousByKey.has(key) ? 'still_actionable' : 'new_actionable';
+    countsByStatus[status] += 1;
+    currentActionableRows.push(compactContinuityRow(row, {
+      continuity_status: status,
+      current_edge_pct: row.post_conf_edge_pct,
+      continuity_reason: status,
+      odds_american: row.odds_american,
+      current_odds_american: row.odds_american,
+      line_key: row.line_key,
+    }));
+  }
+
+  for (const priorRow of previousActionableRows) {
+    const latestRow = latestByKey.get(continuityMatchKey(priorRow));
+    if (latestRow?.final_decision === 'BET') {
+      continue;
+    }
+
+    const currentEdge = parseNumber(latestRow?.post_conf_edge_pct);
+    const thresholdGap = parseNumber(latestRow?.threshold_gap_pct);
+    const stillExecutable = latestRow ? Boolean(latestRow.actionable_book ?? latestRow.executable_book) : false;
+    const stillPregame = latestRow ? (parseNumber(latestRow.minutes_to_start) === null ? null : parseNumber(latestRow.minutes_to_start) > 0) : null;
+    const isClose = Boolean(latestRow)
+      && stillExecutable
+      && stillPregame !== false
+      && (
+        (Number.isFinite(currentEdge) && currentEdge >= 1.0)
+        || (Number.isFinite(thresholdGap) && thresholdGap <= 1.0)
+      );
+
+    const continuityStatus = isClose ? 'decayed_but_close' : 'invalidated';
+    countsByStatus[continuityStatus] += 1;
+    priorOutcomeRows.push(compactContinuityRow(priorRow, {
+      continuity_status: continuityStatus,
+      current_edge_pct: currentEdge,
+      continuity_reason: latestRow?.rejection_reason || 'not_present_in_latest_run',
+      odds_american: priorRow.odds_american,
+      current_odds_american: latestRow?.odds_american ?? null,
+      line_key: latestRow?.line_key ?? priorRow.line_key,
+      executable_book: latestRow ? Boolean(latestRow.executable_book) : Boolean(priorRow.executable_book),
+      actionable_book: latestRow ? Boolean(latestRow.actionable_book) : Boolean(priorRow.actionable_book),
+      still_pregame: latestRow ? stillPregame : null,
+      minutes_to_start: latestRow?.minutes_to_start ?? priorRow.minutes_to_start,
+      urgency_tag: latestRow?.urgency_tag || priorRow.urgency_tag,
+      event_start_time: latestRow?.event_start_time || priorRow.event_start_time,
+    }));
+  }
+
+  const sortByRelevance = (left, right) => {
+    const leftEdge = parseNumber(left.current_edge_pct ?? left.prior_edge_pct) ?? Number.NEGATIVE_INFINITY;
+    const rightEdge = parseNumber(right.current_edge_pct ?? right.prior_edge_pct) ?? Number.NEGATIVE_INFINITY;
+    return rightEdge - leftEdge;
+  };
+
+  return {
+    latest_run_id: latestRunId,
+    latest_actionable_run_id: previousActionableRunId,
+    counts_by_status: countsByStatus,
+    current_actionable_rows: currentActionableRows.sort(sortByRelevance),
+    prior_actionable_rows: priorOutcomeRows.sort(sortByRelevance).slice(0, 8),
   };
 }
 
@@ -1471,6 +1727,7 @@ function buildOperatorDashboard({
 function main() {
   const decisions = readJsonl(CORE_PATHS.decisionLedger);
   const canonicalHuntRuns = readJsonl(CORE_PATHS.canonicalHuntRuns);
+  const directAutomationRuns = readJsonl(CORE_PATHS.directAutomationRuns);
   const notificationEvents = readJsonl(CORE_PATHS.notificationEvents);
   const telegramOperatorEvents = readJsonl(CORE_PATHS.telegramOperatorEvents);
   const rejectedCloseCaptureLog = readJsonl(REJECTED_CLOSE_CAPTURE_LOG_PATH);
@@ -1491,6 +1748,8 @@ function main() {
   const latestCanonicalHuntRun = readJson(CORE_PATHS.canonicalHuntRun, null);
   const weeklyOperatorReview = readJson(WEEKLY_OPERATOR_REVIEW_PATH, null);
   const scanCoveragePolicy = loadScanCoveragePolicy();
+  const directAutomationConfig = loadDirectAutomationConfig();
+  const openclawJobs = readJson(OPENCLAW_JOBS_PATH, { jobs: [] })?.jobs || [];
   const generatedAtUtc = new Date().toISOString();
   const rejectedCloseCaptureIndex = buildRejectedCloseCaptureIndex(rejectedCloseCaptureLog);
   const invalidRunScope = buildInvalidRunScope(huntAuditLog, decisions);
@@ -1588,9 +1847,17 @@ function main() {
   const rejectedOpportunitySummary = buildRejectedOpportunitySummary(validLearningDecisions, latestDate, rejectedCloseCaptureIndex);
   const rejectedCloseCaptureAutomation = buildRejectedCloseCaptureAutomationSummary(rejectedCloseCaptureRuns, rejectedOpportunitySummary);
   const automationLockSummary = buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns);
+  const directAutomationSummary = buildDirectAutomationSummary(directAutomationRuns, directAutomationConfig);
+  const apiBurnReductionSummary = buildApiBurnReductionSummary(directAutomationConfig, openclawJobs);
   const notificationSummary = buildNotificationSummary(notificationEvents);
   const telegramOperatorSummary = buildTelegramOperatorSummary(telegramOperatorEvents, notificationSummary);
   const missedExecutionWindowSummary = buildMissedExecutionWindowSummary(missedExecutionWindows);
+  const actionableBoardContinuitySummary = buildActionableBoardContinuitySummary({
+    decisions: validLearningDecisions,
+    canonicalHuntRuns,
+    invalidRunIds: invalidRunScope.invalid_run_ids,
+    latestCanonicalHuntRun,
+  });
   const sportsbookScope = {
     owned_books: scanCoveragePolicy?.book_sets?.owned_books || scanCoveragePolicy?.book_sets?.executable_books || [],
     live_feed_books: latestCanonicalHuntRun?.live_feed_books || [],
@@ -1746,6 +2013,12 @@ function main() {
     },
     rejected_opportunity_summary: rejectedOpportunitySummary,
     missed_execution_window_summary: missedExecutionWindowSummary,
+    actionable_board_continuity_summary: actionableBoardContinuitySummary,
+    direct_automation_summary: directAutomationSummary,
+    model_backed_usage_in_critical_path: apiBurnReductionSummary.model_backed_usage_in_critical_path,
+    whatsapp_enabled: apiBurnReductionSummary.whatsapp_enabled,
+    scheduled_hunt_times: apiBurnReductionSummary.scheduled_hunt_times,
+    api_burn_reduction_summary: apiBurnReductionSummary,
     rejected_close_capture_automation: rejectedCloseCaptureAutomation,
     automation_lock_summary: automationLockSummary,
     notification_summary: notificationSummary,
@@ -1868,6 +2141,7 @@ function main() {
       post_mortem_log_path: POST_MORTEM_LOG_PATH,
       hunt_audit_log_path: HUNT_AUDIT_LOG_PATH,
       rejected_close_capture_log_path: REJECTED_CLOSE_CAPTURE_LOG_PATH,
+      direct_automation_runs_path: CORE_PATHS.directAutomationRuns,
       clean_run_summary_path: CORE_PATHS.cleanRunSummary,
       weekly_operator_review_path: WEEKLY_OPERATOR_REVIEW_PATH,
       ledger_validation_path: '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json',

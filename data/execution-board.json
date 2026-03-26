@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-03-25T22:03:32.804Z",
-  "run_classification": "true_no_edge_sit",
+  "generated_at_utc": "2026-03-26T17:32:05.516Z",
+  "run_classification": "bet_ready",
   "policy": {
     "stale_recommendation_hours": 8,
     "odds_stale_minutes": 10,

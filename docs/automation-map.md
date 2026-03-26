@@ -4,10 +4,16 @@
 
 | Job | Trigger | Schedule (CT) | Canonical? | Reads | Writes |
 |---|---|---:|---|---|---|
-| `morning-edge-hunt` | OpenClaw cron | 06:00 daily | canonical runtime input | OpenClaw skill + memory | WhatsApp delivery, OpenClaw run history, may update OpenClaw memory/state |
-| `friday-sgp` | OpenClaw cron | 10:00 Friday | canonical runtime input | OpenClaw skill + memory | WhatsApp delivery, OpenClaw run history, may update OpenClaw memory/state |
-| `evening-grading` | OpenClaw cron | 23:00 daily | canonical runtime input | OpenClaw memory | WhatsApp delivery, OpenClaw run history, may update OpenClaw memory/state |
-| `weekly-review` | OpenClaw cron | 09:00 Monday | derived review | OpenClaw memory | WhatsApp delivery, OpenClaw run history |
+| `telegram-operator-poll` | system crontab | every minute | operator interface | repo env + Telegram API | `data/telegram-operator-events.jsonl`, `data/telegram-operator-state.json`, `data/direct-automation-runs.jsonl` |
+| `morning-edge-hunt` | system crontab | 06:00 daily | canonical runtime input | repo env + odds feed | `data/canonical-hunt-runs.jsonl`, canonical hunt artifact, `data/direct-automation-runs.jsonl`, then canonical public rebuild |
+| `midday-edge-hunt` | system crontab | 12:00 daily | canonical runtime input | repo env + odds feed | `data/canonical-hunt-runs.jsonl`, canonical hunt artifact, `data/direct-automation-runs.jsonl`, then canonical public rebuild |
+| `afternoon-edge-hunt` | system crontab | 15:00 daily | canonical runtime input | repo env + odds feed | `data/canonical-hunt-runs.jsonl`, canonical hunt artifact, `data/direct-automation-runs.jsonl`, then canonical public rebuild |
+| `rejected-close-capture-evening` | system crontab | 23:35 daily | rejected-opportunity maintenance | repo env + odds feed | `data/rejected-close-capture-runs.jsonl`, `data/rejected-close-capture-log.jsonl`, `data/direct-automation-runs.jsonl`, then canonical public rebuild |
+| `rejected-close-capture-late-night` | system crontab | 02:35 daily | rejected-opportunity maintenance | repo env + odds feed | `data/rejected-close-capture-runs.jsonl`, `data/rejected-close-capture-log.jsonl`, `data/direct-automation-runs.jsonl`, then canonical public rebuild |
+| `rejected-close-capture-morning-cleanup` | system crontab | 09:15 daily | rejected-opportunity maintenance | repo env + odds feed | `data/rejected-close-capture-runs.jsonl`, `data/rejected-close-capture-log.jsonl`, `data/direct-automation-runs.jsonl`, then canonical public rebuild |
+| `friday-sgp` | OpenClaw cron | 10:00 Friday | optional/manual only | OpenClaw skill + memory | currently disabled to reduce model/API burn |
+| `evening-grading` | OpenClaw cron | 23:00 daily | optional/manual only | OpenClaw memory | currently disabled to reduce model/API burn |
+| `weekly-review` | OpenClaw cron | 09:00 Monday | optional/manual only | OpenClaw memory | currently disabled to reduce model/API burn |
 | `update-live-log.sh` | system crontab | every 10 minutes | canonical public rebuild | OpenClaw memory + repo data | `data/*`, `public/*`, repo-root deploy artifacts, optional git push |
 | `run-monthly-bankroll-contribution.sh` | system crontab | 00:07 on day 1 | canonical contribution writer | OpenClaw bet log + repo ledger | `data/bankroll-contributions.csv`, `data/bankroll-contribution-status.json`, then canonical public rebuild |
 
@@ -23,11 +29,13 @@
 
 ## Collision rules
 
-1. `update-live-log.sh` is the only scheduled public rebuild entrypoint.
-2. `run-monthly-bankroll-contribution.sh` must call `update-live-log.sh` instead of rebuilding/pushing on its own.
-3. Any script that mutates public outputs must hold the shared `/tmp` live-log lock.
-4. If source files change during a rebuild, the rebuild must abort before deploy/push.
-5. Do not schedule `node scripts/build-live-log.mjs` directly.
+1. Mission-critical hunt, Telegram, and rejected-close-capture jobs must run as direct local repo commands, not model-backed `agentTurn`.
+2. WhatsApp is disabled for TieredEdge operations. Preserve history only; do not use it as a live operator surface.
+3. `update-live-log.sh` is the only scheduled public rebuild entrypoint, except when it is called by a direct local wrapper after a canonical hunt or close-capture run.
+4. `run-monthly-bankroll-contribution.sh` must call `update-live-log.sh` instead of rebuilding/pushing on its own.
+5. Any script that mutates public outputs must hold the shared `/tmp` live-log lock.
+6. If source files change during a rebuild, the rebuild must abort before deploy/push.
+7. Do not schedule `node scripts/build-live-log.mjs` directly.
 
 ## Shared write paths at highest risk
 
@@ -43,7 +51,7 @@
 
 ## Allowed mutation order
 
-1. OpenClaw scheduled job updates OpenClaw runtime/state.
+1. Direct local wrapper or OpenClaw non-critical job updates repo/runtime state.
 2. `update-live-log.sh` snapshots source mtimes.
 3. `update-live-log.sh` rebuilds runtime status, grading cache, payload, suppression artifacts, standalone page.
 4. `update-live-log.sh` verifies source files did not change mid-build.

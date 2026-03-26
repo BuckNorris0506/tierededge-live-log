@@ -487,6 +487,7 @@ async function main() {
   }
 
   const groups = new Map();
+  const appended = [];
   const currentCtDate = todayCtDateKey();
   for (const row of pendingRows) {
     const sportKey = mapSportKey(row);
@@ -509,7 +510,6 @@ async function main() {
     group.rows.push(row);
   }
 
-  const appended = [];
   for (const group of groups.values()) {
     let payload = null;
     try {

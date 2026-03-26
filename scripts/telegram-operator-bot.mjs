@@ -24,6 +24,15 @@ function currentState() {
   return readJson(CORE_PATHS.telegramOperatorState, {
     offset: null,
     last_polled_at_utc: null,
+    processed_count: 0,
+  });
+}
+
+function persistState(state) {
+  writeJson(CORE_PATHS.telegramOperatorState, {
+    offset: state.offset ?? null,
+    last_polled_at_utc: new Date().toISOString(),
+    processed_count: parseInt(state.processed_count || 0, 10) || 0,
   });
 }
 
@@ -43,6 +52,10 @@ function eventBase(update, now) {
     chat_id: inboundChatId(update) || null,
     raw_text: messageText(update) || null,
   };
+}
+
+function syntheticUpdateId() {
+  return (Date.now() * 1000) + Math.floor(Math.random() * 1000);
 }
 
 async function processUpdate(update, allowedChatId, now) {
@@ -83,6 +96,7 @@ async function processUpdate(update, allowedChatId, now) {
     outbound_channel: delivery.ok ? 'telegram' : 'telegram_failed',
     delivery_status: delivery.ok ? 'sent' : 'failed',
     delivery_error: delivery.ok ? null : delivery.error,
+    delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
     legacy_alias_used: Boolean(result.legacy_alias_used),
     last_outbound_alert_time: alertMeta.last_outbound_alert_time,
     last_outbound_alert_type: alertMeta.last_outbound_alert_type,
@@ -93,52 +107,114 @@ async function main() {
   const args = parseArgs(process.argv);
   const state = currentState();
   const configuredChatId = telegramConfiguredChatId();
-  let updates = [];
   if (args.simulate_command) {
-    updates = [{
-      update_id: Number(Date.now()),
+    const updates = [{
+      update_id: syntheticUpdateId(),
       message: {
         chat: { id: String(args.chat_id || configuredChatId || '') },
         text: String(args.simulate_command),
       },
     }];
-  } else {
-    const fetchResult = await fetchTelegramUpdates(Number.isFinite(Number(state.offset)) ? Number(state.offset) : null);
-    if (!fetchResult.ok) {
-      throw new Error(fetchResult.error || 'telegram_updates_failed');
+    const events = [];
+    for (const update of updates) {
+      const now = new Date().toISOString();
+      const event = await processUpdate(update, configuredChatId, now);
+      events.push(event);
     }
-    updates = Array.isArray(fetchResult.data) ? fetchResult.data : [];
+    if (events.length) {
+      appendJsonl(CORE_PATHS.telegramOperatorEvents, events, (row) => String(row.telegram_event_id || '').trim());
+    }
+    if (args.json) {
+      console.log(JSON.stringify({
+        ok: true,
+        processed_updates: events.length,
+        next_offset: state.offset ?? null,
+        events,
+      }, null, 2));
+    }
+    return;
   }
-  const events = [];
 
-  for (const update of updates) {
-    if (!update?.message) continue;
-    const now = new Date().toISOString();
-    const event = await processUpdate(update, configuredChatId, now);
-    events.push(event);
+  const deadlineMs = Date.now() + 50000;
+  const sessionEvents = [];
+  let sessionProcessedCount = 0;
+  let nextOffset = Number.isFinite(Number(state.offset)) ? Number(state.offset) : null;
+
+  while (Date.now() < deadlineMs) {
+    const remainingSeconds = Math.max(1, Math.floor((deadlineMs - Date.now()) / 1000));
+    const fetchTimeoutSeconds = Math.min(20, remainingSeconds);
+    const fetchResult = await fetchTelegramUpdates(nextOffset, fetchTimeoutSeconds);
+    if (!fetchResult.ok) {
+      const error = new Error(fetchResult.error || 'telegram_updates_failed');
+      error.transport_diagnostics = fetchResult.diagnostics || null;
+      throw error;
+    }
+
+    const updates = Array.isArray(fetchResult.data) ? fetchResult.data : [];
+    if (!updates.length) {
+      if (Date.now() + 5000 >= deadlineMs) {
+        break;
+      }
+      continue;
+    }
+
+    updates.sort((a, b) => (Number(a?.update_id) || 0) - (Number(b?.update_id) || 0));
+
+    for (const update of updates) {
+      const updateId = Number(update?.update_id);
+      if (Number.isFinite(nextOffset) && Number.isFinite(updateId) && updateId < nextOffset) {
+        continue;
+      }
+      if (!update?.message) {
+        if (Number.isFinite(updateId)) {
+          nextOffset = updateId + 1;
+          state.offset = nextOffset;
+          persistState(state);
+        }
+        continue;
+      }
+
+      const now = new Date().toISOString();
+      const event = await processUpdate(update, configuredChatId, now);
+      appendJsonl(CORE_PATHS.telegramOperatorEvents, event, (row) => String(row.telegram_event_id || '').trim());
+      sessionEvents.push(event);
+      sessionProcessedCount += 1;
+
+      if (Number.isFinite(updateId)) {
+        nextOffset = updateId + 1;
+      }
+      state.offset = nextOffset;
+      state.processed_count = (parseInt(state.processed_count || 0, 10) || 0) + 1;
+      persistState(state);
+    }
+
+    if (updates.length < 100) {
+      break;
+    }
   }
 
-  if (events.length) {
-    appendJsonl(CORE_PATHS.telegramOperatorEvents, events, (row) => String(row.telegram_event_id || '').trim());
-  }
-
-  const nextOffset = updates.length ? (Math.max(...updates.map((item) => Number(item.update_id) || 0)) + 1) : state.offset;
-  if (!args.simulate_command) {
-    writeJson(CORE_PATHS.telegramOperatorState, {
-      offset: nextOffset ?? null,
-      last_polled_at_utc: new Date().toISOString(),
-      processed_count: (parseInt(state.processed_count || 0, 10) || 0) + events.length,
-    });
+  if (!sessionProcessedCount) {
+    persistState(state);
   }
 
   if (args.json) {
     console.log(JSON.stringify({
       ok: true,
-      processed_updates: events.length,
+      processed_updates: sessionProcessedCount,
       next_offset: nextOffset ?? null,
-      events,
+      events: sessionEvents,
     }, null, 2));
   }
 }
 
-await main();
+main().catch((error) => {
+  if (error?.transport_diagnostics) {
+    console.error(JSON.stringify({
+      error: error.message,
+      transport_diagnostics: error.transport_diagnostics,
+    }));
+  } else {
+    console.error(error instanceof Error ? error.message : 'telegram_operator_failed');
+  }
+  process.exit(1);
+});

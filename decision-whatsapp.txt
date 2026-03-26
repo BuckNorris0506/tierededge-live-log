@@ -1,4 +1,3 @@
-*TIEREDGE SIT*
-Classification: true_no_edge_sit
-Why: Latest scheduled hunt found no qualifying edges.
-Health: PASS
+WHATSAPP DISABLED
+TieredEdge WhatsApp operations are disabled.
+Use Telegram for operator commands and alerts.
