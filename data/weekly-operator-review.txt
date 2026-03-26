@@ -1,41 +1,41 @@
 WEEKLY OPERATOR REVIEW
-Generated: 2026-03-26T17:32:05.257Z
+Generated: 2026-03-26T17:39:44.547Z
 Window: last_7_days
 
-Valid runs: 143
+Valid runs: 144
 Invalidated runs: 3
-Total bets: 37
-Total sits: 21063
+Total bets: 41
+Total sits: 21231
 Actual CLV: covered=0/2 | avg=N/A | positive=N/A%
-Rejected CLV 1.5–1.99: count=550 | captured=7 | avg=0.75
-Invalid snapshots: 7928
-Stale markets: 2968
+Rejected CLV 1.5–1.99: count=554 | captured=7 | avg=0.75
+Invalid snapshots: 7968
+Stale markets: 2970
 
 Top Rejection Reasons:
-- no_edge: 10023
-- invalid_snapshot: 7928
-- stale_market: 2968
-- sub_minimum_kelly: 80
+- no_edge: 10147
+- invalid_snapshot: 7968
+- stale_market: 2970
+- sub_minimum_kelly: 82
 - exposure_cap_reached: 61
 
 Per-Book Usefulness:
 - bet365 | recs=0 | best=0 | near_miss=0 | stale_missing=0
-- betmgm | recs=10 | best=5092 | near_miss=100 | stale_missing=2957
-- betrivers | recs=1 | best=3715 | near_miss=0 | stale_missing=1779
+- betmgm | recs=10 | best=5138 | near_miss=100 | stale_missing=2967
+- betrivers | recs=1 | best=3738 | near_miss=0 | stale_missing=1792
 - caesars | recs=0 | best=0 | near_miss=0 | stale_missing=0
 - circa | recs=0 | best=0 | near_miss=0 | stale_missing=0
-- draftkings | recs=15 | best=5343 | near_miss=103 | stale_missing=2705
-- fanduel | recs=11 | best=6950 | near_miss=145 | stale_missing=3455
+- draftkings | recs=19 | best=5399 | near_miss=107 | stale_missing=2715
+- fanduel | recs=11 | best=6997 | near_miss=145 | stale_missing=3464
 
 Market-Type Performance:
-- MLB ML | bets=2 | sits=434 | avg_edge=0.38
-- NBA ML | bets=5 | sits=2781 | avg_edge=0.89
+- MLB ML | bets=3 | sits=455 | avg_edge=0.39
+- NBA ML | bets=5 | sits=2787 | avg_edge=0.88
 - NBA Player Points | bets=2 | sits=276 | avg_edge=0.74
-- NBA Spread | bets=0 | sits=4738 | avg_edge=0.51
-- NBA Total | bets=0 | sits=6466 | avg_edge=0.38
-- NCAAB ML | bets=3 | sits=593 | avg_edge=0.88
-- NCAAB Spread | bets=2 | sits=834 | avg_edge=0.43
-- NCAAB Total | bets=0 | sits=856 | avg_edge=0.37
+- NBA Spread | bets=0 | sits=4748 | avg_edge=0.51
+- NBA Total | bets=0 | sits=6474 | avg_edge=0.38
+- NCAAB ML | bets=3 | sits=601 | avg_edge=0.87
+- NCAAB Spread | bets=2 | sits=844 | avg_edge=0.42
+- NCAAB Total | bets=0 | sits=870 | avg_edge=0.37
 
 Action Flags Seen:
 - RED latest_run_invalidated: 3 invalidated run(s) recorded this week.

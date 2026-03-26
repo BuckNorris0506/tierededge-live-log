@@ -8,7 +8,6 @@ CRON_END="# END TIEREDGE DIRECT AUTOMATION"
 TIEREDGE_BLOCK=$(cat <<'EOF'
 # BEGIN TIEREDGE DIRECT AUTOMATION
 SHELL=/bin/sh
-* * * * * /bin/sh /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/cron-telegram-operator-poll.sh >> /tmp/tierededge-telegram-operator.log 2>&1
 0 6 * * * export PATH=/usr/local/bin:/usr/bin:/bin; export LIVE_LOG_DEPLOY_REPO="/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log"; cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log && /bin/zsh /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-scheduled-canonical-hunt.sh --job-name morning-edge-hunt >> /tmp/tierededge-morning-edge-hunt.log 2>&1
 0 12 * * * export PATH=/usr/local/bin:/usr/bin:/bin; export LIVE_LOG_DEPLOY_REPO="/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log"; cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log && /bin/zsh /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-scheduled-canonical-hunt.sh --job-name midday-edge-hunt >> /tmp/tierededge-midday-edge-hunt.log 2>&1
 0 15 * * * export PATH=/usr/local/bin:/usr/bin:/bin; export LIVE_LOG_DEPLOY_REPO="/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log"; cd /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log && /bin/zsh /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-scheduled-canonical-hunt.sh --job-name afternoon-edge-hunt >> /tmp/tierededge-afternoon-edge-hunt.log 2>&1
