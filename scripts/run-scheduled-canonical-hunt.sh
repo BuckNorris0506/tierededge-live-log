@@ -46,8 +46,8 @@ appendDirectAutomationRun({
   started_at_utc: '$STARTED_AT_UTC',
   completed_at_utc: new Date().toISOString(),
   status: 'failed',
-  command_path: '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
-  child_command: 'node scripts/run-canonical-hunt.mjs --json',
+  command_path: process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH || '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
+  child_command: process.env.TIEREDGE_SCHEDULED_HUNT_CHILD_COMMAND || 'node scripts/run-canonical-hunt.mjs --json',
   error: stderr || 'canonical_runner_failed',
 });
 EOF
@@ -69,8 +69,8 @@ appendDirectAutomationRun({
   started_at_utc: '$STARTED_AT_UTC',
   completed_at_utc: new Date().toISOString(),
   status: 'skipped_due_to_active_lock',
-  command_path: '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
-  child_command: 'node scripts/run-canonical-hunt.mjs --json',
+  command_path: process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH || '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
+  child_command: process.env.TIEREDGE_SCHEDULED_HUNT_CHILD_COMMAND || 'node scripts/run-canonical-hunt.mjs --json',
   run_id: '$RUN_ID',
   lock_name: '$LOCK_NAME',
 });
@@ -89,8 +89,8 @@ appendDirectAutomationRun({
   started_at_utc: '$STARTED_AT_UTC',
   completed_at_utc: new Date().toISOString(),
   status: 'ok',
-  command_path: '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
-  child_command: 'node scripts/run-canonical-hunt.mjs --json && ./scripts/update-live-log.sh',
+  command_path: process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH || '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
+  child_command: process.env.TIEREDGE_SCHEDULED_HUNT_CHILD_COMMAND || 'node scripts/run-canonical-hunt.mjs --json && ./scripts/update-live-log.sh',
   run_id: '$RUN_ID',
   rebuild_status: 'ok',
 });
@@ -111,8 +111,8 @@ appendDirectAutomationRun({
   started_at_utc: '$STARTED_AT_UTC',
   completed_at_utc: new Date().toISOString(),
   status: 'failed',
-  command_path: '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
-  child_command: 'node scripts/run-canonical-hunt.mjs --json && ./scripts/update-live-log.sh',
+  command_path: process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH || '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
+  child_command: process.env.TIEREDGE_SCHEDULED_HUNT_CHILD_COMMAND || 'node scripts/run-canonical-hunt.mjs --json && ./scripts/update-live-log.sh',
   run_id: '$RUN_ID',
   rebuild_status: 'failed',
   error: stderr || stdout || 'update_live_log_failed',

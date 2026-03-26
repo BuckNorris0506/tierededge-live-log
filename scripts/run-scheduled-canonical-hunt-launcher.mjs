@@ -76,6 +76,9 @@ async function main() {
 
   loadRequiredEnvs();
   process.env.LIVE_LOG_DEPLOY_REPO = process.env.LIVE_LOG_DEPLOY_REPO || ROOT_DIR;
+  process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH = path.join(ROOT_DIR, 'scripts', 'run-scheduled-canonical-hunt-launcher.mjs');
+  process.env.TIEREDGE_SCHEDULED_HUNT_CHILD_COMMAND =
+    `/bin/zsh scripts/run-scheduled-canonical-hunt.sh --job-name ${jobName}`;
 
   const lock = await acquireNamedLock('scheduled-canonical-hunt-launcher', 'run-scheduled-canonical-hunt-launcher.mjs');
   if (!lock.acquired) {

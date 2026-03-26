@@ -14,19 +14,31 @@
     {
       "name": "morning-edge-hunt",
       "schedule_expr": "0 6 * * *",
-      "entrypoint": "./scripts/run-scheduled-canonical-hunt.sh --job-name morning-edge-hunt",
+      "entrypoint": "node ./scripts/run-scheduled-canonical-hunt-launcher.mjs --job-name morning-edge-hunt",
+      "critical": true
+    },
+    {
+      "name": "midmorning-edge-hunt",
+      "schedule_expr": "0 9 * * *",
+      "entrypoint": "node ./scripts/run-scheduled-canonical-hunt-launcher.mjs --job-name midmorning-edge-hunt",
       "critical": true
     },
     {
       "name": "midday-edge-hunt",
       "schedule_expr": "0 12 * * *",
-      "entrypoint": "./scripts/run-scheduled-canonical-hunt.sh --job-name midday-edge-hunt",
+      "entrypoint": "node ./scripts/run-scheduled-canonical-hunt-launcher.mjs --job-name midday-edge-hunt",
       "critical": true
     },
     {
       "name": "afternoon-edge-hunt",
       "schedule_expr": "0 15 * * *",
-      "entrypoint": "./scripts/run-scheduled-canonical-hunt.sh --job-name afternoon-edge-hunt",
+      "entrypoint": "node ./scripts/run-scheduled-canonical-hunt-launcher.mjs --job-name afternoon-edge-hunt",
+      "critical": true
+    },
+    {
+      "name": "evening-edge-hunt",
+      "schedule_expr": "0 18 * * *",
+      "entrypoint": "node ./scripts/run-scheduled-canonical-hunt-launcher.mjs --job-name evening-edge-hunt",
       "critical": true
     },
     {

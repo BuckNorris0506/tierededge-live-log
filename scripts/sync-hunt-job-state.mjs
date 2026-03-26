@@ -3,7 +3,13 @@ import fs from 'node:fs';
 import { readHuntBlockStatus } from './hunt-block-status.mjs';
 
 const OPENCLAW_JOBS_PATH = '/Users/jaredbuckman/.openclaw/cron/jobs.json';
-const DIRECT_LOCAL_HUNT_JOB_NAMES = new Set(['morning-edge-hunt', 'midday-edge-hunt', 'afternoon-edge-hunt']);
+const DIRECT_LOCAL_HUNT_JOB_NAMES = new Set([
+  'morning-edge-hunt',
+  'midmorning-edge-hunt',
+  'midday-edge-hunt',
+  'afternoon-edge-hunt',
+  'evening-edge-hunt',
+]);
 const DISABLED_OPENCLAW_HUNT_JOB_NAMES = new Set(['friday-sgp']);
 
 function main() {

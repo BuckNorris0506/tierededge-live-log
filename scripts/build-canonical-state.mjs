@@ -896,8 +896,15 @@ function buildDirectAutomationSummary(directAutomationRuns, directAutomationConf
 
 function buildApiBurnReductionSummary(directAutomationConfig, openclawJobs) {
   const directJobs = Array.isArray(directAutomationConfig?.jobs) ? directAutomationConfig.jobs : [];
+  const directLocalHuntJobs = [
+    'morning-edge-hunt',
+    'midmorning-edge-hunt',
+    'midday-edge-hunt',
+    'afternoon-edge-hunt',
+    'evening-edge-hunt',
+  ];
   const scheduledHuntTimes = directJobs
-    .filter((job) => ['morning-edge-hunt', 'midday-edge-hunt', 'afternoon-edge-hunt'].includes(String(job.name || '')))
+    .filter((job) => directLocalHuntJobs.includes(String(job.name || '')))
     .map((job) => {
       const parts = String(job.schedule_expr || '').trim().split(/\s+/);
       if (parts.length < 2) return null;
@@ -941,7 +948,7 @@ function buildApiBurnReductionSummary(directAutomationConfig, openclawJobs) {
     active_openclaw_agentturn_jobs: activeModelBackedJobs,
     no_15_minute_hunt_loop: true,
     api_burn_reduction_summary: {
-      direct_local_hunt_jobs: ['morning-edge-hunt', 'midday-edge-hunt', 'afternoon-edge-hunt'],
+      direct_local_hunt_jobs: directLocalHuntJobs,
       direct_local_close_capture_jobs: [
         'rejected-close-capture-evening',
         'rejected-close-capture-late-night',
