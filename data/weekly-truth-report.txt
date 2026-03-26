@@ -1,5 +1,5 @@
 WEEKLY TRUTH REPORT
-Generated: 2026-03-26T17:45:42.947Z
+Generated: 2026-03-26T17:56:20.351Z
 Settled bets: 2
 Average edge at placement: N/A | Realized P/L: 95.77
 Override events: 0 | Blocked-run: 0 | Off-model: 0
@@ -7,12 +7,12 @@ Missing snapshot count: 0 | Missing CLV count: 2
 
 Sportsbook Usefulness:
 bet365 | recs=0 | best=0 | near_miss=0 | stale_missing=0
-betmgm | recs=10 | best=5156 | near_miss=100 | stale_missing=2979
-betrivers | recs=1 | best=3788 | near_miss=0 | stale_missing=1807
+betmgm | recs=10 | best=5176 | near_miss=100 | stale_missing=2986
+betrivers | recs=1 | best=3830 | near_miss=0 | stale_missing=1822
 caesars | recs=0 | best=0 | near_miss=0 | stale_missing=0
 circa | recs=0 | best=0 | near_miss=0 | stale_missing=0
-draftkings | recs=20 | best=5436 | near_miss=107 | stale_missing=2729
-fanduel | recs=11 | best=7064 | near_miss=145 | stale_missing=3477
+draftkings | recs=23 | best=5483 | near_miss=109 | stale_missing=2737
+fanduel | recs=11 | best=7127 | near_miss=146 | stale_missing=3487
 
 Top Bleeding Categories:
 none
