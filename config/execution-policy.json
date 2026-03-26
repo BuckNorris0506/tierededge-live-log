@@ -1,7 +1,44 @@
 {
-  "schema": "tierededge_execution_policy_v1",
+  "schema": "tierededge_execution_policy_v2",
   "stale_recommendation_hours": 8,
   "odds_stale_minutes": 10,
+  "hedge_management": {
+    "scan_frequency_per_day": 3,
+    "meaningful_stake_rule": {
+      "pct_of_bankroll": 2,
+      "minimum_stake": 25
+    },
+    "pregame_thresholds_by_scan_frequency": {
+      "3": {
+        "consider_hedge": {
+          "clv_cents_min": 25,
+          "current_edge_pct_max": 0.25,
+          "time_to_start_minutes_max": 240
+        },
+        "strong_hedge": {
+          "clv_cents_min": 40,
+          "current_edge_pct_max": 0,
+          "time_to_start_minutes_max": 120
+        }
+      },
+      "6": {
+        "consider_hedge": {
+          "clv_cents_min": 20,
+          "current_edge_pct_max": 0.35,
+          "time_to_start_minutes_max": 240
+        },
+        "strong_hedge": {
+          "clv_cents_min": 35,
+          "current_edge_pct_max": 0,
+          "time_to_start_minutes_max": 120
+        }
+      }
+    },
+    "live_override": {
+      "state_driven_clv_cents_min": 50,
+      "default_decision": "LET RIDE"
+    }
+  },
   "price_only_tolerance_cents": {
     "moneyline": 8,
     "spread": 10,

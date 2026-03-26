@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { CORE_PATHS, appendJsonl, parseNumber, readJson, readJsonl, round2, writeJsonl } from './core-ledger-utils.mjs';
+import { CORE_PATHS, appendJsonl, parseNumber, readJson, readJsonl, round2, toCtIsoDate, writeJsonl } from './core-ledger-utils.mjs';
 import { computeKellyBreakdown } from './tierededge-kelly-cli.mjs';
 import { appendOverrideEventsForExecution, deriveOverrideEventsFromExecution } from './behavioral-accountability-utils.mjs';
 
@@ -14,6 +14,43 @@ export const EXECUTION_QUOTE_CACHE_PATH = path.join(ROOT, 'data', 'execution-quo
 const DEFAULT_POLICY = {
   stale_recommendation_hours: 8,
   odds_stale_minutes: 10,
+  hedge_management: {
+    scan_frequency_per_day: 3,
+    meaningful_stake_rule: {
+      pct_of_bankroll: 2,
+      minimum_stake: 25,
+    },
+    pregame_thresholds_by_scan_frequency: {
+      3: {
+        consider_hedge: {
+          clv_cents_min: 25,
+          current_edge_pct_max: 0.25,
+          time_to_start_minutes_max: 240,
+        },
+        strong_hedge: {
+          clv_cents_min: 40,
+          current_edge_pct_max: 0,
+          time_to_start_minutes_max: 120,
+        },
+      },
+      6: {
+        consider_hedge: {
+          clv_cents_min: 20,
+          current_edge_pct_max: 0.35,
+          time_to_start_minutes_max: 240,
+        },
+        strong_hedge: {
+          clv_cents_min: 35,
+          current_edge_pct_max: 0,
+          time_to_start_minutes_max: 120,
+        },
+      },
+    },
+    live_override: {
+      state_driven_clv_cents_min: 50,
+      default_decision: 'LET RIDE',
+    },
+  },
   price_only_tolerance_cents: { moneyline: 8, spread: 10, total: 10 },
   line_tolerance_points: { spread: 0.5, total: 0.5 },
   supported_books: {
@@ -281,6 +318,35 @@ function parseRuntimeRecommendations(summary, runId, targetDate, context = {}) {
   return rows;
 }
 
+function normalizeExecutionDuplicateKey(row) {
+  return {
+    selection: normalizeText(row.selection || ''),
+    sportsbook: normalizeText(row.actual_sportsbook || row.recommended_sportsbook || ''),
+    odds: String(parseNumber(row.actual_odds ?? row.recommended_odds) ?? ''),
+    stake: String(round2(parseNumber(row.actual_stake ?? row.recommended_stake)) ?? ''),
+    date: toCtIsoDate(row.bet_slip_timestamp || row.logged_at_utc || new Date().toISOString()),
+    rec_id: String(row.rec_id || '').trim(),
+  };
+}
+
+function findLikelyDuplicateExecution(row) {
+  const target = normalizeExecutionDuplicateKey(row);
+  const existingRows = readExecutionLog();
+  for (const existing of existingRows) {
+    const existingKey = normalizeExecutionDuplicateKey(existing);
+    const sameCore =
+      target.selection === existingKey.selection
+      && target.sportsbook === existingKey.sportsbook
+      && target.odds === existingKey.odds
+      && target.stake === existingKey.stake
+      && target.date === existingKey.date;
+    if (!sameCore) continue;
+    if (target.rec_id && existingKey.rec_id && target.rec_id !== existingKey.rec_id) continue;
+    return existing;
+  }
+  return null;
+}
+
 function loadRecommendationUniverse() {
   const runtimeStatus = readJson(CORE_PATHS.runtimeStatus, {});
   const decisionRows = readJsonl(CORE_PATHS.decisionLedger)
@@ -318,6 +384,55 @@ function loadRecommendationUniverse() {
     });
 
   return [...decisionRows, ...runtimeRows];
+}
+
+function uniqueRunIdsInOrder(recommendations) {
+  const seen = new Set();
+  const runIds = [];
+  for (const row of recommendations) {
+    const runId = String(row.run_id || '').trim();
+    if (!runId || seen.has(runId)) continue;
+    seen.add(runId);
+    runIds.push(runId);
+  }
+  return runIds;
+}
+
+function extractRunDate(runId) {
+  const match = String(runId || '').match(/(\d{4}-\d{2}-\d{2})/);
+  return match ? match[1] : null;
+}
+
+function latestCanonicalRunId() {
+  const publicData = readJson(CORE_PATHS.publicData, {});
+  return String(publicData?.latest_canonical_hunt_run?.run_id || '').trim() || null;
+}
+
+function buildRecommendationScopes(recommendations) {
+  const latestRunId = latestCanonicalRunId();
+  const orderedRunIds = uniqueRunIdsInOrder(recommendations);
+  const latestRunDate = extractRunDate(latestRunId);
+
+  const latestCandidates = latestRunId
+    ? recommendations.filter((row) => String(row.run_id || '').trim() === latestRunId)
+    : [];
+
+  const recentRunIds = orderedRunIds
+    .filter((runId) => runId !== latestRunId)
+    .filter((runId) => {
+      if (!latestRunDate) return true;
+      return extractRunDate(runId) === latestRunDate;
+    })
+    .slice(-8);
+
+  const recentHistoricalCandidates = recommendations.filter((row) => recentRunIds.includes(String(row.run_id || '').trim()));
+
+  return {
+    latestRunId,
+    recentRunIds,
+    latestCandidates,
+    recentHistoricalCandidates,
+  };
 }
 
 function sportsbookMatch(extractedBook, candidate) {
@@ -396,6 +511,54 @@ function classifyExecutionRecommendationMatch(row, recommendations) {
   };
 }
 
+export function previewExecutionRecommendationMatch(row, recommendations = null) {
+  const universe = recommendations || loadRecommendationUniverse();
+  const scopes = buildRecommendationScopes(universe);
+
+  const evaluateMatch = (match, scopeName) => {
+    const candidate = match.candidate || null;
+    const approved = Boolean(candidate)
+      && ['matched_to_recommendation', 'matched_with_low_confidence'].includes(match.match_status)
+      && String(candidate.context_message_type || '').toUpperCase() === 'BET'
+      && (!Array.isArray(candidate.context_data_failure_codes) || candidate.context_data_failure_codes.length === 0);
+
+    return {
+      match_status: match.match_status,
+      match_confidence: match.confidence || 'low',
+      approved,
+      candidate,
+      match_scope: scopeName,
+      latest_run_id: scopes.latestRunId,
+      historical_run_ids_considered: scopes.recentRunIds,
+      stale_execution: approved && scopeName === 'recent_historical_runs',
+      execution_approval_result: approved
+        ? (scopeName === 'recent_historical_runs' ? 'STALE_EXECUTION' : 'APPROVED_EXECUTION')
+        : (match.match_status === 'ambiguous_match' ? 'AMBIGUOUS_MATCH' : 'REJECT_EXECUTION'),
+      execution_approval_result_reason: approved
+        ? (scopeName === 'recent_historical_runs'
+            ? 'matched_recent_historical_recommendation'
+            : 'matched_originating_recommendation')
+        : (match.match_status === 'ambiguous_match' ? 'ambiguous_recommendation_match' : 'no_matching_recommendation_found'),
+    };
+  };
+
+  if (scopes.latestCandidates.length) {
+    const latestPreview = evaluateMatch(classifyExecutionRecommendationMatch(row, scopes.latestCandidates), 'latest_canonical_run');
+    if (latestPreview.approved) {
+      return latestPreview;
+    }
+  }
+
+  if (scopes.recentHistoricalCandidates.length) {
+    const historicalPreview = evaluateMatch(classifyExecutionRecommendationMatch(row, scopes.recentHistoricalCandidates), 'recent_historical_runs');
+    if (historicalPreview.approved) {
+      return historicalPreview;
+    }
+  }
+
+  return evaluateMatch(classifyExecutionRecommendationMatch(row, universe), 'full_universe_fallback');
+}
+
 function cleanupNotesValue(value) {
   const items = Array.isArray(value) ? value : value ? [value] : [];
   return Array.from(new Set(items.filter(Boolean).map((item) => String(item).trim()).filter((item) => item && item !== 'blocked_run')));
@@ -442,6 +605,8 @@ function reclassifyExecutionRow(row, recommendations = null) {
   const approved = ['matched_to_recommendation', 'matched_with_low_confidence'].includes(match.match_status)
     && String(candidate.context_message_type || '').toUpperCase() === 'BET'
     && (!Array.isArray(candidate.context_data_failure_codes) || candidate.context_data_failure_codes.length === 0);
+  const preserveStaleExecution = String(row.execution_approval_result || '').trim() === 'STALE_EXECUTION';
+  const preserveOffPlanExecution = String(row.execution_approval_result || '').trim() === 'OFF_PLAN_EXECUTION';
 
   const next = {
     ...row,
@@ -456,9 +621,17 @@ function reclassifyExecutionRow(row, recommendations = null) {
     league: row.league || candidate.league || row.sport || null,
     match_status: match.match_status,
     match_confidence: match.confidence,
-    execution_approval_result: approved ? 'APPROVED_EXECUTION' : (match.match_status === 'ambiguous_match' ? 'AMBIGUOUS_MATCH' : (row.execution_approval_result || 'REJECT_EXECUTION')),
+    execution_approval_result: preserveOffPlanExecution
+      ? 'OFF_PLAN_EXECUTION'
+      : preserveStaleExecution
+      ? 'STALE_EXECUTION'
+      : (approved ? 'APPROVED_EXECUTION' : (match.match_status === 'ambiguous_match' ? 'AMBIGUOUS_MATCH' : (row.execution_approval_result || 'REJECT_EXECUTION'))),
     manual_override_flag: approved ? false : Boolean(row.manual_override_flag),
-    execution_approval_result_reason: approved ? 'matched_originating_recommendation' : row.execution_approval_result_reason,
+    execution_approval_result_reason: preserveOffPlanExecution
+      ? (row.execution_approval_result_reason || 'no_matching_recommendation_found')
+      : preserveStaleExecution
+      ? 'matched_recent_historical_recommendation'
+      : (approved ? 'matched_originating_recommendation' : row.execution_approval_result_reason),
     override_reason: approved && normalizeText(row.override_reason) === 'blocked_run' ? null : row.override_reason,
     notes: cleanupNotesValue(row.notes),
     warnings: cleanupNotesValue(row.warnings),
@@ -479,6 +652,22 @@ export function loadExecutionPolicy() {
     line_tolerance_points: {
       ...DEFAULT_POLICY.line_tolerance_points,
       ...(parsed?.line_tolerance_points || {}),
+    },
+    hedge_management: {
+      ...DEFAULT_POLICY.hedge_management,
+      ...(parsed?.hedge_management || {}),
+      meaningful_stake_rule: {
+        ...DEFAULT_POLICY.hedge_management.meaningful_stake_rule,
+        ...(parsed?.hedge_management?.meaningful_stake_rule || {}),
+      },
+      pregame_thresholds_by_scan_frequency: {
+        ...DEFAULT_POLICY.hedge_management.pregame_thresholds_by_scan_frequency,
+        ...(parsed?.hedge_management?.pregame_thresholds_by_scan_frequency || {}),
+      },
+      live_override: {
+        ...DEFAULT_POLICY.hedge_management.live_override,
+        ...(parsed?.hedge_management?.live_override || {}),
+      },
     },
     supported_books: {
       ...DEFAULT_POLICY.supported_books,
@@ -645,6 +834,7 @@ function findQuoteForRecommendation({ events, row, bookKey }) {
           candidates.push({
             event_id: event.id || null,
             event_label: toEventLabel(event),
+            commence_time: event.commence_time || null,
             book_key: bookmaker.key,
             market_key: mk,
             current_odds_american: price,
@@ -666,6 +856,181 @@ function findQuoteForRecommendation({ events, row, bookKey }) {
     return { match_status: 'ambiguous', quote: null };
   }
   return { match_status: 'matched', quote: candidates[0] };
+}
+
+function impliedProbabilityFromAmerican(americanOdds) {
+  const price = parseNumber(americanOdds);
+  if (!Number.isFinite(price)) return null;
+  if (price > 0) return 100 / (price + 100);
+  return Math.abs(price) / (Math.abs(price) + 100);
+}
+
+function computeClvCents(originalOdds, currentOdds) {
+  const original = parseNumber(originalOdds);
+  const current = parseNumber(currentOdds);
+  if (!Number.isFinite(original) || !Number.isFinite(current)) return null;
+  return round2(original - current);
+}
+
+export function classifyHedgeDecision({
+  selection,
+  original_odds,
+  current_odds,
+  original_edge_pct,
+  current_edge_pct,
+  time_to_game_start,
+  stake_size,
+  is_live_market,
+  bankroll,
+  policy = DEFAULT_POLICY,
+}) {
+  const clvCents = computeClvCents(original_odds, current_odds);
+  const originalEdge = parseNumber(original_edge_pct);
+  const currentEdge = parseNumber(current_edge_pct);
+  const stakeSize = parseNumber(stake_size);
+  const minutesToStart = parseNumber(time_to_game_start);
+  const bankrollSize = parseNumber(bankroll);
+  const marketType = is_live_market ? 'LIVE' : 'PREGAME';
+  const edgeDecay = Number.isFinite(originalEdge) && Number.isFinite(currentEdge)
+    ? round2(originalEdge - currentEdge)
+    : null;
+  const hedgePolicy = policy?.hedge_management || DEFAULT_POLICY.hedge_management;
+  const scanFrequency = String(parseNumber(hedgePolicy.scan_frequency_per_day) || 3);
+  const activeThresholds = hedgePolicy.pregame_thresholds_by_scan_frequency?.[scanFrequency]
+    || hedgePolicy.pregame_thresholds_by_scan_frequency?.['3']
+    || DEFAULT_POLICY.hedge_management.pregame_thresholds_by_scan_frequency[3];
+  const strongThreshold = activeThresholds?.strong_hedge || {};
+  const considerThreshold = activeThresholds?.consider_hedge || {};
+  const meaningfulStakeRule = hedgePolicy.meaningful_stake_rule || DEFAULT_POLICY.hedge_management.meaningful_stake_rule;
+  const liveOverride = hedgePolicy.live_override || DEFAULT_POLICY.hedge_management.live_override;
+  const stakePctOfBankroll = Number.isFinite(stakeSize) && Number.isFinite(bankrollSize) && bankrollSize > 0
+    ? round2((stakeSize / bankrollSize) * 100)
+    : null;
+  const meaningfulStake = Number.isFinite(stakeSize) && (
+    (Number.isFinite(stakePctOfBankroll) && stakePctOfBankroll >= parseNumber(meaningfulStakeRule.pct_of_bankroll))
+    || stakeSize >= parseNumber(meaningfulStakeRule.minimum_stake)
+  );
+  const withinConsiderTime = Number.isFinite(minutesToStart)
+    ? minutesToStart <= parseNumber(considerThreshold.time_to_start_minutes_max)
+    : false;
+  const withinStrongTime = Number.isFinite(minutesToStart)
+    ? minutesToStart <= parseNumber(strongThreshold.time_to_start_minutes_max)
+    : false;
+
+  let decision = 'LET RIDE';
+  let reasonLines = [];
+  let decisionReason = 'insufficient_clv';
+
+  if (is_live_market && Number.isFinite(clvCents) && clvCents >= parseNumber(liveOverride.state_driven_clv_cents_min)) {
+    decision = 'LET RIDE';
+    decisionReason = 'state_driven_live_movement';
+    reasonLines = [
+      'state_driven_live_movement',
+      'original_edge_already_captured',
+      'default_let_ride',
+    ];
+  } else if (is_live_market) {
+    decision = 'LET RIDE';
+    decisionReason = 'state_driven_live_movement';
+    reasonLines = [
+      'state_driven_live_movement',
+      'default_let_ride',
+    ];
+  } else {
+    if (Number.isFinite(currentEdge) && currentEdge >= 1) {
+      decision = 'LET RIDE';
+      decisionReason = 'edge_still_present';
+      reasonLines = ['edge_still_present'];
+    } else if (!meaningfulStake) {
+      decision = 'LET RIDE';
+      decisionReason = 'stake_too_small_to_manage';
+      reasonLines = ['stake_too_small_to_manage'];
+    } else if (!withinConsiderTime) {
+      decision = 'LET RIDE';
+      decisionReason = 'too_early_to_manage';
+      reasonLines = ['too_early_to_manage'];
+    } else if (
+      Number.isFinite(clvCents)
+      && clvCents >= parseNumber(strongThreshold.clv_cents_min)
+      && (!Number.isFinite(currentEdge) || currentEdge <= parseNumber(strongThreshold.current_edge_pct_max))
+      && withinStrongTime
+    ) {
+      decision = 'STRONG HEDGE';
+      decisionReason = 'strong_edge_decay_with_large_clv';
+      reasonLines = [
+        'strong_edge_decay_with_large_clv',
+      ];
+    } else if (
+      Number.isFinite(clvCents)
+      && clvCents >= parseNumber(considerThreshold.clv_cents_min)
+      && Number.isFinite(currentEdge)
+      && currentEdge >= 0
+      && currentEdge <= parseNumber(considerThreshold.current_edge_pct_max)
+    ) {
+      decision = 'CONSIDER HEDGE';
+      decisionReason = 'edge_decayed_with_meaningful_clv';
+      reasonLines = [
+        'edge_decayed_with_meaningful_clv',
+      ];
+    } else {
+      decision = 'LET RIDE';
+      decisionReason = 'insufficient_clv';
+      reasonLines = [
+        'insufficient_clv',
+      ];
+    }
+  }
+
+  return {
+    selection,
+    original_odds: renderOddsValue(original_odds),
+    current_odds: renderOddsValue(current_odds),
+    clv_cents: clvCents,
+    original_edge_pct: Number.isFinite(originalEdge) ? round2(originalEdge) : null,
+    current_edge_pct: Number.isFinite(currentEdge) ? round2(currentEdge) : null,
+    edge_decay: edgeDecay,
+    time_to_game_start: Number.isFinite(minutesToStart) ? round2(minutesToStart) : null,
+    stake_size: Number.isFinite(stakeSize) ? round2(stakeSize) : null,
+    bankroll: Number.isFinite(bankrollSize) ? round2(bankrollSize) : null,
+    stake_pct_of_bankroll: stakePctOfBankroll,
+    meaningful_stake: Boolean(meaningfulStake),
+    is_live_market: Boolean(is_live_market),
+    market_type: marketType,
+    hedge_scan_frequency_mode: Number(scanFrequency),
+    hedge_thresholds_active: activeThresholds,
+    meaningful_stake_rule: meaningfulStakeRule,
+    decision,
+    hedge_decision_reason: decisionReason,
+    reason: reasonLines,
+  };
+}
+
+function renderOddsValue(value) {
+  const price = parseNumber(value);
+  if (!Number.isFinite(price)) return null;
+  return price > 0 ? `+${price}` : `${price}`;
+}
+
+function buildPositionUpdateText(item) {
+  const lines = [
+    'POSITION UPDATE',
+    '',
+    `Selection: ${item.selection || 'Unknown'}`,
+    `Original Odds: ${item.original_odds || 'N/A'}`,
+    `Current Odds: ${item.current_odds || 'N/A'}`,
+    `CLV: ${Number.isFinite(item.clv_cents) ? `${item.clv_cents > 0 ? '+' : ''}${item.clv_cents} cents` : 'N/A'}`,
+    '',
+    `Original Edge: ${Number.isFinite(item.original_edge_pct) ? `${item.original_edge_pct}%` : 'N/A'}`,
+    `Current Edge: ${Number.isFinite(item.current_edge_pct) ? `${item.current_edge_pct}%` : 'N/A'}`,
+    '',
+    `Market Type: ${item.market_type}`,
+    '',
+    `Decision: ${item.decision}`,
+    '',
+    'Reason:',
+    ...item.reason.map((line) => `- ${line}`),
+  ];
+  return lines.join('\n');
 }
 
 function buildStakeBreakdown(row, bankroll) {
@@ -726,6 +1091,100 @@ function buildMissedExecutionWindowRows(items) {
       quote_timestamp_utc: item.execution.odds_last_update || null,
       source: 'execution_board',
     }));
+}
+
+function currentBankrollFromExecutionLog(executionLog) {
+  const bankrolls = (executionLog || [])
+    .map((row) => parseNumber(row.bankroll_after))
+    .filter((value) => Number.isFinite(value));
+  if (!bankrolls.length) return null;
+  return bankrolls[bankrolls.length - 1];
+}
+
+async function buildHedgeDecisionRows({ executionLog, grading, policy }) {
+  const currentBankroll = currentBankrollFromExecutionLog(executionLog);
+  const settledExecutionIds = new Set(
+    (grading || [])
+      .map((row) => String(row.execution_id || row.execution_log_id || row.ref_id || '').trim())
+      .filter(Boolean),
+  );
+  const openExecutions = (executionLog || []).filter((row) => !settledExecutionIds.has(String(row.execution_id || '').trim()));
+  const items = [];
+
+  for (const row of openExecutions) {
+    const sportKey = policy.supported_sports[row.sport] || null;
+    const bookKey = policy.supported_books[row.actual_sportsbook || row.recommended_sportsbook || row.sportsbook] || null;
+    if (!sportKey || !bookKey || marketKind(row) === 'parlay' || marketKind(row) === 'unknown') {
+      continue;
+    }
+
+    try {
+      const marketKey = marketKind(row) === 'moneyline' ? 'h2h' : marketKind(row) === 'spread' ? 'spreads' : 'totals';
+      const fetched = await fetchSportOdds({ sportKey, bookKey, marketKey, policy });
+      const matchRow = {
+        selection: row.selection,
+        market_type: row.market_type || row.market,
+        odds_american: row.actual_odds || row.recommended_odds_at_bet || row.recommended_odds,
+      };
+      const matched = findQuoteForRecommendation({ events: fetched.payload, row: matchRow, bookKey });
+      if (matched.match_status !== 'matched') continue;
+
+      const quote = matched.quote;
+      const eventStartMs = safeDateMs(quote.commence_time);
+      const minutesToStart = Number.isFinite(eventStartMs) ? round2((eventStartMs - Date.now()) / 60000) : null;
+      const isLiveMarket = Number.isFinite(minutesToStart) ? minutesToStart < 0 : false;
+      const currentImpliedProb = impliedProbabilityFromAmerican(quote.current_odds_american);
+      const trueProb = asPercentProbability(row.true_probability_at_bet);
+      const currentEdgePct = Number.isFinite(trueProb) && Number.isFinite(currentImpliedProb)
+        ? round2((trueProb - currentImpliedProb) * 100)
+        : null;
+
+      const decision = classifyHedgeDecision({
+        selection: row.selection,
+        original_odds: row.actual_odds || row.recommended_odds_at_bet || row.recommended_odds,
+        current_odds: quote.current_odds_american,
+        original_edge_pct: row.edge_pct_at_bet,
+        current_edge_pct: currentEdgePct,
+        time_to_game_start: minutesToStart,
+        stake_size: row.actual_stake,
+        is_live_market: isLiveMarket,
+        bankroll: row.bankroll_after || currentBankroll,
+        policy,
+      });
+
+      items.push({
+        execution_id: row.execution_id || null,
+        run_id: row.run_id || null,
+        rec_id: row.rec_id || null,
+        event_label: row.event_label || row.event || quote.event_label || null,
+        selection: row.selection || null,
+        sportsbook: row.actual_sportsbook || row.recommended_sportsbook || null,
+        execution_status: row.execution_approval_result || null,
+        current_quote_source: fetched.source,
+        current_book: quote.book_key || null,
+        current_odds_american: renderOddsValue(quote.current_odds_american),
+        current_edge_pct: currentEdgePct,
+        event_start_time_utc: quote.commence_time || null,
+        minutes_to_start: minutesToStart,
+        ...decision,
+        operator_output: buildPositionUpdateText({
+          ...decision,
+          selection: row.selection || null,
+        }),
+      });
+    } catch {
+      continue;
+    }
+  }
+
+  const summary = {
+    total_positions: items.length,
+    let_ride_count: items.filter((item) => item.decision === 'LET RIDE').length,
+    consider_hedge_count: items.filter((item) => item.decision === 'CONSIDER HEDGE').length,
+    strong_hedge_count: items.filter((item) => item.decision === 'STRONG HEDGE').length,
+  };
+
+  return { items, summary };
 }
 
 export async function buildExecutionBoard({ canonicalState, runtimeStatus, decisions, grading, bankrollEntries }) {
@@ -930,6 +1389,20 @@ export async function buildExecutionBoard({ canonicalState, runtimeStatus, decis
     }
   }
 
+  const executionLog = readExecutionLog();
+  const hedgeDecisions = await buildHedgeDecisionRows({
+    executionLog,
+    grading,
+    policy,
+  });
+  result.hedge_decisions = hedgeDecisions.items;
+  result.hedge_summary = hedgeDecisions.summary;
+  result.hedge_operator_output = hedgeDecisions.items.map((item) => item.operator_output);
+  result.hedge_scan_frequency_mode = policy.hedge_management?.scan_frequency_per_day || 3;
+  result.hedge_thresholds_active = policy.hedge_management?.pregame_thresholds_by_scan_frequency?.[String(policy.hedge_management?.scan_frequency_per_day || 3)]
+    || policy.hedge_management?.pregame_thresholds_by_scan_frequency?.[policy.hedge_management?.scan_frequency_per_day || 3]
+    || null;
+  result.meaningful_stake_rule = policy.hedge_management?.meaningful_stake_rule || null;
   fs.writeFileSync(EXECUTION_BOARD_PATH, `${JSON.stringify(result, null, 2)}\n`, 'utf8');
   return result;
 }
@@ -955,6 +1428,91 @@ export function appendExecutionLogRow(row) {
     (entry) => String((Array.isArray(entry) ? entry[0]?.execution_id : entry?.execution_id) || '')
   );
   appendOverrideEventsForExecution(enriched);
+}
+
+export function ingestStructuredExecutionPlacement(row) {
+  const preview = previewExecutionRecommendationMatch(row);
+  const candidate = preview.candidate || null;
+  const timestamp = row.bet_slip_timestamp || new Date().toISOString();
+  const classification = preview.approved
+    ? preview.execution_approval_result
+    : 'OFF_PLAN_EXECUTION';
+  const classificationReason = preview.approved
+    ? preview.execution_approval_result_reason
+    : (preview.match_status === 'ambiguous_match'
+      ? 'ambiguous_recommendation_match'
+      : 'no_matching_recommendation_found');
+
+  const executionRow = {
+    rec_id: candidate?.rec_id || null,
+    run_id: candidate?.run_id || null,
+    event: candidate?.event_label || row.event || null,
+    event_label: candidate?.event_label || row.event || null,
+    market: candidate?.market_type || row.market || 'Unknown',
+    market_type: candidate?.market_type || row.market || null,
+    selection: row.selection || candidate?.selection || null,
+    recommendation_timestamp: candidate?.timestamp_ct || null,
+    recommended_sportsbook: candidate?.sportsbook || null,
+    recommended_odds: candidate?.odds_american || null,
+    recommended_stake: candidate?.kelly_stake ?? null,
+    actual_sportsbook: row.actual_sportsbook,
+    actual_odds: row.actual_odds,
+    actual_stake: row.actual_stake,
+    bet_slip_timestamp: timestamp,
+    execution_id: row.execution_id || `execution::telegram-operator::${Date.now()}`,
+    logged_at_utc: row.logged_at_utc || new Date().toISOString(),
+    source: row.source || 'telegram_operator',
+    notes: Array.isArray(row.notes) ? row.notes : (row.notes ? [row.notes] : []),
+    manual_override_flag: false,
+    execution_approval_result: classification,
+    execution_approval_result_reason: classificationReason,
+    stale_execution_match: Boolean(preview.stale_execution),
+    matched_from_run_scope: preview.match_scope || null,
+  };
+
+  if (classification === 'OFF_PLAN_EXECUTION') {
+    executionRow.override_reason = classificationReason;
+    executionRow.notes = Array.from(new Set([
+      ...(executionRow.notes || []),
+      'logged_real_bet_without_recommendation_match',
+    ]));
+  }
+
+  const recommendedStake = parseNumber(candidate?.kelly_stake);
+  const actualStake = parseNumber(executionRow.actual_stake);
+  const recommendedOdds = parseNumber(candidate?.odds_american);
+  const actualOdds = parseNumber(executionRow.actual_odds);
+  const stakeChanged = Number.isFinite(recommendedStake) && Number.isFinite(actualStake) && Math.abs(recommendedStake - actualStake) > 0.009;
+  const priceChanged = Number.isFinite(recommendedOdds) && Number.isFinite(actualOdds) && recommendedOdds !== actualOdds;
+  if (!executionRow.override_reason && (classification !== 'APPROVED_EXECUTION' || stakeChanged || priceChanged)) {
+    executionRow.override_reason = classificationReason || 'execution_differs_from_recommendation';
+  }
+  if (stakeChanged || priceChanged) {
+    executionRow.notes = Array.from(new Set([
+      ...(executionRow.notes || []),
+      'logged_real_bet_with_execution_variance',
+    ]));
+  }
+
+  const duplicate = findLikelyDuplicateExecution(executionRow);
+  if (duplicate) {
+    return {
+      ok: false,
+      duplicate: true,
+      reason: 'duplicate_submission',
+      preview,
+      row: duplicate,
+    };
+  }
+
+  appendExecutionLogRow(executionRow);
+  const appended = readExecutionLog().find((entry) => entry.execution_id === executionRow.execution_id) || null;
+  return {
+    ok: true,
+    reason: null,
+    preview,
+    row: appended || executionRow,
+  };
 }
 
 export function backfillExecutionLogMetadata() {

@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-03-26T17:56:19.473Z",
+  "updated_at": "2026-03-26T20:58:28.956Z",
   "sports": {
     "basketball_nba": {
-      "fetched_at": "2026-03-26T13:11:20.190Z",
+      "fetched_at": "2026-03-26T19:40:04.191Z",
       "events": [
         {
           "id": "ee838160ed85754aa11218f7ec3708b0",
@@ -578,11 +578,44 @@
           "away_team": "Miami Heat",
           "scores": null,
           "last_update": null
+        },
+        {
+          "id": "e1036e62b7cea2b7bade60f85bc0c1b1",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-28T00:10:00Z",
+          "completed": false,
+          "home_team": "Oklahoma City Thunder",
+          "away_team": "Chicago Bulls",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "a2b709618069c3dd7c15f6192c11e93c",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-28T01:10:00Z",
+          "completed": false,
+          "home_team": "Denver Nuggets",
+          "away_team": "Utah Jazz",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "d4d54362306cefaac74ff35c3b020b78",
+          "sport_key": "basketball_nba",
+          "sport_title": "NBA",
+          "commence_time": "2026-03-28T02:10:00Z",
+          "completed": false,
+          "home_team": "Portland Trail Blazers",
+          "away_team": "Dallas Mavericks",
+          "scores": null,
+          "last_update": null
         }
       ]
     },
     "icehockey_nhl": {
-      "fetched_at": "2026-03-26T13:11:20.278Z",
+      "fetched_at": "2026-03-26T19:40:04.289Z",
       "events": [
         {
           "id": "ad8a6f75d8948ad130c35a041d855645",
@@ -1086,11 +1119,33 @@
           "away_team": "Los Angeles Kings",
           "scores": null,
           "last_update": null
+        },
+        {
+          "id": "c8944643107edfc1012baabcaa72614c",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-27T23:10:00Z",
+          "completed": false,
+          "home_team": "Buffalo Sabres",
+          "away_team": "Detroit Red Wings",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "d1b771dc57d6a0d3b0c0ec52d0b99dbf",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-03-27T23:10:00Z",
+          "completed": false,
+          "home_team": "New York Rangers",
+          "away_team": "Chicago Blackhawks",
+          "scores": null,
+          "last_update": null
         }
       ]
     },
     "basketball_ncaab": {
-      "fetched_at": "2026-03-26T13:11:20.364Z",
+      "fetched_at": "2026-03-26T19:40:04.372Z",
       "events": [
         {
           "id": "5b8426555586aae5f7ed2a20c2262c86",
@@ -1462,21 +1517,10 @@
           "id": "930319d687992d02e211708973d066c7",
           "sport_key": "basketball_ncaab",
           "sport_title": "NCAAB",
-          "commence_time": "2026-04-02T22:00:00Z",
+          "commence_time": "2026-04-02T23:00:00Z",
           "completed": false,
           "home_team": "New Mexico Lobos",
           "away_team": "Tulsa Golden Hurricane",
-          "scores": null,
-          "last_update": null
-        },
-        {
-          "id": "7e161041c04af752378a72c61faa0077",
-          "sport_key": "basketball_ncaab",
-          "sport_title": "NCAAB",
-          "commence_time": "2026-04-02T23:10:00Z",
-          "completed": false,
-          "home_team": "Auburn Tigers",
-          "away_team": "Illinois St Redbirds",
           "scores": null,
           "last_update": null
         },
@@ -1488,6 +1532,17 @@
           "completed": false,
           "home_team": "West Virginia Mountaineers",
           "away_team": "Stanford Cardinal",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "7e161041c04af752378a72c61faa0077",
+          "sport_key": "basketball_ncaab",
+          "sport_title": "NCAAB",
+          "commence_time": "2026-04-03T01:30:00Z",
+          "completed": false,
+          "home_team": "Auburn Tigers",
+          "away_team": "Illinois St Redbirds",
           "scores": null,
           "last_update": null
         },

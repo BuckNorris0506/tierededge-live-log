@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { appendJsonl, CORE_PATHS, readJson, writeJson } from './core-ledger-utils.mjs';
-import { commandKeyboard, dispatchOperatorCommand, latestOperatorAlertMetadata } from './operator-dispatcher.mjs';
+import { commandKeyboard, dispatchOperatorCommand, latestOperatorAlertMetadata, normalizeOperatorCommand, parseBetPlacedMessage, resolveOperatorCommand } from './operator-dispatcher.mjs';
 import { fetchTelegramUpdates, sendTelegramMessage, telegramConfiguredChatId } from './telegram-alert-utils.mjs';
 
 function parseArgs(argv) {
@@ -78,7 +78,18 @@ async function processUpdate(update, allowedChatId, now) {
     };
   }
 
-  const result = dispatchOperatorCommand(messageText(update));
+  const rawMessage = messageText(update);
+  const parsedBetPlaced = parseBetPlacedMessage(rawMessage);
+  const resolvedCommand = resolveOperatorCommand(normalizeOperatorCommand(rawMessage));
+  let ackDelivery = null;
+  let ackSentAt = null;
+  const shouldAcknowledge = Boolean(parsedBetPlaced?.ok) || resolvedCommand === 'RUN HUNT';
+  if (shouldAcknowledge) {
+    ackSentAt = new Date().toISOString();
+    ackDelivery = await sendTelegramMessage('RECEIVED ⏳\nProcessing...', { chatId });
+  }
+
+  const result = dispatchOperatorCommand(rawMessage);
   const sentAt = new Date().toISOString();
   const delivery = await sendTelegramMessage(result.text, { chatId, keyboard: commandKeyboard() });
   const alertMeta = latestOperatorAlertMetadata();
@@ -89,6 +100,10 @@ async function processUpdate(update, allowedChatId, now) {
     command: result.command || messageText(update) || null,
     resolved_command: result.resolved_command || null,
     auth_status: 'accepted',
+    acknowledgment_sent: Boolean(ackDelivery),
+    acknowledgment_timestamp_utc: ackSentAt,
+    acknowledgment_delivery_status: ackDelivery ? (ackDelivery.ok ? 'sent' : 'failed') : null,
+    acknowledgment_delivery_error: ackDelivery && !ackDelivery.ok ? ackDelivery.error : null,
     response_type: result.response_type || 'unknown',
     run_id: result.run_id || null,
     notification_tier: result.notification_tier || null,

@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { CORE_PATHS, parseNumber, readJson } from './core-ledger-utils.mjs';
+import { ingestStructuredExecutionPlacement } from './execution-layer-utils.mjs';
 import { readHuntBlockStatus } from './hunt-block-status.mjs';
 
 const MORNING_HUNT_FALLBACK_ID = '2766547c-e6a0-40ca-a680-972c7842579c';
@@ -19,6 +20,16 @@ export const SUPPORTED_OPERATOR_COMMANDS = [
   'HEALTH',
   'FLAGS',
 ];
+
+const SUPPORTED_BOOK_ALIASES = new Map([
+  ['DRAFTKINGS', 'DraftKings'],
+  ['FANDUEL', 'FanDuel'],
+  ['BETMGM', 'BetMGM'],
+  ['CIRCA', 'Circa'],
+  ['BET365', 'bet365'],
+  ['CAESARS', 'Caesars'],
+  ['BETRIVERS', 'BetRivers'],
+]);
 
 export const LEGACY_OPERATOR_ALIASES = new Map([
   ['SHOW BOARD', 'LATEST BOARD'],
@@ -112,6 +123,147 @@ function helpText() {
     'FLAGS',
     '',
     'Use exact commands.',
+  ].join('\n');
+}
+
+function canonicalSportsbook(value) {
+  const normalized = normalizeOperatorCommand(value).replace(/\s+/g, '');
+  return SUPPORTED_BOOK_ALIASES.get(normalized) || null;
+}
+
+function parseOddsToken(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return null;
+  if (/^[+-]\d+$/.test(raw)) return raw;
+  if (/^\d+$/.test(raw)) return `+${raw}`;
+  return null;
+}
+
+function parseStakeToken(value) {
+  const raw = String(value || '').trim();
+  const match = raw.match(/^\$?\s*([0-9]+(?:\.[0-9]{1,2})?)$/);
+  if (!match) return null;
+  return Number(match[1]).toFixed(2);
+}
+
+export function parseBetPlacedMessage(input) {
+  const lines = String(input || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (!lines.length || normalizeOperatorCommand(lines[0]) !== 'BET PLACED') return null;
+
+  if (lines.length === 4) {
+    const selectionBookMatch = lines[1].match(/^(.*?)\s+@\s+(.+)$/);
+    if (!selectionBookMatch) {
+      return { ok: false, reason: 'unsupported format', details: 'Expected "[Selection] @ [Sportsbook]" on line 2.' };
+    }
+    const sportsbook = canonicalSportsbook(selectionBookMatch[2]);
+    if (!sportsbook) {
+      return { ok: false, reason: 'missing sportsbook', details: 'Sportsbook is missing or unsupported.' };
+    }
+    const odds = parseOddsToken(lines[2]);
+    if (!odds) {
+      return { ok: false, reason: 'missing odds', details: 'Odds line must be a valid American price like +170 or -120.' };
+    }
+    const stake = parseStakeToken(lines[3]);
+    if (!stake) {
+      return { ok: false, reason: 'missing stake', details: 'Stake line must be a dollar amount like $2.00.' };
+    }
+    return {
+      ok: true,
+      payload: {
+        selection: selectionBookMatch[1].trim(),
+        actual_sportsbook: sportsbook,
+        actual_odds: odds,
+        actual_stake: stake,
+      },
+    };
+  }
+
+  if (lines.length === 5) {
+    const sportsbook = canonicalSportsbook(lines[2]);
+    if (!sportsbook) {
+      return { ok: false, reason: 'missing sportsbook', details: 'Sportsbook is missing or unsupported.' };
+    }
+    const odds = parseOddsToken(lines[3]);
+    if (!odds) {
+      return { ok: false, reason: 'missing odds', details: 'Odds line must be a valid American price like +170 or -120.' };
+    }
+    const stake = parseStakeToken(lines[4]);
+    if (!stake) {
+      return { ok: false, reason: 'missing stake', details: 'Stake line must be a dollar amount like $2.00.' };
+    }
+    return {
+      ok: true,
+      payload: {
+        selection: lines[1],
+        actual_sportsbook: sportsbook,
+        actual_odds: odds,
+        actual_stake: stake,
+      },
+    };
+  }
+
+  return {
+    ok: false,
+    reason: 'unsupported format',
+    details: 'Use either 4 lines with "[Selection] @ [Sportsbook]" or 5 lines with sportsbook on its own line.',
+  };
+}
+
+function renderExecutionLogSuccess(result) {
+  const row = result.row || {};
+  const lines = [
+    'LOGGED ✅',
+    '',
+    `Selection: ${row.selection || 'Unknown'}`,
+    `Sportsbook: ${row.actual_sportsbook || 'Unknown'}`,
+    `Odds: ${renderCanonicalPrice(row.actual_odds) || 'Unknown'}`,
+    `Stake: ${Number.isFinite(parseNumber(row.actual_stake)) ? `$${parseNumber(row.actual_stake).toFixed(2)}` : 'Unknown'}`,
+    `Execution Status: ${row.execution_approval_result || 'UNKNOWN'}`,
+  ];
+  if (row.execution_approval_result_reason && row.execution_approval_result === 'OFF_PLAN_EXECUTION') {
+    lines.push(`Reason: ${row.execution_approval_result_reason}`);
+  }
+  if (row.run_id) {
+    lines.push(`Run ID: ${row.run_id}`);
+  }
+  if (row.rec_id) {
+    lines.push(`Rec ID: ${row.rec_id}`);
+  }
+  return lines.join('\n');
+}
+
+function renderExecutionLogDuplicate(result) {
+  const row = result.row || {};
+  return [
+    'ALREADY LOGGED ⚠️',
+    '',
+    `Selection: ${row.selection || 'Unknown'}`,
+    `Sportsbook: ${row.actual_sportsbook || 'Unknown'}`,
+    `Odds: ${renderCanonicalPrice(row.actual_odds) || 'Unknown'}`,
+    `Stake: ${Number.isFinite(parseNumber(row.actual_stake)) ? `$${parseNumber(row.actual_stake).toFixed(2)}` : 'Unknown'}`,
+    `Execution Status: ${row.execution_approval_result || 'UNKNOWN'}`,
+    `Logged At: ${row.logged_at_utc || 'Unknown'}`,
+    ...(row.run_id ? [`Run ID: ${row.run_id}`] : []),
+    ...(row.rec_id ? [`Rec ID: ${row.rec_id}`] : []),
+  ].join('\n');
+}
+
+function renderExecutionLogFailure(parsed, ingest = null) {
+  const reason = ingest?.reason || parsed?.reason || 'other parse issue';
+  const details = parsed?.details
+    || (reason === 'no_matching_recommendation_found'
+      ? 'No matching recommendation found for that selection/book/odds/stake.'
+      : reason === 'ambiguous_recommendation_match'
+        ? 'More than one recommendation matched too closely to log safely.'
+        : 'Could not parse the BET PLACED message.');
+  return [
+    'NOT LOGGED ❌',
+    '',
+    `Reason: ${reason}`,
+    details,
   ].join('\n');
 }
 
@@ -353,9 +505,66 @@ export function commandKeyboard() {
 }
 
 export function dispatchOperatorCommand(input, options = {}) {
+  const betPlaced = parseBetPlacedMessage(input);
   const normalized = normalizeOperatorCommand(input);
-  const resolved = resolveOperatorCommand(normalized);
   const state = loadOperatorState();
+
+  if (betPlaced) {
+    if (!betPlaced.ok) {
+      return {
+        ok: false,
+        command: 'BET PLACED',
+        resolved_command: 'BET PLACED',
+        response_type: 'execution_log_rejected',
+        run_id: state?.latest_canonical_hunt_run?.run_id || null,
+        text: renderExecutionLogFailure(betPlaced),
+        keyboard: commandKeyboard(),
+        legacy_alias_used: false,
+      };
+    }
+    const ingest = ingestStructuredExecutionPlacement({
+      ...betPlaced.payload,
+      bet_slip_timestamp: new Date().toISOString(),
+      logged_at_utc: new Date().toISOString(),
+      source: 'telegram_operator',
+    });
+    if (!ingest.ok) {
+      if (ingest.duplicate) {
+        return {
+          ok: false,
+          command: 'BET PLACED',
+          resolved_command: 'BET PLACED',
+          response_type: 'execution_log_duplicate',
+          run_id: ingest.row?.run_id || state?.latest_canonical_hunt_run?.run_id || null,
+          text: renderExecutionLogDuplicate(ingest),
+          keyboard: commandKeyboard(),
+          legacy_alias_used: false,
+        };
+      }
+      return {
+        ok: false,
+        command: 'BET PLACED',
+        resolved_command: 'BET PLACED',
+        response_type: 'execution_log_rejected',
+        run_id: state?.latest_canonical_hunt_run?.run_id || null,
+        text: renderExecutionLogFailure(betPlaced, ingest),
+        keyboard: commandKeyboard(),
+        legacy_alias_used: false,
+      };
+    }
+    return {
+      ok: true,
+      command: 'BET PLACED',
+      resolved_command: 'BET PLACED',
+      response_type: 'execution_log_logged',
+      run_id: ingest.row?.run_id || null,
+      text: renderExecutionLogSuccess(ingest),
+      keyboard: commandKeyboard(),
+      legacy_alias_used: false,
+    };
+  }
+
+  const resolved = resolveOperatorCommand(normalized);
 
   if (!resolved) {
     return {
