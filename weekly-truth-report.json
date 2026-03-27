@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-03-26T23:00:07.950Z",
+  "generated_at_utc": "2026-03-27T11:00:07.626Z",
   "window": "last_7_days",
-  "settled_bet_count": 2,
+  "settled_bet_count": 0,
   "expected_vs_realized_summary": {
     "average_edge_at_placement": null,
-    "realized_pl": 95.77,
-    "units_risked": 23.03
+    "realized_pl": 0,
+    "units_risked": 0
   },
   "override_totals": {
     "total_override_events": 4,
@@ -15,7 +15,7 @@
   },
   "missing_coverage": {
     "missing_snapshot_count": 0,
-    "missing_clv_count": 2
+    "missing_clv_count": 0
   },
   "sportsbook_usefulness": [
     {
@@ -31,18 +31,18 @@
       "book": "betmgm",
       "owned_book": true,
       "recommendations_count": 10,
-      "best_price_count": 5260,
+      "best_price_count": 5290,
       "executable_near_miss_count": 100,
-      "stale_or_missing_count": 3054,
+      "stale_or_missing_count": 3058,
       "rejected_non_executable_count": 0
     },
     {
       "book": "betrivers",
       "owned_book": false,
       "recommendations_count": 1,
-      "best_price_count": 3986,
+      "best_price_count": 3999,
       "executable_near_miss_count": 0,
-      "stale_or_missing_count": 1881,
+      "stale_or_missing_count": 1888,
       "rejected_non_executable_count": 3
     },
     {
@@ -67,163 +67,31 @@
       "book": "draftkings",
       "owned_book": true,
       "recommendations_count": 23,
-      "best_price_count": 5678,
+      "best_price_count": 5721,
       "executable_near_miss_count": 111,
-      "stale_or_missing_count": 2825,
+      "stale_or_missing_count": 2837,
       "rejected_non_executable_count": 0
     },
     {
       "book": "fanduel",
       "owned_book": true,
       "recommendations_count": 11,
-      "best_price_count": 7384,
-      "executable_near_miss_count": 148,
-      "stale_or_missing_count": 3586,
+      "best_price_count": 7442,
+      "executable_near_miss_count": 149,
+      "stale_or_missing_count": 3605,
       "rejected_non_executable_count": 0
     }
   ],
   "slices": {
-    "sport_league": {
-      "UNKNOWN / UNKNOWN": {
-        "bet_count": 2,
-        "units_risked": 23.03,
-        "realized_pl": 95.77,
-        "roi_pct": 415.85,
-        "hit_rate_pct": 100,
-        "average_edge_at_placement": null,
-        "clv_coverage_pct": 0,
-        "clv_average": null
-      }
-    },
-    "bet_class": {
-      "FUN_SGP": {
-        "bet_count": 2,
-        "units_risked": 23.03,
-        "realized_pl": 95.77,
-        "roi_pct": 415.85,
-        "hit_rate_pct": 100,
-        "average_edge_at_placement": null,
-        "clv_coverage_pct": 0,
-        "clv_average": null
-      }
-    },
-    "stake_size_bucket": {
-      "5-20": {
-        "bet_count": 2,
-        "units_risked": 23.03,
-        "realized_pl": 95.77,
-        "roi_pct": 415.85,
-        "hit_rate_pct": 100,
-        "average_edge_at_placement": null,
-        "clv_coverage_pct": 0,
-        "clv_average": null
-      }
-    },
-    "time_of_day": {
-      "Afternoon": {
-        "bet_count": 1,
-        "units_risked": 10,
-        "realized_pl": 15.9,
-        "roi_pct": 159,
-        "hit_rate_pct": 100,
-        "average_edge_at_placement": null,
-        "clv_coverage_pct": 0,
-        "clv_average": null
-      },
-      "Late": {
-        "bet_count": 1,
-        "units_risked": 13.03,
-        "realized_pl": 79.87,
-        "roi_pct": 612.97,
-        "hit_rate_pct": 100,
-        "average_edge_at_placement": null,
-        "clv_coverage_pct": 0,
-        "clv_average": null
-      }
-    },
-    "manual_override_vs_normal": {
-      "normal_execution": {
-        "bet_count": 2,
-        "units_risked": 23.03,
-        "realized_pl": 95.77,
-        "roi_pct": 415.85,
-        "hit_rate_pct": 100,
-        "average_edge_at_placement": null,
-        "clv_coverage_pct": 0,
-        "clv_average": null
-      }
-    },
-    "blocked_run_override_vs_normal": {
-      "normal_run": {
-        "bet_count": 2,
-        "units_risked": 23.03,
-        "realized_pl": 95.77,
-        "roi_pct": 415.85,
-        "hit_rate_pct": 100,
-        "average_edge_at_placement": null,
-        "clv_coverage_pct": 0,
-        "clv_average": null
-      }
-    },
-    "clv_bucket": {
-      "clv_missing": {
-        "bet_count": 2,
-        "units_risked": 23.03,
-        "realized_pl": 95.77,
-        "roi_pct": 415.85,
-        "hit_rate_pct": 100,
-        "average_edge_at_placement": null,
-        "clv_coverage_pct": 0,
-        "clv_average": null
-      }
-    },
-    "approval_bucket": {
-      "approved_or_unknown": {
-        "bet_count": 2,
-        "units_risked": 23.03,
-        "realized_pl": 95.77,
-        "roi_pct": 415.85,
-        "hit_rate_pct": 100,
-        "average_edge_at_placement": null,
-        "clv_coverage_pct": 0,
-        "clv_average": null
-      }
-    }
+    "sport_league": {},
+    "bet_class": {},
+    "stake_size_bucket": {},
+    "time_of_day": {},
+    "manual_override_vs_normal": {},
+    "blocked_run_override_vs_normal": {},
+    "clv_bucket": {},
+    "approval_bucket": {}
   },
   "top_bleeding_categories": [],
-  "top_strongest_categories": [
-    {
-      "label": "UNKNOWN / UNKNOWN",
-      "bet_count": 2,
-      "units_risked": 23.03,
-      "realized_pl": 95.77,
-      "roi_pct": 415.85,
-      "hit_rate_pct": 100,
-      "average_edge_at_placement": null,
-      "clv_coverage_pct": 0,
-      "clv_average": null
-    },
-    {
-      "label": "FUN_SGP",
-      "bet_count": 2,
-      "units_risked": 23.03,
-      "realized_pl": 95.77,
-      "roi_pct": 415.85,
-      "hit_rate_pct": 100,
-      "average_edge_at_placement": null,
-      "clv_coverage_pct": 0,
-      "clv_average": null
-    },
-    {
-      "label": "clv_missing",
-      "bet_count": 2,
-      "units_risked": 23.03,
-      "realized_pl": 95.77,
-      "roi_pct": 415.85,
-      "hit_rate_pct": 100,
-      "average_edge_at_placement": null,
-      "clv_coverage_pct": 0,
-      "clv_average": null
-    }
-  ]
+  "top_strongest_categories": []
 }

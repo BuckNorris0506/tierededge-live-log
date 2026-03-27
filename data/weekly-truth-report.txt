@@ -1,23 +1,21 @@
 WEEKLY TRUTH REPORT
-Generated: 2026-03-26T23:00:07.950Z
-Settled bets: 2
-Average edge at placement: N/A | Realized P/L: 95.77
+Generated: 2026-03-27T11:00:07.626Z
+Settled bets: 0
+Average edge at placement: N/A | Realized P/L: 0
 Override events: 4 | Blocked-run: 0 | Off-model: 1
-Missing snapshot count: 0 | Missing CLV count: 2
+Missing snapshot count: 0 | Missing CLV count: 0
 
 Sportsbook Usefulness:
 bet365 | recs=0 | best=0 | near_miss=0 | stale_missing=0
-betmgm | recs=10 | best=5260 | near_miss=100 | stale_missing=3054
-betrivers | recs=1 | best=3986 | near_miss=0 | stale_missing=1881
+betmgm | recs=10 | best=5290 | near_miss=100 | stale_missing=3058
+betrivers | recs=1 | best=3999 | near_miss=0 | stale_missing=1888
 caesars | recs=0 | best=0 | near_miss=0 | stale_missing=0
 circa | recs=0 | best=0 | near_miss=0 | stale_missing=0
-draftkings | recs=23 | best=5678 | near_miss=111 | stale_missing=2825
-fanduel | recs=11 | best=7384 | near_miss=148 | stale_missing=3586
+draftkings | recs=23 | best=5721 | near_miss=111 | stale_missing=2837
+fanduel | recs=11 | best=7442 | near_miss=149 | stale_missing=3605
 
 Top Bleeding Categories:
 none
 
 Top Strongest Categories:
-1. UNKNOWN / UNKNOWN | bets=2 | P/L=95.77 | ROI=415.85%
-2. FUN_SGP | bets=2 | P/L=95.77 | ROI=415.85%
-3. clv_missing | bets=2 | P/L=95.77 | ROI=415.85%
+none

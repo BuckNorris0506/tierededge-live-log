@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { CORE_PATHS, parseNumber, readJson } from './core-ledger-utils.mjs';
-import { ingestStructuredExecutionPlacement } from './execution-layer-utils.mjs';
+import { ingestStructuredExecutionPlacement, ingestStructuredExecutionSettlement } from './execution-layer-utils.mjs';
 import { readHuntBlockStatus } from './hunt-block-status.mjs';
 
 const MORNING_HUNT_FALLBACK_ID = '2766547c-e6a0-40ca-a680-972c7842579c';
@@ -50,6 +50,23 @@ export function resolveOperatorCommand(value) {
     return LEGACY_OPERATOR_ALIASES.get(normalized);
   }
   return null;
+}
+
+function parseSettlementResultToken(value) {
+  const normalized = normalizeOperatorCommand(value).replace(/\s+/g, '');
+  if (normalized === 'WIN') return 'WIN';
+  if (normalized === 'LOSS') return 'LOSS';
+  if (normalized === 'PUSH') return 'PUSH';
+  return null;
+}
+
+function normalizeSelectionForDisplay(value) {
+  return String(value || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([@:/()])/g, '$1')
+    .replace(/([@:/()])\s+/g, '$1')
+    .replace(/\s*@\s*/g, ' @ ');
 }
 
 export function loadOperatorState() {
@@ -212,6 +229,110 @@ export function parseBetPlacedMessage(input) {
   };
 }
 
+export function parseBetSettledMessage(input) {
+  const lines = String(input || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (!lines.length || normalizeOperatorCommand(lines[0]) !== 'BET SETTLED') return null;
+
+  const expectedLines = [
+    'BET SETTLED',
+    'Texas Rangers ML @ DraftKings',
+    '+144',
+    '$2.00',
+    'WIN',
+  ];
+  const rawPayloadLines = lines.slice(1);
+  if (rawPayloadLines.length < 4) {
+    const missingLineMap = {
+      0: 'missing selection and sportsbook line',
+      1: 'missing odds line',
+      2: 'missing stake line',
+      3: 'missing result line',
+    };
+    return {
+      ok: false,
+      reason: missingLineMap[rawPayloadLines.length] || 'unsupported format',
+      details: `Use:\n${expectedLines.join('\n')}`,
+    };
+  }
+  if (rawPayloadLines.length > 4) {
+    return {
+      ok: false,
+      reason: 'ambiguous settlement format',
+      details: `Use exactly 5 non-blank lines:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  const selectionBookLine = rawPayloadLines[0].replace(/\s+/g, ' ').trim();
+  const separatorIndex = selectionBookLine.lastIndexOf('@');
+  if (separatorIndex <= 0 || separatorIndex === selectionBookLine.length - 1) {
+    return {
+      ok: false,
+      reason: 'missing sportsbook',
+      details: `Use line 2 as "[Selection] @ [Sportsbook]".\nExample:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  const selectionText = normalizeSelectionForDisplay(selectionBookLine.slice(0, separatorIndex));
+  const sportsbookToken = selectionBookLine.slice(separatorIndex + 1).trim();
+  if (!selectionText) {
+    return {
+      ok: false,
+      reason: 'missing selection',
+      details: `Use line 2 as "[Selection] @ [Sportsbook]".\nExample:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  const sportsbook = canonicalSportsbook(sportsbookToken);
+  if (!sportsbook) {
+    return {
+      ok: false,
+      reason: 'missing sportsbook',
+      details: `Sportsbook is missing or unsupported.\nUse:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  const odds = parseOddsToken(rawPayloadLines[1]);
+  if (!odds) {
+    return {
+      ok: false,
+      reason: 'missing odds',
+      details: `Odds line must be a valid American price like +170 or -120.\nUse:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  const stake = parseStakeToken(rawPayloadLines[2]);
+  if (!stake) {
+    return {
+      ok: false,
+      reason: 'missing stake',
+      details: `Stake line must be a dollar amount like $2.00.\nUse:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  const result = parseSettlementResultToken(rawPayloadLines[3]);
+  if (!result) {
+    return {
+      ok: false,
+      reason: 'invalid settlement result',
+      details: `Result must be WIN, LOSS, or PUSH.\nUse:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  return {
+    ok: true,
+    payload: {
+      selection: selectionText,
+      actual_sportsbook: sportsbook,
+      actual_odds: odds,
+      actual_stake: stake,
+      result,
+    },
+  };
+}
+
 function renderExecutionLogSuccess(result) {
   const row = result.row || {};
   const lines = [
@@ -261,6 +382,58 @@ function renderExecutionLogFailure(parsed, ingest = null) {
         : 'Could not parse the BET PLACED message.');
   return [
     'NOT LOGGED ❌',
+    '',
+    `Reason: ${reason}`,
+    details,
+  ].join('\n');
+}
+
+function renderSettlementSuccess(result) {
+  const grading = result.row || {};
+  const execution = result.execution_row || {};
+  return [
+    'SETTLED ✅',
+    '',
+    `Selection: ${execution.selection || grading.selection || 'Unknown'}`,
+    `Sportsbook: ${execution.actual_sportsbook || grading.sportsbook || 'Unknown'}`,
+    `Odds: ${renderCanonicalPrice(execution.actual_odds || grading.actual_odds) || 'Unknown'}`,
+    `Stake: ${Number.isFinite(parseNumber(execution.actual_stake || grading.stake)) ? `$${parseNumber(execution.actual_stake || grading.stake).toFixed(2)}` : 'Unknown'}`,
+    `Result: ${grading.result || 'UNKNOWN'}`,
+    `Settlement Status: ${String(grading.settlement_status || 'unknown').toUpperCase()}`,
+    ...(grading.run_id ? [`Run ID: ${grading.run_id}`] : []),
+    ...(grading.rec_id ? [`Rec ID: ${grading.rec_id}`] : []),
+  ].join('\n');
+}
+
+function renderSettlementDuplicate(result) {
+  const grading = result.row || {};
+  const execution = result.execution_row || {};
+  return [
+    'ALREADY SETTLED ⚠️',
+    '',
+    `Selection: ${execution.selection || grading.selection || 'Unknown'}`,
+    `Sportsbook: ${execution.actual_sportsbook || grading.sportsbook || 'Unknown'}`,
+    `Odds: ${renderCanonicalPrice(execution.actual_odds || grading.actual_odds) || 'Unknown'}`,
+    `Stake: ${Number.isFinite(parseNumber(execution.actual_stake || grading.stake)) ? `$${parseNumber(execution.actual_stake || grading.stake).toFixed(2)}` : 'Unknown'}`,
+    `Result: ${grading.result || 'UNKNOWN'}`,
+    `Settled At: ${grading.timestamp_ct || grading.ingestion_timestamp || 'Unknown'}`,
+    ...(grading.run_id ? [`Run ID: ${grading.run_id}`] : []),
+    ...(grading.rec_id ? [`Rec ID: ${grading.rec_id}`] : []),
+  ].join('\n');
+}
+
+function renderSettlementFailure(parsed, ingest = null) {
+  const reason = ingest?.reason || parsed?.reason || 'other parse issue';
+  const details = parsed?.details
+    || (reason === 'no_matching_execution_found'
+      ? 'No matching execution row was found for that selection/book/odds/stake.'
+      : reason === 'ambiguous_execution_match'
+        ? 'More than one execution matched too closely to settle safely.'
+        : reason === 'existing_settlement_conflict'
+          ? 'A different settlement result is already logged for that execution.'
+          : 'Could not parse the BET SETTLED message.');
+  return [
+    'NOT SETTLED ❌',
     '',
     `Reason: ${reason}`,
     details,
@@ -506,6 +679,7 @@ export function commandKeyboard() {
 
 export function dispatchOperatorCommand(input, options = {}) {
   const betPlaced = parseBetPlacedMessage(input);
+  const betSettled = parseBetSettledMessage(input);
   const normalized = normalizeOperatorCommand(input);
   const state = loadOperatorState();
 
@@ -559,6 +733,61 @@ export function dispatchOperatorCommand(input, options = {}) {
       response_type: 'execution_log_logged',
       run_id: ingest.row?.run_id || null,
       text: renderExecutionLogSuccess(ingest),
+      keyboard: commandKeyboard(),
+      legacy_alias_used: false,
+    };
+  }
+
+  if (betSettled) {
+    if (!betSettled.ok) {
+      return {
+        ok: false,
+        command: 'BET SETTLED',
+        resolved_command: 'BET SETTLED',
+        response_type: 'settlement_rejected',
+        run_id: state?.latest_canonical_hunt_run?.run_id || null,
+        text: renderSettlementFailure(betSettled),
+        keyboard: commandKeyboard(),
+        legacy_alias_used: false,
+      };
+    }
+    const ingest = ingestStructuredExecutionSettlement({
+      ...betSettled.payload,
+      settlement_timestamp: new Date().toISOString(),
+      logged_at_utc: new Date().toISOString(),
+      source: 'telegram_operator',
+    });
+    if (!ingest.ok) {
+      if (ingest.duplicate) {
+        return {
+          ok: false,
+          command: 'BET SETTLED',
+          resolved_command: 'BET SETTLED',
+          response_type: 'settlement_duplicate',
+          run_id: ingest.row?.run_id || ingest.execution_row?.run_id || state?.latest_canonical_hunt_run?.run_id || null,
+          text: renderSettlementDuplicate(ingest),
+          keyboard: commandKeyboard(),
+          legacy_alias_used: false,
+        };
+      }
+      return {
+        ok: false,
+        command: 'BET SETTLED',
+        resolved_command: 'BET SETTLED',
+        response_type: 'settlement_rejected',
+        run_id: ingest.row?.run_id || ingest.execution_row?.run_id || state?.latest_canonical_hunt_run?.run_id || null,
+        text: renderSettlementFailure(betSettled, ingest),
+        keyboard: commandKeyboard(),
+        legacy_alias_used: false,
+      };
+    }
+    return {
+      ok: true,
+      command: 'BET SETTLED',
+      resolved_command: 'BET SETTLED',
+      response_type: 'settlement_logged',
+      run_id: ingest.row?.run_id || ingest.execution_row?.run_id || null,
+      text: renderSettlementSuccess(ingest),
       keyboard: commandKeyboard(),
       legacy_alias_used: false,
     };

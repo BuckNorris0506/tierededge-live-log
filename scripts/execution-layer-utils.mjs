@@ -4,6 +4,8 @@ import { createHash } from 'node:crypto';
 import { CORE_PATHS, appendJsonl, parseNumber, readJson, readJsonl, round2, toCtIsoDate, writeJsonl } from './core-ledger-utils.mjs';
 import { computeKellyBreakdown } from './tierededge-kelly-cli.mjs';
 import { appendOverrideEventsForExecution, deriveOverrideEventsFromExecution } from './behavioral-accountability-utils.mjs';
+import { enrichGradingRowWithClv } from './grading-market-truth-utils.mjs';
+import { isBankrollRelevantGrade, reconcileGradingBankrollAnnotations } from './bankroll-reconciliation-utils.mjs';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 export const EXECUTION_POLICY_PATH = path.join(ROOT, 'config', 'execution-policy.json');
@@ -1512,6 +1514,152 @@ export function ingestStructuredExecutionPlacement(row) {
     reason: null,
     preview,
     row: appended || executionRow,
+  };
+}
+
+function normalizeSettlementResult(value) {
+  const normalized = normalizeText(value).replace(/\s+/g, '_');
+  if (normalized === 'win' || normalized === 'won') return 'WIN';
+  if (normalized === 'loss' || normalized === 'lost') return 'LOSS';
+  if (normalized === 'push') return 'PUSH';
+  return null;
+}
+
+function settlementStatusFromResult(result) {
+  const normalized = normalizeSettlementResult(result);
+  return normalized ? normalized.toLowerCase() : null;
+}
+
+function settlementPayoutFromOdds(result, stake, americanOdds) {
+  const normalized = normalizeSettlementResult(result);
+  const stakeNum = parseNumber(stake);
+  const oddsNum = parseNumber(americanOdds);
+  if (!Number.isFinite(stakeNum)) return null;
+  if (normalized === 'LOSS') return 0;
+  if (normalized === 'PUSH') return round2(stakeNum);
+  if (normalized !== 'WIN' || !Number.isFinite(oddsNum)) return null;
+  if (oddsNum > 0) {
+    return round2(stakeNum + (stakeNum * oddsNum / 100));
+  }
+  return round2(stakeNum + (stakeNum * 100 / Math.abs(oddsNum)));
+}
+
+function settlementProfitLoss(result, stake, americanOdds) {
+  const payout = settlementPayoutFromOdds(result, stake, americanOdds);
+  const stakeNum = parseNumber(stake);
+  if (!Number.isFinite(stakeNum)) return null;
+  const normalized = normalizeSettlementResult(result);
+  if (normalized === 'LOSS') return round2(-stakeNum);
+  if (normalized === 'PUSH') return 0;
+  if (!Number.isFinite(payout)) return null;
+  return round2(payout - stakeNum);
+}
+
+function sameExecutionShape(a, b) {
+  return normalizeText(a.selection) === normalizeText(b.selection)
+    && normalizeText(a.actual_sportsbook) === normalizeText(b.actual_sportsbook)
+    && parseNumber(a.actual_odds) === parseNumber(b.actual_odds)
+    && Math.abs((parseNumber(a.actual_stake) || 0) - (parseNumber(b.actual_stake) || 0)) <= 0.009;
+}
+
+function findExecutionForSettlement(row) {
+  const executions = readExecutionLog().slice().reverse();
+  const candidates = executions.filter((entry) => sameExecutionShape(entry, row));
+  if (!candidates.length) {
+    return { ok: false, reason: 'no_matching_execution_found', row: null };
+  }
+  const exactSourceCandidates = candidates.filter((entry) => normalizeText(entry.source) === 'telegram_operator');
+  const preferred = exactSourceCandidates.length ? exactSourceCandidates : candidates;
+  if (preferred.length > 1) {
+    return { ok: false, reason: 'ambiguous_execution_match', row: null };
+  }
+  return { ok: true, reason: null, row: preferred[0] };
+}
+
+function findExistingSettlement(matchExecution) {
+  const gradingRows = readJsonl(CORE_PATHS.gradingLedger).slice().reverse();
+  return gradingRows.find((row) => {
+    const executionId = normalizeText(row.execution_log_id || row.execution_id || row.ref_id);
+    const target = normalizeText(matchExecution.execution_id);
+    const result = normalizeSettlementResult(row.result || row.settlement_status);
+    return executionId && target && executionId === target && Boolean(result);
+  }) || null;
+}
+
+function appendStructuredGradingRow(row) {
+  const enriched = enrichGradingRowWithClv(row);
+  const existingRows = readJsonl(CORE_PATHS.gradingLedger);
+  const reconciled = reconcileGradingBankrollAnnotations([...existingRows, enriched], readJsonl(CORE_PATHS.bankrollLedger));
+  const annotationById = new Map(reconciled.rows.map((entry) => [entry.grading_id, entry]));
+  const finalRow = isBankrollRelevantGrade(enriched) ? (annotationById.get(enriched.grading_id) || enriched) : enriched;
+  appendJsonl(CORE_PATHS.gradingLedger, finalRow, (entry) => String(entry.grading_id || ''));
+  return finalRow;
+}
+
+export function ingestStructuredExecutionSettlement(row) {
+  const normalizedResult = normalizeSettlementResult(row.result || row.settlement_result);
+  if (!normalizedResult) {
+    return { ok: false, reason: 'invalid_settlement_result', row: null };
+  }
+
+  const matched = findExecutionForSettlement(row);
+  if (!matched.ok) {
+    return { ok: false, reason: matched.reason, row: null };
+  }
+
+  const executionRow = matched.row;
+  const existingSettlement = findExistingSettlement(executionRow);
+  if (existingSettlement) {
+    const existingResult = normalizeSettlementResult(existingSettlement.result || existingSettlement.settlement_status);
+    if (existingResult === normalizedResult) {
+      return {
+        ok: false,
+        duplicate: true,
+        reason: 'duplicate_settlement_submission',
+        row: existingSettlement,
+        execution_row: executionRow,
+      };
+    }
+    return {
+      ok: false,
+      reason: 'existing_settlement_conflict',
+      row: existingSettlement,
+      execution_row: executionRow,
+    };
+  }
+
+  const timestamp = row.settlement_timestamp || row.logged_at_utc || new Date().toISOString();
+  const payout = settlementPayoutFromOdds(normalizedResult, executionRow.actual_stake, executionRow.actual_odds);
+  const gradingRow = {
+    grading_id: row.grading_id || `reconciliation::${executionRow.execution_id}::${normalizeText(normalizedResult)}::${Date.now()}`,
+    grading_type: 'RECONCILIATION',
+    ref_id: executionRow.execution_id,
+    execution_log_id: executionRow.execution_id,
+    execution_id: executionRow.execution_id,
+    rec_id: executionRow.rec_id || null,
+    run_id: executionRow.run_id || null,
+    date: toCtIsoDate(timestamp),
+    timestamp_ct: timestamp,
+    selection: executionRow.selection,
+    sportsbook: executionRow.actual_sportsbook,
+    actual_odds: executionRow.actual_odds,
+    actual_stake: parseNumber(executionRow.actual_stake),
+    stake: parseNumber(executionRow.actual_stake),
+    settlement_status: settlementStatusFromResult(normalizedResult),
+    settlement_payout: payout,
+    settlement_source: row.source || 'telegram_operator',
+    result: normalizedResult,
+    profit_loss: settlementProfitLoss(normalizedResult, executionRow.actual_stake, executionRow.actual_odds),
+    source: row.source || 'telegram_operator',
+    notes: Array.isArray(row.notes) ? row.notes : [],
+  };
+
+  const appended = appendStructuredGradingRow(gradingRow);
+  return {
+    ok: true,
+    reason: null,
+    row: appended,
+    execution_row: executionRow,
   };
 }
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { appendJsonl, CORE_PATHS, readJson, writeJson } from './core-ledger-utils.mjs';
-import { commandKeyboard, dispatchOperatorCommand, latestOperatorAlertMetadata, normalizeOperatorCommand, parseBetPlacedMessage, resolveOperatorCommand } from './operator-dispatcher.mjs';
+import { commandKeyboard, dispatchOperatorCommand, latestOperatorAlertMetadata, normalizeOperatorCommand, parseBetPlacedMessage, parseBetSettledMessage, resolveOperatorCommand } from './operator-dispatcher.mjs';
 import { fetchTelegramUpdates, sendTelegramMessage, telegramConfiguredChatId } from './telegram-alert-utils.mjs';
 
 function parseArgs(argv) {
@@ -80,10 +80,11 @@ async function processUpdate(update, allowedChatId, now) {
 
   const rawMessage = messageText(update);
   const parsedBetPlaced = parseBetPlacedMessage(rawMessage);
+  const parsedBetSettled = parseBetSettledMessage(rawMessage);
   const resolvedCommand = resolveOperatorCommand(normalizeOperatorCommand(rawMessage));
   let ackDelivery = null;
   let ackSentAt = null;
-  const shouldAcknowledge = Boolean(parsedBetPlaced?.ok) || resolvedCommand === 'RUN HUNT';
+  const shouldAcknowledge = Boolean(parsedBetPlaced?.ok) || Boolean(parsedBetSettled?.ok) || resolvedCommand === 'RUN HUNT';
   if (shouldAcknowledge) {
     ackSentAt = new Date().toISOString();
     ackDelivery = await sendTelegramMessage('RECEIVED ⏳\nProcessing...', { chatId });
