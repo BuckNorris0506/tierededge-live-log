@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-27T14:00:08.892Z",
+  "generated_at_utc": "2026-03-27T14:28:41.429Z",
   "run_classification": "true_no_edge_sit",
   "policy": {
     "stale_recommendation_hours": 8,

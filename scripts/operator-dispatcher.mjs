@@ -726,6 +726,73 @@ function compactActiveBoosts(state) {
   return active.slice(0, 3).map((row) => `${row.sportsbook} ${formatBoostPercent(row.boost_percent)} ${row.scope || 'General'}`);
 }
 
+function formatBoostStake(value) {
+  const numeric = parseNumber(value);
+  return Number.isFinite(numeric) ? `$${numeric.toFixed(2)}` : 'N/A';
+}
+
+function renderBoostHeader(row) {
+  return `${row.boost_sportsbook || row.sportsbook} ${formatBoostPercent(row.boost_percent)} ${row.boost_scope || row.scope || 'General'}`;
+}
+
+function renderBoostOpportunity(row, { compact = false } = {}) {
+  const lines = [
+    `Game: ${renderGameLabel(row)}`,
+    `Play: ${row.selection || 'Unknown selection'} @ ${row.sportsbook || row.boost_sportsbook || 'Unknown book'}`,
+    `Promo: ${renderBoostHeader(row)}`,
+    `Original Line: ${renderCanonicalPrice(row.original_odds_american) || renderLineLabel(row)}`,
+    `Boosted Line: ${renderCanonicalPrice(row.boosted_odds_american) || 'Unknown'}`,
+    `Original Edge: ${Number.isFinite(parseNumber(row.original_edge_pct)) ? `+${Number(parseNumber(row.original_edge_pct)).toFixed(2)}%` : 'N/A'}`,
+    `Boosted EV: ${Number.isFinite(parseNumber(row.boosted_ev_pct)) ? `+${Number(parseNumber(row.boosted_ev_pct)).toFixed(2)}%` : 'N/A'}`,
+    `Boosted Kelly: ${formatBoostStake(row.boosted_kelly_stake)}`,
+    `Boost Stake: ${formatBoostStake(row.boost_capped_stake)}`,
+  ];
+  if (Number.isFinite(parseNumber(row.max_wager))) {
+    lines.push(`Promo Cap: ${formatBoostStake(row.max_wager)}`);
+  }
+  if (String(row.recommendation_label || '').trim()) {
+    lines.push(`Label: ${row.recommendation_label}`);
+  }
+  if (String(row.recommendation_reason || '').trim() && !compact) {
+    lines.push(`Reason: ${row.recommendation_reason}`);
+  }
+  return lines.join('\n');
+}
+
+function renderBoostSection(state, { compact = false } = {}) {
+  const summary = state?.boost_eligibility_summary || {};
+  const opportunities = Array.isArray(state?.boost_adjusted_opportunities) ? state.boost_adjusted_opportunities : [];
+  const best = state?.best_boost_use_today || null;
+  const activeCount = parseNumber(summary.active_boost_count) ?? 0;
+  const worthwhileCount = parseNumber(summary.boost_adjusted_count) ?? 0;
+
+  if (!activeCount && !opportunities.length && !best) return [];
+
+  const lines = ['BOOST-ADJUSTED OPPORTUNITIES'];
+  lines.push(`Active Boosts Checked: ${activeCount}`);
+  lines.push(`Worth Using: ${worthwhileCount}`);
+
+  if (best) {
+    lines.push(`Best Boost Use: ${best.selection} @ ${best.boost_sportsbook} | ${renderCanonicalPrice(best.boosted_odds_american) || 'Unknown'} | stake ${formatBoostStake(best.boost_capped_stake)}`);
+  }
+
+  if (compact) {
+    return lines;
+  }
+
+  if (opportunities.length) {
+    for (const row of opportunities.slice(0, 3)) {
+      lines.push('');
+      lines.push(renderBoostOpportunity(row));
+    }
+  } else if (activeCount) {
+    lines.push('');
+    lines.push('No safe boost-adjusted opportunity is worth using right now.');
+  }
+
+  return lines;
+}
+
 function renderFridayFunSection(state, { compact = false } = {}) {
   const summary = state?.friday_fun_summary || null;
   if (!summary) return [];
@@ -771,6 +838,13 @@ function statusText(state) {
   if (boosts.length) {
     lines.push(`Boosts: ${boosts.join(' | ')}`);
   }
+  const boostSummary = state.boost_eligibility_summary || {};
+  if ((parseNumber(boostSummary.active_boost_count) || 0) > 0) {
+    lines.push(`Boost Lane: ${parseNumber(boostSummary.boost_adjusted_count) || 0} worth using / ${parseNumber(boostSummary.active_boost_count) || 0} active`);
+    if (state.best_boost_use_today) {
+      lines.push(`Best Boost Use: ${state.best_boost_use_today.selection} @ ${state.best_boost_use_today.boost_sportsbook} | boosted EV +${Number(parseNumber(state.best_boost_use_today.boosted_ev_pct) || 0).toFixed(2)}% | stake ${formatBoostStake(state.best_boost_use_today.boost_capped_stake)}`);
+    }
+  }
   const fridayFunLines = renderFridayFunSection(state, { compact: true });
   if (fridayFunLines.length) {
     lines.push('');
@@ -797,6 +871,10 @@ function latestBoardText(state) {
   const selectedRows = Array.isArray(run.selected_rows) ? run.selected_rows : [];
   const misses = Array.isArray(run.executable_closest_misses) ? run.executable_closest_misses.slice(0, 3) : [];
   const continuity = state.actionable_board_continuity_summary || {};
+  const boostOpportunities = Array.isArray(state.boost_adjusted_opportunities) ? state.boost_adjusted_opportunities : [];
+  const boostByRecId = new Map(
+    boostOpportunities.map((row) => [String(row.rec_id || '').trim(), row]),
+  );
   const currentContinuityMap = new Map(
     (continuity.current_actionable_rows || []).map((row) => [String(row.rec_id || '').trim(), row]),
   );
@@ -823,6 +901,10 @@ function latestBoardText(state) {
       const continuityRow = currentContinuityMap.get(String(row.rec_id || '').trim());
       lines.push('');
       lines.push(formatRecommendation(row));
+      const boostRow = boostByRecId.get(String(row.rec_id || '').trim());
+      if (boostRow) {
+        lines.push(`Boost: ${renderBoostHeader(boostRow)} -> ${renderCanonicalPrice(boostRow.boosted_odds_american) || 'Unknown'} | stake ${formatBoostStake(boostRow.boost_capped_stake)} | EV +${Number(parseNumber(boostRow.boosted_ev_pct) || 0).toFixed(2)}%`);
+      }
       if (continuityRow?.continuity_status) {
         lines.push(`Continuity: ${String(continuityRow.continuity_status).toUpperCase()}`);
       }
@@ -854,6 +936,12 @@ function latestBoardText(state) {
         lines.push(`- ${row.selection} @ ${row.sportsbook} | line: ${lineDetails} | prior +${priorEdge}% | ${currentEdge} | status: ${row.continuity_status}${reason}`);
       }
     }
+  }
+
+  const boostLines = renderBoostSection(state, { compact: false });
+  if (boostLines.length) {
+    lines.push('');
+    lines.push(...boostLines);
   }
 
   const fridayFunLines = renderFridayFunSection(state, { compact: false });

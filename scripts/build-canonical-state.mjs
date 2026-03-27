@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import { CORE_PATHS, readJson, readJsonl, writeJson, parseNumber, round2, formatMoney, toCtIsoDate } from './core-ledger-utils.mjs';
 import { EXECUTION_BOARD_PATH, EXECUTION_LOG_PATH, readExecutionLog } from './execution-layer-utils.mjs';
+import { computeKellyBreakdown } from './tierededge-kelly-cli.mjs';
 import { validateLedgerInvariants } from './validate-ledger-invariants.mjs';
 import { OVERRIDE_LOG_PATH, POST_MORTEM_LOG_PATH, getPostMortemStatus, readOverrideLog, readPostMortemLog, buildWeeklyTruthReport } from './behavioral-accountability-utils.mjs';
 import { getLatestBankrollAnnotatedGrade } from './bankroll-reconciliation-utils.mjs';
@@ -1164,6 +1165,405 @@ function buildProfitBoostSummary(rows) {
   };
 }
 
+function americanToDecimalSafe(value) {
+  const odds = parseNumber(value);
+  if (!Number.isFinite(odds) || odds === 0) return null;
+  return odds > 0 ? 1 + (odds / 100) : 1 + (100 / Math.abs(odds));
+}
+
+function decimalToAmericanSafe(decimalOdds) {
+  const decimal = parseNumber(decimalOdds);
+  if (!Number.isFinite(decimal) || decimal <= 1) return null;
+  const net = decimal - 1;
+  if (net >= 1) return Math.round(net * 100);
+  return -Math.round(100 / net);
+}
+
+function impliedProbabilityFromAmerican(value) {
+  const decimal = americanToDecimalSafe(value);
+  return Number.isFinite(decimal) ? 1 / decimal : null;
+}
+
+function deriveTierFromEdgePct(edgePct) {
+  const edge = parseNumber(edgePct);
+  if (!Number.isFinite(edge)) return null;
+  if (edge >= 6) return 'T1';
+  if (edge >= 4) return 'T2';
+  if (edge >= 2) return 'T3';
+  return null;
+}
+
+function buildBoostScopeConstraints(scope) {
+  const raw = String(scope || '').trim().toUpperCase();
+  if (!raw) return { supported: false, reason: 'ambiguous_scope' };
+  if (raw === 'GENERAL') {
+    return { supported: true, sportMatch: null, marketMatch: null };
+  }
+
+  let sportMatch = null;
+  if (/\bMLB\b|BASEBALL/.test(raw)) sportMatch = 'MLB';
+  else if (/\bNBA\b/.test(raw)) sportMatch = 'NBA';
+  else if (/\bNCAAB\b|\bCBB\b|COLLEGE BASKETBALL|COLLEGE BBALL|COLLEGE HOOPS/.test(raw)) sportMatch = 'NCAAB';
+  else if (/\bNHL\b|HOCKEY/.test(raw)) sportMatch = 'NHL';
+  else if (/\bNFL\b|FOOTBALL/.test(raw)) sportMatch = 'NFL';
+  else if (/\bWNBA\b/.test(raw)) sportMatch = 'WNBA';
+  else if (/\bMLS\b|SOCCER/.test(raw)) sportMatch = 'MLS';
+
+  let marketMatch = null;
+  if (/\bMONEYLINE\b|\bML\b/.test(raw)) marketMatch = 'ML';
+  else if (/\bSPREAD\b|\bSPREADS\b/.test(raw)) marketMatch = 'SPREAD';
+  else if (/\bTOTAL\b|\bTOTALS\b/.test(raw)) marketMatch = 'TOTAL';
+
+  if (!sportMatch && !marketMatch) {
+    return { supported: false, reason: 'ambiguous_scope' };
+  }
+
+  return { supported: true, sportMatch, marketMatch };
+}
+
+function normalizeCandidateMarketType(value) {
+  const raw = String(value || '').trim().toUpperCase();
+  if (!raw) return null;
+  if (raw === 'ML' || raw.includes('MONEYLINE')) return 'ML';
+  if (raw.includes('SPREAD')) return 'SPREAD';
+  if (raw.includes('TOTAL')) return 'TOTAL';
+  if (raw.includes('SGP') || raw.includes('PARLAY')) return 'SGP';
+  return raw;
+}
+
+function isSgpCandidate(row) {
+  const marketType = normalizeCandidateMarketType(row?.market_type);
+  const betClass = String(row?.bet_class || '').trim().toUpperCase();
+  const marketFamily = String(row?.market_family || '').trim().toUpperCase();
+  const selection = String(row?.selection || '').trim().toUpperCase();
+  return marketType === 'SGP'
+    || betClass === 'FUN_SGP'
+    || marketFamily.includes('PARLAY')
+    || selection.includes('SGP')
+    || selection.includes('PARLAY');
+}
+
+function evaluateBoostBetTypeEligibility(boost, row) {
+  const raw = String(boost?.bet_types || '').trim();
+  if (!raw) {
+    return { eligible: true, reason: 'no_bet_type_restriction' };
+  }
+
+  const normalized = raw.toUpperCase();
+  const allowsStraight = /\bSTRAIGHT\b/.test(normalized);
+  const allowsSgp = /\bSGP\b|SAME GAME PARLAY|\bPARLAY\b/.test(normalized);
+  if (!allowsStraight && !allowsSgp) {
+    return { eligible: false, reason: 'ambiguous_bet_types_restriction' };
+  }
+
+  const sgpCandidate = isSgpCandidate(row);
+  if (sgpCandidate && allowsSgp) return { eligible: true, reason: 'bet_type_match' };
+  if (!sgpCandidate && allowsStraight) return { eligible: true, reason: 'bet_type_match' };
+  return { eligible: false, reason: 'bet_type_restriction' };
+}
+
+function evaluateBoostScopeEligibility(boost, row) {
+  const constraints = buildBoostScopeConstraints(boost?.scope);
+  if (!constraints.supported) return { eligible: false, reason: constraints.reason || 'ambiguous_scope' };
+  const candidateSport = String(row?.sport || row?.league || '').trim().toUpperCase();
+  const candidateMarket = normalizeCandidateMarketType(row?.market_type);
+  if (constraints.sportMatch && candidateSport !== constraints.sportMatch) {
+    return { eligible: false, reason: 'scope_mismatch' };
+  }
+  if (constraints.marketMatch && candidateMarket !== constraints.marketMatch) {
+    return { eligible: false, reason: 'scope_mismatch' };
+  }
+  return { eligible: true, reason: 'scope_match' };
+}
+
+function evaluateBoostMinOddsEligibility(boost, row) {
+  const minOdds = boost?.min_total_odds;
+  if (minOdds === null || minOdds === undefined || minOdds === '') {
+    return { eligible: true, reason: 'no_min_total_odds' };
+  }
+  const candidateDecimal = americanToDecimalSafe(row?.odds_american);
+  const thresholdDecimal = americanToDecimalSafe(minOdds);
+  if (!Number.isFinite(candidateDecimal) || !Number.isFinite(thresholdDecimal)) {
+    return { eligible: false, reason: 'invalid_min_total_odds_constraint' };
+  }
+  return candidateDecimal + 1e-9 >= thresholdDecimal
+    ? { eligible: true, reason: 'min_total_odds_met' }
+    : { eligible: false, reason: 'min_total_odds_not_met' };
+}
+
+function computeOriginalKellyStake(row) {
+  const existing = parseNumber(row?.kelly_stake);
+  if (Number.isFinite(existing)) return round2(existing);
+  const bankroll = parseNumber(row?.bankroll_snapshot);
+  const trueProb = parseNumber(row?.post_conf_true_prob ?? row?.consensus_prob);
+  const tier = deriveTierFromEdgePct(row?.post_conf_edge_pct);
+  if (!Number.isFinite(bankroll) || !Number.isFinite(trueProb) || !tier) return 0;
+  try {
+    return round2(computeKellyBreakdown({
+      bankroll,
+      american_odds: parseNumber(row.odds_american),
+      true_prob: trueProb,
+      tier,
+    }).final_stake) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function evaluateBoostForCandidate(boost, row, riskControls) {
+  const reasons = [];
+  const nowMs = Date.now();
+  const expiresAtMs = Date.parse(String(boost?.expires_at_utc || ''));
+  if (Number.isFinite(expiresAtMs) && expiresAtMs <= nowMs) {
+    return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: 'expired_boost' };
+  }
+
+  if (String(boost?.sportsbook || '').trim() !== String(row?.sportsbook || '').trim()) {
+    return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: 'sportsbook_mismatch' };
+  }
+  if (!row?.owned_book || !row?.executable_book) {
+    return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: 'not_executable_book' };
+  }
+  if (String(row?.snapshot_status || '').toLowerCase() !== 'valid') {
+    return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: 'invalid_snapshot' };
+  }
+
+  const scopeCheck = evaluateBoostScopeEligibility(boost, row);
+  if (!scopeCheck.eligible) {
+    return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: scopeCheck.reason };
+  }
+  reasons.push(scopeCheck.reason);
+
+  const betTypeCheck = evaluateBoostBetTypeEligibility(boost, row);
+  if (!betTypeCheck.eligible) {
+    return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: betTypeCheck.reason };
+  }
+  reasons.push(betTypeCheck.reason);
+
+  const minOddsCheck = evaluateBoostMinOddsEligibility(boost, row);
+  if (!minOddsCheck.eligible) {
+    return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: minOddsCheck.reason };
+  }
+  reasons.push(minOddsCheck.reason);
+
+  const bankroll = parseNumber(row?.bankroll_snapshot);
+  const trueProb = parseNumber(row?.post_conf_true_prob ?? row?.consensus_prob);
+  const originalOdds = parseNumber(row?.odds_american);
+  const originalDecimal = americanToDecimalSafe(originalOdds);
+  const originalImplied = impliedProbabilityFromAmerican(originalOdds);
+  if (!Number.isFinite(bankroll) || !Number.isFinite(trueProb) || !Number.isFinite(originalDecimal) || !Number.isFinite(originalImplied)) {
+    return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: 'missing_true_probability' };
+  }
+
+  const boostPct = parseNumber(boost?.boost_percent);
+  if (!Number.isFinite(boostPct) || boostPct <= 0) {
+    return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: 'invalid_boost_percent' };
+  }
+
+  const boostedNetOdds = (originalDecimal - 1) * (1 + (boostPct / 100));
+  const boostedDecimal = 1 + boostedNetOdds;
+  const boostedAmerican = decimalToAmericanSafe(boostedDecimal);
+  const boostedImplied = Number.isFinite(boostedDecimal) ? 1 / boostedDecimal : null;
+  const originalEdge = parseNumber(row?.post_conf_edge_pct);
+  const boostedEdge = Number.isFinite(boostedImplied) ? round2((trueProb - boostedImplied) * 100) : null;
+  const boostedTier = deriveTierFromEdgePct(boostedEdge);
+  const originalKelly = computeOriginalKellyStake(row);
+  const originalEvPct = round2(((trueProb * (originalDecimal - 1)) - (1 - trueProb)) * 100);
+  const boostedEvPct = round2(((trueProb * boostedNetOdds) - (1 - trueProb)) * 100);
+
+  let boostedKelly = 0;
+  if (boostedTier) {
+    try {
+      boostedKelly = round2(computeKellyBreakdown({
+        bankroll,
+        american_odds: boostedAmerican,
+        true_prob: trueProb,
+        tier: boostedTier,
+      }).final_stake) || 0;
+    } catch {
+      boostedKelly = 0;
+    }
+  }
+
+  const bankrollPctCap = Number.isFinite(bankroll) && Number.isFinite(riskControls?.maxStakePctPerBet)
+    ? round2(bankroll * riskControls.maxStakePctPerBet)
+    : null;
+  const runExposureCap = Number.isFinite(bankroll) && Number.isFinite(riskControls?.maxTotalExposurePctPerRun)
+    ? round2(bankroll * riskControls.maxTotalExposurePctPerRun)
+    : null;
+  const maxWagerCap = parseNumber(boost?.max_wager);
+  const capCandidates = [boostedKelly];
+  if (Number.isFinite(bankrollPctCap) && bankrollPctCap > 0) capCandidates.push(bankrollPctCap);
+  if (Number.isFinite(runExposureCap) && runExposureCap > 0) capCandidates.push(runExposureCap);
+  if (Number.isFinite(maxWagerCap) && maxWagerCap > 0) capCandidates.push(maxWagerCap);
+  const finalStake = capCandidates
+    .filter((value) => Number.isFinite(value) && value >= 0)
+    .reduce((min, value) => Math.min(min, value), boostedKelly);
+  const roundedFinalStake = round2(finalStake) || 0;
+
+  let recommendationLabel = 'BOOST NOT WORTH USING';
+  let recommendationReason = 'boosted_edge_non_positive';
+  if (Number.isFinite(boostedEdge) && boostedEdge > 0 && roundedFinalStake >= 0.5) {
+    recommendationLabel = row?.final_decision === 'BET' ? 'BOOST ADJUSTED' : 'BOOST ELIGIBLE';
+    recommendationReason = row?.final_decision === 'BET'
+      ? 'boost_improves_existing_recommendation'
+      : 'boost_creates_positive_opportunity';
+  } else if (roundedFinalStake < 0.5) {
+    recommendationReason = Number.isFinite(maxWagerCap) && maxWagerCap < 0.5
+      ? 'promo_cap_below_minimum_stake'
+      : 'boosted_stake_sub_minimum';
+  }
+
+  if (Number.isFinite(maxWagerCap) && roundedFinalStake > 0 && roundedFinalStake < boostedKelly - 0.001) {
+    reasons.push('promo_cap_limited');
+  }
+  if (Number.isFinite(bankrollPctCap) && roundedFinalStake > 0 && roundedFinalStake < boostedKelly - 0.001 && (!Number.isFinite(maxWagerCap) || bankrollPctCap <= maxWagerCap)) {
+    reasons.push('risk_cap_limited');
+  }
+
+  return {
+    eligibility_status: 'ELIGIBLE',
+    eligibility_reason: 'eligible',
+    recommendation_label: recommendationLabel,
+    recommendation_reason: recommendationReason,
+    original_odds_american: originalOdds,
+    boosted_odds_american: boostedAmerican,
+    original_edge_pct: Number.isFinite(originalEdge) ? round2(originalEdge) : null,
+    boosted_edge_pct: Number.isFinite(boostedEdge) ? round2(boostedEdge) : null,
+    original_ev_pct: Number.isFinite(originalEvPct) ? round2(originalEvPct) : null,
+    boosted_ev_pct: Number.isFinite(boostedEvPct) ? round2(boostedEvPct) : null,
+    original_kelly_stake: Number.isFinite(originalKelly) ? round2(originalKelly) : 0,
+    boosted_kelly_stake: Number.isFinite(boostedKelly) ? round2(boostedKelly) : 0,
+    boost_capped_stake: roundedFinalStake,
+    promo_max_wager: Number.isFinite(maxWagerCap) ? round2(maxWagerCap) : null,
+    bankroll_risk_cap: Number.isFinite(bankrollPctCap) ? round2(bankrollPctCap) : null,
+    bankroll_run_exposure_cap: Number.isFinite(runExposureCap) ? round2(runExposureCap) : null,
+    boosted_expected_profit: round2((roundedFinalStake || 0) * ((boostedEvPct || 0) / 100)),
+    reasons,
+    boost_tier: boostedTier,
+    true_prob: round2(trueProb * 100),
+  };
+}
+
+function buildBoostAdjustedSummary({ decisions, latestCanonicalHuntRun, activeProfitBoosts, scanCoveragePolicy }) {
+  const latestRunId = latestCanonicalHuntRun?.run_id || null;
+  const riskControls = {
+    maxStakePctPerBet: ((parseNumber(scanCoveragePolicy?.risk_controls?.max_stake_pct_per_bet) || 3) / 100),
+    maxTotalExposurePctPerRun: ((parseNumber(scanCoveragePolicy?.risk_controls?.max_total_exposure_pct_per_run) || 9) / 100),
+  };
+
+  if (!latestRunId) {
+    return {
+      hedge_scan_frequency_mode: null,
+      boost_adjusted_opportunities: [],
+      best_boost_use_today: null,
+      boost_eligibility_summary: {
+        latest_run_id: null,
+        active_boost_count: 0,
+        evaluated_candidate_count: 0,
+        eligible_count: 0,
+        boost_adjusted_count: 0,
+        not_eligible_count: 0,
+        reason_breakdown: {},
+      },
+    };
+  }
+
+  const latestRows = (decisions || [])
+    .filter((row) => row.run_id === latestRunId)
+    .filter((row) => String(row.market_family || '').toUpperCase() === 'MAIN_MARKET')
+    .filter((row) => String(row.bet_class || '').toUpperCase() !== 'FUN_SGP');
+  const activeBoosts = (activeProfitBoosts || []).filter((row) => String(row.status || '').toUpperCase() === 'ACTIVE');
+
+  const evaluations = [];
+  for (const boost of activeBoosts) {
+    for (const row of latestRows) {
+      const evaluation = evaluateBoostForCandidate(boost, row, riskControls);
+      evaluations.push({
+        run_id: latestRunId,
+        rec_id: row.rec_id || null,
+        selection: row.selection || null,
+        sportsbook: row.sportsbook || null,
+        sport: row.sport || row.league || null,
+        market_type: row.market_type || null,
+        event_id: row.event_id || null,
+        event_label: row.event_label || null,
+        event_start_time: row.event_start_time || null,
+        minutes_to_start: row.minutes_to_start ?? null,
+        urgency_tag: row.urgency_tag || null,
+        original_final_decision: row.final_decision || null,
+        original_kelly_stake: parseNumber(row.kelly_stake) || 0,
+        boost_id: boost.boost_id || null,
+        boost_sportsbook: boost.sportsbook || null,
+        boost_percent: parseNumber(boost.boost_percent),
+        boost_scope: boost.scope || null,
+        max_wager: parseNumber(boost.max_wager),
+        bet_types: boost.bet_types || null,
+        min_total_odds: boost.min_total_odds ?? null,
+        expires_raw: boost.expires_raw || null,
+        expires_at_utc: boost.expires_at_utc || null,
+        ...evaluation,
+      });
+    }
+  }
+
+  const eligible = evaluations.filter((row) => row.eligibility_status === 'ELIGIBLE');
+  const boostAdjusted = eligible
+    .filter((row) => ['BOOST ELIGIBLE', 'BOOST ADJUSTED', 'BEST BOOST USE'].includes(row.recommendation_label))
+    .sort((a, b) => {
+      if ((b.boosted_expected_profit ?? -Infinity) !== (a.boosted_expected_profit ?? -Infinity)) {
+        return (b.boosted_expected_profit ?? -Infinity) - (a.boosted_expected_profit ?? -Infinity);
+      }
+      if ((b.boosted_ev_pct ?? -Infinity) !== (a.boosted_ev_pct ?? -Infinity)) {
+        return (b.boosted_ev_pct ?? -Infinity) - (a.boosted_ev_pct ?? -Infinity);
+      }
+      return (b.boost_capped_stake ?? -Infinity) - (a.boost_capped_stake ?? -Infinity);
+    });
+
+  const reasonBreakdown = evaluations.reduce((acc, row) => {
+    const key = row.eligibility_status === 'ELIGIBLE'
+      ? (row.recommendation_reason || 'eligible')
+      : (row.eligibility_reason || 'not_eligible');
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+
+  const uniqueByRecId = new Map();
+  for (const row of boostAdjusted) {
+    const key = String(row.rec_id || '').trim() || `${row.selection}::${row.sportsbook}::${row.boost_id}`;
+    if (!uniqueByRecId.has(key)) uniqueByRecId.set(key, row);
+  }
+  const uniqueBoostAdjusted = [...uniqueByRecId.values()];
+  const bestBoostUse = uniqueBoostAdjusted[0]
+    ? {
+        ...uniqueBoostAdjusted[0],
+        recommendation_label: 'BEST BOOST USE',
+      }
+    : null;
+
+  const normalizedBoostAdjusted = uniqueBoostAdjusted.map((row, index) => ({
+    ...row,
+    recommendation_label: index === 0 ? 'BEST BOOST USE' : row.recommendation_label,
+  }));
+
+  return {
+    boost_adjusted_opportunities: normalizedBoostAdjusted.slice(0, 8),
+    best_boost_use_today: bestBoostUse,
+    boost_eligibility_summary: {
+      latest_run_id: latestRunId,
+      active_boost_count: activeBoosts.length,
+      evaluated_candidate_count: evaluations.length,
+      eligible_count: eligible.length,
+      boost_adjusted_count: normalizedBoostAdjusted.length,
+      not_eligible_count: evaluations.length - eligible.length,
+      reason_breakdown: reasonBreakdown,
+      not_eligible_examples: evaluations
+        .filter((row) => row.eligibility_status !== 'ELIGIBLE')
+        .slice(0, 5),
+    },
+  };
+}
+
 function buildTelegramOperatorSummary(telegramOperatorEvents, notificationSummary) {
   const sorted = [...(telegramOperatorEvents || [])].sort((a, b) =>
     String(b.inbound_timestamp_utc || '').localeCompare(String(a.inbound_timestamp_utc || ''))
@@ -2086,6 +2486,12 @@ function main() {
   const apiBurnReductionSummary = buildApiBurnReductionSummary(directAutomationConfig, openclawJobs);
   const notificationSummary = buildNotificationSummary(notificationEvents);
   const profitBoostSummary = buildProfitBoostSummary(profitBoostRows);
+  const boostAdjustedSummary = buildBoostAdjustedSummary({
+    decisions: validLearningDecisions,
+    latestCanonicalHuntRun,
+    activeProfitBoosts: profitBoostSummary.active_profit_boosts,
+    scanCoveragePolicy,
+  });
   const telegramOperatorSummary = buildTelegramOperatorSummary(telegramOperatorEvents, notificationSummary);
   const fridayFunSummary = buildFridayFunSummary(runtimeStatus, payloadBuildMs);
   const missedExecutionWindowSummary = buildMissedExecutionWindowSummary(missedExecutionWindows);
@@ -2269,6 +2675,9 @@ function main() {
     friday_fun_summary: fridayFunSummary,
     active_profit_boosts: profitBoostSummary.active_profit_boosts,
     profit_boost_summary: profitBoostSummary,
+    boost_adjusted_opportunities: boostAdjustedSummary.boost_adjusted_opportunities,
+    best_boost_use_today: boostAdjustedSummary.best_boost_use_today,
+    boost_eligibility_summary: boostAdjustedSummary.boost_eligibility_summary,
     telegram_operator_summary: telegramOperatorSummary,
     clean_run_summary: cleanRunSummary,
     performance_by_market: performanceByMarket,
