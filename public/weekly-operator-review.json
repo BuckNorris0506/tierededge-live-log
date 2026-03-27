@@ -1,15 +1,15 @@
 {
   "schema": "tierededge_weekly_operator_review_v1",
-  "generated_at_utc": "2026-03-27T11:00:08.679Z",
+  "generated_at_utc": "2026-03-27T11:09:25.674Z",
   "window": "last_7_days",
   "sections": {
     "run_truth": {
-      "valid_runs": 151,
+      "valid_runs": 152,
       "invalidated_runs": 3
     },
     "hunt_totals": {
       "total_bets": 45,
-      "total_sits": 22407
+      "total_sits": 22551
     },
     "actual_clv_summary": {
       "settled_bet_count": 0,
@@ -20,7 +20,7 @@
     },
     "rejected_clv_summary": {
       "1.0_to_1.49": {
-        "count": 1393,
+        "count": 1399,
         "captured_count": 10,
         "avg_clv_delta_pct": -1.52,
         "positive_clv_rate": 40
@@ -39,16 +39,16 @@
       }
     },
     "market_integrity": {
-      "invalid_snapshot_count": 8312,
+      "invalid_snapshot_count": 8392,
       "stale_market_count": 3076,
       "top_rejection_reasons": [
         {
           "reason": "no_edge",
-          "count": 10871
+          "count": 10935
         },
         {
           "reason": "invalid_snapshot",
-          "count": 8312
+          "count": 8392
         },
         {
           "reason": "stale_market",
@@ -78,18 +78,18 @@
         "book": "betmgm",
         "owned_book": true,
         "recommendations_count": 10,
-        "best_price_count": 5290,
+        "best_price_count": 5305,
         "executable_near_miss_count": 100,
-        "stale_or_missing_count": 3058,
+        "stale_or_missing_count": 3073,
         "rejected_non_executable_count": 0
       },
       {
         "book": "betrivers",
         "owned_book": false,
         "recommendations_count": 1,
-        "best_price_count": 3999,
+        "best_price_count": 4033,
         "executable_near_miss_count": 0,
-        "stale_or_missing_count": 1888,
+        "stale_or_missing_count": 1897,
         "rejected_non_executable_count": 3
       },
       {
@@ -114,18 +114,18 @@
         "book": "draftkings",
         "owned_book": true,
         "recommendations_count": 23,
-        "best_price_count": 5721,
+        "best_price_count": 5761,
         "executable_near_miss_count": 111,
-        "stale_or_missing_count": 2837,
+        "stale_or_missing_count": 2863,
         "rejected_non_executable_count": 0
       },
       {
         "book": "fanduel",
         "owned_book": true,
         "recommendations_count": 11,
-        "best_price_count": 7442,
+        "best_price_count": 7497,
         "executable_near_miss_count": 149,
-        "stale_or_missing_count": 3605,
+        "stale_or_missing_count": 3635,
         "rejected_non_executable_count": 0
       }
     ],
@@ -135,10 +135,10 @@
         "market_family": "main_market",
         "market_type": "ML",
         "bets": 5,
-        "sits": 581,
+        "sits": 597,
         "avg_edge": 0.46,
         "rejection_reasons": {
-          "invalid_snapshot": 102,
+          "invalid_snapshot": 118,
           "no_edge": 365,
           "stale_market": 114
         }
@@ -148,11 +148,11 @@
         "market_family": "main_market",
         "market_type": "ML",
         "bets": 5,
-        "sits": 2843,
-        "avg_edge": 0.88,
+        "sits": 2863,
+        "avg_edge": 0.87,
         "rejection_reasons": {
           "exposure_cap_reached": 9,
-          "no_edge": 1958,
+          "no_edge": 1978,
           "sub_minimum_kelly": 42,
           "stale_market": 670,
           "invalid_snapshot": 164
@@ -175,13 +175,13 @@
         "market_family": "main_market",
         "market_type": "Spread",
         "bets": 0,
-        "sits": 4838,
+        "sits": 4868,
         "avg_edge": 0.5,
         "rejection_reasons": {
           "no_edge": 1824,
           "exposure_cap_reached": 2,
           "sub_minimum_kelly": 2,
-          "invalid_snapshot": 2496,
+          "invalid_snapshot": 2526,
           "stale_market": 514
         }
       },
@@ -190,12 +190,12 @@
         "market_family": "main_market",
         "market_type": "Total",
         "bets": 0,
-        "sits": 6566,
+        "sits": 6592,
         "avg_edge": 0.38,
         "rejection_reasons": {
-          "no_edge": 2048,
+          "no_edge": 2064,
           "sub_minimum_kelly": 2,
-          "invalid_snapshot": 3934,
+          "invalid_snapshot": 3944,
           "stale_market": 582
         }
       },
@@ -204,10 +204,10 @@
         "market_family": "main_market",
         "market_type": "ML",
         "bets": 3,
-        "sits": 657,
-        "avg_edge": 0.83,
+        "sits": 665,
+        "avg_edge": 0.82,
         "rejection_reasons": {
-          "no_edge": 422,
+          "no_edge": 430,
           "stale_market": 160,
           "invalid_snapshot": 72,
           "sub_minimum_kelly": 3
@@ -218,12 +218,12 @@
         "market_family": "main_market",
         "market_type": "Spread",
         "bets": 2,
-        "sits": 914,
-        "avg_edge": 0.42,
+        "sits": 926,
+        "avg_edge": 0.41,
         "rejection_reasons": {
-          "no_edge": 430,
+          "no_edge": 436,
           "stale_market": 124,
-          "invalid_snapshot": 360
+          "invalid_snapshot": 366
         }
       },
       {
@@ -231,12 +231,12 @@
         "market_family": "main_market",
         "market_type": "Total",
         "bets": 0,
-        "sits": 970,
+        "sits": 984,
         "avg_edge": 0.37,
         "rejection_reasons": {
-          "no_edge": 458,
+          "no_edge": 462,
           "stale_market": 90,
-          "invalid_snapshot": 422
+          "invalid_snapshot": 432
         }
       },
       {
@@ -244,10 +244,10 @@
         "market_family": "main_market",
         "market_type": "ML",
         "bets": 8,
-        "sits": 1348,
+        "sits": 1352,
         "avg_edge": 0.67,
         "rejection_reasons": {
-          "no_edge": 979,
+          "no_edge": 983,
           "non_executable_book": 2,
           "exposure_cap_reached": 8,
           "sub_minimum_kelly": 2,
@@ -261,11 +261,11 @@
         "market_family": "main_market",
         "market_type": "Spread",
         "bets": 19,
-        "sits": 1391,
+        "sits": 1395,
         "avg_edge": 0.93,
         "rejection_reasons": {
           "exposure_cap_reached": 11,
-          "no_edge": 977,
+          "no_edge": 981,
           "sub_minimum_kelly": 23,
           "invalid_snapshot": 104,
           "stale_market": 276
@@ -276,13 +276,13 @@
         "market_family": "main_market",
         "market_type": "Total",
         "bets": 1,
-        "sits": 2023,
+        "sits": 2033,
         "avg_edge": 0.53,
         "rejection_reasons": {
-          "no_edge": 1159,
+          "no_edge": 1161,
           "exposure_cap_reached": 6,
           "sub_minimum_kelly": 10,
-          "invalid_snapshot": 580,
+          "invalid_snapshot": 588,
           "stale_market": 268
         }
       }
@@ -297,8 +297,8 @@
       {
         "level": "RED",
         "code": "invalid_snapshot_spike",
-        "occurrences": 119,
-        "message": "119 run(s) crossed the invalid snapshot spike threshold."
+        "occurrences": 120,
+        "message": "120 run(s) crossed the invalid snapshot spike threshold."
       },
       {
         "level": "RED",
@@ -315,8 +315,8 @@
       {
         "level": "INFO",
         "code": "clean_sit_day",
-        "occurrences": 120,
-        "message": "120 clean SIT run(s) recorded this week."
+        "occurrences": 121,
+        "message": "121 clean SIT run(s) recorded this week."
       }
     ]
   }
