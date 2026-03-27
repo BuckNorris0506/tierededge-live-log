@@ -17,6 +17,7 @@ const AUTOMATIC_SETTLEMENT_RUNS_PATH = CORE_PATHS.automaticSettlementRuns;
 const MISSED_EXECUTION_WINDOWS_PATH = CORE_PATHS.missedExecutionWindows;
 const WEEKLY_OPERATOR_REVIEW_PATH = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/weekly-operator-review.json';
 const OPENCLAW_JOBS_PATH = '/Users/jaredbuckman/.openclaw/cron/jobs.json';
+const CRON_DEBUG_LOG_PATH = '/tmp/tierededge-cron-debug.log';
 
 function parsePhase(bankroll) {
   if (!Number.isFinite(bankroll)) return 'UNKNOWN';
@@ -1024,12 +1025,97 @@ function buildNotificationSummary(notificationEvents) {
   };
 }
 
+function readSchedulerBoundarySummary(logPath = CRON_DEBUG_LOG_PATH) {
+  if (!fs.existsSync(logPath)) {
+    return {
+      last_scheduler_boundary_fire_time: null,
+      last_scheduler_boundary_fire_job_name: null,
+      scheduler_boundary_recent_events: [],
+      scheduler_boundary_log_path: logPath,
+    };
+  }
+
+  const lines = fs.readFileSync(logPath, 'utf8')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => line.startsWith('CRON FIRED '));
+
+  const events = lines
+    .map((line) => {
+      const match = line.match(/^CRON FIRED (.+) ([A-Za-z0-9._-]+)$/);
+      if (!match) return null;
+      const [, rawTime, jobName] = match;
+      const parsedMs = Date.parse(rawTime);
+      return {
+        raw_line: line,
+        scheduler_boundary_fire_time_raw: rawTime,
+        scheduler_boundary_fire_time_utc: Number.isFinite(parsedMs) ? new Date(parsedMs).toISOString() : null,
+        scheduler_boundary_fire_job_name: jobName,
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => String(b.scheduler_boundary_fire_time_utc || '').localeCompare(String(a.scheduler_boundary_fire_time_utc || '')));
+
+  return {
+    last_scheduler_boundary_fire_time: events[0]?.scheduler_boundary_fire_time_utc || null,
+    last_scheduler_boundary_fire_job_name: events[0]?.scheduler_boundary_fire_job_name || null,
+    scheduler_boundary_recent_events: events.slice(0, 25),
+    scheduler_boundary_log_path: logPath,
+  };
+}
+
 function boostStatusForEntry(entry) {
   const expiresAtUtc = String(entry?.expires_at_utc || '').trim();
   if (!expiresAtUtc) return 'ACTIVE';
   const expiresMs = Date.parse(expiresAtUtc);
   if (!Number.isFinite(expiresMs)) return 'ACTIVE';
   return expiresMs > Date.now() ? 'ACTIVE' : 'INACTIVE';
+}
+
+function normalizeProfitBoostSportsbook(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return null;
+  if (raw === 'draftkings' || raw === 'dk') return 'DraftKings';
+  if (raw === 'fanduel' || raw === 'fd') return 'FanDuel';
+  if (raw === 'betmgm' || raw === 'mgm') return 'BetMGM';
+  if (raw === 'caesars' || raw === 'czr') return 'Caesars';
+  if (raw === 'bet365') return 'bet365';
+  if (raw === 'circa') return 'Circa';
+  if (raw === 'betrivers' || raw === 'br') return 'BetRivers';
+  return String(value || '').trim();
+}
+
+function normalizeProfitBoostScope(value) {
+  return String(value || '').trim().replace(/\s+/g, ' ').toUpperCase() || null;
+}
+
+function normalizeProfitBoostOptionalNumber(value) {
+  const numeric = parseNumber(value);
+  return Number.isFinite(numeric) ? round2(numeric) : null;
+}
+
+function normalizeProfitBoostBetTypes(value) {
+  return String(value || '').trim().replace(/\s+/g, ' ') || null;
+}
+
+function normalizeProfitBoostExpiration(row) {
+  const expiresAtUtc = String(row?.expires_at_utc || '').trim();
+  if (expiresAtUtc) return expiresAtUtc;
+  const expiresRaw = String(row?.expires_raw || '').trim();
+  return expiresRaw ? expiresRaw.replace(/\s+/g, ' ') : null;
+}
+
+function buildProfitBoostIdentityKey(row) {
+  return [
+    normalizeProfitBoostSportsbook(row?.sportsbook) || '',
+    normalizeProfitBoostOptionalNumber(row?.boost_percent) ?? '',
+    normalizeProfitBoostScope(row?.scope) || '',
+    normalizeProfitBoostOptionalNumber(row?.max_wager) ?? '',
+    normalizeProfitBoostBetTypes(row?.bet_types) || '',
+    normalizeProfitBoostOptionalNumber(row?.min_total_odds) ?? '',
+    normalizeProfitBoostExpiration(row) || '',
+  ].join('|');
 }
 
 function buildProfitBoostSummary(rows) {
@@ -1039,20 +1125,42 @@ function buildProfitBoostSummary(rows) {
   const normalizedRows = sorted.map((row) => ({
     boost_id: row.boost_id || null,
     created_at_utc: row.created_at_utc || null,
-    sportsbook: row.sportsbook || null,
+    sportsbook: normalizeProfitBoostSportsbook(row.sportsbook),
     boost_percent: parseNumber(row.boost_percent),
-    scope: row.scope || null,
+    scope: normalizeProfitBoostScope(row.scope),
+    max_wager: normalizeProfitBoostOptionalNumber(row.max_wager),
+    bet_types: normalizeProfitBoostBetTypes(row.bet_types),
+    min_total_odds: normalizeProfitBoostOptionalNumber(row.min_total_odds),
     expires_raw: row.expires_raw || null,
     expires_at_utc: row.expires_at_utc || null,
     status: boostStatusForEntry(row),
     source: row.source || null,
   }));
+  const dedupedMap = new Map();
+  for (const row of normalizedRows) {
+    const identityKey = buildProfitBoostIdentityKey(row);
+    const existing = dedupedMap.get(identityKey);
+    if (!existing) {
+      dedupedMap.set(identityKey, {
+        ...row,
+        identity_key: identityKey,
+        duplicate_count: 1,
+        source_boost_ids: row.boost_id ? [row.boost_id] : [],
+      });
+      continue;
+    }
+    existing.duplicate_count += 1;
+    if (row.boost_id) existing.source_boost_ids.push(row.boost_id);
+  }
+  const dedupedRows = [...dedupedMap.values()];
   return {
-    total_count: normalizedRows.length,
-    active_count: normalizedRows.filter((row) => row.status === 'ACTIVE').length,
-    inactive_count: normalizedRows.filter((row) => row.status === 'INACTIVE').length,
-    active_profit_boosts: normalizedRows.filter((row) => row.status === 'ACTIVE'),
-    recent_profit_boosts: normalizedRows.slice(0, 25),
+    total_count: dedupedRows.length,
+    raw_total_count: normalizedRows.length,
+    duplicate_count: normalizedRows.length - dedupedRows.length,
+    active_count: dedupedRows.filter((row) => row.status === 'ACTIVE').length,
+    inactive_count: dedupedRows.filter((row) => row.status === 'INACTIVE').length,
+    active_profit_boosts: dedupedRows.filter((row) => row.status === 'ACTIVE'),
+    recent_profit_boosts: dedupedRows.slice(0, 25),
   };
 }
 
@@ -1073,6 +1181,41 @@ function buildTelegramOperatorSummary(telegramOperatorEvents, notificationSummar
     accepted_command_count: accepted.length,
     rejected_attempt_count: rejected.length,
     recent_events: sorted.slice(0, 10),
+  };
+}
+
+function buildFridayFunSummary(runtimeStatus, payloadBuildMs) {
+  const fridayJob = runtimeStatus?.jobs?.friday_sgp || null;
+  const latest = fridayJob?.latest_finished || fridayJob?.latest_successful || fridayJob?.latest_finished_overall || null;
+  const todayCt = toCtIsoDate(payloadBuildMs);
+  const todayWeekdayCt = new Date(payloadBuildMs).toLocaleDateString('en-US', {
+    timeZone: 'America/Chicago',
+    weekday: 'long',
+  });
+  const todayIsFriday = todayWeekdayCt === 'Friday';
+  const latestDateKey = String(latest?.date_key || '').trim() || null;
+  const currentFridayRunAvailable = Boolean(todayIsFriday && latestDateKey && latestDateKey === todayCt);
+  const currentRelevance = currentFridayRunAvailable ? 'today' : (todayIsFriday ? 'today_pending_or_stale' : 'historical_only');
+  const rawSummary = String(latest?.summary || latest?.raw_summary || '').trim();
+  const summaryExcerpt = rawSummary
+    ? rawSummary.split('\n').map((line) => line.trim()).filter(Boolean).slice(0, 8).join('\n')
+    : null;
+  return {
+    lane_key: 'friday_sgp',
+    lane_label: 'FUN SGP',
+    today_is_friday: todayIsFriday,
+    current_relevance: currentRelevance,
+    latest_run_time_ct: latest?.run_at_ct || null,
+    latest_run_date_key: latestDateKey,
+    latest_status: latest?.status || null,
+    latest_message_type: latest?.message_type || null,
+    latest_has_actionable_play: latest?.has_actionable_bets === true,
+    latest_plain_reason: latest?.plain_reason || null,
+    latest_summary_excerpt: summaryExcerpt,
+    source_job_name: fridayJob?.name || 'friday-sgp',
+    source_schedule_time_ct: fridayJob?.schedule_time_ct || null,
+    source_enabled: fridayJob?.enabled === true,
+    payload_message: fridayJob?.payload_message || null,
   };
 }
 
@@ -1506,6 +1649,8 @@ function buildOperatorDashboard({
   payloadBuildMs,
   decisionPayload,
   latestCanonicalHuntRun,
+  schedulerBoundarySummary,
+  fridayFunSummary,
   validLearningDecisions,
   latestDate,
   rejectedSummary,
@@ -1605,6 +1750,8 @@ function buildOperatorDashboard({
             key: 'run_status',
             label: 'Run Status',
             metrics: [
+              { label: 'last_scheduler_boundary_fire_time', value: schedulerBoundarySummary?.last_scheduler_boundary_fire_time || null },
+              { label: 'last_scheduler_boundary_fire_job_name', value: schedulerBoundarySummary?.last_scheduler_boundary_fire_job_name || null },
               { label: 'latest_run_id', value: latestCanonicalHuntRun?.run_id || latestCanonicalHuntRun?.generated_at_utc || null },
               { label: 'latest_run_status', value: latestCanonicalHuntRun?.status || 'Insufficient data' },
               { label: 'verdict', value: decisionPayload?.verdict || null },
@@ -1660,6 +1807,16 @@ function buildOperatorDashboard({
             metrics: [
               { label: 'feed_unavailable_owned_books', value: listOrNone(sportsbookScope.feed_unavailable_owned_books) },
               { label: 'markets_scanned_by_sport_market', value: marketsScannedSummary.length ? marketsScannedSummary.join(' • ') : null },
+            ],
+          },
+          {
+            key: 'friday_fun_lane',
+            label: 'Friday Fun Lane',
+            metrics: [
+              { label: 'lane_label', value: fridayFunSummary?.lane_label || 'FUN SGP' },
+              { label: 'current_relevance', value: fridayFunSummary?.current_relevance || 'historical_only' },
+              { label: 'latest_run_time_ct', value: fridayFunSummary?.latest_run_time_ct || null },
+              { label: 'latest_message_type', value: fridayFunSummary?.latest_message_type || null },
             ],
           },
         ],
@@ -1925,10 +2082,12 @@ function main() {
   const automaticSettlementSummary = buildAutomaticSettlementSummary(automaticSettlementRuns);
   const automationLockSummary = buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns);
   const directAutomationSummary = buildDirectAutomationSummary(directAutomationRuns, directAutomationConfig);
+  const schedulerBoundarySummary = readSchedulerBoundarySummary();
   const apiBurnReductionSummary = buildApiBurnReductionSummary(directAutomationConfig, openclawJobs);
   const notificationSummary = buildNotificationSummary(notificationEvents);
   const profitBoostSummary = buildProfitBoostSummary(profitBoostRows);
   const telegramOperatorSummary = buildTelegramOperatorSummary(telegramOperatorEvents, notificationSummary);
+  const fridayFunSummary = buildFridayFunSummary(runtimeStatus, payloadBuildMs);
   const missedExecutionWindowSummary = buildMissedExecutionWindowSummary(missedExecutionWindows);
   const actionableBoardContinuitySummary = buildActionableBoardContinuitySummary({
     decisions: validLearningDecisions,
@@ -1961,6 +2120,8 @@ function main() {
     payloadBuildMs,
     decisionPayload,
     latestCanonicalHuntRun,
+    schedulerBoundarySummary,
+    fridayFunSummary,
     validLearningDecisions,
     latestDate,
     rejectedSummary: rejectedOpportunitySummary,
@@ -2093,6 +2254,9 @@ function main() {
     missed_execution_window_summary: missedExecutionWindowSummary,
     actionable_board_continuity_summary: actionableBoardContinuitySummary,
     direct_automation_summary: directAutomationSummary,
+    scheduler_boundary_summary: schedulerBoundarySummary,
+    last_scheduler_boundary_fire_time: schedulerBoundarySummary.last_scheduler_boundary_fire_time,
+    last_scheduler_boundary_fire_job_name: schedulerBoundarySummary.last_scheduler_boundary_fire_job_name,
     model_backed_usage_in_critical_path: apiBurnReductionSummary.model_backed_usage_in_critical_path,
     whatsapp_enabled: apiBurnReductionSummary.whatsapp_enabled,
     scheduled_hunt_times: apiBurnReductionSummary.scheduled_hunt_times,
@@ -2102,6 +2266,7 @@ function main() {
     last_automatic_settlement_run: automaticSettlementSummary.last_automatic_settlement_run,
     automation_lock_summary: automationLockSummary,
     notification_summary: notificationSummary,
+    friday_fun_summary: fridayFunSummary,
     active_profit_boosts: profitBoostSummary.active_profit_boosts,
     profit_boost_summary: profitBoostSummary,
     telegram_operator_summary: telegramOperatorSummary,
@@ -2236,6 +2401,7 @@ function main() {
       rejected_close_capture_log_path: REJECTED_CLOSE_CAPTURE_LOG_PATH,
       automatic_settlement_runs_path: AUTOMATIC_SETTLEMENT_RUNS_PATH,
       direct_automation_runs_path: CORE_PATHS.directAutomationRuns,
+      scheduler_boundary_log_path: schedulerBoundarySummary.scheduler_boundary_log_path,
       profit_boost_log_path: CORE_PATHS.profitBoostLog,
       clean_run_summary_path: CORE_PATHS.cleanRunSummary,
       weekly_operator_review_path: WEEKLY_OPERATOR_REVIEW_PATH,
@@ -2247,6 +2413,7 @@ function main() {
   };
 
   writeJson(CORE_PATHS.canonicalState, payload);
+  writeJson(CORE_PATHS.publicData, payload);
   console.log(`Built canonical state: ${CORE_PATHS.canonicalState}`);
 }
 

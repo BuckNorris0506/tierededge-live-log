@@ -101,11 +101,17 @@ function normalizeBoostScope(rawScope) {
   const cleaned = text
     .replace(/\b(i\s+have|i['’]?ve\s+got|i\s+got)\b/gi, '')
     .replace(/\b(a|an)\b/gi, '')
+    .replace(/\b(any)\b/gi, '')
     .replace(/\bprofit\s+boost\b/gi, '')
     .replace(/\bboost\b/gi, '')
     .replace(/\bon\s+(draftkings|dk|fanduel|fd|betmgm|mgm|caesars|czr|bet365|circa|betrivers|br)\b/gi, '')
     .replace(/\bfor\b/gi, '')
     .replace(/\bpercent\b/gi, '')
+    .replace(/\b\d+\+\s*leg\b/gi, '')
+    .replace(/\bleg\b/gi, '')
+    .replace(/\bsgp\b/gi, '')
+    .replace(/\bevents?\b/gi, '')
+    .replace(/\bgames?\b/gi, '')
     .replace(/[%:,]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -113,11 +119,11 @@ function normalizeBoostScope(rawScope) {
 
   const knownScopes = [
     ['GENERAL', /\bgeneral\b/i],
-    ['MLB', /\bmlb\b|baseball/i],
-    ['NBA', /\bnba\b/i],
+    ['MLB', /\bmlb\b|baseball|mlb event|mlb game/i],
+    ['NBA', /\bnba\b|nba sgp/i],
     ['NHL', /\bnhl\b|hockey/i],
     ['NFL', /\bnfl\b|football/i],
-    ['NCAAB', /\bncaab\b|cbb\b|college basketball/i],
+    ['NCAAB', /\bncaab\b|cbb\b|college basketball|college bball|college hoops/i],
     ['NCAAF', /\bncaaf\b|college football/i],
     ['WNBA', /\bwnba\b/i],
     ['MLS', /\bmls\b|soccer/i],
@@ -187,6 +193,111 @@ function parseNaturalLanguageProfitBoost(rawMessage) {
   };
 }
 
+function canonicalizeProfitBoostPayload(payload) {
+  if (!payload || typeof payload !== 'object') return null;
+  const sportsbook = normalizeBookAlias(payload.sportsbook);
+  const boostPercent = Number(payload.boost_percent);
+  const scope = normalizeBoostScope(payload.scope);
+  const expiresRaw = String(payload.expires_raw || 'Not specified').trim() || 'Not specified';
+  const status = String(payload.status || 'ACTIVE').trim().toUpperCase() || 'ACTIVE';
+  return {
+    sportsbook,
+    boost_percent: Number.isFinite(boostPercent) ? boostPercent : null,
+    scope,
+    expires_raw: expiresRaw,
+    expires_at_utc: payload.expires_at_utc || null,
+    status,
+  };
+}
+
+function parseProfitBoostEditFields(rawMessage) {
+  const text = String(rawMessage || '').trim();
+  if (!text) {
+    return { ok: false, reason: 'missing edit fields' };
+  }
+
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (!lines.length) {
+    return { ok: false, reason: 'missing edit fields' };
+  }
+
+  const firstIsEdit = /^EDIT$/i.test(lines[0]);
+  const editLines = firstIsEdit ? lines.slice(1) : lines;
+  if (!editLines.length) {
+    return { ok: false, reason: 'missing edit fields' };
+  }
+
+  const updates = {};
+  const invalidFields = [];
+  for (const line of editLines) {
+    const match = line.match(/^([A-Za-z ]+):\s*(.+)$/);
+    if (!match) {
+      invalidFields.push(line);
+      continue;
+    }
+    const label = match[1].trim().toLowerCase();
+    const value = match[2].trim();
+    if (!value) {
+      invalidFields.push(line);
+      continue;
+    }
+
+    if (label === 'sportsbook' || label === 'book') {
+      const sportsbook = normalizeBookAlias(value);
+      if (!sportsbook) {
+        return { ok: false, reason: 'invalid sportsbook' };
+      }
+      updates.sportsbook = sportsbook;
+      continue;
+    }
+
+    if (label === 'boost' || label === 'boost percent' || label === 'percent') {
+      const boostPercent = parseFlexibleBoostPercent(value) ?? parseFlexibleBoostPercent(`${value}%`);
+      if (boostPercent === null) {
+        return { ok: false, reason: 'invalid boost percent' };
+      }
+      updates.boost_percent = boostPercent;
+      continue;
+    }
+
+    if (label === 'scope') {
+      const scope = normalizeBoostScope(value);
+      if (!scope) {
+        return { ok: false, reason: 'invalid scope' };
+      }
+      updates.scope = scope;
+      continue;
+    }
+
+    if (label === 'expires' || label === 'expiration') {
+      updates.expires_raw = value;
+      updates.expires_at_utc = null;
+      continue;
+    }
+
+    if (label === 'status') {
+      const status = String(value).trim().toUpperCase();
+      if (!status) {
+        return { ok: false, reason: 'invalid status' };
+      }
+      updates.status = status;
+      continue;
+    }
+
+    invalidFields.push(line);
+  }
+
+  if (invalidFields.length) {
+    return { ok: false, reason: 'unrecognized edit fields', invalid_fields: invalidFields };
+  }
+
+  return { ok: true, updates };
+}
+
 function renderProfitBoostConfirmation(candidate) {
   return [
     'I parsed this:',
@@ -195,9 +306,10 @@ function renderProfitBoostConfirmation(candidate) {
     `Sportsbook: ${candidate.sportsbook}`,
     `Boost: ${Number.isInteger(candidate.boost_percent) ? candidate.boost_percent : candidate.boost_percent.toFixed(2)}%`,
     `Scope: ${candidate.scope}`,
+    `Expires: ${candidate.expires_raw || candidate.expires_at_utc || 'Not specified'}`,
     `Status: ${candidate.status || 'ACTIVE'}`,
     '',
-    'Reply YES to confirm or EDIT to correct.',
+    'Reply YES to confirm, EDIT to correct, or CANCEL to discard.',
   ].join('\n');
 }
 
@@ -216,9 +328,36 @@ function renderProfitBoostLogged(entry) {
 function renderProfitBoostEditPrompt() {
   return [
     'EDIT MODE',
-    'Send the corrected profit boost message.',
-    'Example:',
-    'I have a 100% profit boost for MLB on DraftKings',
+    'Reply with one or more labeled lines to update the pending boost.',
+    'Fields:',
+    'Sportsbook: DraftKings',
+    'Boost: 100%',
+    'Scope: MLB',
+    'Expires: 2026-03-27 11:59 PM CT',
+  ].join('\n');
+}
+
+function renderProfitBoostEditFailure(reason, invalidFields = []) {
+  const lines = [
+    'NOT LOGGED ❌',
+    '',
+    `Reason: ${reason}`,
+  ];
+  if (invalidFields.length) {
+    lines.push(`Unrecognized: ${invalidFields.join(' | ')}`);
+  }
+  lines.push('Use labeled lines after EDIT, for example:');
+  lines.push('EDIT');
+  lines.push('Boost: 50%');
+  lines.push('Scope: NBA');
+  return lines.join('\n');
+}
+
+function renderProfitBoostCanceled() {
+  return [
+    'CANCELED',
+    '',
+    'Pending profit boost confirmation discarded.',
   ].join('\n');
 }
 
@@ -282,7 +421,11 @@ async function processUpdate(update, allowedChatId, now, state) {
   }
 
   if (pendingMatchesChat && normalizedMessage === 'EDIT') {
-    state.pending_profit_boost_confirmation = null;
+    state.pending_profit_boost_confirmation = {
+      ...pendingBoost,
+      awaiting_edit: true,
+      updated_at_utc: now,
+    };
     persistState(state);
     const sentAt = new Date().toISOString();
     const delivery = await sendTelegramMessage(renderProfitBoostEditPrompt(), { chatId, keyboard: commandKeyboard() });
@@ -306,7 +449,120 @@ async function processUpdate(update, allowedChatId, now, state) {
       delivery_error: delivery.ok ? null : delivery.error,
       delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
       legacy_alias_used: false,
-      profit_boost_confirmation_status: 'edit_requested',
+      profit_boost_confirmation_status: 'awaiting_edit',
+      last_outbound_alert_time: alertMeta.last_outbound_alert_time,
+      last_outbound_alert_type: alertMeta.last_outbound_alert_type,
+    };
+  }
+
+  if (pendingMatchesChat && normalizedMessage === 'CANCEL') {
+    state.pending_profit_boost_confirmation = null;
+    persistState(state);
+    const sentAt = new Date().toISOString();
+    const delivery = await sendTelegramMessage(renderProfitBoostCanceled(), { chatId, keyboard: commandKeyboard() });
+    const alertMeta = latestOperatorAlertMetadata();
+    return {
+      ...base,
+      outbound_timestamp_utc: sentAt,
+      command: 'PROFIT BOOST',
+      resolved_command: 'PROFIT BOOST',
+      auth_status: 'accepted',
+      acknowledgment_sent: false,
+      acknowledgment_timestamp_utc: null,
+      acknowledgment_delivery_status: null,
+      acknowledgment_delivery_error: null,
+      response_type: 'profit_boost_confirmation_canceled',
+      run_id: null,
+      notification_tier: null,
+      duplicate_suppression_status: null,
+      outbound_channel: delivery.ok ? 'telegram' : 'telegram_failed',
+      delivery_status: delivery.ok ? 'sent' : 'failed',
+      delivery_error: delivery.ok ? null : delivery.error,
+      delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
+      legacy_alias_used: false,
+      profit_boost_confirmation_status: 'canceled',
+      last_outbound_alert_time: alertMeta.last_outbound_alert_time,
+      last_outbound_alert_type: alertMeta.last_outbound_alert_type,
+    };
+  }
+
+  const editFields = pendingMatchesChat
+    ? parseProfitBoostEditFields(rawMessage)
+    : null;
+  const shouldApplyPendingEdit = Boolean(
+    pendingMatchesChat && (
+      /^EDIT(?:\s|$)/i.test(rawMessage)
+      || pendingBoost?.awaiting_edit
+    ),
+  );
+
+  if (shouldApplyPendingEdit) {
+    if (!editFields?.ok) {
+      const sentAt = new Date().toISOString();
+      const delivery = await sendTelegramMessage(
+        renderProfitBoostEditFailure(editFields?.reason || 'invalid edit', editFields?.invalid_fields || []),
+        { chatId, keyboard: commandKeyboard() },
+      );
+      const alertMeta = latestOperatorAlertMetadata();
+      return {
+        ...base,
+        outbound_timestamp_utc: sentAt,
+        command: 'PROFIT BOOST',
+        resolved_command: 'PROFIT BOOST',
+        auth_status: 'accepted',
+        acknowledgment_sent: false,
+        acknowledgment_timestamp_utc: null,
+        acknowledgment_delivery_status: null,
+        acknowledgment_delivery_error: null,
+        response_type: 'profit_boost_edit_rejected',
+        run_id: null,
+        notification_tier: null,
+        duplicate_suppression_status: null,
+        outbound_channel: delivery.ok ? 'telegram' : 'telegram_failed',
+        delivery_status: delivery.ok ? 'sent' : 'failed',
+        delivery_error: delivery.ok ? null : delivery.error,
+        delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
+        legacy_alias_used: false,
+        profit_boost_confirmation_status: 'edit_rejected',
+        last_outbound_alert_time: alertMeta.last_outbound_alert_time,
+        last_outbound_alert_type: alertMeta.last_outbound_alert_type,
+      };
+    }
+
+    const mergedPayload = canonicalizeProfitBoostPayload({
+      ...(pendingBoost?.payload || {}),
+      ...editFields.updates,
+    });
+    state.pending_profit_boost_confirmation = {
+      ...pendingBoost,
+      payload: mergedPayload,
+      awaiting_edit: false,
+      updated_at_utc: now,
+    };
+    persistState(state);
+    const sentAt = new Date().toISOString();
+    const delivery = await sendTelegramMessage(renderProfitBoostConfirmation(mergedPayload), { chatId, keyboard: commandKeyboard() });
+    const alertMeta = latestOperatorAlertMetadata();
+    return {
+      ...base,
+      outbound_timestamp_utc: sentAt,
+      command: 'PROFIT BOOST',
+      resolved_command: 'PROFIT BOOST',
+      auth_status: 'accepted',
+      acknowledgment_sent: false,
+      acknowledgment_timestamp_utc: null,
+      acknowledgment_delivery_status: null,
+      acknowledgment_delivery_error: null,
+      response_type: 'profit_boost_confirmation_requested',
+      run_id: null,
+      notification_tier: null,
+      duplicate_suppression_status: null,
+      outbound_channel: delivery.ok ? 'telegram' : 'telegram_failed',
+      delivery_status: delivery.ok ? 'sent' : 'failed',
+      delivery_error: delivery.ok ? null : delivery.error,
+      delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
+      legacy_alias_used: false,
+      profit_boost_confirmation_status: 'edit_applied',
       last_outbound_alert_time: alertMeta.last_outbound_alert_time,
       last_outbound_alert_type: alertMeta.last_outbound_alert_type,
     };
@@ -353,6 +609,7 @@ async function processUpdate(update, allowedChatId, now, state) {
       created_at_utc: now,
       source_text: rawMessage,
       payload: naturalLanguageProfitBoost.payload,
+      awaiting_edit: false,
     };
     persistState(state);
     const sentAt = new Date().toISOString();

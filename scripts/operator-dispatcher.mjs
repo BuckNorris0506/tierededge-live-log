@@ -116,6 +116,21 @@ function formatBoostExpiration(entry) {
   return entry?.expires_at_utc || 'Unknown';
 }
 
+function formatBoostMoney(value) {
+  const numeric = parseNumber(value);
+  return Number.isFinite(numeric) ? `$${numeric.toFixed(2)}` : null;
+}
+
+function formatBoostOddsThreshold(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return null;
+  if (/^[+-]\d+$/.test(raw)) return raw;
+  const numeric = parseNumber(raw);
+  if (!Number.isFinite(numeric)) return null;
+  const rounded = Math.round(numeric);
+  return rounded > 0 ? `+${rounded}` : String(rounded);
+}
+
 function readProfitBoostEntries() {
   return readJsonl(CORE_PATHS.profitBoostLog);
 }
@@ -136,28 +151,74 @@ export function parseProfitBoostMessage(input) {
     .filter(Boolean);
   if (!lines.length || normalizeOperatorCommand(lines[0]) !== 'PROFIT BOOST') return null;
 
-  const expectedLines = [
+  const requiredExample = [
     'PROFIT BOOST',
     'Sportsbook: DraftKings',
     'Boost: 50%',
     'Scope: MLB',
     'Expires: 2026-03-27 11:59 PM CT',
   ];
+  const detailedExample = [
+    'PROFIT BOOST',
+    'Sportsbook: DraftKings',
+    'Boost: 50%',
+    'Scope: MLB',
+    'Max Wager: $25',
+    'Bet Types: Straight, SGP',
+    'Min Total Odds: +200',
+    'Expires: 2026-03-27 11:59 PM CT',
+  ];
 
-  if (lines.length !== 5) {
+  if (lines.length < 5) {
     return {
       ok: false,
       reason: 'unsupported format',
-      details: `Use exactly 5 non-blank lines:\n${expectedLines.join('\n')}`,
+      details: `Use at least these 5 non-blank lines:\n${requiredExample.join('\n')}`,
     };
   }
 
-  const sportsbookRaw = parseLabeledValue(lines[1], 'Sportsbook');
+  const fieldLines = lines.slice(1);
+  const labeledFields = new Map();
+  const duplicateLabels = [];
+  const unrecognizedLines = [];
+  const allowedLabels = new Set(['SPORTSBOOK', 'BOOST', 'SCOPE', 'MAX WAGER', 'BET TYPES', 'MIN TOTAL ODDS', 'EXPIRES']);
+  for (const line of fieldLines) {
+    const match = String(line || '').match(/^\s*([^:]+)\s*:\s*(.+?)\s*$/);
+    if (!match) {
+      unrecognizedLines.push(line);
+      continue;
+    }
+    const label = normalizeOperatorCommand(match[1]);
+    const value = match[2].trim();
+    if (!allowedLabels.has(label)) {
+      unrecognizedLines.push(line);
+      continue;
+    }
+    if (labeledFields.has(label)) {
+      duplicateLabels.push(label);
+      continue;
+    }
+    labeledFields.set(label, value);
+  }
+
+  if (unrecognizedLines.length || duplicateLabels.length) {
+    const details = [];
+    if (unrecognizedLines.length) details.push(`Unrecognized lines: ${unrecognizedLines.join(' | ')}`);
+    if (duplicateLabels.length) details.push(`Duplicate fields: ${duplicateLabels.join(', ')}`);
+    details.push(`Supported format:\n${detailedExample.join('\n')}`);
+    return {
+      ok: false,
+      reason: 'unsupported format',
+      details: details.join('\n'),
+    };
+  }
+
+  const sportsbookRaw = labeledFields.get('SPORTSBOOK') || null;
   if (!sportsbookRaw) {
     return {
       ok: false,
       reason: 'missing sportsbook',
-      details: `Use line 2 as "Sportsbook: [Book]".\nExample:\n${expectedLines.join('\n')}`,
+      details: `Use "Sportsbook: [Book]".\nExample:\n${detailedExample.join('\n')}`,
     };
   }
   const sportsbook = canonicalSportsbook(sportsbookRaw);
@@ -165,35 +226,58 @@ export function parseProfitBoostMessage(input) {
     return {
       ok: false,
       reason: 'unsupported sportsbook',
-      details: `Sportsbook is missing or unsupported.\nUse:\n${expectedLines.join('\n')}`,
+      details: `Sportsbook is missing or unsupported.\nUse:\n${detailedExample.join('\n')}`,
     };
   }
 
-  const boostRaw = parseLabeledValue(lines[2], 'Boost');
+  const boostRaw = labeledFields.get('BOOST') || null;
   const boostPercent = parseBoostPercentToken(boostRaw);
   if (boostPercent === null) {
     return {
       ok: false,
       reason: 'invalid boost percent',
-      details: `Use line 3 as "Boost: [Percent]".\nExample:\n${expectedLines.join('\n')}`,
+      details: `Use "Boost: [Percent]".\nExample:\n${detailedExample.join('\n')}`,
     };
   }
 
-  const scopeRaw = parseLabeledValue(lines[3], 'Scope');
+  const scopeRaw = labeledFields.get('SCOPE') || null;
   if (!scopeRaw) {
     return {
       ok: false,
       reason: 'missing scope',
-      details: `Use line 4 as "Scope: [Market/Sport or General]".\nExample:\n${expectedLines.join('\n')}`,
+      details: `Use "Scope: [Market/Sport or General]".\nExample:\n${detailedExample.join('\n')}`,
     };
   }
 
-  const expiresRaw = parseLabeledValue(lines[4], 'Expires');
+  const expiresRaw = labeledFields.get('EXPIRES') || null;
   if (!expiresRaw) {
     return {
       ok: false,
       reason: 'missing expiration',
-      details: `Use line 5 as "Expires: [Datetime or text]".\nExample:\n${expectedLines.join('\n')}`,
+      details: `Use "Expires: [Datetime or text]".\nExample:\n${detailedExample.join('\n')}`,
+    };
+  }
+
+  const maxWagerRaw = labeledFields.get('MAX WAGER') || null;
+  const maxWager = maxWagerRaw === null ? null : parseNumber(maxWagerRaw);
+  if (maxWagerRaw !== null && !Number.isFinite(maxWager)) {
+    return {
+      ok: false,
+      reason: 'invalid max wager',
+      details: `Use "Max Wager: [$Amount]".\nExample:\n${detailedExample.join('\n')}`,
+    };
+  }
+
+  const betTypesRaw = labeledFields.get('BET TYPES') || null;
+  const betTypes = String(betTypesRaw || '').trim() || null;
+
+  const minTotalOddsRaw = labeledFields.get('MIN TOTAL ODDS') || null;
+  const minTotalOdds = minTotalOddsRaw === null ? null : formatBoostOddsThreshold(minTotalOddsRaw);
+  if (minTotalOddsRaw !== null && !minTotalOdds) {
+    return {
+      ok: false,
+      reason: 'invalid min total odds',
+      details: `Use "Min Total Odds: [odds]".\nExample:\n${detailedExample.join('\n')}`,
     };
   }
 
@@ -203,6 +287,9 @@ export function parseProfitBoostMessage(input) {
       sportsbook,
       boost_percent: boostPercent,
       scope: String(scopeRaw).trim(),
+      max_wager: Number.isFinite(maxWager) ? maxWager : null,
+      bet_types: betTypes,
+      min_total_odds: minTotalOdds,
       expires_raw: String(expiresRaw).trim(),
       expires_at_utc: parseFlexibleDateTime(expiresRaw),
     },
@@ -217,6 +304,9 @@ export function appendStructuredProfitBoost(payload, options = {}) {
     sportsbook: payload.sportsbook,
     boost_percent: roundBoostPercent(payload.boost_percent),
     scope: String(payload.scope || '').trim(),
+    max_wager: Number.isFinite(parseNumber(payload.max_wager)) ? parseNumber(payload.max_wager) : null,
+    bet_types: String(payload.bet_types || '').trim() || null,
+    min_total_odds: formatBoostOddsThreshold(payload.min_total_odds),
     expires_raw: String(payload.expires_raw || '').trim(),
     expires_at_utc: payload.expires_at_utc || null,
     source: options.source || 'telegram_operator',
@@ -606,15 +696,20 @@ function renderSettlementFailure(parsed, ingest = null) {
 }
 
 function renderProfitBoostSuccess(entry) {
-  return [
+  const lines = [
     'LOGGED ✅',
     '',
     `Sportsbook: ${entry.sportsbook || 'Unknown'}`,
     `Boost: ${formatBoostPercent(entry.boost_percent)}`,
     `Scope: ${entry.scope || 'Unknown'}`,
-    `Expires: ${formatBoostExpiration(entry)}`,
-    `Status: ${boostStatusForEntry(entry)}`,
-  ].join('\n');
+  ];
+  const maxWager = formatBoostMoney(entry.max_wager);
+  if (maxWager) lines.push(`Max Wager: ${maxWager}`);
+  if (String(entry.bet_types || '').trim()) lines.push(`Bet Types: ${String(entry.bet_types).trim()}`);
+  if (formatBoostOddsThreshold(entry.min_total_odds)) lines.push(`Min Total Odds: ${formatBoostOddsThreshold(entry.min_total_odds)}`);
+  lines.push(`Expires: ${formatBoostExpiration(entry)}`);
+  lines.push(`Status: ${boostStatusForEntry(entry)}`);
+  return lines.join('\n');
 }
 
 function renderProfitBoostFailure(parsed) {
@@ -629,6 +724,33 @@ function renderProfitBoostFailure(parsed) {
 function compactActiveBoosts(state) {
   const active = Array.isArray(state?.active_profit_boosts) ? state.active_profit_boosts.filter((row) => String(row.status || '').toUpperCase() === 'ACTIVE') : [];
   return active.slice(0, 3).map((row) => `${row.sportsbook} ${formatBoostPercent(row.boost_percent)} ${row.scope || 'General'}`);
+}
+
+function renderFridayFunSection(state, { compact = false } = {}) {
+  const summary = state?.friday_fun_summary || null;
+  if (!summary) return [];
+  const todayIsFriday = summary.today_is_friday === true;
+  if (!todayIsFriday && !summary.latest_run_time_ct) return [];
+
+  const lines = ['FRIDAY FUN SGP'];
+  if (summary.current_relevance === 'today' && summary.latest_run_time_ct) {
+    lines.push(`Status: ${summary.latest_message_type || summary.latest_status || 'AVAILABLE'}`);
+    lines.push(`Latest Fun Run: ${summary.latest_run_time_ct}`);
+    if (summary.latest_plain_reason) lines.push(`Reason: ${summary.latest_plain_reason}`);
+  } else if (todayIsFriday) {
+    lines.push('Status: No current Friday fun output logged yet today.');
+    if (summary.latest_run_time_ct) {
+      lines.push(`Last Known Fun Run: ${summary.latest_run_time_ct}`);
+    }
+  } else {
+    lines.push(`Last Known Fun Run: ${summary.latest_run_time_ct}`);
+  }
+
+  if (!compact && summary.latest_summary_excerpt) {
+    lines.push('');
+    lines.push(summary.latest_summary_excerpt);
+  }
+  return lines;
 }
 
 function statusText(state) {
@@ -648,6 +770,11 @@ function statusText(state) {
   const boosts = compactActiveBoosts(state);
   if (boosts.length) {
     lines.push(`Boosts: ${boosts.join(' | ')}`);
+  }
+  const fridayFunLines = renderFridayFunSection(state, { compact: true });
+  if (fridayFunLines.length) {
+    lines.push('');
+    lines.push(...fridayFunLines);
   }
   return lines.join('\n');
 }
@@ -729,6 +856,12 @@ function latestBoardText(state) {
     }
   }
 
+  const fridayFunLines = renderFridayFunSection(state, { compact: false });
+  if (fridayFunLines.length) {
+    lines.push('');
+    lines.push(...fridayFunLines);
+  }
+
   lines.push('');
   lines.push(`Run: ${run.run_id || 'unknown'}`);
   return lines.join('\n');
@@ -791,12 +924,17 @@ function blockedHuntText(blockStatus) {
 }
 
 function runHuntText(stateBefore) {
+  const fridayFunLines = renderFridayFunSection(stateBefore, { compact: true });
   const blockStatus = readHuntBlockStatus();
   if (blockStatus.blocked) {
+    const lines = [blockedHuntText(blockStatus)];
+    if (fridayFunLines.length) {
+      lines.push('', ...fridayFunLines);
+    }
     return {
       response_type: 'blocked',
       run_id: stateBefore?.latest_canonical_hunt_run?.run_id || null,
-      text: blockedHuntText(blockStatus),
+      text: lines.join('\n'),
     };
   }
 
@@ -811,29 +949,37 @@ function runHuntText(stateBefore) {
   }
 
   if (wrapperResult.status !== 0) {
+    const lines = [
+      'RUN HUNT',
+      'Status: FAILED',
+      'Stage: canonical_runner_or_rebuild',
+      `Reason: ${(wrapperResult.stderr || wrapperResult.stdout || 'Canonical hunt wrapper failed.').trim()}`,
+      `Last known verdict: ${stateBefore.decision_payload_v1?.verdict || 'UNKNOWN'}`,
+    ];
+    if (fridayFunLines.length) {
+      lines.push('', ...fridayFunLines);
+    }
     return {
       response_type: 'run_hunt_failed',
       run_id: wrapperPayload?.run_id || stateBefore?.latest_canonical_hunt_run?.run_id || null,
-      text: [
-        'RUN HUNT',
-        'Status: FAILED',
-        'Stage: canonical_runner_or_rebuild',
-        `Reason: ${(wrapperResult.stderr || wrapperResult.stdout || 'Canonical hunt wrapper failed.').trim()}`,
-        `Last known verdict: ${stateBefore.decision_payload_v1?.verdict || 'UNKNOWN'}`,
-      ].join('\n'),
+      text: lines.join('\n'),
     };
   }
 
   if (wrapperPayload?.status === 'skipped_due_to_active_lock') {
+    const lines = [
+      'RUN HUNT',
+      'Status: SKIPPED',
+      'Stage: lock_guard',
+      `Reason: ${wrapperPayload?.lock_name || 'canonical-hunt'} already active.`,
+    ];
+    if (fridayFunLines.length) {
+      lines.push('', ...fridayFunLines);
+    }
     return {
       response_type: 'blocked',
       run_id: wrapperPayload?.run_id || stateBefore?.latest_canonical_hunt_run?.run_id || null,
-      text: [
-        'RUN HUNT',
-        'Status: SKIPPED',
-        'Stage: lock_guard',
-        `Reason: ${wrapperPayload?.lock_name || 'canonical-hunt'} already active.`,
-      ].join('\n'),
+      text: lines.join('\n'),
     };
   }
 
