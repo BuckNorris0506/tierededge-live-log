@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-03-27T16:58:58.425Z",
+  "updated_at": "2026-03-27T17:00:13.044Z",
   "sports": {
     "basketball_nba": {
-      "fetched_at": "2026-03-27T11:00:03.542Z",
+      "fetched_at": "2026-03-27T17:00:11.395Z",
       "events": [
         {
           "id": "c4901bf9c9ebf81236d22ca4626b5a31",
@@ -1124,7 +1124,7 @@
       ]
     },
     "basketball_ncaab": {
-      "fetched_at": "2026-03-27T11:00:04.970Z",
+      "fetched_at": "2026-03-27T17:00:13.025Z",
       "events": [
         {
           "id": "5b8426555586aae5f7ed2a20c2262c86",
