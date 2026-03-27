@@ -1596,6 +1596,71 @@ function appendStructuredGradingRow(row) {
   return finalRow;
 }
 
+export function ingestAutomaticExecutionSettlementForExecution(executionRow, result, options = {}) {
+  const normalizedResult = normalizeSettlementResult(result);
+  if (!normalizedResult) {
+    return { ok: false, reason: 'invalid_settlement_result', row: null, execution_row: executionRow || null };
+  }
+  if (!executionRow?.execution_id) {
+    return { ok: false, reason: 'missing_execution_id', row: null, execution_row: executionRow || null };
+  }
+
+  const existingSettlement = findExistingSettlement(executionRow);
+  if (existingSettlement) {
+    const existingResult = normalizeSettlementResult(existingSettlement.result || existingSettlement.settlement_status);
+    if (existingResult === normalizedResult) {
+      return {
+        ok: false,
+        duplicate: true,
+        reason: 'duplicate_settlement_submission',
+        row: existingSettlement,
+        execution_row: executionRow,
+      };
+    }
+    return {
+      ok: false,
+      reason: 'existing_settlement_conflict',
+      row: existingSettlement,
+      execution_row: executionRow,
+    };
+  }
+
+  const timestamp = options.settlement_timestamp || options.logged_at_utc || new Date().toISOString();
+  const gradingRow = {
+    grading_id: options.grading_id || `reconciliation::${executionRow.execution_id}::${normalizeText(normalizedResult)}::${Date.now()}`,
+    grading_type: 'RECONCILIATION',
+    ref_id: executionRow.execution_id,
+    execution_log_id: executionRow.execution_id,
+    execution_id: executionRow.execution_id,
+    rec_id: executionRow.rec_id || null,
+    run_id: executionRow.run_id || null,
+    date: toCtIsoDate(timestamp),
+    timestamp_ct: timestamp,
+    selection: executionRow.selection,
+    sportsbook: executionRow.actual_sportsbook,
+    actual_odds: executionRow.actual_odds,
+    actual_stake: parseNumber(executionRow.actual_stake),
+    stake: parseNumber(executionRow.actual_stake),
+    settlement_status: settlementStatusFromResult(normalizedResult),
+    settlement_payout: settlementPayoutFromOdds(normalizedResult, executionRow.actual_stake, executionRow.actual_odds),
+    settlement_source: options.settlement_source || options.source || 'automatic_settlement_job',
+    result: normalizedResult,
+    profit_loss: settlementProfitLoss(normalizedResult, executionRow.actual_stake, executionRow.actual_odds),
+    source: options.source || 'automatic_settlement_job',
+    notes: Array.isArray(options.notes) ? options.notes : (options.notes ? [options.notes] : []),
+    auto_settlement: true,
+    auto_settlement_reason: options.auto_settlement_reason || null,
+  };
+
+  const appended = appendStructuredGradingRow(gradingRow);
+  return {
+    ok: true,
+    reason: null,
+    row: appended,
+    execution_row: executionRow,
+  };
+}
+
 export function ingestStructuredExecutionSettlement(row) {
   const normalizedResult = normalizeSettlementResult(row.result || row.settlement_result);
   if (!normalizedResult) {

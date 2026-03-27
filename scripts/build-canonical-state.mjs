@@ -13,6 +13,7 @@ import { loadDirectAutomationConfig } from './direct-automation-log-utils.mjs';
 const HUNT_AUDIT_LOG_PATH = CORE_PATHS.huntAuditLog;
 const REJECTED_CLOSE_CAPTURE_LOG_PATH = CORE_PATHS.rejectedCloseCaptureLog;
 const REJECTED_CLOSE_CAPTURE_RUNS_PATH = CORE_PATHS.rejectedCloseCaptureRuns;
+const AUTOMATIC_SETTLEMENT_RUNS_PATH = CORE_PATHS.automaticSettlementRuns;
 const MISSED_EXECUTION_WINDOWS_PATH = CORE_PATHS.missedExecutionWindows;
 const WEEKLY_OPERATOR_REVIEW_PATH = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/weekly-operator-review.json';
 const OPENCLAW_JOBS_PATH = '/Users/jaredbuckman/.openclaw/cron/jobs.json';
@@ -840,6 +841,32 @@ function buildRejectedCloseCaptureAutomationSummary(runRows, rejectedSummary) {
   };
 }
 
+function buildAutomaticSettlementSummary(runRows) {
+  const sortedRuns = [...(runRows || [])].sort((a, b) =>
+    String(b.completed_at_utc || b.started_at_utc || '').localeCompare(String(a.completed_at_utc || a.started_at_utc || ''))
+  );
+  const latest = sortedRuns[0] || null;
+  return {
+    last_automatic_settlement_run: latest ? {
+      automation_run_id: latest.automation_run_id || null,
+      job_name: latest.job_name || null,
+      started_at_utc: latest.started_at_utc || null,
+      completed_at_utc: latest.completed_at_utc || null,
+      status: latest.status || 'not_run',
+      rows_scanned: parseNumber(latest.rows_scanned) || 0,
+      rows_settled: parseNumber(latest.rows_settled) || 0,
+      rows_unresolved: parseNumber(latest.rows_unresolved) || 0,
+      unresolved_reason_breakdown: latest.unresolved_reason_breakdown || {},
+      settled_rows: Array.isArray(latest.settled_rows) ? latest.settled_rows.slice(0, 10) : [],
+    } : null,
+    rows_scanned: parseNumber(latest?.rows_scanned) || 0,
+    rows_settled: parseNumber(latest?.rows_settled) || 0,
+    rows_unresolved: parseNumber(latest?.rows_unresolved) || 0,
+    unresolved_reason_breakdown: latest?.unresolved_reason_breakdown || {},
+    recent_runs: sortedRuns.slice(0, 10),
+  };
+}
+
 function buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns) {
   const summarize = (rows) => {
     const sorted = [...(rows || [])].sort((a, b) =>
@@ -939,6 +966,11 @@ function buildApiBurnReductionSummary(directAutomationConfig, openclawJobs) {
       schedule_expr: '23:35,02:35,09:15',
       purpose: 'odds_api_only',
     },
+    {
+      name: 'nightly-automatic-settlement',
+      schedule_expr: '03:00',
+      purpose: 'odds_api_only',
+    },
   ];
   return {
     model_backed_usage_in_critical_path: false,
@@ -953,6 +985,9 @@ function buildApiBurnReductionSummary(directAutomationConfig, openclawJobs) {
         'rejected-close-capture-evening',
         'rejected-close-capture-late-night',
         'rejected-close-capture-morning-cleanup',
+      ],
+      direct_local_settlement_jobs: [
+        'nightly-automatic-settlement',
       ],
       disabled_whatsapp_surfaces: [
         'whatsapp-operator-command',
@@ -986,6 +1021,38 @@ function buildNotificationSummary(notificationEvents) {
     status_distribution: countBy('status'),
     channel_distribution: countBy('channel_used'),
     recent_events: sorted.slice(0, 10),
+  };
+}
+
+function boostStatusForEntry(entry) {
+  const expiresAtUtc = String(entry?.expires_at_utc || '').trim();
+  if (!expiresAtUtc) return 'ACTIVE';
+  const expiresMs = Date.parse(expiresAtUtc);
+  if (!Number.isFinite(expiresMs)) return 'ACTIVE';
+  return expiresMs > Date.now() ? 'ACTIVE' : 'INACTIVE';
+}
+
+function buildProfitBoostSummary(rows) {
+  const sorted = [...(rows || [])].sort((a, b) =>
+    String(b.created_at_utc || '').localeCompare(String(a.created_at_utc || ''))
+  );
+  const normalizedRows = sorted.map((row) => ({
+    boost_id: row.boost_id || null,
+    created_at_utc: row.created_at_utc || null,
+    sportsbook: row.sportsbook || null,
+    boost_percent: parseNumber(row.boost_percent),
+    scope: row.scope || null,
+    expires_raw: row.expires_raw || null,
+    expires_at_utc: row.expires_at_utc || null,
+    status: boostStatusForEntry(row),
+    source: row.source || null,
+  }));
+  return {
+    total_count: normalizedRows.length,
+    active_count: normalizedRows.filter((row) => row.status === 'ACTIVE').length,
+    inactive_count: normalizedRows.filter((row) => row.status === 'INACTIVE').length,
+    active_profit_boosts: normalizedRows.filter((row) => row.status === 'ACTIVE'),
+    recent_profit_boosts: normalizedRows.slice(0, 25),
   };
 }
 
@@ -1737,8 +1804,10 @@ function main() {
   const directAutomationRuns = readJsonl(CORE_PATHS.directAutomationRuns);
   const notificationEvents = readJsonl(CORE_PATHS.notificationEvents);
   const telegramOperatorEvents = readJsonl(CORE_PATHS.telegramOperatorEvents);
+  const profitBoostRows = readJsonl(CORE_PATHS.profitBoostLog);
   const rejectedCloseCaptureLog = readJsonl(REJECTED_CLOSE_CAPTURE_LOG_PATH);
   const rejectedCloseCaptureRuns = readJsonl(REJECTED_CLOSE_CAPTURE_RUNS_PATH);
+  const automaticSettlementRuns = readJsonl(AUTOMATIC_SETTLEMENT_RUNS_PATH);
   const missedExecutionWindows = readJsonl(MISSED_EXECUTION_WINDOWS_PATH);
   const grading = readJsonl(CORE_PATHS.gradingLedger);
   const bankrollEntries = readJsonl(CORE_PATHS.bankrollLedger);
@@ -1853,10 +1922,12 @@ function main() {
   const latestModelExposure = parseDailyExposure(latestRuntime?.summary);
   const rejectedOpportunitySummary = buildRejectedOpportunitySummary(validLearningDecisions, latestDate, rejectedCloseCaptureIndex);
   const rejectedCloseCaptureAutomation = buildRejectedCloseCaptureAutomationSummary(rejectedCloseCaptureRuns, rejectedOpportunitySummary);
+  const automaticSettlementSummary = buildAutomaticSettlementSummary(automaticSettlementRuns);
   const automationLockSummary = buildAutomationLockSummary(canonicalHuntRuns, rejectedCloseCaptureRuns);
   const directAutomationSummary = buildDirectAutomationSummary(directAutomationRuns, directAutomationConfig);
   const apiBurnReductionSummary = buildApiBurnReductionSummary(directAutomationConfig, openclawJobs);
   const notificationSummary = buildNotificationSummary(notificationEvents);
+  const profitBoostSummary = buildProfitBoostSummary(profitBoostRows);
   const telegramOperatorSummary = buildTelegramOperatorSummary(telegramOperatorEvents, notificationSummary);
   const missedExecutionWindowSummary = buildMissedExecutionWindowSummary(missedExecutionWindows);
   const actionableBoardContinuitySummary = buildActionableBoardContinuitySummary({
@@ -2027,8 +2098,12 @@ function main() {
     scheduled_hunt_times: apiBurnReductionSummary.scheduled_hunt_times,
     api_burn_reduction_summary: apiBurnReductionSummary,
     rejected_close_capture_automation: rejectedCloseCaptureAutomation,
+    automatic_settlement_summary: automaticSettlementSummary,
+    last_automatic_settlement_run: automaticSettlementSummary.last_automatic_settlement_run,
     automation_lock_summary: automationLockSummary,
     notification_summary: notificationSummary,
+    active_profit_boosts: profitBoostSummary.active_profit_boosts,
+    profit_boost_summary: profitBoostSummary,
     telegram_operator_summary: telegramOperatorSummary,
     clean_run_summary: cleanRunSummary,
     performance_by_market: performanceByMarket,
@@ -2159,7 +2234,9 @@ function main() {
       post_mortem_log_path: POST_MORTEM_LOG_PATH,
       hunt_audit_log_path: HUNT_AUDIT_LOG_PATH,
       rejected_close_capture_log_path: REJECTED_CLOSE_CAPTURE_LOG_PATH,
+      automatic_settlement_runs_path: AUTOMATIC_SETTLEMENT_RUNS_PATH,
       direct_automation_runs_path: CORE_PATHS.directAutomationRuns,
+      profit_boost_log_path: CORE_PATHS.profitBoostLog,
       clean_run_summary_path: CORE_PATHS.cleanRunSummary,
       weekly_operator_review_path: WEEKLY_OPERATOR_REVIEW_PATH,
       ledger_validation_path: '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json',

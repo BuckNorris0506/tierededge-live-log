@@ -1,5 +1,6 @@
 {
-  "offset": 419781057,
-  "last_polled_at_utc": "2026-03-27T11:08:21.868Z",
-  "processed_count": 34
+  "offset": 419781058,
+  "last_polled_at_utc": "2026-03-27T11:42:40.446Z",
+  "processed_count": 35,
+  "pending_profit_boost_confirmation": null
 }

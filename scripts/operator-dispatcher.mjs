@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { CORE_PATHS, parseNumber, readJson } from './core-ledger-utils.mjs';
+import { appendJsonl, CORE_PATHS, parseNumber, readJson, readJsonl } from './core-ledger-utils.mjs';
 import { ingestStructuredExecutionPlacement, ingestStructuredExecutionSettlement } from './execution-layer-utils.mjs';
 import { readHuntBlockStatus } from './hunt-block-status.mjs';
 
@@ -58,6 +58,171 @@ function parseSettlementResultToken(value) {
   if (normalized === 'LOSS') return 'LOSS';
   if (normalized === 'PUSH') return 'PUSH';
   return null;
+}
+
+function parseLabeledValue(line, label) {
+  const match = String(line || '').match(/^\s*([^:]+)\s*:\s*(.+?)\s*$/);
+  if (!match) return null;
+  if (normalizeOperatorCommand(match[1]) !== normalizeOperatorCommand(label)) return null;
+  return match[2].trim();
+}
+
+function parseBoostPercentToken(value) {
+  const raw = String(value || '').trim();
+  const match = raw.match(/^([0-9]+(?:\.[0-9]+)?)\s*%$/);
+  if (!match) return null;
+  const numeric = Number(match[1]);
+  return Number.isFinite(numeric) ? roundBoostPercent(numeric) : null;
+}
+
+function roundBoostPercent(value) {
+  return Math.round(value * 100) / 100;
+}
+
+function parseFlexibleDateTime(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return null;
+  const direct = Date.parse(raw);
+  if (Number.isFinite(direct)) return new Date(direct).toISOString();
+
+  const ctMatch = raw.match(/^(\d{4}-\d{2}-\d{2})\s+(\d{1,2}):(\d{2})\s*(AM|PM)\s*CT$/i);
+  if (!ctMatch) return null;
+  let hour = Number(ctMatch[2]);
+  const minute = Number(ctMatch[3]);
+  const meridiem = ctMatch[4].toUpperCase();
+  if (meridiem === 'PM' && hour !== 12) hour += 12;
+  if (meridiem === 'AM' && hour === 12) hour = 0;
+  const [year, month, day] = ctMatch[1].split('-').map(Number);
+  const utcMs = Date.UTC(year, month - 1, day, hour + 5, minute, 0);
+  return new Date(utcMs).toISOString();
+}
+
+function boostStatusForEntry(entry) {
+  const expiresAtUtc = String(entry?.expires_at_utc || '').trim();
+  if (!expiresAtUtc) return 'ACTIVE';
+  const expiresMs = Date.parse(expiresAtUtc);
+  if (!Number.isFinite(expiresMs)) return 'ACTIVE';
+  return expiresMs > Date.now() ? 'ACTIVE' : 'INACTIVE';
+}
+
+function formatBoostPercent(value) {
+  const numeric = parseNumber(value);
+  if (!Number.isFinite(numeric)) return 'Unknown';
+  return `${Number.isInteger(numeric) ? numeric : numeric.toFixed(2)}%`;
+}
+
+function formatBoostExpiration(entry) {
+  if (String(entry?.expires_raw || '').trim()) return String(entry.expires_raw).trim();
+  return entry?.expires_at_utc || 'Unknown';
+}
+
+function readProfitBoostEntries() {
+  return readJsonl(CORE_PATHS.profitBoostLog);
+}
+
+function appendProfitBoostEntry(entry) {
+  appendJsonl(
+    CORE_PATHS.profitBoostLog,
+    entry,
+    (existing) => String(existing.boost_id || '').trim(),
+  );
+  return entry;
+}
+
+export function parseProfitBoostMessage(input) {
+  const lines = String(input || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (!lines.length || normalizeOperatorCommand(lines[0]) !== 'PROFIT BOOST') return null;
+
+  const expectedLines = [
+    'PROFIT BOOST',
+    'Sportsbook: DraftKings',
+    'Boost: 50%',
+    'Scope: MLB',
+    'Expires: 2026-03-27 11:59 PM CT',
+  ];
+
+  if (lines.length !== 5) {
+    return {
+      ok: false,
+      reason: 'unsupported format',
+      details: `Use exactly 5 non-blank lines:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  const sportsbookRaw = parseLabeledValue(lines[1], 'Sportsbook');
+  if (!sportsbookRaw) {
+    return {
+      ok: false,
+      reason: 'missing sportsbook',
+      details: `Use line 2 as "Sportsbook: [Book]".\nExample:\n${expectedLines.join('\n')}`,
+    };
+  }
+  const sportsbook = canonicalSportsbook(sportsbookRaw);
+  if (!sportsbook) {
+    return {
+      ok: false,
+      reason: 'unsupported sportsbook',
+      details: `Sportsbook is missing or unsupported.\nUse:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  const boostRaw = parseLabeledValue(lines[2], 'Boost');
+  const boostPercent = parseBoostPercentToken(boostRaw);
+  if (boostPercent === null) {
+    return {
+      ok: false,
+      reason: 'invalid boost percent',
+      details: `Use line 3 as "Boost: [Percent]".\nExample:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  const scopeRaw = parseLabeledValue(lines[3], 'Scope');
+  if (!scopeRaw) {
+    return {
+      ok: false,
+      reason: 'missing scope',
+      details: `Use line 4 as "Scope: [Market/Sport or General]".\nExample:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  const expiresRaw = parseLabeledValue(lines[4], 'Expires');
+  if (!expiresRaw) {
+    return {
+      ok: false,
+      reason: 'missing expiration',
+      details: `Use line 5 as "Expires: [Datetime or text]".\nExample:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  return {
+    ok: true,
+    payload: {
+      sportsbook,
+      boost_percent: boostPercent,
+      scope: String(scopeRaw).trim(),
+      expires_raw: String(expiresRaw).trim(),
+      expires_at_utc: parseFlexibleDateTime(expiresRaw),
+    },
+  };
+}
+
+export function appendStructuredProfitBoost(payload, options = {}) {
+  const now = options.created_at_utc || new Date().toISOString();
+  const entry = appendProfitBoostEntry({
+    boost_id: options.boost_id || `profit-boost::${Date.now()}`,
+    created_at_utc: now,
+    sportsbook: payload.sportsbook,
+    boost_percent: roundBoostPercent(payload.boost_percent),
+    scope: String(payload.scope || '').trim(),
+    expires_raw: String(payload.expires_raw || '').trim(),
+    expires_at_utc: payload.expires_at_utc || null,
+    source: options.source || 'telegram_operator',
+    status: boostStatusForEntry(payload),
+  });
+  return entry;
 }
 
 function normalizeSelectionForDisplay(value) {
@@ -440,11 +605,37 @@ function renderSettlementFailure(parsed, ingest = null) {
   ].join('\n');
 }
 
+function renderProfitBoostSuccess(entry) {
+  return [
+    'LOGGED ✅',
+    '',
+    `Sportsbook: ${entry.sportsbook || 'Unknown'}`,
+    `Boost: ${formatBoostPercent(entry.boost_percent)}`,
+    `Scope: ${entry.scope || 'Unknown'}`,
+    `Expires: ${formatBoostExpiration(entry)}`,
+    `Status: ${boostStatusForEntry(entry)}`,
+  ].join('\n');
+}
+
+function renderProfitBoostFailure(parsed) {
+  return [
+    'NOT LOGGED ❌',
+    '',
+    `Reason: ${parsed?.reason || 'other parse issue'}`,
+    parsed?.details || 'Could not parse the PROFIT BOOST message.',
+  ].join('\n');
+}
+
+function compactActiveBoosts(state) {
+  const active = Array.isArray(state?.active_profit_boosts) ? state.active_profit_boosts.filter((row) => String(row.status || '').toUpperCase() === 'ACTIVE') : [];
+  return active.slice(0, 3).map((row) => `${row.sportsbook} ${formatBoostPercent(row.boost_percent)} ${row.scope || 'General'}`);
+}
+
 function statusText(state) {
   const decision = state.decision_payload_v1 || {};
   const run = state.latest_canonical_hunt_run || {};
   const flags = compactFlags(state.operator_dashboard?.action_flags || []);
-  return [
+  const lines = [
     'TIERED EDGE STATUS',
     '',
     `Verdict: ${decision.verdict || 'UNKNOWN'}`,
@@ -453,7 +644,12 @@ function statusText(state) {
     `System Health: ${decision.system_health || 'UNKNOWN'}`,
     `Snapshots: ${state.operator_dashboard?.top_level_sections?.[0]?.cards?.[2]?.metrics?.[0]?.value ?? 'N/A'} valid / ${state.operator_dashboard?.top_level_sections?.[0]?.cards?.[2]?.metrics?.[1]?.value ?? 'N/A'} invalid`,
     `Flags: ${flags.RED.length} red / ${flags.YELLOW.length} yellow / ${flags.INFO.length} info`,
-  ].join('\n');
+  ];
+  const boosts = compactActiveBoosts(state);
+  if (boosts.length) {
+    lines.push(`Boosts: ${boosts.join(' | ')}`);
+  }
+  return lines.join('\n');
 }
 
 function formatRecommendation(row) {
@@ -485,6 +681,11 @@ function latestBoardText(state) {
     ? actionableBoardCard.metrics.find((metric) => metric.label === 'total_recommended_exposure')
     : null;
   const lines = ['TIERED EDGE BOARD', ''];
+  const boosts = compactActiveBoosts(state);
+  if (boosts.length) {
+    lines.push(`Active Boosts: ${boosts.join(' | ')}`);
+    lines.push('');
+  }
 
   if (selectedRows.length) {
     lines.push('ACTIONABLE PLAYS');
@@ -680,6 +881,7 @@ export function commandKeyboard() {
 export function dispatchOperatorCommand(input, options = {}) {
   const betPlaced = parseBetPlacedMessage(input);
   const betSettled = parseBetSettledMessage(input);
+  const profitBoost = parseProfitBoostMessage(input);
   const normalized = normalizeOperatorCommand(input);
   const state = loadOperatorState();
 
@@ -788,6 +990,34 @@ export function dispatchOperatorCommand(input, options = {}) {
       response_type: 'settlement_logged',
       run_id: ingest.row?.run_id || ingest.execution_row?.run_id || null,
       text: renderSettlementSuccess(ingest),
+      keyboard: commandKeyboard(),
+      legacy_alias_used: false,
+    };
+  }
+
+  if (profitBoost) {
+    if (!profitBoost.ok) {
+      return {
+        ok: false,
+        command: 'PROFIT BOOST',
+        resolved_command: 'PROFIT BOOST',
+        response_type: 'profit_boost_rejected',
+        run_id: state?.latest_canonical_hunt_run?.run_id || null,
+        text: renderProfitBoostFailure(profitBoost),
+        keyboard: commandKeyboard(),
+        legacy_alias_used: false,
+      };
+    }
+    const entry = appendStructuredProfitBoost(profitBoost.payload, {
+      source: 'telegram_operator',
+    });
+    return {
+      ok: true,
+      command: 'PROFIT BOOST',
+      resolved_command: 'PROFIT BOOST',
+      response_type: 'profit_boost_logged',
+      run_id: state?.latest_canonical_hunt_run?.run_id || null,
+      text: renderProfitBoostSuccess(entry),
       keyboard: commandKeyboard(),
       legacy_alias_used: false,
     };

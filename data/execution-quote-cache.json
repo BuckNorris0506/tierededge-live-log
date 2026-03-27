@@ -1,7 +1,7 @@
 {
   "entries": {
     "icehockey_nhl::draftkings::spreads": {
-      "fetched_at_ms": 1774609211929,
+      "fetched_at_ms": 1774611284845,
       "payload": [
         {
           "id": "c8944643107edfc1012baabcaa72614c",
@@ -14,11 +14,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T10:58:13Z",
+              "last_update": "2026-03-27T11:34:41Z",
               "markets": [
                 {
                   "key": "spreads",
-                  "last_update": "2026-03-27T10:58:13Z",
+                  "last_update": "2026-03-27T11:34:41Z",
                   "outcomes": [
                     {
                       "name": "Buffalo Sabres",
@@ -47,11 +47,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T10:58:13Z",
+              "last_update": "2026-03-27T11:34:41Z",
               "markets": [
                 {
                   "key": "spreads",
-                  "last_update": "2026-03-27T10:58:13Z",
+                  "last_update": "2026-03-27T11:34:41Z",
                   "outcomes": [
                     {
                       "name": "Chicago Blackhawks",
@@ -72,7 +72,7 @@
       ]
     },
     "baseball_mlb::draftkings::h2h": {
-      "fetched_at_ms": 1774609212107,
+      "fetched_at_ms": 1774611284915,
       "payload": [
         {
           "id": "487285d7a2811bab184f43dff7b4f563",
@@ -85,11 +85,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T10:59:42Z",
+              "last_update": "2026-03-27T11:33:56Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T10:59:42Z",
+                  "last_update": "2026-03-27T11:33:56Z",
                   "outcomes": [
                     {
                       "name": "New York Yankees",
@@ -116,11 +116,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T10:59:42Z",
+              "last_update": "2026-03-27T11:33:56Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T10:59:42Z",
+                  "last_update": "2026-03-27T11:33:56Z",
                   "outcomes": [
                     {
                       "name": "Athletics",
@@ -147,11 +147,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T10:59:42Z",
+              "last_update": "2026-03-27T11:33:56Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T10:59:42Z",
+                  "last_update": "2026-03-27T11:33:56Z",
                   "outcomes": [
                     {
                       "name": "Colorado Rockies",
@@ -178,11 +178,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T10:59:42Z",
+              "last_update": "2026-03-27T11:33:56Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T10:59:42Z",
+                  "last_update": "2026-03-27T11:33:56Z",
                   "outcomes": [
                     {
                       "name": "Atlanta Braves",
@@ -209,11 +209,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T10:59:42Z",
+              "last_update": "2026-03-27T11:33:56Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T10:59:42Z",
+                  "last_update": "2026-03-27T11:33:56Z",
                   "outcomes": [
                     {
                       "name": "Houston Astros",
@@ -240,11 +240,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T10:59:42Z",
+              "last_update": "2026-03-27T11:33:56Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T10:59:42Z",
+                  "last_update": "2026-03-27T11:33:56Z",
                   "outcomes": [
                     {
                       "name": "Detroit Tigers",
@@ -271,11 +271,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T10:59:42Z",
+              "last_update": "2026-03-27T11:33:56Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T10:59:42Z",
+                  "last_update": "2026-03-27T11:33:56Z",
                   "outcomes": [
                     {
                       "name": "Cleveland Guardians",
@@ -302,19 +302,19 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T10:59:42Z",
+              "last_update": "2026-03-27T11:33:56Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T10:59:42Z",
+                  "last_update": "2026-03-27T11:33:56Z",
                   "outcomes": [
                     {
                       "name": "Arizona Diamondbacks",
-                      "price": 189
+                      "price": 194
                     },
                     {
                       "name": "Los Angeles Dodgers",
-                      "price": -232
+                      "price": -240
                     }
                   ]
                 }

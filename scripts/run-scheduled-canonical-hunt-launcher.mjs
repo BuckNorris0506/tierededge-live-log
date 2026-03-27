@@ -73,12 +73,13 @@ async function main() {
   const { jobName, forwardArgs } = parseArgs(process.argv.slice(2));
   const startedAtUtc = new Date().toISOString();
   const automationRunId = `${jobName}::${startedAtUtc}`;
+  const childScriptPath = path.join(ROOT_DIR, 'scripts', 'run-scheduled-canonical-hunt.sh');
 
   loadRequiredEnvs();
   process.env.LIVE_LOG_DEPLOY_REPO = process.env.LIVE_LOG_DEPLOY_REPO || ROOT_DIR;
   process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH = path.join(ROOT_DIR, 'scripts', 'run-scheduled-canonical-hunt-launcher.mjs');
   process.env.TIEREDGE_SCHEDULED_HUNT_CHILD_COMMAND =
-    `/bin/zsh scripts/run-scheduled-canonical-hunt.sh --job-name ${jobName}`;
+    `/bin/zsh ${childScriptPath} --job-name ${jobName}`;
 
   const lock = await acquireNamedLock('scheduled-canonical-hunt-launcher', 'run-scheduled-canonical-hunt-launcher.mjs');
   if (!lock.acquired) {
@@ -92,7 +93,7 @@ async function main() {
       completed_at_utc: new Date().toISOString(),
       status: 'skipped_due_to_active_lock',
       command_path: path.join(ROOT_DIR, 'scripts', 'run-scheduled-canonical-hunt-launcher.mjs'),
-      child_command: 'node scripts/run-scheduled-canonical-hunt.sh',
+      child_command: `/bin/zsh ${childScriptPath} --job-name ${jobName}`,
       lock_name: 'scheduled-canonical-hunt-launcher',
     });
     process.exit(0);
@@ -101,7 +102,7 @@ async function main() {
   try {
     const child = spawnSync(
       '/bin/zsh',
-      ['scripts/run-scheduled-canonical-hunt.sh', '--job-name', jobName, ...forwardArgs],
+      [childScriptPath, '--job-name', jobName, ...forwardArgs],
       {
         cwd: ROOT_DIR,
         env: process.env,

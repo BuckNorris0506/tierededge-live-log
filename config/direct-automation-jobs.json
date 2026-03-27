@@ -12,6 +12,12 @@
       "critical": true
     },
     {
+      "name": "nightly-automatic-settlement",
+      "schedule_expr": "0 3 * * *",
+      "entrypoint": "node ./scripts/run-automatic-settlement-launcher.mjs --job-name nightly-automatic-settlement",
+      "critical": true
+    },
+    {
       "name": "morning-edge-hunt",
       "schedule_expr": "0 6 * * *",
       "entrypoint": "node ./scripts/run-scheduled-canonical-hunt-launcher.mjs --job-name morning-edge-hunt",

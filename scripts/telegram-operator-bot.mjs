@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { appendJsonl, CORE_PATHS, readJson, writeJson } from './core-ledger-utils.mjs';
-import { commandKeyboard, dispatchOperatorCommand, latestOperatorAlertMetadata, normalizeOperatorCommand, parseBetPlacedMessage, parseBetSettledMessage, resolveOperatorCommand } from './operator-dispatcher.mjs';
+import { appendStructuredProfitBoost, commandKeyboard, dispatchOperatorCommand, latestOperatorAlertMetadata, normalizeOperatorCommand, parseBetPlacedMessage, parseBetSettledMessage, parseProfitBoostMessage, resolveOperatorCommand } from './operator-dispatcher.mjs';
 import { fetchTelegramUpdates, sendTelegramMessage, telegramConfiguredChatId } from './telegram-alert-utils.mjs';
 
 function parseArgs(argv) {
@@ -25,6 +25,7 @@ function currentState() {
     offset: null,
     last_polled_at_utc: null,
     processed_count: 0,
+    pending_profit_boost_confirmation: null,
   });
 }
 
@@ -33,6 +34,7 @@ function persistState(state) {
     offset: state.offset ?? null,
     last_polled_at_utc: new Date().toISOString(),
     processed_count: parseInt(state.processed_count || 0, 10) || 0,
+    pending_profit_boost_confirmation: state.pending_profit_boost_confirmation || null,
   });
 }
 
@@ -58,7 +60,169 @@ function syntheticUpdateId() {
   return (Date.now() * 1000) + Math.floor(Math.random() * 1000);
 }
 
-async function processUpdate(update, allowedChatId, now) {
+function normalizeBookAlias(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return null;
+  if (['draftkings', 'dk'].includes(raw)) return 'DraftKings';
+  if (['fanduel', 'fd'].includes(raw)) return 'FanDuel';
+  if (['betmgm', 'mgm'].includes(raw)) return 'BetMGM';
+  if (['caesars', 'czr'].includes(raw)) return 'Caesars';
+  if (['bet365'].includes(raw)) return 'bet365';
+  if (['circa'].includes(raw)) return 'Circa';
+  if (['betrivers', 'br'].includes(raw)) return 'BetRivers';
+  return null;
+}
+
+function parseFlexibleBoostPercent(rawText) {
+  const match = String(rawText || '').match(/(\d+(?:\.\d+)?)\s*(?:%|percent\b)/i);
+  if (!match) return null;
+  const numeric = Number(match[1]);
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
+function detectSportsbook(rawText) {
+  const patterns = [
+    { regex: /\b(draftkings|dk)\b/i, sportsbook: 'DraftKings' },
+    { regex: /\b(fanduel|fd)\b/i, sportsbook: 'FanDuel' },
+    { regex: /\b(betmgm|mgm)\b/i, sportsbook: 'BetMGM' },
+    { regex: /\b(caesars|czr)\b/i, sportsbook: 'Caesars' },
+    { regex: /\b(bet365)\b/i, sportsbook: 'bet365' },
+    { regex: /\b(circa)\b/i, sportsbook: 'Circa' },
+    { regex: /\b(betrivers|br)\b/i, sportsbook: 'BetRivers' },
+  ];
+  const matches = patterns.filter((entry) => entry.regex.test(String(rawText || '')));
+  if (matches.length !== 1) return null;
+  return matches[0].sportsbook;
+}
+
+function normalizeBoostScope(rawScope) {
+  const text = String(rawScope || '').trim();
+  if (!text) return null;
+  const cleaned = text
+    .replace(/\b(i\s+have|i['’]?ve\s+got|i\s+got)\b/gi, '')
+    .replace(/\b(a|an)\b/gi, '')
+    .replace(/\bprofit\s+boost\b/gi, '')
+    .replace(/\bboost\b/gi, '')
+    .replace(/\bon\s+(draftkings|dk|fanduel|fd|betmgm|mgm|caesars|czr|bet365|circa|betrivers|br)\b/gi, '')
+    .replace(/\bfor\b/gi, '')
+    .replace(/\bpercent\b/gi, '')
+    .replace(/[%:,]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!cleaned) return null;
+
+  const knownScopes = [
+    ['GENERAL', /\bgeneral\b/i],
+    ['MLB', /\bmlb\b|baseball/i],
+    ['NBA', /\bnba\b/i],
+    ['NHL', /\bnhl\b|hockey/i],
+    ['NFL', /\bnfl\b|football/i],
+    ['NCAAB', /\bncaab\b|cbb\b|college basketball/i],
+    ['NCAAF', /\bncaaf\b|college football/i],
+    ['WNBA', /\bwnba\b/i],
+    ['MLS', /\bmls\b|soccer/i],
+    ['TENNIS', /\btennis\b/i],
+    ['GOLF', /\bgolf\b/i],
+  ];
+  for (const [label, pattern] of knownScopes) {
+    if (pattern.test(cleaned)) return label;
+  }
+
+  return cleaned
+    .split(' ')
+    .map((token) => token.toUpperCase() === token ? token : token.charAt(0).toUpperCase() + token.slice(1).toLowerCase())
+    .join(' ');
+}
+
+function detectBoostScope(rawText) {
+  const text = String(rawText || '').trim();
+  const scopedPatterns = [
+    /\bfor\s+([A-Za-z0-9+\/ -]+?)\s+on\s+(?:draftkings|dk|fanduel|fd|betmgm|mgm|caesars|czr|bet365|circa|betrivers|br)\b/i,
+    /\bon\s+(?:draftkings|dk|fanduel|fd|betmgm|mgm|caesars|czr|bet365|circa|betrivers|br)\s+for\s+([A-Za-z0-9+\/ -]+)\b/i,
+    /\b(?:profit\s+boost|boost)\s+for\s+([A-Za-z0-9+\/ -]+?)\s+on\b/i,
+    /\b\d+(?:\.\d+)?\s*(?:%|percent)\s+([A-Za-z0-9+\/ -]+?)\s+(?:profit\s+boost|boost)\s+on\s+(?:draftkings|dk|fanduel|fd|betmgm|mgm|caesars|czr|bet365|circa|betrivers|br)\b/i,
+    /\b(?:draftkings|dk|fanduel|fd|betmgm|mgm|caesars|czr|bet365|circa|betrivers|br)\s+\d+(?:\.\d+)?\s*(?:%|percent)\s+(?:profit\s+boost|boost)\s+for\s+([A-Za-z0-9+\/ -]+)\b/i,
+    /\b([A-Z]{2,6}|MLB|NBA|NHL|NFL|NCAAB|CBB|GENERAL)\s+(?:profit\s+boost|boost)\b/i,
+  ];
+  for (const pattern of scopedPatterns) {
+    const match = text.match(pattern);
+    if (match?.[1]) return normalizeBoostScope(match[1]);
+  }
+  return null;
+}
+
+function parseNaturalLanguageProfitBoost(rawMessage) {
+  const text = String(rawMessage || '').trim();
+  if (!text) return null;
+  if (normalizeOperatorCommand(text).startsWith('PROFIT BOOST')) return null;
+  if (!/\bboost\b/i.test(text)) return null;
+  if (!/\b(profit\s+boost|boost)\b/i.test(text)) return null;
+
+  const sportsbook = detectSportsbook(text);
+  const boostPercent = parseFlexibleBoostPercent(text);
+  const scope = detectBoostScope(text);
+
+  const missing = [];
+  if (!sportsbook) missing.push('sportsbook');
+  if (boostPercent === null) missing.push('boost percent');
+  if (!scope) missing.push('scope');
+  if (missing.length) {
+    return {
+      ok: false,
+      reason: `missing ${missing.join(', ')}`,
+      details: 'Say something like: "I have a 100% profit boost for MLB on DraftKings".',
+    };
+  }
+
+  return {
+    ok: true,
+    payload: {
+      sportsbook,
+      boost_percent: boostPercent,
+      scope,
+      expires_raw: 'Not specified',
+      expires_at_utc: null,
+      status: 'ACTIVE',
+    },
+  };
+}
+
+function renderProfitBoostConfirmation(candidate) {
+  return [
+    'I parsed this:',
+    '',
+    'Profit Boost',
+    `Sportsbook: ${candidate.sportsbook}`,
+    `Boost: ${Number.isInteger(candidate.boost_percent) ? candidate.boost_percent : candidate.boost_percent.toFixed(2)}%`,
+    `Scope: ${candidate.scope}`,
+    `Status: ${candidate.status || 'ACTIVE'}`,
+    '',
+    'Reply YES to confirm or EDIT to correct.',
+  ].join('\n');
+}
+
+function renderProfitBoostLogged(entry) {
+  return [
+    'LOGGED ✅',
+    '',
+    `Sportsbook: ${entry.sportsbook}`,
+    `Boost: ${Number.isInteger(Number(entry.boost_percent)) ? Number(entry.boost_percent) : Number(entry.boost_percent).toFixed(2)}%`,
+    `Scope: ${entry.scope}`,
+    `Expires: ${entry.expires_raw || entry.expires_at_utc || 'Not specified'}`,
+    `Status: ${entry.status || 'ACTIVE'}`,
+  ].join('\n');
+}
+
+function renderProfitBoostEditPrompt() {
+  return [
+    'EDIT MODE',
+    'Send the corrected profit boost message.',
+    'Example:',
+    'I have a 100% profit boost for MLB on DraftKings',
+  ].join('\n');
+}
+
+async function processUpdate(update, allowedChatId, now, state) {
   const base = eventBase(update, now);
   const chatId = inboundChatId(update);
   const authOk = Boolean(chatId) && chatId === String(allowedChatId || '').trim();
@@ -79,9 +243,150 @@ async function processUpdate(update, allowedChatId, now) {
   }
 
   const rawMessage = messageText(update);
+  const pendingBoost = state?.pending_profit_boost_confirmation;
+  const pendingMatchesChat = pendingBoost && String(pendingBoost.chat_id || '') === chatId;
+  const normalizedMessage = normalizeOperatorCommand(rawMessage);
+
+  if (pendingMatchesChat && normalizedMessage === 'YES') {
+    const entry = appendStructuredProfitBoost(pendingBoost.payload, {
+      source: 'telegram_operator_nl_confirmed',
+    });
+    state.pending_profit_boost_confirmation = null;
+    persistState(state);
+    const sentAt = new Date().toISOString();
+    const delivery = await sendTelegramMessage(renderProfitBoostLogged(entry), { chatId, keyboard: commandKeyboard() });
+    const alertMeta = latestOperatorAlertMetadata();
+    return {
+      ...base,
+      outbound_timestamp_utc: sentAt,
+      command: 'PROFIT BOOST',
+      resolved_command: 'PROFIT BOOST',
+      auth_status: 'accepted',
+      acknowledgment_sent: false,
+      acknowledgment_timestamp_utc: null,
+      acknowledgment_delivery_status: null,
+      acknowledgment_delivery_error: null,
+      response_type: 'profit_boost_logged',
+      run_id: null,
+      notification_tier: null,
+      duplicate_suppression_status: null,
+      outbound_channel: delivery.ok ? 'telegram' : 'telegram_failed',
+      delivery_status: delivery.ok ? 'sent' : 'failed',
+      delivery_error: delivery.ok ? null : delivery.error,
+      delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
+      legacy_alias_used: false,
+      profit_boost_confirmation_status: 'confirmed',
+      last_outbound_alert_time: alertMeta.last_outbound_alert_time,
+      last_outbound_alert_type: alertMeta.last_outbound_alert_type,
+    };
+  }
+
+  if (pendingMatchesChat && normalizedMessage === 'EDIT') {
+    state.pending_profit_boost_confirmation = null;
+    persistState(state);
+    const sentAt = new Date().toISOString();
+    const delivery = await sendTelegramMessage(renderProfitBoostEditPrompt(), { chatId, keyboard: commandKeyboard() });
+    const alertMeta = latestOperatorAlertMetadata();
+    return {
+      ...base,
+      outbound_timestamp_utc: sentAt,
+      command: 'PROFIT BOOST',
+      resolved_command: 'PROFIT BOOST',
+      auth_status: 'accepted',
+      acknowledgment_sent: false,
+      acknowledgment_timestamp_utc: null,
+      acknowledgment_delivery_status: null,
+      acknowledgment_delivery_error: null,
+      response_type: 'profit_boost_edit_requested',
+      run_id: null,
+      notification_tier: null,
+      duplicate_suppression_status: null,
+      outbound_channel: delivery.ok ? 'telegram' : 'telegram_failed',
+      delivery_status: delivery.ok ? 'sent' : 'failed',
+      delivery_error: delivery.ok ? null : delivery.error,
+      delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
+      legacy_alias_used: false,
+      profit_boost_confirmation_status: 'edit_requested',
+      last_outbound_alert_time: alertMeta.last_outbound_alert_time,
+      last_outbound_alert_type: alertMeta.last_outbound_alert_type,
+    };
+  }
+
+  const naturalLanguageProfitBoost = parseNaturalLanguageProfitBoost(rawMessage);
+  if (naturalLanguageProfitBoost && !naturalLanguageProfitBoost.ok) {
+    const sentAt = new Date().toISOString();
+    const delivery = await sendTelegramMessage([
+      'NOT LOGGED ❌',
+      '',
+      `Reason: ${naturalLanguageProfitBoost.reason}`,
+      naturalLanguageProfitBoost.details || 'Could not parse the profit boost.',
+    ].join('\n'), { chatId, keyboard: commandKeyboard() });
+    const alertMeta = latestOperatorAlertMetadata();
+    return {
+      ...base,
+      outbound_timestamp_utc: sentAt,
+      command: rawMessage || null,
+      resolved_command: 'PROFIT BOOST_PENDING_CONFIRMATION',
+      auth_status: 'accepted',
+      acknowledgment_sent: false,
+      acknowledgment_timestamp_utc: null,
+      acknowledgment_delivery_status: null,
+      acknowledgment_delivery_error: null,
+      response_type: 'profit_boost_confirmation_rejected',
+      run_id: null,
+      notification_tier: null,
+      duplicate_suppression_status: null,
+      outbound_channel: delivery.ok ? 'telegram' : 'telegram_failed',
+      delivery_status: delivery.ok ? 'sent' : 'failed',
+      delivery_error: delivery.ok ? null : delivery.error,
+      delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
+      legacy_alias_used: false,
+      profit_boost_confirmation_status: 'parse_failed',
+      last_outbound_alert_time: alertMeta.last_outbound_alert_time,
+      last_outbound_alert_type: alertMeta.last_outbound_alert_type,
+    };
+  }
+
+  if (naturalLanguageProfitBoost?.ok) {
+    state.pending_profit_boost_confirmation = {
+      chat_id: chatId,
+      created_at_utc: now,
+      source_text: rawMessage,
+      payload: naturalLanguageProfitBoost.payload,
+    };
+    persistState(state);
+    const sentAt = new Date().toISOString();
+    const delivery = await sendTelegramMessage(renderProfitBoostConfirmation(naturalLanguageProfitBoost.payload), { chatId, keyboard: commandKeyboard() });
+    const alertMeta = latestOperatorAlertMetadata();
+    return {
+      ...base,
+      outbound_timestamp_utc: sentAt,
+      command: rawMessage || null,
+      resolved_command: 'PROFIT BOOST_PENDING_CONFIRMATION',
+      auth_status: 'accepted',
+      acknowledgment_sent: false,
+      acknowledgment_timestamp_utc: null,
+      acknowledgment_delivery_status: null,
+      acknowledgment_delivery_error: null,
+      response_type: 'profit_boost_confirmation_requested',
+      run_id: null,
+      notification_tier: null,
+      duplicate_suppression_status: null,
+      outbound_channel: delivery.ok ? 'telegram' : 'telegram_failed',
+      delivery_status: delivery.ok ? 'sent' : 'failed',
+      delivery_error: delivery.ok ? null : delivery.error,
+      delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
+      legacy_alias_used: false,
+      profit_boost_confirmation_status: 'pending_confirmation',
+      last_outbound_alert_time: alertMeta.last_outbound_alert_time,
+      last_outbound_alert_type: alertMeta.last_outbound_alert_type,
+    };
+  }
+
   const parsedBetPlaced = parseBetPlacedMessage(rawMessage);
   const parsedBetSettled = parseBetSettledMessage(rawMessage);
-  const resolvedCommand = resolveOperatorCommand(normalizeOperatorCommand(rawMessage));
+  const parsedStructuredProfitBoost = parseProfitBoostMessage(rawMessage);
+  const resolvedCommand = resolveOperatorCommand(normalizedMessage);
   let ackDelivery = null;
   let ackSentAt = null;
   const shouldAcknowledge = Boolean(parsedBetPlaced?.ok) || Boolean(parsedBetSettled?.ok) || resolvedCommand === 'RUN HUNT';
@@ -112,10 +417,11 @@ async function processUpdate(update, allowedChatId, now) {
     outbound_channel: delivery.ok ? 'telegram' : 'telegram_failed',
     delivery_status: delivery.ok ? 'sent' : 'failed',
     delivery_error: delivery.ok ? null : delivery.error,
-    delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
-    legacy_alias_used: Boolean(result.legacy_alias_used),
-    last_outbound_alert_time: alertMeta.last_outbound_alert_time,
-    last_outbound_alert_type: alertMeta.last_outbound_alert_type,
+      delivery_diagnostics: delivery.ok ? null : (delivery.diagnostics || null),
+      legacy_alias_used: Boolean(result.legacy_alias_used),
+      profit_boost_confirmation_status: parsedStructuredProfitBoost ? 'direct_structured_log' : null,
+      last_outbound_alert_time: alertMeta.last_outbound_alert_time,
+      last_outbound_alert_type: alertMeta.last_outbound_alert_type,
   };
 }
 
@@ -134,7 +440,7 @@ async function main() {
     const events = [];
     for (const update of updates) {
       const now = new Date().toISOString();
-      const event = await processUpdate(update, configuredChatId, now);
+      const event = await processUpdate(update, configuredChatId, now, state);
       events.push(event);
     }
     if (events.length) {
@@ -191,7 +497,7 @@ async function main() {
       }
 
       const now = new Date().toISOString();
-      const event = await processUpdate(update, configuredChatId, now);
+      const event = await processUpdate(update, configuredChatId, now, state);
       appendJsonl(CORE_PATHS.telegramOperatorEvents, event, (row) => String(row.telegram_event_id || '').trim());
       sessionEvents.push(event);
       sessionProcessedCount += 1;
