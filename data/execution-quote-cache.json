@@ -1,7 +1,7 @@
 {
   "entries": {
     "icehockey_nhl::draftkings::spreads": {
-      "fetched_at_ms": 1774621722153,
+      "fetched_at_ms": 1774630751715,
       "payload": [
         {
           "id": "c8944643107edfc1012baabcaa72614c",
@@ -14,11 +14,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T14:28:40Z",
+              "last_update": "2026-03-27T16:59:01Z",
               "markets": [
                 {
                   "key": "spreads",
-                  "last_update": "2026-03-27T14:28:40Z",
+                  "last_update": "2026-03-27T16:59:01Z",
                   "outcomes": [
                     {
                       "name": "Buffalo Sabres",
@@ -47,11 +47,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T14:28:40Z",
+              "last_update": "2026-03-27T16:59:01Z",
               "markets": [
                 {
                   "key": "spreads",
-                  "last_update": "2026-03-27T14:28:40Z",
+                  "last_update": "2026-03-27T16:59:01Z",
                   "outcomes": [
                     {
                       "name": "Chicago Blackhawks",
@@ -76,7 +76,31 @@
           "commence_time": "2026-03-28T17:00:00Z",
           "home_team": "New York Islanders",
           "away_team": "Florida Panthers",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Florida Panthers",
+                      "price": -198,
+                      "point": 1.5
+                    },
+                    {
+                      "name": "New York Islanders",
+                      "price": 164,
+                      "point": -1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "394c593042fe9fe839d6c58647c093df",
@@ -85,7 +109,31 @@
           "commence_time": "2026-03-28T17:00:00Z",
           "home_team": "Tampa Bay Lightning",
           "away_team": "Ottawa Senators",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Ottawa Senators",
+                      "price": -175,
+                      "point": 1.5
+                    },
+                    {
+                      "name": "Tampa Bay Lightning",
+                      "price": 145,
+                      "point": -1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "f45b4166c05f76d1695468da00b89b63",
@@ -94,7 +142,31 @@
           "commence_time": "2026-03-28T19:30:00Z",
           "home_team": "Edmonton Oilers",
           "away_team": "Anaheim Ducks",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Anaheim Ducks",
+                      "price": -218,
+                      "point": 1.5
+                    },
+                    {
+                      "name": "Edmonton Oilers",
+                      "price": 180,
+                      "point": -1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "0239b57a2eab58422b627445646022d5",
@@ -103,7 +175,31 @@
           "commence_time": "2026-03-28T21:00:00Z",
           "home_team": "Boston Bruins",
           "away_team": "Minnesota Wild",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Boston Bruins",
+                      "price": -245,
+                      "point": 1.5
+                    },
+                    {
+                      "name": "Minnesota Wild",
+                      "price": 200,
+                      "point": -1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "70c07fd4bbfc8a4b0caa8904186da57a",
@@ -112,7 +208,31 @@
           "commence_time": "2026-03-28T21:00:00Z",
           "home_team": "Carolina Hurricanes",
           "away_team": "New Jersey Devils",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Carolina Hurricanes",
+                      "price": 120,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "New Jersey Devils",
+                      "price": -142,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "05bbc266ec222eeb545ad47a2eab94e0",
@@ -121,7 +241,31 @@
           "commence_time": "2026-03-28T21:00:00Z",
           "home_team": "Columbus Blue Jackets",
           "away_team": "San Jose Sharks",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Columbus Blue Jackets",
+                      "price": 120,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "San Jose Sharks",
+                      "price": -142,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "f3e3cc3e6294cf13fed8a7d33adc8956",
@@ -130,7 +274,31 @@
           "commence_time": "2026-03-28T21:00:00Z",
           "home_team": "Pittsburgh Penguins",
           "away_team": "Dallas Stars",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Dallas Stars",
+                      "price": 195,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "Pittsburgh Penguins",
+                      "price": -238,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "bd12a6cf2fbc34af92080f5d4cb8c142",
@@ -139,7 +307,31 @@
           "commence_time": "2026-03-28T21:30:00Z",
           "home_team": "Buffalo Sabres",
           "away_team": "Seattle Kraken",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Buffalo Sabres",
+                      "price": 136,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "Seattle Kraken",
+                      "price": -162,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "a805b62b105fd0aa26de4061e2b53337",
@@ -148,7 +340,31 @@
           "commence_time": "2026-03-28T23:00:00Z",
           "home_team": "Colorado Avalanche",
           "away_team": "Winnipeg Jets",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Colorado Avalanche",
+                      "price": -105,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "Winnipeg Jets",
+                      "price": -115,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "35e32918fc1dcb6bac7fcdf851867029",
@@ -157,7 +373,31 @@
           "commence_time": "2026-03-28T23:00:00Z",
           "home_team": "Nashville Predators",
           "away_team": "Montréal Canadiens",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Montréal Canadiens",
+                      "price": 200,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "Nashville Predators",
+                      "price": -245,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "8bab68b12c9382d84d3e1f0a1d58621e",
@@ -166,7 +406,31 @@
           "commence_time": "2026-03-28T23:00:00Z",
           "home_team": "St Louis Blues",
           "away_team": "Toronto Maple Leafs",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "St Louis Blues",
+                      "price": 170,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "Toronto Maple Leafs",
+                      "price": -205,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "370bf3bc5ac52a0421972e9a954378f6",
@@ -175,7 +439,31 @@
           "commence_time": "2026-03-29T00:00:00Z",
           "home_team": "Detroit Red Wings",
           "away_team": "Philadelphia Flyers",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Detroit Red Wings",
+                      "price": 185,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "Philadelphia Flyers",
+                      "price": -225,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "01cd56053db51e1cd6f4c9ea60fc009d",
@@ -184,7 +472,31 @@
           "commence_time": "2026-03-29T01:00:00Z",
           "home_team": "Los Angeles Kings",
           "away_team": "Utah Mammoth",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Los Angeles Kings",
+                      "price": 200,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "Utah Mammoth",
+                      "price": -245,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "7f882304b0ce0db9fa478ba23ceb0ad1",
@@ -193,7 +505,31 @@
           "commence_time": "2026-03-29T02:00:00Z",
           "home_team": "Calgary Flames",
           "away_team": "Vancouver Canucks",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Calgary Flames",
+                      "price": 164,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "Vancouver Canucks",
+                      "price": -198,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "88beeeb0b117f3587fb9311c1e81d35e",
@@ -202,12 +538,36 @@
           "commence_time": "2026-03-29T02:30:00Z",
           "home_team": "Vegas Golden Knights",
           "away_team": "Washington Capitals",
-          "bookmakers": []
+          "bookmakers": [
+            {
+              "key": "draftkings",
+              "title": "DraftKings",
+              "last_update": "2026-03-27T16:59:01Z",
+              "markets": [
+                {
+                  "key": "spreads",
+                  "last_update": "2026-03-27T16:59:01Z",
+                  "outcomes": [
+                    {
+                      "name": "Vegas Golden Knights",
+                      "price": 164,
+                      "point": -1.5
+                    },
+                    {
+                      "name": "Washington Capitals",
+                      "price": -198,
+                      "point": 1.5
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     },
     "baseball_mlb::draftkings::h2h": {
-      "fetched_at_ms": 1774621722934,
+      "fetched_at_ms": 1774630756082,
       "payload": [
         {
           "id": "487285d7a2811bab184f43dff7b4f563",
@@ -220,19 +580,19 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T14:27:46Z",
+              "last_update": "2026-03-27T16:59:04Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T14:27:46Z",
+                  "last_update": "2026-03-27T16:59:04Z",
                   "outcomes": [
                     {
                       "name": "New York Yankees",
-                      "price": -136
+                      "price": -131
                     },
                     {
                       "name": "San Francisco Giants",
-                      "price": 113
+                      "price": 109
                     }
                   ]
                 }
@@ -251,19 +611,19 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T14:27:46Z",
+              "last_update": "2026-03-27T16:59:04Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T14:27:46Z",
+                  "last_update": "2026-03-27T16:59:04Z",
                   "outcomes": [
                     {
                       "name": "Athletics",
-                      "price": 144
+                      "price": 149
                     },
                     {
                       "name": "Toronto Blue Jays",
-                      "price": -175
+                      "price": -181
                     }
                   ]
                 }
@@ -282,19 +642,19 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T14:27:46Z",
+              "last_update": "2026-03-27T16:59:04Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T14:27:46Z",
+                  "last_update": "2026-03-27T16:59:04Z",
                   "outcomes": [
                     {
                       "name": "Colorado Rockies",
-                      "price": 163
+                      "price": 159
                     },
                     {
                       "name": "Miami Marlins",
-                      "price": -199
+                      "price": -194
                     }
                   ]
                 }
@@ -313,19 +673,19 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T14:27:46Z",
+              "last_update": "2026-03-27T16:59:04Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T14:27:46Z",
+                  "last_update": "2026-03-27T16:59:04Z",
                   "outcomes": [
                     {
                       "name": "Atlanta Braves",
-                      "price": -143
+                      "price": -149
                     },
                     {
                       "name": "Kansas City Royals",
-                      "price": 119
+                      "price": 123
                     }
                   ]
                 }
@@ -344,19 +704,19 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T14:27:46Z",
+              "last_update": "2026-03-27T16:59:04Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T14:27:46Z",
+                  "last_update": "2026-03-27T16:59:04Z",
                   "outcomes": [
                     {
                       "name": "Houston Astros",
-                      "price": -168
+                      "price": -163
                     },
                     {
                       "name": "Los Angeles Angels",
-                      "price": 139
+                      "price": 135
                     }
                   ]
                 }
@@ -375,11 +735,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T14:27:46Z",
+              "last_update": "2026-03-27T16:59:04Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T14:27:46Z",
+                  "last_update": "2026-03-27T16:59:04Z",
                   "outcomes": [
                     {
                       "name": "Detroit Tigers",
@@ -406,11 +766,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T14:27:46Z",
+              "last_update": "2026-03-27T16:59:04Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T14:27:46Z",
+                  "last_update": "2026-03-27T16:59:04Z",
                   "outcomes": [
                     {
                       "name": "Cleveland Guardians",
@@ -437,25 +797,151 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-27T14:27:46Z",
+              "last_update": "2026-03-27T16:59:04Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-27T14:27:46Z",
+                  "last_update": "2026-03-27T16:59:04Z",
                   "outcomes": [
                     {
                       "name": "Arizona Diamondbacks",
-                      "price": 203
+                      "price": 209
                     },
                     {
                       "name": "Los Angeles Dodgers",
-                      "price": -252
+                      "price": -259
                     }
                   ]
                 }
               ]
             }
           ]
+        },
+        {
+          "id": "7055a07016cd9cb5636dd11078ce1667",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T18:15:00Z",
+          "home_team": "St. Louis Cardinals",
+          "away_team": "Tampa Bay Rays",
+          "bookmakers": []
+        },
+        {
+          "id": "70e647daf98ec717652b7a06c7a93e6e",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T18:20:00Z",
+          "home_team": "Chicago Cubs",
+          "away_team": "Washington Nationals",
+          "bookmakers": []
+        },
+        {
+          "id": "16b3a35b258eb3bcae569dd205bfd706",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T19:07:00Z",
+          "home_team": "Toronto Blue Jays",
+          "away_team": "Athletics",
+          "bookmakers": []
+        },
+        {
+          "id": "e5bb185ad50b6e624fefc0480aed9633",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T20:05:00Z",
+          "home_team": "Baltimore Orioles",
+          "away_team": "Minnesota Twins",
+          "bookmakers": []
+        },
+        {
+          "id": "83fb92be857af525695a1086c6d0eaaf",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T20:05:00Z",
+          "home_team": "Philadelphia Phillies",
+          "away_team": "Texas Rangers",
+          "bookmakers": []
+        },
+        {
+          "id": "4e515c128a5ccbd9a666705e73a055ea",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T20:10:00Z",
+          "home_team": "Cincinnati Reds",
+          "away_team": "Boston Red Sox",
+          "bookmakers": []
+        },
+        {
+          "id": "93188dfe3185656f40aad93e25a4bead",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T20:10:00Z",
+          "home_team": "New York Mets",
+          "away_team": "Pittsburgh Pirates",
+          "bookmakers": []
+        },
+        {
+          "id": "2676d7ac3c89974581ba5cd216b0424f",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T23:10:00Z",
+          "home_team": "Milwaukee Brewers",
+          "away_team": "Chicago White Sox",
+          "bookmakers": []
+        },
+        {
+          "id": "2262e13c280ca7610f5186dd2c77b23d",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T23:10:00Z",
+          "home_team": "Houston Astros",
+          "away_team": "Los Angeles Angels",
+          "bookmakers": []
+        },
+        {
+          "id": "e0d4956a76de96648305fd7ef0d96800",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T23:15:00Z",
+          "home_team": "Atlanta Braves",
+          "away_team": "Kansas City Royals",
+          "bookmakers": []
+        },
+        {
+          "id": "e4be161112d6550a383416acab9cc6cb",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-28T23:15:00Z",
+          "home_team": "San Francisco Giants",
+          "away_team": "New York Yankees",
+          "bookmakers": []
+        },
+        {
+          "id": "0b1c8f9394e800658a0fd429a8685edd",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-29T00:40:00Z",
+          "home_team": "San Diego Padres",
+          "away_team": "Detroit Tigers",
+          "bookmakers": []
+        },
+        {
+          "id": "9f95aca01eff5725132691732b38a03e",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-29T01:10:00Z",
+          "home_team": "Los Angeles Dodgers",
+          "away_team": "Arizona Diamondbacks",
+          "bookmakers": []
+        },
+        {
+          "id": "c016bc529dccaa041545262bfb133323",
+          "sport_key": "baseball_mlb",
+          "sport_title": "MLB",
+          "commence_time": "2026-03-29T01:40:00Z",
+          "home_team": "Seattle Mariners",
+          "away_team": "Cleveland Guardians",
+          "bookmakers": []
         }
       ]
     }

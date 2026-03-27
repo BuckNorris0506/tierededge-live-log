@@ -722,8 +722,16 @@ function renderProfitBoostFailure(parsed) {
 }
 
 function compactActiveBoosts(state) {
-  const active = Array.isArray(state?.active_profit_boosts) ? state.active_profit_boosts.filter((row) => String(row.status || '').toUpperCase() === 'ACTIVE') : [];
-  return active.slice(0, 3).map((row) => `${row.sportsbook} ${formatBoostPercent(row.boost_percent)} ${row.scope || 'General'}`);
+  const boostRows = Array.isArray(state?.boost_adjusted_opportunities) ? state.boost_adjusted_opportunities : [];
+  const usedByLane = [];
+  const seen = new Set();
+  for (const row of boostRows) {
+    const key = String(row.boost_id || `${row.boost_sportsbook}|${row.boost_percent}|${row.boost_scope}`).trim();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    usedByLane.push(`${row.boost_sportsbook || row.sportsbook} ${formatBoostPercent(row.boost_percent)} ${row.boost_scope || row.scope || 'General'}`);
+  }
+  return usedByLane;
 }
 
 function formatBoostStake(value) {
@@ -813,7 +821,7 @@ function renderFridayFunSection(state, { compact = false } = {}) {
     lines.push(`Last Known Fun Run: ${summary.latest_run_time_ct}`);
   }
 
-  if (!compact && summary.latest_summary_excerpt) {
+  if (!compact && summary.current_day_output_available === true && summary.latest_summary_excerpt) {
     lines.push('');
     lines.push(summary.latest_summary_excerpt);
   }

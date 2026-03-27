@@ -1262,6 +1262,18 @@ function evaluateBoostBetTypeEligibility(boost, row) {
   return { eligible: false, reason: 'bet_type_restriction' };
 }
 
+function evaluateBoostConstraintCompleteness(boost) {
+  const betTypes = String(boost?.bet_types || '').trim();
+  if (!betTypes) {
+    return { eligible: false, reason: 'missing_bet_type_restriction' };
+  }
+  const maxWager = parseNumber(boost?.max_wager);
+  if (!Number.isFinite(maxWager) || maxWager <= 0) {
+    return { eligible: false, reason: 'missing_promo_max_wager' };
+  }
+  return { eligible: true, reason: 'explicit_promo_constraints_present' };
+}
+
 function evaluateBoostScopeEligibility(boost, row) {
   const constraints = buildBoostScopeConstraints(boost?.scope);
   if (!constraints.supported) return { eligible: false, reason: constraints.reason || 'ambiguous_scope' };
@@ -1310,7 +1322,7 @@ function computeOriginalKellyStake(row) {
   }
 }
 
-function evaluateBoostForCandidate(boost, row, riskControls) {
+export function evaluateBoostForCandidate(boost, row, riskControls) {
   const reasons = [];
   const nowMs = Date.now();
   const expiresAtMs = Date.parse(String(boost?.expires_at_utc || ''));
@@ -1327,6 +1339,12 @@ function evaluateBoostForCandidate(boost, row, riskControls) {
   if (String(row?.snapshot_status || '').toLowerCase() !== 'valid') {
     return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: 'invalid_snapshot' };
   }
+
+  const completenessCheck = evaluateBoostConstraintCompleteness(boost);
+  if (!completenessCheck.eligible) {
+    return { eligibility_status: 'NOT_ELIGIBLE', eligibility_reason: completenessCheck.reason };
+  }
+  reasons.push(completenessCheck.reason);
 
   const scopeCheck = evaluateBoostScopeEligibility(boost, row);
   if (!scopeCheck.eligible) {
@@ -1528,6 +1546,27 @@ function buildBoostAdjustedSummary({ decisions, latestCanonicalHuntRun, activePr
     return acc;
   }, {});
 
+  const exampleReasonPriority = [
+    'bet_type_restriction',
+    'missing_bet_type_restriction',
+    'missing_promo_max_wager',
+    'min_total_odds_not_met',
+    'scope_mismatch',
+    'invalid_snapshot',
+    'sportsbook_mismatch',
+  ];
+  const notEligibleExamples = evaluations
+    .filter((row) => row.eligibility_status !== 'ELIGIBLE')
+    .sort((a, b) => {
+      const aIndex = exampleReasonPriority.indexOf(a.eligibility_reason);
+      const bIndex = exampleReasonPriority.indexOf(b.eligibility_reason);
+      const aScore = aIndex === -1 ? exampleReasonPriority.length : aIndex;
+      const bScore = bIndex === -1 ? exampleReasonPriority.length : bIndex;
+      if (aScore !== bScore) return aScore - bScore;
+      return String(a.selection || '').localeCompare(String(b.selection || ''));
+    })
+    .slice(0, 8);
+
   const uniqueByRecId = new Map();
   for (const row of boostAdjusted) {
     const key = String(row.rec_id || '').trim() || `${row.selection}::${row.sportsbook}::${row.boost_id}`;
@@ -1557,9 +1596,7 @@ function buildBoostAdjustedSummary({ decisions, latestCanonicalHuntRun, activePr
       boost_adjusted_count: normalizedBoostAdjusted.length,
       not_eligible_count: evaluations.length - eligible.length,
       reason_breakdown: reasonBreakdown,
-      not_eligible_examples: evaluations
-        .filter((row) => row.eligibility_status !== 'ELIGIBLE')
-        .slice(0, 5),
+      not_eligible_examples: notEligibleExamples,
     },
   };
 }
@@ -1611,7 +1648,8 @@ function buildFridayFunSummary(runtimeStatus, payloadBuildMs) {
     latest_message_type: latest?.message_type || null,
     latest_has_actionable_play: latest?.has_actionable_bets === true,
     latest_plain_reason: latest?.plain_reason || null,
-    latest_summary_excerpt: summaryExcerpt,
+    current_day_output_available: currentFridayRunAvailable,
+    latest_summary_excerpt: currentFridayRunAvailable ? summaryExcerpt : null,
     source_job_name: fridayJob?.name || 'friday-sgp',
     source_schedule_time_ct: fridayJob?.schedule_time_ct || null,
     source_enabled: fridayJob?.enabled === true,
