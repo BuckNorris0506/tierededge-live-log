@@ -244,6 +244,9 @@ function classifyHuntSummary(summary) {
   const upper = text.toUpperCase();
   const dataFailureCodes = detectHuntDataFailureSignals(text);
   const playsMatch = text.match(/VERDICT:\s*(\d+)\s+plays found/i);
+  const fridaySgpActionable =
+    /\*\*SGP #\d+/i.test(text)
+    || (/FRIDAY SGP HUNT/i.test(text) && /TOTAL FUN SGP RISK/i.test(text));
   const explicitSit = /VERDICT:\s*SIT/i.test(text) || /DECISION:\s*SIT/i.test(text);
   const explicitBlocked = /Status:\s*BLOCKED/i.test(text) || /Integrity gate failed/i.test(text);
   const cannotVerify = /CANNOT_VERIFY_ODDS/i.test(upper);
@@ -266,6 +269,7 @@ function classifyHuntSummary(summary) {
     || /RECOMMENDED PLAYS:\s*None/i.test(text);
   const hasActionableBets =
     (playsMatch && Number(playsMatch[1]) > 0)
+    || fridaySgpActionable
     || (/RECOMMENDED PLAYS:/i.test(text) && !noPlays && !cannotVerify);
 
   if (explicitBlocked || cannotVerify) {
@@ -280,16 +284,6 @@ function classifyHuntSummary(summary) {
         : 'Integrity gate failed during the latest scheduled scan.',
     };
   }
-  if (looksIncomplete) {
-    return {
-      message_type: 'BLOCKED',
-      has_actionable_bets: false,
-      requires_state_sync: false,
-      data_failure_codes: [...new Set([...dataFailureCodes, 'runtime_gateway_failure'])],
-      data_status: 'degraded_data',
-      plain_reason: 'Latest scheduled scan returned an incomplete summary after fetching odds.',
-    };
-  }
   if (hasActionableBets) {
     return {
       message_type: 'BET',
@@ -298,6 +292,16 @@ function classifyHuntSummary(summary) {
       data_failure_codes: dataFailureCodes,
       data_status: dataFailureCodes.length > 0 ? 'degraded_data' : 'verified',
       plain_reason: 'The latest scheduled scan reported at least one actionable bet.',
+    };
+  }
+  if (looksIncomplete) {
+    return {
+      message_type: 'BLOCKED',
+      has_actionable_bets: false,
+      requires_state_sync: false,
+      data_failure_codes: [...new Set([...dataFailureCodes, 'runtime_gateway_failure'])],
+      data_status: 'degraded_data',
+      plain_reason: 'Latest scheduled scan returned an incomplete summary after fetching odds.',
     };
   }
   if (explicitSit || noPlays) {

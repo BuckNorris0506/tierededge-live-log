@@ -6,7 +6,7 @@ import { computeKellyBreakdown } from './tierededge-kelly-cli.mjs';
 import { validateLedgerInvariants } from './validate-ledger-invariants.mjs';
 import { OVERRIDE_LOG_PATH, POST_MORTEM_LOG_PATH, getPostMortemStatus, readOverrideLog, readPostMortemLog, buildWeeklyTruthReport } from './behavioral-accountability-utils.mjs';
 import { getLatestBankrollAnnotatedGrade } from './bankroll-reconciliation-utils.mjs';
-import { formatCtTimestamp } from './openclaw-runtime-utils.mjs';
+import { buildRuntimeStatus, formatCtTimestamp } from './openclaw-runtime-utils.mjs';
 import { loadScanCoveragePolicy } from './scan-coverage-utils.mjs';
 import { buildCleanRunSummary } from './build-clean-run-summary.mjs';
 import { loadDirectAutomationConfig } from './direct-automation-log-utils.mjs';
@@ -1635,7 +1635,7 @@ function buildFridayFunSummary(runtimeStatus, payloadBuildMs) {
   const currentRelevance = currentFridayRunAvailable ? 'today' : (todayIsFriday ? 'today_pending_or_stale' : 'historical_only');
   const rawSummary = String(latest?.summary || latest?.raw_summary || '').trim();
   const summaryExcerpt = rawSummary
-    ? rawSummary.split('\n').map((line) => line.trim()).filter(Boolean).slice(0, 8).join('\n')
+    ? rawSummary.split('\n').map((line) => line.trimEnd()).join('\n').trim()
     : null;
   return {
     lane_key: 'friday_sgp',
@@ -2406,7 +2406,8 @@ function main() {
   const missedExecutionWindows = readJsonl(MISSED_EXECUTION_WINDOWS_PATH);
   const grading = readJsonl(CORE_PATHS.gradingLedger);
   const bankrollEntries = readJsonl(CORE_PATHS.bankrollLedger);
-  const runtimeStatus = readJson(CORE_PATHS.runtimeStatus, {});
+  const runtimeStatus = buildRuntimeStatus();
+  writeJson(CORE_PATHS.runtimeStatus, runtimeStatus);
   const executionBoard = readJson(EXECUTION_BOARD_PATH, {
     counts: { candidates: 0, approved: 0, rejected: 0 },
     recommendations: [],

@@ -325,9 +325,33 @@ function normalizeSelectionForDisplay(value) {
 }
 
 export function loadOperatorState() {
-  const payload = readJson(CORE_PATHS.publicData, null);
-  if (!payload) throw new Error(`missing_public_state:${CORE_PATHS.publicData}`);
-  return payload;
+  const candidates = [
+    CORE_PATHS.publicData,
+    CORE_PATHS.canonicalState,
+  ]
+    .map((filePath) => {
+      try {
+        return {
+          filePath,
+          mtimeMs: fs.statSync(filePath).mtimeMs,
+          payload: readJson(filePath, null),
+        };
+      } catch {
+        return {
+          filePath,
+          mtimeMs: -1,
+          payload: null,
+        };
+      }
+    })
+    .filter((entry) => entry.payload);
+
+  if (!candidates.length) {
+    throw new Error(`missing_operator_state:${CORE_PATHS.publicData}`);
+  }
+
+  candidates.sort((a, b) => b.mtimeMs - a.mtimeMs);
+  return candidates[0].payload;
 }
 
 function getMorningHuntId() {
