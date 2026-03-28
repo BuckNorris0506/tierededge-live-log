@@ -120,9 +120,22 @@ function parseTicketTimestamp(lines) {
   return null;
 }
 
+function isPromoOrRewardLine(line) {
+  const trimmed = String(line || '').trim();
+  if (!trimmed) return false;
+  return /no sweat token|early win|odds boost|profit boost|reward|promo/i.test(trimmed);
+}
+
+function looksLikeEventLine(line) {
+  const trimmed = String(line || '').trim();
+  if (!trimmed) return false;
+  if (/@/.test(trimmed)) return true;
+  if (/\b(vs\.?|versus| at )\b/i.test(trimmed)) return true;
+  return false;
+}
+
 function parseEvent(lines) {
   const monthPattern = /\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/i;
-  const teamLike = [];
   for (const line of lines) {
     const trimmed = String(line || '').trim();
     if (!trimmed) continue;
@@ -132,19 +145,17 @@ function parseEvent(lines) {
     if (/cash out/i.test(trimmed)) continue;
     if (/^hide picks/i.test(trimmed)) continue;
     if (/draftkings/i.test(trimmed)) continue;
+    if (isPromoOrRewardLine(trimmed)) continue;
     if (/^\+?\d+%/.test(trimmed)) continue;
     if (/bet & get/i.test(trimmed)) continue;
     if (/[+-]\d{2,4}\s*$/.test(trimmed)) continue;
     if (/^(moneyline|spread|total|sgp|open|pending|won|lost)$/i.test(trimmed)) continue;
     if (trimmed.length < 3) continue;
-    teamLike.push(trimmed);
+    if (looksLikeEventLine(trimmed)) {
+      return trimmed.replace(/\s+/g, ' ').replace(/\s*@\s*/g, ' @ ').trim();
+    }
   }
-  const eventCandidates = [];
-  for (let i = 0; i < teamLike.length - 1; i += 1) {
-    if (teamLike[i + 1].length < 3) continue;
-    eventCandidates.push(`${teamLike[i]} @ ${teamLike[i + 1]}`);
-  }
-  return eventCandidates[0] || null;
+  return null;
 }
 
 function inferMarketType(block, marketLine) {

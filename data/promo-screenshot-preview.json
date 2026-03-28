@@ -1,0 +1,42 @@
+{
+  "generated_at_utc": "2026-03-28T21:39:28.034Z",
+  "status": "ready_for_confirmation",
+  "source_images": [
+    "/tmp/tgproof/settled.png"
+  ],
+  "items": [
+    {
+      "preview_id": "settled.png::unknown",
+      "screenshot_filename": "settled.png",
+      "extracted_fields": {
+        "promo_type": null,
+        "sportsbook": "DraftKings",
+        "boost_percent": null,
+        "scope": "MONEYLINE",
+        "max_wager": null,
+        "bet_types": "Moneyline",
+        "min_total_odds": null,
+        "expires_raw": "Not specified",
+        "status": "ACTIVE",
+        "extraction_confidence": 0.75,
+        "parse_warnings": [
+          "missing_reward_type"
+        ],
+        "raw_lines": [
+          "DraftKings Sportsbook",
+          "Royals @ Braves",
+          "Kansas City Royals ML +125",
+          "Moneyline",
+          "Wager: $25.00",
+          "Paid: $56.25",
+          "Mar 28, 2026, 6:15:00 PM",
+          "WON"
+        ]
+      },
+      "warnings": [
+        "missing_reward_type"
+      ],
+      "confidence_level": "high"
+    }
+  ]
+}

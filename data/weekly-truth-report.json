@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-28T20:04:14.180Z",
+  "generated_at_utc": "2026-03-28T23:00:07.818Z",
   "window": "last_7_days",
   "settled_bet_count": 0,
   "expected_vs_realized_summary": {
@@ -8,10 +8,10 @@
     "units_risked": 0
   },
   "override_totals": {
-    "total_override_events": 10,
+    "total_override_events": 11,
     "blocked_run_override_count": 0,
     "off_model_override_count": 5,
-    "monthly_override_count": 10
+    "monthly_override_count": 11
   },
   "missing_coverage": {
     "missing_snapshot_count": 0,
@@ -31,19 +31,19 @@
       "book": "betmgm",
       "owned_book": true,
       "recommendations_count": 12,
-      "best_price_count": 5658,
-      "executable_near_miss_count": 118,
-      "stale_or_missing_count": 3213,
+      "best_price_count": 5716,
+      "executable_near_miss_count": 121,
+      "stale_or_missing_count": 3242,
       "rejected_non_executable_count": 0
     },
     {
       "book": "betrivers",
       "owned_book": false,
       "recommendations_count": 1,
-      "best_price_count": 4224,
+      "best_price_count": 4287,
       "executable_near_miss_count": 0,
-      "stale_or_missing_count": 2092,
-      "rejected_non_executable_count": 6
+      "stale_or_missing_count": 2116,
+      "rejected_non_executable_count": 7
     },
     {
       "book": "caesars",
@@ -67,18 +67,18 @@
       "book": "draftkings",
       "owned_book": true,
       "recommendations_count": 24,
-      "best_price_count": 6213,
-      "executable_near_miss_count": 120,
-      "stale_or_missing_count": 3046,
+      "best_price_count": 6331,
+      "executable_near_miss_count": 122,
+      "stale_or_missing_count": 3109,
       "rejected_non_executable_count": 0
     },
     {
       "book": "fanduel",
       "owned_book": true,
       "recommendations_count": 12,
-      "best_price_count": 8075,
-      "executable_near_miss_count": 163,
-      "stale_or_missing_count": 3901,
+      "best_price_count": 8206,
+      "executable_near_miss_count": 168,
+      "stale_or_missing_count": 3969,
       "rejected_non_executable_count": 0
     }
   ],

@@ -1,0 +1,124 @@
+{
+  "generated_at_utc": "2026-03-28T21:39:27.678Z",
+  "status": "requires_confirmation",
+  "source_images": [
+    "/tmp/tgproof/settled.png"
+  ],
+  "screenshot_previews": [
+    {
+      "image_path": "/tmp/tgproof/settled.png",
+      "screenshot_filename": "settled.png",
+      "sportsbook": "DraftKings",
+      "average_confidence": 1,
+      "parsed_bets": [
+        {
+          "screenshot_filename": "settled.png",
+          "sportsbook": "DraftKings",
+          "event": "Royals @ Braves @ Paid: $56.25",
+          "market_type": "Moneyline",
+          "selection": "Kansas City Royals ML",
+          "odds": "+125",
+          "stake": "25.00",
+          "to_win_or_payout": null,
+          "bet_type": "EDGE_BET",
+          "ticket_timestamp": "Mar 28, 2026, 6:15:00 PM",
+          "status": "settled",
+          "extraction_confidence": 1,
+          "parse_warnings": [],
+          "raw_lines": [
+            "DraftKings Sportsbook",
+            "Royals @ Braves",
+            "Kansas City Royals ML +125",
+            "Moneyline",
+            "Wager: $25.00",
+            "Paid: $56.25",
+            "Mar 28, 2026, 6:15:00 PM",
+            "WON"
+          ]
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "preview_id": "settled.png::kansascityroyalsml",
+      "screenshot_filename": "settled.png",
+      "extracted_fields": {
+        "screenshot_filename": "settled.png",
+        "sportsbook": "DraftKings",
+        "event": "Royals @ Braves @ Paid: $56.25",
+        "market_type": "Moneyline",
+        "selection": "Kansas City Royals ML",
+        "odds": "+125",
+        "stake": "25.00",
+        "to_win_or_payout": null,
+        "bet_type": "EDGE_BET",
+        "ticket_timestamp": "Mar 28, 2026, 6:15:00 PM",
+        "status": "settled",
+        "extraction_confidence": 1,
+        "parse_warnings": [],
+        "raw_lines": [
+          "DraftKings Sportsbook",
+          "Royals @ Braves",
+          "Kansas City Royals ML +125",
+          "Moneyline",
+          "Wager: $25.00",
+          "Paid: $56.25",
+          "Mar 28, 2026, 6:15:00 PM",
+          "WON"
+        ]
+      },
+      "matched_rec_id": null,
+      "matched_context": null,
+      "match_status": "unmatched_manual_bet",
+      "confidence_level": "low",
+      "warnings": [
+        "no_recommendation_match"
+      ],
+      "proposed_execution_log_row": {
+        "rec_id": null,
+        "run_id": null,
+        "sport": null,
+        "league": null,
+        "normalized_event": "Royals @ Braves @ Paid: $56.25",
+        "match_status": "unmatched_manual_bet",
+        "sportsbook": "DraftKings",
+        "event": "Royals @ Braves @ Paid: $56.25",
+        "market": "Moneyline",
+        "selection": "Kansas City Royals ML",
+        "recommended_odds": null,
+        "actual_odds": "+125",
+        "recommended_stake": null,
+        "actual_stake": "25.00",
+        "line_price_drift": "N/A",
+        "screenshot_filename": "settled.png",
+        "extraction_confidence": 1,
+        "manual_override_flag": true,
+        "override_reason": "unmatched_manual_bet",
+        "override_justification": "Confirmed via screenshot ingestion. Match status=unmatched_manual_bet; warnings=no_recommendation_match.",
+        "ingestion_timestamp": "2026-03-28T21:39:27.678Z",
+        "notes": [
+          "no_recommendation_match"
+        ],
+        "warnings": [
+          "no_recommendation_match"
+        ],
+        "execution_approval_result": "REJECT_EXECUTION",
+        "recommended_sportsbook": "DraftKings",
+        "actual_sportsbook": "DraftKings",
+        "recommendation_timestamp": null,
+        "bet_slip_timestamp": "Mar 28, 2026, 6:15:00 PM",
+        "actual_status": "settled",
+        "bet_type": "EDGE_BET",
+        "to_win_or_payout": null
+      }
+    }
+  ],
+  "verification_actions": [
+    "CONFIRM_ALL",
+    "CONFIRM_SELECTED",
+    "REJECT",
+    "EDIT_FIELDS"
+  ],
+  "preview_text": "SCREENSHOT EXECUTION PREVIEW (1 bets)\nStatus: requires_confirmation\nGenerated: 2026-03-28T21:39:27.678Z\n\n1. Kansas City Royals ML | Royals @ Braves @ Paid: $56.25\n   Screenshot: settled.png\n   Sportsbook: DraftKings\n   Market: Moneyline | Odds: +125 | Stake: 25.00\n   Match: unmatched_manual_bet | Confidence: low\n   rec_id: NONE\n   Proposed row: actual_odds=+125 actual_stake=25.00 approval=REJECT_EXECUTION\n   Warnings: no_recommendation_match"
+}

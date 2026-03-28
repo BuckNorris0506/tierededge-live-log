@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { buildTransportDiagnostics, buildTransportFailureError } from './fetch-diagnostics-utils.mjs';
 
 function sleep(ms) {
@@ -103,6 +105,53 @@ async function telegramRequest(method, payload, options = {}) {
   }
 }
 
+async function telegramGetFile(filePath) {
+  const { botToken } = resolveTelegramConfig();
+  if (!botToken) {
+    return {
+      ok: false,
+      error: 'telegram_config_missing',
+    };
+  }
+  const targetUrl = `https://api.telegram.org/file/bot${botToken}/${filePath}`;
+  try {
+    const response = await fetch(targetUrl, { method: 'GET' });
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: `telegram_file_http_${response.status}`,
+      };
+    }
+    const arrayBuffer = await response.arrayBuffer();
+    return {
+      ok: true,
+      data: Buffer.from(arrayBuffer),
+    };
+  } catch (error) {
+    const wrapped = buildTransportFailureError({
+      prefix: 'telegram_file_download_failed',
+      service: 'telegram',
+      targetUrl,
+      method: 'GET',
+      timeoutMs: null,
+      authEnvVars: ['TIEREDGE_TELEGRAM_BOT_TOKEN', 'TELEGRAM_BOT_TOKEN'],
+      error,
+    });
+    return {
+      ok: false,
+      error: wrapped.message,
+      diagnostics: buildTransportDiagnostics({
+        service: 'telegram',
+        targetUrl,
+        method: 'GET',
+        timeoutMs: null,
+        authEnvVars: ['TIEREDGE_TELEGRAM_BOT_TOKEN', 'TELEGRAM_BOT_TOKEN'],
+        error,
+      }),
+    };
+  }
+}
+
 export async function sendTelegramMessage(text, options = {}) {
   const { botToken, chatId } = resolveTelegramConfig();
   if (!botToken || !chatId) {
@@ -137,4 +186,37 @@ export async function fetchTelegramUpdates(offset = null, timeoutSeconds = 20) {
 
 export function telegramConfiguredChatId() {
   return resolveTelegramConfig().chatId;
+}
+
+export async function fetchTelegramFileInfo(fileId) {
+  const result = await telegramRequest('getFile', { file_id: fileId });
+  if (!result.ok) return result;
+  return {
+    ok: true,
+    data: result.data,
+  };
+}
+
+export async function downloadTelegramFile(fileId, destinationPath) {
+  const fileInfo = await fetchTelegramFileInfo(fileId);
+  if (!fileInfo.ok) return fileInfo;
+  const filePath = String(fileInfo.data?.file_path || '').trim();
+  if (!filePath) {
+    return {
+      ok: false,
+      error: 'telegram_file_path_missing',
+    };
+  }
+  const fileResult = await telegramGetFile(filePath);
+  if (!fileResult.ok) return fileResult;
+  fs.mkdirSync(path.dirname(destinationPath), { recursive: true });
+  fs.writeFileSync(destinationPath, fileResult.data);
+  return {
+    ok: true,
+    data: {
+      destination_path: destinationPath,
+      file_path: filePath,
+      file_size: fileInfo.data?.file_size ?? null,
+    },
+  };
 }

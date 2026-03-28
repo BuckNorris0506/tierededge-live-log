@@ -1,6 +1,43 @@
 {
-  "offset": 419781092,
-  "last_polled_at_utc": "2026-03-28T20:03:10.688Z",
-  "processed_count": 69,
-  "pending_profit_boost_confirmation": null
+  "offset": 419781099,
+  "last_polled_at_utc": "2026-03-28T23:00:26.770Z",
+  "processed_count": 76,
+  "pending_confirmation": {
+    "chat_id": "12345",
+    "created_at_utc": "2026-03-28T21:39:39.140Z",
+    "updated_at_utc": "2026-03-28T21:39:42.621Z",
+    "awaiting_edit": false,
+    "kind": "PROFIT BOOST",
+    "source_kind": "natural_language",
+    "source_text": "I have a 100% profit boost for MLB on DraftKings",
+    "payload": {
+      "sportsbook": "DraftKings",
+      "boost_percent": 100,
+      "scope": "MLB",
+      "max_wager": 10,
+      "bet_types": null,
+      "min_total_odds": null,
+      "expires_raw": "2026-03-29 11:59 PM CT",
+      "status": "ACTIVE"
+    }
+  },
+  "pending_profit_boost_confirmation": {
+    "chat_id": "12345",
+    "created_at_utc": "2026-03-28T21:39:39.140Z",
+    "updated_at_utc": "2026-03-28T21:39:42.621Z",
+    "awaiting_edit": false,
+    "kind": "PROFIT BOOST",
+    "source_kind": "natural_language",
+    "source_text": "I have a 100% profit boost for MLB on DraftKings",
+    "payload": {
+      "sportsbook": "DraftKings",
+      "boost_percent": 100,
+      "scope": "MLB",
+      "max_wager": 10,
+      "bet_types": null,
+      "min_total_odds": null,
+      "expires_raw": "2026-03-29 11:59 PM CT",
+      "status": "ACTIVE"
+    }
+  }
 }

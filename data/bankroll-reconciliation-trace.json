@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-03-28T20:04:13.746Z",
-  "ending_bankroll": 1400.46,
-  "annotated_count": 27,
+  "generated_at_utc": "2026-03-28T23:00:06.621Z",
+  "ending_bankroll": 1431.71,
+  "annotated_count": 28,
   "trace": [
     {
       "date": "2026-02-28",
@@ -359,6 +359,18 @@
       "bankroll_before": 1394.3,
       "bankroll_after": 1400.46,
       "realized_pl_contribution": 6.16,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-03-28",
+      "timestamp_ct": "2026-03-28T21:39:31.123Z",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "reconciliation::execution::telegram-operator::1774733862862::win::1774733971338",
+      "bankroll_before": 1400.46,
+      "bankroll_after": 1431.71,
+      "realized_pl_contribution": 31.25,
       "included_in_derived_bankroll": true,
       "included_in_displayed_bankroll": true
     }

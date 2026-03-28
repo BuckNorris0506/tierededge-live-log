@@ -1,0 +1,37 @@
+{
+  "generated_at_utc": "2026-03-28T21:38:47.126Z",
+  "status": "ready_for_confirmation",
+  "source_images": [
+    "/tmp/tgproof/promo.png"
+  ],
+  "items": [
+    {
+      "preview_id": "promo.png::NO SWEAT TOKEN",
+      "screenshot_filename": "promo.png",
+      "extracted_fields": {
+        "promo_type": "NO SWEAT TOKEN",
+        "sportsbook": "BetMGM",
+        "boost_percent": null,
+        "scope": "MLB",
+        "max_wager": 25,
+        "bet_types": "Straight",
+        "min_total_odds": "-300",
+        "expires_raw": "2026-03-28 11:59 PM CT",
+        "status": "ACTIVE",
+        "extraction_confidence": 0.9,
+        "parse_warnings": [],
+        "raw_lines": [
+          "BetMGM",
+          "NO SWEAT TOKEN",
+          "MLB",
+          "Max Wager: $25",
+          "Bet Types: Straight",
+          "Min Total Odds: -300",
+          "Expires: 2026-03-28 11:59 PM CT"
+        ]
+      },
+      "warnings": [],
+      "confidence_level": "high"
+    }
+  ]
+}
