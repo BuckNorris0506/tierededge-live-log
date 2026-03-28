@@ -105,6 +105,32 @@ import { appendDirectAutomationRun } from './scripts/direct-automation-log-utils
 
 const stderr = fs.readFileSync('$REBUILD_STDERR_FILE', 'utf8').trim();
 const stdout = fs.readFileSync('$REBUILD_STDOUT_FILE', 'utf8').trim();
+const combined = [stderr, stdout].filter(Boolean).join('\n').trim();
+const isDeployPushFailure = /failed to push some refs|remote unpack failed|early EOF|mmap failed/i.test(combined);
+if (isDeployPushFailure) {
+  appendDirectAutomationRun({
+    automation_run_id: '$AUTOMATION_RUN_ID',
+    job_name: '$JOB_NAME',
+    started_at_utc: '$STARTED_AT_UTC',
+    completed_at_utc: new Date().toISOString(),
+    status: 'complete_with_deploy_warning',
+    command_path: process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH || '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
+    child_command: process.env.TIEREDGE_SCHEDULED_HUNT_CHILD_COMMAND || 'node scripts/run-canonical-hunt.mjs --json && ./scripts/update-live-log.sh',
+    run_id: '$RUN_ID',
+    rebuild_status: 'ok',
+    deploy_status: 'failed',
+    deploy_error: combined || 'deploy_push_failed',
+    error: combined || 'deploy_push_failed',
+  });
+  process.stdout.write(JSON.stringify({
+    status: 'complete_with_deploy_warning',
+    run_id: '$RUN_ID',
+    rebuild_status: 'ok',
+    deploy_status: 'failed',
+    deploy_error: combined || 'deploy_push_failed',
+  }));
+  process.exit(0);
+}
 appendDirectAutomationRun({
   automation_run_id: '$AUTOMATION_RUN_ID',
   job_name: '$JOB_NAME',
@@ -115,7 +141,7 @@ appendDirectAutomationRun({
   child_command: process.env.TIEREDGE_SCHEDULED_HUNT_CHILD_COMMAND || 'node scripts/run-canonical-hunt.mjs --json && ./scripts/update-live-log.sh',
   run_id: '$RUN_ID',
   rebuild_status: 'failed',
-  error: stderr || stdout || 'update_live_log_failed',
+  error: combined || 'update_live_log_failed',
 });
 EOF
 

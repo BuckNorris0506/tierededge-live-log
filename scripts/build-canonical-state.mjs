@@ -1165,6 +1165,76 @@ function buildProfitBoostSummary(rows) {
   };
 }
 
+function normalizePromoType(value) {
+  return String(value || '').trim().replace(/\s+/g, ' ').toUpperCase() || null;
+}
+
+function buildOperatorPromoIdentityKey(row) {
+  return [
+    normalizePromoType(row?.promo_type) || '',
+    normalizeProfitBoostSportsbook(row?.sportsbook) || '',
+    normalizeProfitBoostOptionalNumber(row?.boost_percent) ?? '',
+    normalizeProfitBoostScope(row?.scope) || '',
+    normalizeProfitBoostOptionalNumber(row?.max_wager) ?? '',
+    normalizeProfitBoostBetTypes(row?.bet_types) || '',
+    normalizeProfitBoostOptionalNumber(row?.min_total_odds) ?? '',
+    normalizeProfitBoostExpiration(row) || '',
+  ].join('|');
+}
+
+function buildOperatorPromoSummary(rows) {
+  const sorted = [...(rows || [])].sort((a, b) =>
+    String(b.created_at_utc || '').localeCompare(String(a.created_at_utc || ''))
+  );
+  const normalizedRows = sorted.map((row) => ({
+    promo_id: row.promo_id || null,
+    created_at_utc: row.created_at_utc || null,
+    promo_type: normalizePromoType(row.promo_type),
+    reward_type: normalizePromoType(row.promo_type),
+    sportsbook: normalizeProfitBoostSportsbook(row.sportsbook),
+    boost_percent: normalizeProfitBoostOptionalNumber(row.boost_percent),
+    scope: normalizeProfitBoostScope(row.scope),
+    max_wager: normalizeProfitBoostOptionalNumber(row.max_wager),
+    bet_types: normalizeProfitBoostBetTypes(row.bet_types),
+    min_total_odds: normalizeProfitBoostOptionalNumber(row.min_total_odds),
+    expires_raw: row.expires_raw || null,
+    expires_at_utc: row.expires_at_utc || null,
+    status: boostStatusForEntry(row),
+    source: row.source || null,
+    linked_boost_id: row.linked_boost_id || null,
+  }));
+  const dedupedMap = new Map();
+  for (const row of normalizedRows) {
+    const identityKey = buildOperatorPromoIdentityKey(row);
+    const existing = dedupedMap.get(identityKey);
+    if (!existing) {
+      dedupedMap.set(identityKey, {
+        ...row,
+        identity_key: identityKey,
+        duplicate_count: 1,
+        source_promo_ids: row.promo_id ? [row.promo_id] : [],
+      });
+      continue;
+    }
+    existing.duplicate_count += 1;
+    if (row.promo_id) existing.source_promo_ids.push(row.promo_id);
+  }
+  const dedupedRows = [...dedupedMap.values()];
+  const activeRows = dedupedRows.filter((row) => row.status === 'ACTIVE');
+  return {
+    total_count: dedupedRows.length,
+    raw_total_count: normalizedRows.length,
+    duplicate_count: normalizedRows.length - dedupedRows.length,
+    active_count: activeRows.length,
+    inactive_count: dedupedRows.filter((row) => row.status === 'INACTIVE').length,
+    active_operator_promos: activeRows,
+    active_no_sweat_tokens: activeRows.filter((row) => row.promo_type === 'NO SWEAT TOKEN'),
+    active_early_win_tokens: activeRows.filter((row) => row.promo_type === 'EARLY WIN TOKEN'),
+    active_profit_boost_promos: activeRows.filter((row) => row.promo_type === 'PROFIT BOOST'),
+    recent_operator_promos: dedupedRows.slice(0, 25),
+  };
+}
+
 function americanToDecimalSafe(value) {
   const odds = parseNumber(value);
   if (!Number.isFinite(odds) || odds === 0) return null;
@@ -2400,6 +2470,7 @@ function main() {
   const notificationEvents = readJsonl(CORE_PATHS.notificationEvents);
   const telegramOperatorEvents = readJsonl(CORE_PATHS.telegramOperatorEvents);
   const profitBoostRows = readJsonl(CORE_PATHS.profitBoostLog);
+  const operatorPromoRows = readJsonl(CORE_PATHS.operatorPromoLog);
   const rejectedCloseCaptureLog = readJsonl(REJECTED_CLOSE_CAPTURE_LOG_PATH);
   const rejectedCloseCaptureRuns = readJsonl(REJECTED_CLOSE_CAPTURE_RUNS_PATH);
   const automaticSettlementRuns = readJsonl(AUTOMATIC_SETTLEMENT_RUNS_PATH);
@@ -2525,6 +2596,7 @@ function main() {
   const apiBurnReductionSummary = buildApiBurnReductionSummary(directAutomationConfig, openclawJobs);
   const notificationSummary = buildNotificationSummary(notificationEvents);
   const profitBoostSummary = buildProfitBoostSummary(profitBoostRows);
+  const operatorPromoSummary = buildOperatorPromoSummary(operatorPromoRows);
   const boostAdjustedSummary = buildBoostAdjustedSummary({
     decisions: validLearningDecisions,
     latestCanonicalHuntRun,
@@ -2714,6 +2786,10 @@ function main() {
     friday_fun_summary: fridayFunSummary,
     active_profit_boosts: profitBoostSummary.active_profit_boosts,
     profit_boost_summary: profitBoostSummary,
+    active_operator_promos: operatorPromoSummary.active_operator_promos,
+    active_no_sweat_tokens: operatorPromoSummary.active_no_sweat_tokens,
+    active_early_win_tokens: operatorPromoSummary.active_early_win_tokens,
+    operator_promo_summary: operatorPromoSummary,
     boost_adjusted_opportunities: boostAdjustedSummary.boost_adjusted_opportunities,
     best_boost_use_today: boostAdjustedSummary.best_boost_use_today,
     boost_eligibility_summary: boostAdjustedSummary.boost_eligibility_summary,
@@ -2851,6 +2927,7 @@ function main() {
       direct_automation_runs_path: CORE_PATHS.directAutomationRuns,
       scheduler_boundary_log_path: schedulerBoundarySummary.scheduler_boundary_log_path,
       profit_boost_log_path: CORE_PATHS.profitBoostLog,
+      operator_promo_log_path: CORE_PATHS.operatorPromoLog,
       clean_run_summary_path: CORE_PATHS.cleanRunSummary,
       weekly_operator_review_path: WEEKLY_OPERATOR_REVIEW_PATH,
       ledger_validation_path: '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json',

@@ -14,6 +14,7 @@ export const CORE_PATHS = {
   telegramOperatorEvents: path.join(DATA_DIR, 'telegram-operator-events.jsonl'),
   telegramOperatorState: path.join(DATA_DIR, 'telegram-operator-state.json'),
   profitBoostLog: path.join(DATA_DIR, 'profit-boost-log.jsonl'),
+  operatorPromoLog: path.join(DATA_DIR, 'operator-promo-log.jsonl'),
   missedExecutionWindows: path.join(DATA_DIR, 'missed-execution-windows.jsonl'),
   rejectedCloseCaptureLog: path.join(DATA_DIR, 'rejected-close-capture-log.jsonl'),
   rejectedCloseCaptureRuns: path.join(DATA_DIR, 'rejected-close-capture-runs.jsonl'),

@@ -16,6 +16,14 @@ export const EXECUTION_QUOTE_CACHE_PATH = path.join(ROOT, 'data', 'execution-quo
 const DEFAULT_POLICY = {
   stale_recommendation_hours: 8,
   odds_stale_minutes: 10,
+  promo_evaluation: {
+    no_sweat: {
+      refund_type: 'bonus_bet',
+      bonus_bet_conversion_pct: 70,
+      positive_threshold_pct: 2,
+      neutral_threshold_pct: 0,
+    },
+  },
   hedge_management: {
     scan_frequency_per_day: 3,
     meaningful_stake_rule: {
@@ -265,6 +273,116 @@ function asPercentProbability(value) {
 function safeDateMs(value) {
   const ms = Date.parse(String(value || '').replace(' CT', ''));
   return Number.isFinite(ms) ? ms : null;
+}
+
+function normalizePromoType(value) {
+  const normalized = String(value || '').trim().replace(/\s+/g, ' ').toUpperCase();
+  if (!normalized) return null;
+  if (normalized === 'NO SWEAT TOKEN') return 'NO SWEAT TOKEN';
+  if (normalized === 'EARLY WIN TOKEN') return 'EARLY WIN TOKEN';
+  if (normalized === 'PROFIT BOOST') return 'PROFIT BOOST';
+  return null;
+}
+
+function loadActiveOperatorPromos() {
+  const rows = readJsonl(CORE_PATHS.operatorPromoLog);
+  return rows.filter((row) => String(row.status || '').toUpperCase() === 'ACTIVE');
+}
+
+function scopeMatchesPromo(scope, candidate) {
+  const normalizedScope = String(scope || '').trim().toUpperCase();
+  if (!normalizedScope || normalizedScope === 'GENERAL') return true;
+  const candidateSport = String(candidate?.sport || '').trim().toUpperCase();
+  const candidateMarket = String(candidate?.market_type || '').trim().toUpperCase();
+  return normalizedScope === candidateSport || normalizedScope === candidateMarket;
+}
+
+function resolveExecutionPromoContext(row, candidate) {
+  const promoType = normalizePromoType(row?.promo_type || row?.promo);
+  if (!promoType) return null;
+  const sportsbook = normalizeText(row?.actual_sportsbook);
+  const activePromos = loadActiveOperatorPromos()
+    .filter((entry) => normalizePromoType(entry.promo_type) === promoType)
+    .filter((entry) => normalizeText(entry.sportsbook) === sportsbook)
+    .filter((entry) => scopeMatchesPromo(entry.scope, candidate));
+  const matchedPromo = activePromos[0] || null;
+  return {
+    promo_type: promoType,
+    reward_type: promoType,
+    matched_promo_id: matchedPromo?.promo_id || null,
+    matched_promo_scope: matchedPromo?.scope || null,
+    matched_promo_bet_types: matchedPromo?.bet_types || null,
+    matched_promo_expires_at_utc: matchedPromo?.expires_at_utc || null,
+    matched_promo_expires_raw: matchedPromo?.expires_raw || null,
+    matched_promo_max_wager: Number.isFinite(parseNumber(matchedPromo?.max_wager)) ? parseNumber(matchedPromo.max_wager) : null,
+  };
+}
+
+function evPctFromTrueProbAndOdds(trueProb, americanOdds) {
+  const probability = asPercentProbability(trueProb);
+  const decimal = Number.isFinite(parseNumber(americanOdds))
+    ? (parseNumber(americanOdds) > 0
+      ? 1 + (parseNumber(americanOdds) / 100)
+      : 1 + (100 / Math.abs(parseNumber(americanOdds))))
+    : null;
+  if (!Number.isFinite(probability) || !Number.isFinite(decimal) || decimal <= 1) return null;
+  const net = decimal - 1;
+  return round2(((probability * net) - (1 - probability)) * 100);
+}
+
+function classifyNoSweatLabel(value, policy) {
+  const positiveThreshold = parseNumber(policy?.promo_evaluation?.no_sweat?.positive_threshold_pct) ?? 2;
+  const neutralThreshold = parseNumber(policy?.promo_evaluation?.no_sweat?.neutral_threshold_pct) ?? 0;
+  const numeric = parseNumber(value);
+  if (!Number.isFinite(numeric)) return null;
+  if (numeric >= positiveThreshold) return 'NO_SWEAT_POSITIVE';
+  if (numeric >= neutralThreshold) return 'NO_SWEAT_NEUTRAL';
+  return 'NO_SWEAT_NOT_WORTH_IT';
+}
+
+function buildPromoEvaluationFields(row, candidate, policy) {
+  const promoContext = resolveExecutionPromoContext(row, candidate);
+  if (!promoContext) return {};
+
+  const actualStake = parseNumber(row.actual_stake);
+  const actualOdds = parseNumber(row.actual_odds);
+  const trueProb = asPercentProbability(candidate?.post_conf_true_prob);
+  const standardEvPct = evPctFromTrueProbAndOdds(trueProb, actualOdds);
+
+  const base = {
+    promo_type: promoContext.promo_type,
+    reward_type: promoContext.reward_type,
+    matched_promo_id: promoContext.matched_promo_id,
+    matched_promo_scope: promoContext.matched_promo_scope,
+    matched_promo_bet_types: promoContext.matched_promo_bet_types,
+    matched_promo_expires_at_utc: promoContext.matched_promo_expires_at_utc,
+    matched_promo_expires_raw: promoContext.matched_promo_expires_raw,
+    standard_ev_pct: standardEvPct,
+  };
+
+  if (promoContext.promo_type !== 'NO SWEAT TOKEN') {
+    return base;
+  }
+
+  const conversionPct = parseNumber(policy?.promo_evaluation?.no_sweat?.bonus_bet_conversion_pct) ?? 70;
+  const maxRefund = Number.isFinite(actualStake)
+    ? round2(Math.min(actualStake, Number.isFinite(promoContext.matched_promo_max_wager) ? promoContext.matched_promo_max_wager : actualStake))
+    : null;
+  const refundValuePctOfStake = Number.isFinite(actualStake) && actualStake > 0 && Number.isFinite(maxRefund)
+    ? round2((maxRefund * (conversionPct / 100) / actualStake) * 100)
+    : null;
+  const adjustedEvPct = Number.isFinite(standardEvPct) && Number.isFinite(trueProb) && Number.isFinite(refundValuePctOfStake)
+    ? round2(standardEvPct + ((1 - trueProb) * refundValuePctOfStake))
+    : null;
+
+  return {
+    ...base,
+    no_sweat_max_refund: maxRefund,
+    refund_type: policy?.promo_evaluation?.no_sweat?.refund_type || 'bonus_bet',
+    bonus_bet_conversion_pct: conversionPct,
+    no_sweat_adjusted_ev_pct: adjustedEvPct,
+    no_sweat_adjusted_label: classifyNoSweatLabel(adjustedEvPct, policy),
+  };
 }
 
 function extractRuntimeRecommendationContexts(input, acc = []) {
@@ -647,6 +765,14 @@ export function loadExecutionPolicy() {
   return {
     ...DEFAULT_POLICY,
     ...parsed,
+    promo_evaluation: {
+      ...DEFAULT_POLICY.promo_evaluation,
+      ...(parsed?.promo_evaluation || {}),
+      no_sweat: {
+        ...DEFAULT_POLICY.promo_evaluation.no_sweat,
+        ...(parsed?.promo_evaluation?.no_sweat || {}),
+      },
+    },
     price_only_tolerance_cents: {
       ...DEFAULT_POLICY.price_only_tolerance_cents,
       ...(parsed?.price_only_tolerance_cents || {}),
@@ -1433,6 +1559,7 @@ export function appendExecutionLogRow(row) {
 }
 
 export function ingestStructuredExecutionPlacement(row) {
+  const policy = loadExecutionPolicy();
   const preview = previewExecutionRecommendationMatch(row);
   const candidate = preview.candidate || null;
   const timestamp = row.bet_slip_timestamp || new Date().toISOString();
@@ -1460,6 +1587,8 @@ export function ingestStructuredExecutionPlacement(row) {
     actual_sportsbook: row.actual_sportsbook,
     actual_odds: row.actual_odds,
     actual_stake: row.actual_stake,
+    promo_type: normalizePromoType(row.promo_type || row.promo),
+    reward_type: normalizePromoType(row.promo_type || row.promo),
     bet_slip_timestamp: timestamp,
     execution_id: row.execution_id || `execution::telegram-operator::${Date.now()}`,
     logged_at_utc: row.logged_at_utc || new Date().toISOString(),
@@ -1495,6 +1624,8 @@ export function ingestStructuredExecutionPlacement(row) {
       'logged_real_bet_with_execution_variance',
     ]));
   }
+
+  Object.assign(executionRow, buildPromoEvaluationFields(executionRow, candidate, policy));
 
   const duplicate = findLikelyDuplicateExecution(executionRow);
   if (duplicate) {
