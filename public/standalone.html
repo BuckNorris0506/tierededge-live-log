@@ -291,8 +291,8 @@ th {
 
   <script>window.__LIVE_DATA__ = {
   "schema": "tierededge_canonical_v2",
-  "generated_at_utc": "2026-03-28T20:00:24.707Z",
-  "last_updated_ct": "2026-03-28 15:00 CT",
+  "generated_at_utc": "2026-03-28T20:04:15.703Z",
+  "last_updated_ct": "2026-03-28 15:04 CT",
   "current_status": {
     "Bankroll": "$1400.46",
     "Phase": "GROWTH",
@@ -300,7 +300,7 @@ th {
     "Open Tickets": 14,
     "Snapshot Coverage": "100%",
     "CLV Coverage": "18.52%",
-    "Override Count (month)": 9,
+    "Override Count (month)": 10,
     "Post-Mortem Status": "CLEAR",
     "Invalid Hunt Runs": 4,
     "Model Daily Exposure (latest hunt)": "0%",
@@ -882,7 +882,7 @@ th {
       "status": "PENDING",
       "execution_approval_result": "OFF_PLAN_EXECUTION",
       "manual_override_flag": false,
-      "match_status": "ambiguous_match",
+      "match_status": "matched_to_recommendation",
       "notes": "no_matching_recommendation_found"
     },
     {
@@ -1242,9 +1242,9 @@ th {
   },
   "behavioral_accountability": {
     "overrides": {
-      "monthly_override_count": 9,
+      "monthly_override_count": 10,
       "blocked_run_override_count": 0,
-      "off_model_override_count": 4,
+      "off_model_override_count": 5,
       "recent_overrides": [
         {
           "override_id": "override::execution::telegram-operator::1774723555625::stake_changed_from_recommendation",
@@ -1278,13 +1278,27 @@ th {
           "override_id": "override::execution::telegram-operator::1774723523505::off_model_bet_placed",
           "override_type": "off_model_bet_placed",
           "execution_id": "execution::telegram-operator::1774723523505",
-          "rec_id": null,
+          "rec_id": "canonical-hunt::2026-03-28::1223::icehockey_nhl::f3e3cc3e6294cf13fed8a7d33adc8956::h2h::dallas-stars-ml::betmgm",
           "timestamp_utc": "2026-03-28T18:45:23.380Z",
           "reason_required": true,
           "freeform_justification": "no_matching_recommendation_found | logged_real_bet_without_recommendation_match",
           "operator_channel_source": "telegram_operator",
           "during_blocked_run": false,
-          "changed_stake": false,
+          "changed_stake": true,
+          "changed_line_price": false,
+          "off_model": true
+        },
+        {
+          "override_id": "override::execution::telegram-operator::1774723523505::stake_changed_from_recommendation",
+          "override_type": "stake_changed_from_recommendation",
+          "execution_id": "execution::telegram-operator::1774723523505",
+          "rec_id": "canonical-hunt::2026-03-28::1223::icehockey_nhl::f3e3cc3e6294cf13fed8a7d33adc8956::h2h::dallas-stars-ml::betmgm",
+          "timestamp_utc": "2026-03-28T18:45:23.380Z",
+          "reason_required": true,
+          "freeform_justification": "no_matching_recommendation_found | logged_real_bet_without_recommendation_match",
+          "operator_channel_source": "telegram_operator",
+          "during_blocked_run": false,
+          "changed_stake": true,
           "changed_line_price": false,
           "off_model": true
         },
@@ -1398,15 +1412,15 @@ th {
       }
     },
     "weekly_truth_report_summary": {
-      "generated_at_utc": "2026-03-28T20:00:26.345Z",
+      "generated_at_utc": "2026-03-28T20:04:16.192Z",
       "settled_bet_count": 0,
       "top_bleeding_categories": [],
       "top_strongest_categories": [],
       "override_totals": {
-        "total_override_events": 9,
+        "total_override_events": 10,
         "blocked_run_override_count": 0,
-        "off_model_override_count": 4,
-        "monthly_override_count": 9
+        "off_model_override_count": 5,
+        "monthly_override_count": 10
       },
       "missing_coverage": {
         "missing_snapshot_count": 0,
@@ -1426,18 +1440,18 @@ th {
           "book": "betmgm",
           "owned_book": true,
           "recommendations_count": 12,
-          "best_price_count": 5634,
+          "best_price_count": 5658,
           "executable_near_miss_count": 118,
-          "stale_or_missing_count": 3194,
+          "stale_or_missing_count": 3213,
           "rejected_non_executable_count": 0
         },
         {
           "book": "betrivers",
           "owned_book": false,
           "recommendations_count": 1,
-          "best_price_count": 4178,
+          "best_price_count": 4224,
           "executable_near_miss_count": 0,
-          "stale_or_missing_count": 2076,
+          "stale_or_missing_count": 2092,
           "rejected_non_executable_count": 6
         },
         {
@@ -1462,32 +1476,32 @@ th {
           "book": "draftkings",
           "owned_book": true,
           "recommendations_count": 24,
-          "best_price_count": 6156,
-          "executable_near_miss_count": 118,
-          "stale_or_missing_count": 3026,
+          "best_price_count": 6213,
+          "executable_near_miss_count": 120,
+          "stale_or_missing_count": 3046,
           "rejected_non_executable_count": 0
         },
         {
           "book": "fanduel",
           "owned_book": true,
-          "recommendations_count": 11,
-          "best_price_count": 8008,
-          "executable_near_miss_count": 162,
-          "stale_or_missing_count": 3876,
+          "recommendations_count": 12,
+          "best_price_count": 8075,
+          "executable_near_miss_count": 163,
+          "stale_or_missing_count": 3901,
           "rejected_non_executable_count": 0
         }
       ]
     },
     "weekly_operator_review_summary": {
-      "generated_at_utc": "2026-03-28T20:00:16.576Z",
+      "generated_at_utc": "2026-03-28T20:04:14.444Z",
       "window": "last_7_days",
       "run_truth": {
-        "valid_runs": 161,
+        "valid_runs": 162,
         "invalidated_runs": 1
       },
       "hunt_totals": {
-        "total_bets": 48,
-        "total_sits": 23928
+        "total_bets": 49,
+        "total_sits": 24121
       },
       "actual_clv_summary": {
         "settled_bet_count": 0,
@@ -1498,43 +1512,43 @@ th {
       },
       "rejected_clv_summary": {
         "1.0_to_1.49": {
-          "count": 1511,
+          "count": 1536,
           "captured_count": 10,
           "avg_clv_delta_pct": -1.52,
           "positive_clv_rate": 40
         },
         "1.5_to_1.99": {
-          "count": 604,
+          "count": 610,
           "captured_count": 7,
           "avg_clv_delta_pct": 0.75,
           "positive_clv_rate": 85.71
         },
         "2.0_plus_rejected": {
-          "count": 562,
+          "count": 565,
           "captured_count": 3,
           "avg_clv_delta_pct": 1.32,
           "positive_clv_rate": 100
         }
       },
       "market_integrity": {
-        "invalid_snapshot_count": 9038,
-        "stale_market_count": 3134,
+        "invalid_snapshot_count": 9106,
+        "stale_market_count": 3146,
         "top_rejection_reasons": [
           {
             "reason": "no_edge",
-            "count": 11602
+            "count": 11712
           },
           {
             "reason": "invalid_snapshot",
-            "count": 9038
+            "count": 9106
           },
           {
             "reason": "stale_market",
-            "count": 3134
+            "count": 3146
           },
           {
             "reason": "sub_minimum_kelly",
-            "count": 93
+            "count": 96
           },
           {
             "reason": "exposure_cap_reached",
@@ -1552,8 +1566,8 @@ th {
         {
           "level": "RED",
           "code": "invalid_snapshot_spike",
-          "occurrences": 130,
-          "message": "130 run(s) crossed the invalid snapshot spike threshold."
+          "occurrences": 131,
+          "message": "131 run(s) crossed the invalid snapshot spike threshold."
         },
         {
           "level": "RED",
@@ -4087,60 +4101,60 @@ th {
     "net_counterfactual_pl_if_bet": -3
   },
   "daily_rejection_summary": {
-    "Total Markets Checked": 1278,
-    "Total Rejected": 1275,
-    "no_edge": 863,
+    "Total Markets Checked": 1472,
+    "Total Rejected": 1468,
+    "no_edge": 973,
     "low_confidence": 0,
-    "Plays Recommended": 3,
+    "Plays Recommended": 4,
     "Excluded Invalid Rows": 0
   },
   "rejected_opportunity_summary": {
-    "total_rejected_rows": 24747,
-    "total_eligible_rejected_rows": 13311,
+    "total_rejected_rows": 24940,
+    "total_eligible_rejected_rows": 13504,
     "partial_backfill_count": 3611,
-    "coverage_pct": 53.79,
+    "coverage_pct": 54.15,
     "near_miss_counts_by_band": {
-      "1.0_to_1.49": 1573,
-      "1.5_to_1.99": 625,
-      "2.0_plus_rejected": 574
+      "1.0_to_1.49": 1598,
+      "1.5_to_1.99": 631,
+      "2.0_plus_rejected": 577
     },
     "executable_near_miss_counts_by_band": {
-      "1.0_to_1.49": 1237,
-      "1.5_to_1.99": 466,
-      "2.0_plus_rejected": 464
+      "1.0_to_1.49": 1250,
+      "1.5_to_1.99": 469,
+      "2.0_plus_rejected": 467
     },
     "rejection_reason_distribution": {
-      "no_edge": 12408,
+      "no_edge": 12518,
       "low_confidence": 5,
       "no edge at current price": 2,
       "exposure_cap_reached": 61,
       "non_executable_book": 2,
-      "sub_minimum_kelly": 93,
-      "invalid_snapshot": 9038,
-      "stale_market": 3134,
+      "sub_minimum_kelly": 96,
+      "invalid_snapshot": 9106,
+      "stale_market": 3146,
       "research_only_non_owned_book": 4
     },
     "rejection_class_distribution": {
-      "no_edge": 12045,
-      "near_miss": 363,
+      "no_edge": 12151,
+      "near_miss": 367,
       "other_meaningful_canonical": 7,
       "risk_gate_rejected": 63,
-      "sub_minimum_kelly": 93,
-      "stale_or_unverified_odds": 9038,
-      "stale_market": 3134,
+      "sub_minimum_kelly": 96,
+      "stale_or_unverified_odds": 9106,
+      "stale_market": 3146,
       "non_executable_edge": 4
     },
     "latest_date_rejection_reason_distribution": {
-      "sub_minimum_kelly": 7,
-      "no_edge": 863,
-      "invalid_snapshot": 344,
+      "sub_minimum_kelly": 10,
+      "no_edge": 973,
+      "invalid_snapshot": 412,
       "research_only_non_owned_book": 3,
-      "stale_market": 58
+      "stale_market": 70
     },
     "close_capture_status_distribution": {
       "not_available": 11436,
       "failed": 164,
-      "pending": 12737,
+      "pending": 12930,
       "insufficient_market_match": 28,
       "captured": 382
     },
@@ -4152,7 +4166,7 @@ th {
     "rejected_clv_summary": {
       "all_rejected": {
         "1.0_to_1.49": {
-          "count": 1573,
+          "count": 1598,
           "captured_count": 10,
           "avg_clv_delta_pct": -1.52,
           "positive_clv_rate": 40,
@@ -4160,7 +4174,7 @@ th {
           "exact_match_rate": 90
         },
         "1.5_to_1.99": {
-          "count": 625,
+          "count": 631,
           "captured_count": 7,
           "avg_clv_delta_pct": 0.75,
           "positive_clv_rate": 85.71,
@@ -4168,7 +4182,7 @@ th {
           "exact_match_rate": 100
         },
         "2.0_plus_rejected": {
-          "count": 574,
+          "count": 577,
           "captured_count": 3,
           "avg_clv_delta_pct": 1.32,
           "positive_clv_rate": 100,
@@ -4178,7 +4192,7 @@ th {
       },
       "executable_only": {
         "1.0_to_1.49": {
-          "count": 1237,
+          "count": 1250,
           "captured_count": 10,
           "avg_clv_delta_pct": -1.52,
           "positive_clv_rate": 40,
@@ -4186,7 +4200,7 @@ th {
           "exact_match_rate": 90
         },
         "1.5_to_1.99": {
-          "count": 466,
+          "count": 469,
           "captured_count": 3,
           "avg_clv_delta_pct": 0.16,
           "positive_clv_rate": 66.67,
@@ -4194,7 +4208,7 @@ th {
           "exact_match_rate": 100
         },
         "2.0_plus_rejected": {
-          "count": 464,
+          "count": 467,
           "captured_count": 0,
           "avg_clv_delta_pct": null,
           "positive_clv_rate": null,
@@ -5838,15 +5852,42 @@ th {
     "recent_rows": []
   },
   "actionable_board_continuity_summary": {
-    "latest_run_id": "canonical-hunt::2026-03-28::1500",
+    "latest_run_id": "canonical-hunt::2026-03-28::1504",
     "latest_actionable_run_id": "canonical-hunt::2026-03-28::1248",
     "counts_by_status": {
-      "new_actionable": 0,
+      "new_actionable": 1,
       "still_actionable": 0,
       "decayed_but_close": 0,
       "invalidated": 1
     },
-    "current_actionable_rows": [],
+    "current_actionable_rows": [
+      {
+        "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::def835f85134dff31d0e29a14591d960::h2h::philadelphia-76ers-ml::fanduel",
+        "run_id": "canonical-hunt::2026-03-28::1504",
+        "event_id": "def835f85134dff31d0e29a14591d960",
+        "event_label": "Philadelphia 76ers @ Charlotte Hornets",
+        "event_home_team": "Charlotte Hornets",
+        "event_away_team": "Philadelphia 76ers",
+        "market_family": "main_market",
+        "market_type": "ML",
+        "selection": "Philadelphia 76ers ML",
+        "sportsbook": "FanDuel",
+        "line_key": null,
+        "odds_american": "235",
+        "current_odds_american": "235",
+        "prior_edge_pct": 3.17,
+        "current_edge_pct": 3.17,
+        "kelly_stake": 8,
+        "continuity_status": "new_actionable",
+        "continuity_reason": "new_actionable",
+        "executable_book": true,
+        "actionable_book": true,
+        "still_pregame": true,
+        "minutes_to_start": 125.79,
+        "urgency_tag": "LATER",
+        "event_start_time": "2026-03-28T22:10:00Z"
+      }
+    ],
     "prior_actionable_rows": [
       {
         "rec_id": "canonical-hunt::2026-03-28::1248::icehockey_nhl::f3e3cc3e6294cf13fed8a7d33adc8956::h2h::dallas-stars-ml::betmgm",
@@ -5880,14 +5921,14 @@ th {
     "scheduler_type": "system_cron",
     "timezone": "America/Chicago",
     "model_backed_scheduler_in_critical_path": false,
-    "total_runs_logged": 1519,
+    "total_runs_logged": 1522,
     "critical_jobs": [
       {
         "name": "telegram-operator-poll",
         "critical": true,
         "schedule_expr": "* * * * *",
         "entrypoint": "./scripts/run-telegram-operator-poll.sh",
-        "last_run_time_utc": "2026-03-28T19:59:29.889Z",
+        "last_run_time_utc": "2026-03-28T20:03:10.706Z",
         "last_status": "ok",
         "last_run_id": null,
         "execution_mode": "direct_local_command"
@@ -5937,9 +5978,9 @@ th {
         "critical": true,
         "schedule_expr": "0 15 * * *",
         "entrypoint": "node ./scripts/run-scheduled-canonical-hunt-launcher.mjs --job-name afternoon-edge-hunt",
-        "last_run_time_utc": "2026-03-26T20:58:40.091Z",
-        "last_status": "ok",
-        "last_run_id": "canonical-hunt::2026-03-26::1558",
+        "last_run_time_utc": "2026-03-28T20:00:31.595Z",
+        "last_status": "complete_with_deploy_warning",
+        "last_run_id": "canonical-hunt::2026-03-28::1500",
         "execution_mode": "direct_local_command"
       },
       {
@@ -5984,6 +6025,49 @@ th {
       }
     ],
     "recent_runs": [
+      {
+        "automation_run_id": "telegram-operator-poll::2026-03-28T20:02:20.434Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-03-28T20:02:20.434Z",
+        "completed_at_utc": "2026-03-28T20:03:10.706Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-03-28T20:00:30.032Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-03-28T20:00:30.032Z",
+        "completed_at_utc": "2026-03-28T20:01:20.278Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "afternoon-edge-hunt::2026-03-28T20:00:00Z",
+        "scheduler_type": "system_cron",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "afternoon-edge-hunt",
+        "started_at_utc": "2026-03-28T20:00:00Z",
+        "completed_at_utc": "2026-03-28T20:00:31.595Z",
+        "status": "complete_with_deploy_warning",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-scheduled-canonical-hunt-launcher.mjs",
+        "child_command": "/bin/zsh /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-scheduled-canonical-hunt.sh --job-name afternoon-edge-hunt",
+        "run_id": "canonical-hunt::2026-03-28::1500",
+        "rebuild_status": "ok",
+        "deploy_status": "failed",
+        "deploy_error": "fatal: mmap failed: Resource deadlock avoided\nremote: fatal: early EOF        \nerror: remote unpack failed: index-pack failed\nTo github.com:BuckNorris0506/tierededge-live-log.git\n ! [remote rejected] main -> main (failed)\nerror: failed to push some refs to 'github.com:BuckNorris0506/tierededge-live-log.git'\nBuilt runtime status: /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/openclaw-runtime-status.json\nFreshness anchor: latest_successful_hunt | 2026-03-25 06:00 CT\nUpdated passed-opportunity grades cache: /Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json\n{\n  \"total_pass_rows\": 21,\n  \"preserved_existing\": 14,\n  \"backfilled_local\": 0,\n  \"backfilled_api\": 0,\n  \"api_calls_made\": 3,\n  \"scores_cache_hits\": 0,\n  \"failed\": 7,\n  \"failure_reasons\": {\n    \"missing_event_identity\": 7\n  }\n}\n{\n  \"execution_rows_scanned\": 19,\n  \"override_events_appended\": 9,\n  \"override_events_total\": 9\n}\n{\n  \"total_rows\": 19,\n  \"unknown_count\": 2,\n  \"approved_execution_count\": 13,\n  \"manual_override_count\": 0\n}\n{\n  \"ending_bankroll\": 1400.46,\n  \"annotated_count\": 27,\n  \"trace_path\": \"/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/bankroll-reconciliation-trace.json\"\n}\n{\n  \"generated_at_utc\": \"2026-03-28T20:00:15.552Z\",\n  \"settled_bet_count\": 0,\n  \"override_totals\": {\n    \"total_override_events\": 9,\n    \"blocked_run_override_count\": 0,\n    \"off_model_override_count\": 4,\n    \"monthly_override_count\": 9\n  },\n  \"top_bleeding_categories\": []\n}\n{\n  \"generated_at_utc\": \"2026-03-28T20:00:16.576Z\",\n  \"window\": \"last_7_days\",\n  \"valid_runs\": 161,\n  \"invalidated_runs\": 1,\n  \"total_bets\": 48,\n  \"total_sits\": 23928\n}\nBuilt execution board: candidates=0 approved=0 rejected=0\n{\n  \"generated_at_utc\": \"2026-03-28T20:00:23.112Z\",\n  \"require_output_match\": false,\n  \"passed\": true,\n  \"run_classification\": \"ledger_integrity_pass\",\n  \"failure_classes\": [],\n  \"summary\": {\n    \"executions_total\": 19,\n    \"executions_pending\": 14,\n    \"final_execution_grades\": 5,\n    \"bankroll\": {\n      \"starting_bankroll\": 100,\n      \"contributions\": 1100,\n      \"realized_profit\": 200.46,\n      \"derived_bankroll\": 1400.46,\n      \"last_recorded_bankroll\": 1400.46,\n      \"difference\": 0\n    },\n    \"open_risk\": {\n      \"pending_ticket_count\": 14,\n      \"total_stake_at_risk\": 127.51,\n      \"open_exposure_pct_of_bankroll\": 9.1\n    }\n  },\n  \"issues\": []\n}\nBuilt canonical state: /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/canonical-state.json\nRendered public artifacts from canonical state: /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/public/data.json\nBuilt standalone page: /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/public/standalone.html\n{\n  \"blocked\": false,\n  \"reason_class\": \"true_no_edge_sit\",\n  \"changed\": 0,\n  \"hunt_jobs\": [\n    {\n      \"name\": \"morning-edge-hunt\",\n      \"enabled\": false\n    },\n    {\n      \"name\": \"friday-sgp\",\n      \"enabled\": false\n    }\n  ]\n}\n{\n  \"generated_at_utc\": \"2026-03-28T20:00:29.077Z\",\n  \"require_output_match\": true,\n  \"passed\": true,\n  \"run_classification\": \"ledger_integrity_pass\",\n  \"failure_classes\": [],\n  \"summary\": {\n    \"executions_total\": 19,\n    \"executions_pending\": 14,\n    \"final_execution_grades\": 5,\n    \"bankroll\": {\n      \"starting_bankroll\": 100,\n      \"contributions\": 1100,\n      \"realized_profit\": 200.46,\n      \"derived_bankroll\": 1400.46,\n      \"last_recorded_bankroll\": 1400.46,\n      \"difference\": 0\n    },\n    \"open_risk\": {\n      \"pending_ticket_count\": 14,\n      \"total_stake_at_risk\": 127.51,\n      \"open_exposure_pct_of_bankroll\": 9.1\n    }\n  },\n  \"issues\": []\n}\nLive log data rebuilt (including standalone page).\n\nTIEREDGE DECISION\nVerdict: SIT\nRun classification: true_no_edge_sit\nWhy: Latest scheduled hunt found no qualifying edges.\nSystem health: PASS\n\nTIEREDGE DECISION\nVerdict: SIT\nRun classification: true_no_edge_sit\nWhy: Latest scheduled hunt found no qualifying edges.\nSystem health: PASS\n[main d3f4cc2] Update live bet log 2026-03-28T20:00:30Z\n Committer: Jared Buckman <jaredbuckman@mac.lan>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly. Run the\nfollowing command and follow the instructions in your editor to edit\nyour configuration file:\n\n    git config --global --edit\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 43 files changed, 15455 insertions(+), 8840 deletions(-)\n create mode 100644 data/operator-promo-log.jsonl",
+        "error": "fatal: mmap failed: Resource deadlock avoided\nremote: fatal: early EOF        \nerror: remote unpack failed: index-pack failed\nTo github.com:BuckNorris0506/tierededge-live-log.git\n ! [remote rejected] main -> main (failed)\nerror: failed to push some refs to 'github.com:BuckNorris0506/tierededge-live-log.git'\nBuilt runtime status: /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/openclaw-runtime-status.json\nFreshness anchor: latest_successful_hunt | 2026-03-25 06:00 CT\nUpdated passed-opportunity grades cache: /Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json\n{\n  \"total_pass_rows\": 21,\n  \"preserved_existing\": 14,\n  \"backfilled_local\": 0,\n  \"backfilled_api\": 0,\n  \"api_calls_made\": 3,\n  \"scores_cache_hits\": 0,\n  \"failed\": 7,\n  \"failure_reasons\": {\n    \"missing_event_identity\": 7\n  }\n}\n{\n  \"execution_rows_scanned\": 19,\n  \"override_events_appended\": 9,\n  \"override_events_total\": 9\n}\n{\n  \"total_rows\": 19,\n  \"unknown_count\": 2,\n  \"approved_execution_count\": 13,\n  \"manual_override_count\": 0\n}\n{\n  \"ending_bankroll\": 1400.46,\n  \"annotated_count\": 27,\n  \"trace_path\": \"/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/bankroll-reconciliation-trace.json\"\n}\n{\n  \"generated_at_utc\": \"2026-03-28T20:00:15.552Z\",\n  \"settled_bet_count\": 0,\n  \"override_totals\": {\n    \"total_override_events\": 9,\n    \"blocked_run_override_count\": 0,\n    \"off_model_override_count\": 4,\n    \"monthly_override_count\": 9\n  },\n  \"top_bleeding_categories\": []\n}\n{\n  \"generated_at_utc\": \"2026-03-28T20:00:16.576Z\",\n  \"window\": \"last_7_days\",\n  \"valid_runs\": 161,\n  \"invalidated_runs\": 1,\n  \"total_bets\": 48,\n  \"total_sits\": 23928\n}\nBuilt execution board: candidates=0 approved=0 rejected=0\n{\n  \"generated_at_utc\": \"2026-03-28T20:00:23.112Z\",\n  \"require_output_match\": false,\n  \"passed\": true,\n  \"run_classification\": \"ledger_integrity_pass\",\n  \"failure_classes\": [],\n  \"summary\": {\n    \"executions_total\": 19,\n    \"executions_pending\": 14,\n    \"final_execution_grades\": 5,\n    \"bankroll\": {\n      \"starting_bankroll\": 100,\n      \"contributions\": 1100,\n      \"realized_profit\": 200.46,\n      \"derived_bankroll\": 1400.46,\n      \"last_recorded_bankroll\": 1400.46,\n      \"difference\": 0\n    },\n    \"open_risk\": {\n      \"pending_ticket_count\": 14,\n      \"total_stake_at_risk\": 127.51,\n      \"open_exposure_pct_of_bankroll\": 9.1\n    }\n  },\n  \"issues\": []\n}\nBuilt canonical state: /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/canonical-state.json\nRendered public artifacts from canonical state: /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/public/data.json\nBuilt standalone page: /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/public/standalone.html\n{\n  \"blocked\": false,\n  \"reason_class\": \"true_no_edge_sit\",\n  \"changed\": 0,\n  \"hunt_jobs\": [\n    {\n      \"name\": \"morning-edge-hunt\",\n      \"enabled\": false\n    },\n    {\n      \"name\": \"friday-sgp\",\n      \"enabled\": false\n    }\n  ]\n}\n{\n  \"generated_at_utc\": \"2026-03-28T20:00:29.077Z\",\n  \"require_output_match\": true,\n  \"passed\": true,\n  \"run_classification\": \"ledger_integrity_pass\",\n  \"failure_classes\": [],\n  \"summary\": {\n    \"executions_total\": 19,\n    \"executions_pending\": 14,\n    \"final_execution_grades\": 5,\n    \"bankroll\": {\n      \"starting_bankroll\": 100,\n      \"contributions\": 1100,\n      \"realized_profit\": 200.46,\n      \"derived_bankroll\": 1400.46,\n      \"last_recorded_bankroll\": 1400.46,\n      \"difference\": 0\n    },\n    \"open_risk\": {\n      \"pending_ticket_count\": 14,\n      \"total_stake_at_risk\": 127.51,\n      \"open_exposure_pct_of_bankroll\": 9.1\n    }\n  },\n  \"issues\": []\n}\nLive log data rebuilt (including standalone page).\n\nTIEREDGE DECISION\nVerdict: SIT\nRun classification: true_no_edge_sit\nWhy: Latest scheduled hunt found no qualifying edges.\nSystem health: PASS\n\nTIEREDGE DECISION\nVerdict: SIT\nRun classification: true_no_edge_sit\nWhy: Latest scheduled hunt found no qualifying edges.\nSystem health: PASS\n[main d3f4cc2] Update live bet log 2026-03-28T20:00:30Z\n Committer: Jared Buckman <jaredbuckman@mac.lan>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly. Run the\nfollowing command and follow the instructions in your editor to edit\nyour configuration file:\n\n    git config --global --edit\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 43 files changed, 15455 insertions(+), 8840 deletions(-)\n create mode 100644 data/operator-promo-log.jsonl"
+      },
       {
         "automation_run_id": "telegram-operator-poll::2026-03-28T19:58:39.688Z",
         "scheduler_type": "launchd",
@@ -6265,45 +6349,6 @@ th {
         "job_name": "telegram-operator-poll",
         "started_at_utc": "2026-03-28T19:20:00.869Z",
         "completed_at_utc": "2026-03-28T19:20:51.118Z",
-        "status": "ok",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "processed_updates": 0
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-28T19:18:10.509Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-28T19:18:10.509Z",
-        "completed_at_utc": "2026-03-28T19:19:00.706Z",
-        "status": "ok",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "processed_updates": 0
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-28T19:16:19.966Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-28T19:16:19.966Z",
-        "completed_at_utc": "2026-03-28T19:17:10.344Z",
-        "status": "ok",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "processed_updates": 0
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-28T19:14:29.597Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-28T19:14:29.597Z",
-        "completed_at_utc": "2026-03-28T19:15:19.805Z",
         "status": "ok",
         "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
         "child_command": "node scripts/telegram-operator-bot.mjs --json",
@@ -6812,7 +6857,7 @@ th {
   },
   "automation_lock_summary": {
     "canonical_hunt": {
-      "last_run_time_utc": "2026-03-28T20:00:08.749Z",
+      "last_run_time_utc": "2026-03-28T20:04:12.853Z",
       "last_run_status": "ok",
       "last_skip_time_utc": "2026-03-26T19:10:02.796Z",
       "skipped_due_to_active_lock_count": 4,
@@ -8377,16 +8422,16 @@ th {
   },
   "boost_adjusted_opportunities": [
     {
-      "run_id": "canonical-hunt::2026-03-28::1500",
-      "rec_id": "canonical-hunt::2026-03-28::1500::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::spreads::arizona-wildcats-5-5::betmgm",
-      "selection": "Arizona Wildcats -5.5",
+      "run_id": "canonical-hunt::2026-03-28::1504",
+      "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::2f64bcd6f06f9cb1132a6be530d6848c::totals::over-220-5::betmgm",
+      "selection": "Over 220.5",
       "sportsbook": "BetMGM",
-      "sport": "NCAAB",
-      "market_type": "Spread",
-      "event_id": "b8f1c265896037786f17893bf5c3df0d",
-      "event_label": "Purdue Boilermakers @ Arizona Wildcats",
-      "event_start_time": "2026-03-29T00:49:00Z",
-      "minutes_to_start": 288.86,
+      "sport": "NBA",
+      "market_type": "Total",
+      "event_id": "2f64bcd6f06f9cb1132a6be530d6848c",
+      "event_label": "Detroit Pistons @ Minnesota Timberwolves",
+      "event_start_time": "2026-03-28T21:40:00Z",
+      "minutes_to_start": 95.79,
       "urgency_tag": "LATER",
       "original_final_decision": "SIT",
       "original_kelly_stake": 0,
@@ -8405,210 +8450,16 @@ th {
       "recommendation_reason": "boost_creates_positive_opportunity",
       "original_odds_american": -110,
       "boosted_odds_american": 114,
-      "original_edge_pct": 1.74,
-      "boosted_edge_pct": 4.93,
-      "original_ev_pct": -1.22,
-      "boosted_ev_pct": 10.54,
-      "boosted_kelly_stake": 52.5,
-      "boost_capped_stake": 42.01,
+      "original_edge_pct": 0.54,
+      "boosted_edge_pct": 3.73,
+      "original_ev_pct": -3.51,
+      "boosted_ev_pct": 7.97,
+      "boosted_kelly_stake": 20,
+      "boost_capped_stake": 20,
       "promo_max_wager": 100,
       "bankroll_risk_cap": 42.01,
       "bankroll_run_exposure_cap": 126.04,
-      "boosted_expected_profit": 4.43,
-      "reasons": [
-        "explicit_promo_constraints_present",
-        "scope_match",
-        "bet_type_match",
-        "no_min_total_odds",
-        "promo_cap_limited",
-        "risk_cap_limited"
-      ],
-      "boost_tier": "T2",
-      "true_prob": 51.74
-    },
-    {
-      "run_id": "canonical-hunt::2026-03-28::1500",
-      "rec_id": "canonical-hunt::2026-03-28::1500::baseball_mlb::1a825b96d509d162a93aedec56ed8927::h2h::colorado-rockies-ml::betmgm",
-      "selection": "Colorado Rockies ML",
-      "sportsbook": "BetMGM",
-      "sport": "MLB",
-      "market_type": "ML",
-      "event_id": "1a825b96d509d162a93aedec56ed8927",
-      "event_label": "Colorado Rockies @ Miami Marlins",
-      "event_start_time": "2026-03-28T20:11:00Z",
-      "minutes_to_start": 10.86,
-      "urgency_tag": "NOW",
-      "original_final_decision": "SIT",
-      "original_kelly_stake": 0,
-      "boost_id": "profit-boost::1774718450643",
-      "boost_sportsbook": "BetMGM",
-      "boost_percent": 25,
-      "boost_scope": "GENERAL",
-      "max_wager": 100,
-      "bet_types": "Straight, Parlay, Same Game Parlay",
-      "min_total_odds": null,
-      "expires_raw": "2026-03-28 06:03 PM",
-      "expires_at_utc": "2026-03-28T23:03:00.000Z",
-      "eligibility_status": "ELIGIBLE",
-      "eligibility_reason": "eligible",
-      "recommendation_label": "BOOST ELIGIBLE",
-      "recommendation_reason": "boost_creates_positive_opportunity",
-      "original_odds_american": 165,
-      "boosted_odds_american": 206,
-      "original_edge_pct": 0.56,
-      "boosted_edge_pct": 4.05,
-      "original_ev_pct": -2.75,
-      "boosted_ev_pct": 12.39,
-      "boosted_kelly_stake": 33.5,
-      "boost_capped_stake": 33.5,
-      "promo_max_wager": 100,
-      "bankroll_risk_cap": 42.01,
-      "bankroll_run_exposure_cap": 126.04,
-      "boosted_expected_profit": 4.15,
-      "reasons": [
-        "explicit_promo_constraints_present",
-        "scope_match",
-        "bet_type_match",
-        "no_min_total_odds"
-      ],
-      "boost_tier": "T2",
-      "true_prob": 36.7
-    },
-    {
-      "run_id": "canonical-hunt::2026-03-28::1500",
-      "rec_id": "canonical-hunt::2026-03-28::1500::baseball_mlb::e5bb185ad50b6e624fefc0480aed9633::h2h::minnesota-twins-ml::betmgm",
-      "selection": "Minnesota Twins ML",
-      "sportsbook": "BetMGM",
-      "sport": "MLB",
-      "market_type": "ML",
-      "event_id": "e5bb185ad50b6e624fefc0480aed9633",
-      "event_label": "Minnesota Twins @ Baltimore Orioles",
-      "event_start_time": "2026-03-28T20:05:00Z",
-      "minutes_to_start": 4.86,
-      "urgency_tag": "NOW",
-      "original_final_decision": "SIT",
-      "original_kelly_stake": 0,
-      "boost_id": "profit-boost::1774718450643",
-      "boost_sportsbook": "BetMGM",
-      "boost_percent": 25,
-      "boost_scope": "GENERAL",
-      "max_wager": 100,
-      "bet_types": "Straight, Parlay, Same Game Parlay",
-      "min_total_odds": null,
-      "expires_raw": "2026-03-28 06:03 PM",
-      "expires_at_utc": "2026-03-28T23:03:00.000Z",
-      "eligibility_status": "ELIGIBLE",
-      "eligibility_reason": "eligible",
-      "recommendation_label": "BOOST ELIGIBLE",
-      "recommendation_reason": "boost_creates_positive_opportunity",
-      "original_odds_american": 140,
-      "boosted_odds_american": 175,
-      "original_edge_pct": 0.29,
-      "boosted_edge_pct": 4.02,
-      "original_ev_pct": -3.09,
-      "boosted_ev_pct": 11.04,
-      "boosted_kelly_stake": 35.5,
-      "boost_capped_stake": 35.5,
-      "promo_max_wager": 100,
-      "bankroll_risk_cap": 42.01,
-      "bankroll_run_exposure_cap": 126.04,
-      "boosted_expected_profit": 3.92,
-      "reasons": [
-        "explicit_promo_constraints_present",
-        "scope_match",
-        "bet_type_match",
-        "no_min_total_odds"
-      ],
-      "boost_tier": "T2",
-      "true_prob": 40.38
-    },
-    {
-      "run_id": "canonical-hunt::2026-03-28::1500",
-      "rec_id": "canonical-hunt::2026-03-28::1500::baseball_mlb::83fb92be857af525695a1086c6d0eaaf::h2h::texas-rangers-ml::betmgm",
-      "selection": "Texas Rangers ML",
-      "sportsbook": "BetMGM",
-      "sport": "MLB",
-      "market_type": "ML",
-      "event_id": "83fb92be857af525695a1086c6d0eaaf",
-      "event_label": "Texas Rangers @ Philadelphia Phillies",
-      "event_start_time": "2026-03-28T20:06:00Z",
-      "minutes_to_start": 5.86,
-      "urgency_tag": "NOW",
-      "original_final_decision": "SIT",
-      "original_kelly_stake": 0,
-      "boost_id": "profit-boost::1774718450643",
-      "boost_sportsbook": "BetMGM",
-      "boost_percent": 25,
-      "boost_scope": "GENERAL",
-      "max_wager": 100,
-      "bet_types": "Straight, Parlay, Same Game Parlay",
-      "min_total_odds": null,
-      "expires_raw": "2026-03-28 06:03 PM",
-      "expires_at_utc": "2026-03-28T23:03:00.000Z",
-      "eligibility_status": "ELIGIBLE",
-      "eligibility_reason": "eligible",
-      "recommendation_label": "BOOST ELIGIBLE",
-      "recommendation_reason": "boost_creates_positive_opportunity",
-      "original_odds_american": 125,
-      "boosted_odds_american": 156,
-      "original_edge_pct": 0.55,
-      "boosted_edge_pct": 4.08,
-      "original_ev_pct": -3.02,
-      "boosted_ev_pct": 10.44,
-      "boosted_kelly_stake": 37,
-      "boost_capped_stake": 37,
-      "promo_max_wager": 100,
-      "bankroll_risk_cap": 42.01,
-      "bankroll_run_exposure_cap": 126.04,
-      "boosted_expected_profit": 3.86,
-      "reasons": [
-        "explicit_promo_constraints_present",
-        "scope_match",
-        "bet_type_match",
-        "no_min_total_odds"
-      ],
-      "boost_tier": "T2",
-      "true_prob": 43.1
-    },
-    {
-      "run_id": "canonical-hunt::2026-03-28::1500",
-      "rec_id": "canonical-hunt::2026-03-28::1500::baseball_mlb::e4be161112d6550a383416acab9cc6cb::h2h::san-francisco-giants-ml::betmgm",
-      "selection": "San Francisco Giants ML",
-      "sportsbook": "BetMGM",
-      "sport": "MLB",
-      "market_type": "ML",
-      "event_id": "e4be161112d6550a383416acab9cc6cb",
-      "event_label": "New York Yankees @ San Francisco Giants",
-      "event_start_time": "2026-03-28T23:15:00Z",
-      "minutes_to_start": 194.86,
-      "urgency_tag": "LATER",
-      "original_final_decision": "SIT",
-      "original_kelly_stake": 0,
-      "boost_id": "profit-boost::1774718450643",
-      "boost_sportsbook": "BetMGM",
-      "boost_percent": 25,
-      "boost_scope": "GENERAL",
-      "max_wager": 100,
-      "bet_types": "Straight, Parlay, Same Game Parlay",
-      "min_total_odds": null,
-      "expires_raw": "2026-03-28 06:03 PM",
-      "expires_at_utc": "2026-03-28T23:03:00.000Z",
-      "eligibility_status": "ELIGIBLE",
-      "eligibility_reason": "eligible",
-      "recommendation_label": "BOOST ELIGIBLE",
-      "recommendation_reason": "boost_creates_positive_opportunity",
-      "original_odds_american": 110,
-      "boosted_odds_american": 138,
-      "original_edge_pct": 0.29,
-      "boosted_edge_pct": 3.9,
-      "original_ev_pct": -3.38,
-      "boosted_ev_pct": 9.27,
-      "boosted_kelly_stake": 19.5,
-      "boost_capped_stake": 19.5,
-      "promo_max_wager": 100,
-      "bankroll_risk_cap": 42.01,
-      "bankroll_run_exposure_cap": 126.04,
-      "boosted_expected_profit": 1.81,
+      "boosted_expected_profit": 1.59,
       "reasons": [
         "explicit_promo_constraints_present",
         "scope_match",
@@ -8616,107 +8467,11 @@ th {
         "no_min_total_odds"
       ],
       "boost_tier": "T3",
-      "true_prob": 46.01
+      "true_prob": 50.54
     },
     {
-      "run_id": "canonical-hunt::2026-03-28::1500",
-      "rec_id": "canonical-hunt::2026-03-28::1500::baseball_mlb::e0d4956a76de96648305fd7ef0d96800::h2h::kansas-city-royals-ml::betmgm",
-      "selection": "Kansas City Royals ML",
-      "sportsbook": "BetMGM",
-      "sport": "MLB",
-      "market_type": "ML",
-      "event_id": "e0d4956a76de96648305fd7ef0d96800",
-      "event_label": "Kansas City Royals @ Atlanta Braves",
-      "event_start_time": "2026-03-28T23:15:00Z",
-      "minutes_to_start": 194.86,
-      "urgency_tag": "LATER",
-      "original_final_decision": "SIT",
-      "original_kelly_stake": 0,
-      "boost_id": "profit-boost::1774718450643",
-      "boost_sportsbook": "BetMGM",
-      "boost_percent": 25,
-      "boost_scope": "GENERAL",
-      "max_wager": 100,
-      "bet_types": "Straight, Parlay, Same Game Parlay",
-      "min_total_odds": null,
-      "expires_raw": "2026-03-28 06:03 PM",
-      "expires_at_utc": "2026-03-28T23:03:00.000Z",
-      "eligibility_status": "ELIGIBLE",
-      "eligibility_reason": "eligible",
-      "recommendation_label": "BOOST ELIGIBLE",
-      "recommendation_reason": "boost_creates_positive_opportunity",
-      "original_odds_american": 125,
-      "boosted_odds_american": 156,
-      "original_edge_pct": 0.37,
-      "boosted_edge_pct": 3.9,
-      "original_ev_pct": -3.43,
-      "boosted_ev_pct": 9.98,
-      "boosted_kelly_stake": 17.5,
-      "boost_capped_stake": 17.5,
-      "promo_max_wager": 100,
-      "bankroll_risk_cap": 42.01,
-      "bankroll_run_exposure_cap": 126.04,
-      "boosted_expected_profit": 1.75,
-      "reasons": [
-        "explicit_promo_constraints_present",
-        "scope_match",
-        "bet_type_match",
-        "no_min_total_odds"
-      ],
-      "boost_tier": "T3",
-      "true_prob": 42.92
-    },
-    {
-      "run_id": "canonical-hunt::2026-03-28::1500",
-      "rec_id": "canonical-hunt::2026-03-28::1500::baseball_mlb::4e515c128a5ccbd9a666705e73a055ea::h2h::cincinnati-reds-ml::betmgm",
-      "selection": "Cincinnati Reds ML",
-      "sportsbook": "BetMGM",
-      "sport": "MLB",
-      "market_type": "ML",
-      "event_id": "4e515c128a5ccbd9a666705e73a055ea",
-      "event_label": "Boston Red Sox @ Cincinnati Reds",
-      "event_start_time": "2026-03-28T20:10:00Z",
-      "minutes_to_start": 9.86,
-      "urgency_tag": "NOW",
-      "original_final_decision": "SIT",
-      "original_kelly_stake": 0,
-      "boost_id": "profit-boost::1774718450643",
-      "boost_sportsbook": "BetMGM",
-      "boost_percent": 25,
-      "boost_scope": "GENERAL",
-      "max_wager": 100,
-      "bet_types": "Straight, Parlay, Same Game Parlay",
-      "min_total_odds": null,
-      "expires_raw": "2026-03-28 06:03 PM",
-      "expires_at_utc": "2026-03-28T23:03:00.000Z",
-      "eligibility_status": "ELIGIBLE",
-      "eligibility_reason": "eligible",
-      "recommendation_label": "BOOST ELIGIBLE",
-      "recommendation_reason": "boost_creates_positive_opportunity",
-      "original_odds_american": 115,
-      "boosted_odds_american": 144,
-      "original_edge_pct": 0.1,
-      "boosted_edge_pct": 3.81,
-      "original_ev_pct": -3.59,
-      "boosted_ev_pct": 9.3,
-      "boosted_kelly_stake": 18.5,
-      "boost_capped_stake": 18.5,
-      "promo_max_wager": 100,
-      "bankroll_risk_cap": 42.01,
-      "bankroll_run_exposure_cap": 126.04,
-      "boosted_expected_profit": 1.72,
-      "reasons": [
-        "explicit_promo_constraints_present",
-        "scope_match",
-        "bet_type_match",
-        "no_min_total_odds"
-      ],
-      "boost_tier": "T3",
-      "true_prob": 44.84
-    },
-    {
-      "run_id": "canonical-hunt::2026-03-28::1500",
-      "rec_id": "canonical-hunt::2026-03-28::1500::basketball_nba::d7a3bd092d17e72cfe007b92fc74dd1f::h2h::sacramento-kings-ml::betmgm",
+      "run_id": "canonical-hunt::2026-03-28::1504",
+      "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::d7a3bd092d17e72cfe007b92fc74dd1f::h2h::sacramento-kings-ml::betmgm",
       "selection": "Sacramento Kings ML",
       "sportsbook": "BetMGM",
       "sport": "NBA",
@@ -8724,7 +8479,7 @@ th {
       "event_id": "d7a3bd092d17e72cfe007b92fc74dd1f",
       "event_label": "Sacramento Kings @ Atlanta Hawks",
       "event_start_time": "2026-03-28T23:40:00Z",
-      "minutes_to_start": 219.86,
+      "minutes_to_start": 215.79,
       "urgency_tag": "LATER",
       "original_final_decision": "SIT",
       "original_kelly_stake": 0,
@@ -8743,16 +8498,16 @@ th {
       "recommendation_reason": "boost_creates_positive_opportunity",
       "original_odds_american": 675,
       "boosted_odds_american": 844,
-      "original_edge_pct": 0.66,
-      "boosted_edge_pct": 2.4,
-      "original_ev_pct": 0.75,
-      "boosted_ev_pct": 22.69,
-      "boosted_kelly_stake": 7.5,
-      "boost_capped_stake": 7.5,
+      "original_edge_pct": 0.55,
+      "boosted_edge_pct": 2.29,
+      "original_ev_pct": -0.1,
+      "boosted_ev_pct": 21.65,
+      "boosted_kelly_stake": 7,
+      "boost_capped_stake": 7,
       "promo_max_wager": 10,
       "bankroll_risk_cap": 42.01,
       "bankroll_run_exposure_cap": 126.04,
-      "boosted_expected_profit": 1.7,
+      "boosted_expected_profit": 1.52,
       "reasons": [
         "explicit_promo_constraints_present",
         "scope_match",
@@ -8760,20 +8515,164 @@ th {
         "min_total_odds_met"
       ],
       "boost_tier": "T3",
-      "true_prob": 13
+      "true_prob": 12.89
+    },
+    {
+      "run_id": "canonical-hunt::2026-03-28::1504",
+      "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::d7a3bd092d17e72cfe007b92fc74dd1f::spreads::atlanta-hawks-14-5::betmgm",
+      "selection": "Atlanta Hawks -14.5",
+      "sportsbook": "BetMGM",
+      "sport": "NBA",
+      "market_type": "Spread",
+      "event_id": "d7a3bd092d17e72cfe007b92fc74dd1f",
+      "event_label": "Sacramento Kings @ Atlanta Hawks",
+      "event_start_time": "2026-03-28T23:40:00Z",
+      "minutes_to_start": 215.79,
+      "urgency_tag": "LATER",
+      "original_final_decision": "SIT",
+      "original_kelly_stake": 0,
+      "boost_id": "profit-boost::1774718450643",
+      "boost_sportsbook": "BetMGM",
+      "boost_percent": 25,
+      "boost_scope": "GENERAL",
+      "max_wager": 100,
+      "bet_types": "Straight, Parlay, Same Game Parlay",
+      "min_total_odds": null,
+      "expires_raw": "2026-03-28 06:03 PM",
+      "expires_at_utc": "2026-03-28T23:03:00.000Z",
+      "eligibility_status": "ELIGIBLE",
+      "eligibility_reason": "eligible",
+      "recommendation_label": "BOOST ELIGIBLE",
+      "recommendation_reason": "boost_creates_positive_opportunity",
+      "original_odds_american": -110,
+      "boosted_odds_american": 114,
+      "original_edge_pct": 0.43,
+      "boosted_edge_pct": 3.62,
+      "original_ev_pct": -3.72,
+      "boosted_ev_pct": 7.74,
+      "boosted_kelly_stake": 19.5,
+      "boost_capped_stake": 19.5,
+      "promo_max_wager": 100,
+      "bankroll_risk_cap": 42.01,
+      "bankroll_run_exposure_cap": 126.04,
+      "boosted_expected_profit": 1.51,
+      "reasons": [
+        "explicit_promo_constraints_present",
+        "scope_match",
+        "bet_type_match",
+        "no_min_total_odds"
+      ],
+      "boost_tier": "T3",
+      "true_prob": 50.43
+    },
+    {
+      "run_id": "canonical-hunt::2026-03-28::1504",
+      "rec_id": "canonical-hunt::2026-03-28::1504::basketball_ncaab::ad862e3e6452856177edb4d763ef9df9::spreads::illinois-fighting-illini-7-5::betmgm",
+      "selection": "Illinois Fighting Illini -7.5",
+      "sportsbook": "BetMGM",
+      "sport": "NCAAB",
+      "market_type": "Spread",
+      "event_id": "ad862e3e6452856177edb4d763ef9df9",
+      "event_label": "Iowa Hawkeyes @ Illinois Fighting Illini",
+      "event_start_time": "2026-03-28T22:09:00Z",
+      "minutes_to_start": 124.79,
+      "urgency_tag": "LATER",
+      "original_final_decision": "SIT",
+      "original_kelly_stake": 0,
+      "boost_id": "profit-boost::1774718450643",
+      "boost_sportsbook": "BetMGM",
+      "boost_percent": 25,
+      "boost_scope": "GENERAL",
+      "max_wager": 100,
+      "bet_types": "Straight, Parlay, Same Game Parlay",
+      "min_total_odds": null,
+      "expires_raw": "2026-03-28 06:03 PM",
+      "expires_at_utc": "2026-03-28T23:03:00.000Z",
+      "eligibility_status": "ELIGIBLE",
+      "eligibility_reason": "eligible",
+      "recommendation_label": "BOOST ELIGIBLE",
+      "recommendation_reason": "boost_creates_positive_opportunity",
+      "original_odds_american": -102,
+      "boosted_odds_american": 123,
+      "original_edge_pct": 0.08,
+      "boosted_edge_pct": 3.42,
+      "original_ev_pct": -4.25,
+      "boosted_ev_pct": 7.6,
+      "boosted_kelly_stake": 18,
+      "boost_capped_stake": 18,
+      "promo_max_wager": 100,
+      "bankroll_risk_cap": 42.01,
+      "bankroll_run_exposure_cap": 126.04,
+      "boosted_expected_profit": 1.37,
+      "reasons": [
+        "explicit_promo_constraints_present",
+        "scope_match",
+        "bet_type_match",
+        "no_min_total_odds"
+      ],
+      "boost_tier": "T3",
+      "true_prob": 48.35
+    },
+    {
+      "run_id": "canonical-hunt::2026-03-28::1504",
+      "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::61b1ef0450e08478d708e8ab8a384647::totals::under-223-5::betmgm",
+      "selection": "Under 223.5",
+      "sportsbook": "BetMGM",
+      "sport": "NBA",
+      "market_type": "Total",
+      "event_id": "61b1ef0450e08478d708e8ab8a384647",
+      "event_label": "San Antonio Spurs @ Milwaukee Bucks",
+      "event_start_time": "2026-03-28T19:11:00Z",
+      "minutes_to_start": -53.21,
+      "urgency_tag": "NOW",
+      "original_final_decision": "SIT",
+      "original_kelly_stake": 0,
+      "boost_id": "profit-boost::1774718450643",
+      "boost_sportsbook": "BetMGM",
+      "boost_percent": 25,
+      "boost_scope": "GENERAL",
+      "max_wager": 100,
+      "bet_types": "Straight, Parlay, Same Game Parlay",
+      "min_total_odds": null,
+      "expires_raw": "2026-03-28 06:03 PM",
+      "expires_at_utc": "2026-03-28T23:03:00.000Z",
+      "eligibility_status": "ELIGIBLE",
+      "eligibility_reason": "eligible",
+      "recommendation_label": "BOOST ELIGIBLE",
+      "recommendation_reason": "boost_creates_positive_opportunity",
+      "original_odds_american": -110,
+      "boosted_odds_american": 114,
+      "original_edge_pct": 0.27,
+      "boosted_edge_pct": 2.63,
+      "original_ev_pct": -5.61,
+      "boosted_ev_pct": 5.62,
+      "boosted_kelly_stake": 14.5,
+      "boost_capped_stake": 14.5,
+      "promo_max_wager": 100,
+      "bankroll_risk_cap": 42.01,
+      "bankroll_run_exposure_cap": 126.04,
+      "boosted_expected_profit": 0.81,
+      "reasons": [
+        "explicit_promo_constraints_present",
+        "scope_match",
+        "bet_type_match",
+        "no_min_total_odds"
+      ],
+      "boost_tier": "T3",
+      "true_prob": 49.44
     }
   ],
   "best_boost_use_today": {
-    "run_id": "canonical-hunt::2026-03-28::1500",
-    "rec_id": "canonical-hunt::2026-03-28::1500::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::spreads::arizona-wildcats-5-5::betmgm",
-    "selection": "Arizona Wildcats -5.5",
+    "run_id": "canonical-hunt::2026-03-28::1504",
+    "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::2f64bcd6f06f9cb1132a6be530d6848c::totals::over-220-5::betmgm",
+    "selection": "Over 220.5",
     "sportsbook": "BetMGM",
-    "sport": "NCAAB",
-    "market_type": "Spread",
-    "event_id": "b8f1c265896037786f17893bf5c3df0d",
-    "event_label": "Purdue Boilermakers @ Arizona Wildcats",
-    "event_start_time": "2026-03-29T00:49:00Z",
-    "minutes_to_start": 288.86,
+    "sport": "NBA",
+    "market_type": "Total",
+    "event_id": "2f64bcd6f06f9cb1132a6be530d6848c",
+    "event_label": "Detroit Pistons @ Minnesota Timberwolves",
+    "event_start_time": "2026-03-28T21:40:00Z",
+    "minutes_to_start": 95.79,
     "urgency_tag": "LATER",
     "original_final_decision": "SIT",
     "original_kelly_stake": 0,
@@ -8792,48 +8691,46 @@ th {
     "recommendation_reason": "boost_creates_positive_opportunity",
     "original_odds_american": -110,
     "boosted_odds_american": 114,
-    "original_edge_pct": 1.74,
-    "boosted_edge_pct": 4.93,
-    "original_ev_pct": -1.22,
-    "boosted_ev_pct": 10.54,
-    "boosted_kelly_stake": 52.5,
-    "boost_capped_stake": 42.01,
+    "original_edge_pct": 0.54,
+    "boosted_edge_pct": 3.73,
+    "original_ev_pct": -3.51,
+    "boosted_ev_pct": 7.97,
+    "boosted_kelly_stake": 20,
+    "boost_capped_stake": 20,
     "promo_max_wager": 100,
     "bankroll_risk_cap": 42.01,
     "bankroll_run_exposure_cap": 126.04,
-    "boosted_expected_profit": 4.43,
+    "boosted_expected_profit": 1.59,
     "reasons": [
       "explicit_promo_constraints_present",
       "scope_match",
       "bet_type_match",
-      "no_min_total_odds",
-      "promo_cap_limited",
-      "risk_cap_limited"
+      "no_min_total_odds"
     ],
-    "boost_tier": "T2",
-    "true_prob": 51.74
+    "boost_tier": "T3",
+    "true_prob": 50.54
   },
   "boost_eligibility_summary": {
-    "latest_run_id": "canonical-hunt::2026-03-28::1500",
+    "latest_run_id": "canonical-hunt::2026-03-28::1504",
     "active_boost_count": 12,
-    "evaluated_candidate_count": 2352,
-    "eligible_count": 47,
-    "boost_adjusted_count": 20,
-    "not_eligible_count": 2305,
+    "evaluated_candidate_count": 2328,
+    "eligible_count": 8,
+    "boost_adjusted_count": 5,
+    "not_eligible_count": 2320,
     "reason_breakdown": {
-      "sportsbook_mismatch": 1754,
-      "min_total_odds_not_met": 16,
-      "boost_creates_positive_opportunity": 41,
-      "boosted_stake_sub_minimum": 6,
-      "invalid_snapshot": 129,
-      "scope_mismatch": 169,
-      "ambiguous_bet_types_restriction": 23,
-      "missing_bet_type_restriction": 214
+      "sportsbook_mismatch": 1703,
+      "boost_creates_positive_opportunity": 6,
+      "min_total_odds_not_met": 6,
+      "invalid_snapshot": 210,
+      "boosted_stake_sub_minimum": 2,
+      "scope_mismatch": 174,
+      "ambiguous_bet_types_restriction": 9,
+      "missing_bet_type_restriction": 218
     },
     "not_eligible_examples": [
       {
-        "run_id": "canonical-hunt::2026-03-28::1500",
-        "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::spreads::anaheim-ducks-1-5::draftkings",
+        "run_id": "canonical-hunt::2026-03-28::1504",
+        "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::spreads::anaheim-ducks-1-5::draftkings",
         "selection": "Anaheim Ducks +1.5",
         "sportsbook": "DraftKings",
         "sport": "NHL",
@@ -8841,7 +8738,7 @@ th {
         "event_id": "f45b4166c05f76d1695468da00b89b63",
         "event_label": "Anaheim Ducks @ Edmonton Oilers",
         "event_start_time": "2026-03-28T19:38:00Z",
-        "minutes_to_start": -22.14,
+        "minutes_to_start": -26.21,
         "urgency_tag": "NOW",
         "original_final_decision": "SIT",
         "original_kelly_stake": 0,
@@ -8858,8 +8755,8 @@ th {
         "eligibility_reason": "missing_bet_type_restriction"
       },
       {
-        "run_id": "canonical-hunt::2026-03-28::1500",
-        "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::spreads::anaheim-ducks-1-5::draftkings",
+        "run_id": "canonical-hunt::2026-03-28::1504",
+        "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::spreads::anaheim-ducks-1-5::draftkings",
         "selection": "Anaheim Ducks +1.5",
         "sportsbook": "DraftKings",
         "sport": "NHL",
@@ -8867,7 +8764,7 @@ th {
         "event_id": "f45b4166c05f76d1695468da00b89b63",
         "event_label": "Anaheim Ducks @ Edmonton Oilers",
         "event_start_time": "2026-03-28T19:38:00Z",
-        "minutes_to_start": -22.14,
+        "minutes_to_start": -26.21,
         "urgency_tag": "NOW",
         "original_final_decision": "SIT",
         "original_kelly_stake": 0,
@@ -8884,8 +8781,8 @@ th {
         "eligibility_reason": "missing_bet_type_restriction"
       },
       {
-        "run_id": "canonical-hunt::2026-03-28::1500",
-        "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::spreads::anaheim-ducks-1-5::draftkings",
+        "run_id": "canonical-hunt::2026-03-28::1504",
+        "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::spreads::anaheim-ducks-1-5::draftkings",
         "selection": "Anaheim Ducks +1.5",
         "sportsbook": "DraftKings",
         "sport": "NHL",
@@ -8893,7 +8790,7 @@ th {
         "event_id": "f45b4166c05f76d1695468da00b89b63",
         "event_label": "Anaheim Ducks @ Edmonton Oilers",
         "event_start_time": "2026-03-28T19:38:00Z",
-        "minutes_to_start": -22.14,
+        "minutes_to_start": -26.21,
         "urgency_tag": "NOW",
         "original_final_decision": "SIT",
         "original_kelly_stake": 0,
@@ -8910,8 +8807,8 @@ th {
         "eligibility_reason": "missing_bet_type_restriction"
       },
       {
-        "run_id": "canonical-hunt::2026-03-28::1500",
-        "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::h2h::anaheim-ducks-ml::fanduel",
+        "run_id": "canonical-hunt::2026-03-28::1504",
+        "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::h2h::anaheim-ducks-ml::fanduel",
         "selection": "Anaheim Ducks ML",
         "sportsbook": "FanDuel",
         "sport": "NHL",
@@ -8919,7 +8816,7 @@ th {
         "event_id": "f45b4166c05f76d1695468da00b89b63",
         "event_label": "Anaheim Ducks @ Edmonton Oilers",
         "event_start_time": "2026-03-28T19:38:00Z",
-        "minutes_to_start": -22.14,
+        "minutes_to_start": -26.21,
         "urgency_tag": "NOW",
         "original_final_decision": "SIT",
         "original_kelly_stake": 0,
@@ -8936,8 +8833,8 @@ th {
         "eligibility_reason": "missing_bet_type_restriction"
       },
       {
-        "run_id": "canonical-hunt::2026-03-28::1500",
-        "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::h2h::anaheim-ducks-ml::fanduel",
+        "run_id": "canonical-hunt::2026-03-28::1504",
+        "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::h2h::anaheim-ducks-ml::fanduel",
         "selection": "Anaheim Ducks ML",
         "sportsbook": "FanDuel",
         "sport": "NHL",
@@ -8945,7 +8842,7 @@ th {
         "event_id": "f45b4166c05f76d1695468da00b89b63",
         "event_label": "Anaheim Ducks @ Edmonton Oilers",
         "event_start_time": "2026-03-28T19:38:00Z",
-        "minutes_to_start": -22.14,
+        "minutes_to_start": -26.21,
         "urgency_tag": "NOW",
         "original_final_decision": "SIT",
         "original_kelly_stake": 0,
@@ -8962,79 +8859,79 @@ th {
         "eligibility_reason": "missing_bet_type_restriction"
       },
       {
-        "run_id": "canonical-hunt::2026-03-28::1500",
-        "rec_id": "canonical-hunt::2026-03-28::1500::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::h2h::arizona-wildcats-ml::draftkings",
-        "selection": "Arizona Wildcats ML",
-        "sportsbook": "DraftKings",
+        "run_id": "canonical-hunt::2026-03-28::1504",
+        "rec_id": "canonical-hunt::2026-03-28::1504::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::spreads::arizona-wildcats-5-5::fanduel",
+        "selection": "Arizona Wildcats -5.5",
+        "sportsbook": "FanDuel",
         "sport": "NCAAB",
-        "market_type": "ML",
+        "market_type": "Spread",
         "event_id": "b8f1c265896037786f17893bf5c3df0d",
         "event_label": "Purdue Boilermakers @ Arizona Wildcats",
         "event_start_time": "2026-03-29T00:49:00Z",
-        "minutes_to_start": 288.86,
+        "minutes_to_start": 284.79,
         "urgency_tag": "LATER",
         "original_final_decision": "SIT",
         "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774716341933",
-        "boost_sportsbook": "DraftKings",
-        "boost_percent": 100,
-        "boost_scope": "MLB",
-        "max_wager": 10,
+        "boost_id": "profit-boost::1774619244080",
+        "boost_sportsbook": "FanDuel",
+        "boost_percent": 40,
+        "boost_scope": "NCAAB",
+        "max_wager": null,
         "bet_types": null,
         "min_total_odds": null,
-        "expires_raw": "Today",
+        "expires_raw": "2026-03-27 11:59 PM CT",
         "expires_at_utc": null,
         "eligibility_status": "NOT_ELIGIBLE",
         "eligibility_reason": "missing_bet_type_restriction"
       },
       {
-        "run_id": "canonical-hunt::2026-03-28::1500",
-        "rec_id": "canonical-hunt::2026-03-28::1500::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::h2h::arizona-wildcats-ml::draftkings",
-        "selection": "Arizona Wildcats ML",
-        "sportsbook": "DraftKings",
+        "run_id": "canonical-hunt::2026-03-28::1504",
+        "rec_id": "canonical-hunt::2026-03-28::1504::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::spreads::arizona-wildcats-5-5::fanduel",
+        "selection": "Arizona Wildcats -5.5",
+        "sportsbook": "FanDuel",
         "sport": "NCAAB",
-        "market_type": "ML",
+        "market_type": "Spread",
         "event_id": "b8f1c265896037786f17893bf5c3df0d",
         "event_label": "Purdue Boilermakers @ Arizona Wildcats",
         "event_start_time": "2026-03-29T00:49:00Z",
-        "minutes_to_start": 288.86,
+        "minutes_to_start": 284.79,
         "urgency_tag": "LATER",
         "original_final_decision": "SIT",
         "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774716170157",
-        "boost_sportsbook": "DraftKings",
-        "boost_percent": 20,
-        "boost_scope": "GENERAL",
-        "max_wager": 5,
-        "bet_types": null,
-        "min_total_odds": null,
-        "expires_raw": "Not specified",
-        "expires_at_utc": null,
-        "eligibility_status": "NOT_ELIGIBLE",
-        "eligibility_reason": "missing_bet_type_restriction"
-      },
-      {
-        "run_id": "canonical-hunt::2026-03-28::1500",
-        "rec_id": "canonical-hunt::2026-03-28::1500::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::h2h::arizona-wildcats-ml::draftkings",
-        "selection": "Arizona Wildcats ML",
-        "sportsbook": "DraftKings",
-        "sport": "NCAAB",
-        "market_type": "ML",
-        "event_id": "b8f1c265896037786f17893bf5c3df0d",
-        "event_label": "Purdue Boilermakers @ Arizona Wildcats",
-        "event_start_time": "2026-03-29T00:49:00Z",
-        "minutes_to_start": 288.86,
-        "urgency_tag": "LATER",
-        "original_final_decision": "SIT",
-        "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774611278031",
-        "boost_sportsbook": "DraftKings",
-        "boost_percent": 100,
-        "boost_scope": "MLB",
+        "boost_id": "profit-boost::1774619183585",
+        "boost_sportsbook": "FanDuel",
+        "boost_percent": 25,
+        "boost_scope": "NCAAB",
         "max_wager": null,
         "bet_types": null,
         "min_total_odds": null,
         "expires_raw": "Not specified",
+        "expires_at_utc": null,
+        "eligibility_status": "NOT_ELIGIBLE",
+        "eligibility_reason": "missing_bet_type_restriction"
+      },
+      {
+        "run_id": "canonical-hunt::2026-03-28::1504",
+        "rec_id": "canonical-hunt::2026-03-28::1504::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::h2h::arizona-wildcats-ml::fanduel",
+        "selection": "Arizona Wildcats ML",
+        "sportsbook": "FanDuel",
+        "sport": "NCAAB",
+        "market_type": "ML",
+        "event_id": "b8f1c265896037786f17893bf5c3df0d",
+        "event_label": "Purdue Boilermakers @ Arizona Wildcats",
+        "event_start_time": "2026-03-29T00:49:00Z",
+        "minutes_to_start": 284.79,
+        "urgency_tag": "LATER",
+        "original_final_decision": "SIT",
+        "original_kelly_stake": 0,
+        "boost_id": "profit-boost::1774619244080",
+        "boost_sportsbook": "FanDuel",
+        "boost_percent": 40,
+        "boost_scope": "NCAAB",
+        "max_wager": null,
+        "bet_types": null,
+        "min_total_odds": null,
+        "expires_raw": "2026-03-27 11:59 PM CT",
         "expires_at_utc": null,
         "eligibility_status": "NOT_ELIGIBLE",
         "eligibility_reason": "missing_bet_type_restriction"
@@ -9396,35 +9293,35 @@ th {
       },
       {
         "date": "2026-03-28",
-        "total_runs": 6,
-        "valid_snapshots": 934,
-        "invalid_snapshot_count": 344,
-        "total_bets": 3,
-        "total_sits": 1275,
-        "avg_edge_bet": 2.36,
-        "near_miss_count": 46,
+        "total_runs": 7,
+        "valid_snapshots": 1060,
+        "invalid_snapshot_count": 412,
+        "total_bets": 4,
+        "total_sits": 1468,
+        "avg_edge_bet": 2.57,
+        "near_miss_count": 52,
         "rejection_reason_distribution": {
-          "sub_minimum_kelly": 7,
-          "no_edge": 863,
-          "invalid_snapshot": 344,
+          "sub_minimum_kelly": 10,
+          "no_edge": 973,
+          "invalid_snapshot": 412,
           "research_only_non_owned_book": 3,
-          "stale_market": 58
+          "stale_market": 70
         }
       }
     ],
     "rolling_7_day_summary": {
-      "total_runs": 146,
-      "valid_snapshots": 12426,
-      "invalid_snapshot_count": 9038,
-      "total_bets": 25,
-      "total_sits": 21439,
-      "avg_edge_bet": 2.4,
-      "near_miss_count": 482,
+      "total_runs": 147,
+      "valid_snapshots": 12552,
+      "invalid_snapshot_count": 9106,
+      "total_bets": 26,
+      "total_sits": 21632,
+      "avg_edge_bet": 2.42,
+      "near_miss_count": 488,
       "rejection_reason_distribution": {
-        "sub_minimum_kelly": 76,
-        "no_edge": 9187,
-        "invalid_snapshot": 9038,
-        "stale_market": 3134,
+        "sub_minimum_kelly": 79,
+        "no_edge": 9297,
+        "invalid_snapshot": 9106,
+        "stale_market": 3146,
         "research_only_non_owned_book": 4
       }
     }
@@ -9486,10 +9383,10 @@ th {
       "market_family": "main_market",
       "market_type": "ML",
       "bets": 5,
-      "sits": 873,
+      "sits": 903,
       "avg_edge": 0.42,
       "rejection_reason_distribution": {
-        "invalid_snapshot": 180,
+        "invalid_snapshot": 210,
         "no_edge": 563,
         "stale_market": 130
       }
@@ -9498,15 +9395,15 @@ th {
       "sport": "NBA",
       "market_family": "main_market",
       "market_type": "ML",
-      "bets": 6,
-      "sits": 3059,
+      "bets": 7,
+      "sits": 3070,
       "avg_edge": 0.85,
       "rejection_reason_distribution": {
-        "no_edge": 2171,
+        "no_edge": 2180,
         "low_confidence": 1,
         "exposure_cap_reached": 9,
         "sub_minimum_kelly": 42,
-        "stale_market": 670,
+        "stale_market": 672,
         "invalid_snapshot": 166
       }
     },
@@ -9524,15 +9421,15 @@ th {
       "market_family": "main_market",
       "market_type": "Spread",
       "bets": 7,
-      "sits": 5139,
+      "sits": 5153,
       "avg_edge": 0.49,
       "rejection_reason_distribution": {
-        "no_edge": 2002,
+        "no_edge": 2012,
         "low_confidence": 1,
         "exposure_cap_reached": 2,
         "sub_minimum_kelly": 2,
-        "invalid_snapshot": 2618,
-        "stale_market": 514
+        "invalid_snapshot": 2620,
+        "stale_market": 516
       }
     },
     {
@@ -9540,13 +9437,13 @@ th {
       "market_family": "main_market",
       "market_type": "Total",
       "bets": 0,
-      "sits": 6956,
+      "sits": 6978,
       "avg_edge": 0.37,
       "rejection_reason_distribution": {
-        "no_edge": 2252,
+        "no_edge": 2264,
         "sub_minimum_kelly": 2,
-        "invalid_snapshot": 4120,
-        "stale_market": 582
+        "invalid_snapshot": 4128,
+        "stale_market": 584
       }
     },
     {
@@ -9577,13 +9474,13 @@ th {
       "market_family": "main_market",
       "market_type": "ML",
       "bets": 3,
-      "sits": 737,
+      "sits": 741,
       "avg_edge": 0.81,
       "rejection_reason_distribution": {
-        "no_edge": 479,
+        "no_edge": 482,
         "stale_market": 160,
         "invalid_snapshot": 92,
-        "sub_minimum_kelly": 3,
+        "sub_minimum_kelly": 4,
         "research_only_non_owned_book": 3
       }
     },
@@ -9592,13 +9489,14 @@ th {
       "market_family": "main_market",
       "market_type": "Spread",
       "bets": 2,
-      "sits": 1045,
-      "avg_edge": 0.45,
+      "sits": 1051,
+      "avg_edge": 0.46,
       "rejection_reason_distribution": {
         "low_confidence": 2,
-        "no_edge": 483,
+        "no_edge": 488,
         "stale_market": 124,
-        "invalid_snapshot": 436
+        "invalid_snapshot": 436,
+        "sub_minimum_kelly": 1
       }
     },
     {
@@ -9606,12 +9504,12 @@ th {
       "market_family": "main_market",
       "market_type": "Total",
       "bets": 0,
-      "sits": 1094,
+      "sits": 1102,
       "avg_edge": 0.36,
       "rejection_reason_distribution": {
-        "no_edge": 508,
+        "no_edge": 512,
         "stale_market": 90,
-        "invalid_snapshot": 496
+        "invalid_snapshot": 500
       }
     },
     {
@@ -9619,15 +9517,15 @@ th {
       "market_family": "main_market",
       "market_type": "ML",
       "bets": 11,
-      "sits": 1559,
+      "sits": 1585,
       "avg_edge": 0.66,
       "rejection_reason_distribution": {
-        "no_edge": 1174,
+        "no_edge": 1198,
         "low_confidence": 1,
         "non_executable_book": 2,
         "exposure_cap_reached": 8,
         "sub_minimum_kelly": 3,
-        "stale_market": 292,
+        "stale_market": 294,
         "invalid_snapshot": 78,
         "research_only_non_owned_book": 1
       }
@@ -9637,14 +9535,14 @@ th {
       "market_family": "main_market",
       "market_type": "Spread",
       "bets": 20,
-      "sits": 1598,
-      "avg_edge": 0.94,
+      "sits": 1624,
+      "avg_edge": 0.93,
       "rejection_reason_distribution": {
-        "no_edge": 1160,
+        "no_edge": 1183,
         "exposure_cap_reached": 11,
-        "sub_minimum_kelly": 31,
+        "sub_minimum_kelly": 32,
         "invalid_snapshot": 106,
-        "stale_market": 290
+        "stale_market": 292
       }
     },
     {
@@ -9652,14 +9550,14 @@ th {
       "market_family": "main_market",
       "market_type": "Total",
       "bets": 1,
-      "sits": 2403,
+      "sits": 2449,
       "avg_edge": 0.53,
       "rejection_reason_distribution": {
-        "no_edge": 1359,
+        "no_edge": 1379,
         "exposure_cap_reached": 6,
         "sub_minimum_kelly": 10,
-        "invalid_snapshot": 746,
-        "stale_market": 282
+        "invalid_snapshot": 770,
+        "stale_market": 284
       }
     },
     {
@@ -9687,18 +9585,18 @@ th {
         "book": "betmgm",
         "owned_book": true,
         "recommendations_count": 15,
-        "best_price_count": 5776,
+        "best_price_count": 5800,
         "executable_near_miss_count": 118,
-        "stale_or_missing_count": 3194,
+        "stale_or_missing_count": 3213,
         "rejected_non_executable_count": 0
       },
       {
         "book": "betrivers",
         "owned_book": false,
         "recommendations_count": 1,
-        "best_price_count": 4408,
+        "best_price_count": 4454,
         "executable_near_miss_count": 0,
-        "stale_or_missing_count": 2076,
+        "stale_or_missing_count": 2092,
         "rejected_non_executable_count": 6
       },
       {
@@ -9723,18 +9621,18 @@ th {
         "book": "draftkings",
         "owned_book": true,
         "recommendations_count": 33,
-        "best_price_count": 6378,
-        "executable_near_miss_count": 118,
-        "stale_or_missing_count": 3026,
+        "best_price_count": 6435,
+        "executable_near_miss_count": 120,
+        "stale_or_missing_count": 3046,
         "rejected_non_executable_count": 0
       },
       {
         "book": "fanduel",
         "owned_book": true,
-        "recommendations_count": 20,
-        "best_price_count": 8253,
-        "executable_near_miss_count": 162,
-        "stale_or_missing_count": 3876,
+        "recommendations_count": 21,
+        "best_price_count": 8320,
+        "executable_near_miss_count": 163,
+        "stale_or_missing_count": 3901,
         "rejected_non_executable_count": 0
       },
       {
@@ -9788,7 +9686,7 @@ th {
   },
   "operator_dashboard": {
     "schema": "tierededge_operator_dashboard_v1",
-    "generated_at_utc": "2026-03-28T20:00:25.055Z",
+    "generated_at_utc": "2026-03-28T20:04:15.763Z",
     "top_level_sections": [
       {
         "key": "system_health",
@@ -9808,7 +9706,7 @@ th {
               },
               {
                 "label": "latest_run_id",
-                "value": "canonical-hunt::2026-03-28::1500"
+                "value": "canonical-hunt::2026-03-28::1504"
               },
               {
                 "label": "latest_run_status",
@@ -9816,11 +9714,11 @@ th {
               },
               {
                 "label": "verdict",
-                "value": "SIT"
+                "value": "BET"
               },
               {
                 "label": "run_classification",
-                "value": "true_no_edge_sit"
+                "value": "bet_ready"
               }
             ]
           },
@@ -9848,15 +9746,15 @@ th {
             "metrics": [
               {
                 "label": "valid_snapshot_count",
-                "value": 146
+                "value": 126
               },
               {
                 "label": "invalid_snapshot_count",
-                "value": 50
+                "value": 68
               },
               {
                 "label": "stale_market_count",
-                "value": 22
+                "value": 12
               }
             ]
           }
@@ -9872,15 +9770,15 @@ th {
             "metrics": [
               {
                 "label": "actionable_recommendations_count",
-                "value": 0
+                "value": 1
               },
               {
                 "label": "total_recommended_exposure",
-                "value": "$0.00"
+                "value": "$8.00"
               },
               {
                 "label": "best_executable_edge_today",
-                "value": "2.33%"
+                "value": "3.17%"
               },
               {
                 "label": "soon_actionable_count",
@@ -9894,7 +9792,7 @@ th {
             "metrics": [
               {
                 "label": "total_sits",
-                "value": 196
+                "value": 193
               },
               {
                 "label": "executable_closest_misses_count",
@@ -9916,7 +9814,7 @@ th {
               },
               {
                 "label": "markets_scanned_by_sport_market",
-                "value": "MLB ML (30) • NBA ML (12) • NBA Spread (16) • NBA Total (22) • NCAAB ML (4) • NCAAB Spread (6) • NCAAB Total (8) • NHL ML (26) • NHL Spread (26) • NHL Total (46)"
+                "value": "MLB ML (30) • NBA ML (12) • NBA Spread (14) • NBA Total (22) • NCAAB ML (4) • NCAAB Spread (6) • NCAAB Total (8) • NHL ML (26) • NHL Spread (26) • NHL Total (46)"
               }
             ]
           },
@@ -9954,15 +9852,15 @@ th {
             "metrics": [
               {
                 "label": "near_miss_count_1.0_to_1.49",
-                "value": 119
+                "value": 144
               },
               {
                 "label": "near_miss_count_1.5_to_1.99",
-                "value": 46
+                "value": 52
               },
               {
                 "label": "executable_near_miss_count_1.5_to_1.99",
-                "value": 35
+                "value": 38
               }
             ]
           },
@@ -9990,7 +9888,7 @@ th {
             "metrics": [
               {
                 "label": "rejected_close_capture_coverage_pct",
-                "value": "2.87%"
+                "value": "2.83%"
               },
               {
                 "label": "exact_match_rate",
@@ -10082,7 +9980,7 @@ th {
               },
               {
                 "label": "info",
-                "value": 1
+                "value": 0
               }
             ]
           }
@@ -10094,7 +9992,7 @@ th {
         "level": "RED",
         "code": "invalid_snapshot_spike",
         "title": "Invalid snapshot spike",
-        "message": "50 of 196 rows (25.51%) failed snapshot integrity."
+        "message": "68 of 194 rows (35.05%) failed snapshot integrity."
       },
       {
         "level": "YELLOW",
@@ -10107,12 +10005,6 @@ th {
         "code": "owned_books_missing_from_feed",
         "title": "Owned books missing from feed",
         "message": "bet365, caesars, circa"
-      },
-      {
-        "level": "INFO",
-        "code": "clean_sit_day",
-        "title": "Clean SIT day",
-        "message": "The latest hunt completed cleanly and found no actionable executable edges."
       }
     ],
     "recommendation_timing_summary": {
@@ -10453,18 +10345,18 @@ th {
           "market_family": "main_market",
           "market_type": "ML",
           "bets": 5,
-          "sits": 873,
+          "sits": 903,
           "avg_edge": "0.42%",
-          "rejection_reasons": "no_edge (563), invalid_snapshot (180), stale_market (130)"
+          "rejection_reasons": "no_edge (563), invalid_snapshot (210), stale_market (130)"
         },
         {
           "sport": "NBA",
           "market_family": "main_market",
           "market_type": "ML",
-          "bets": 6,
-          "sits": 3059,
+          "bets": 7,
+          "sits": 3070,
           "avg_edge": "0.85%",
-          "rejection_reasons": "no_edge (2171), stale_market (670), invalid_snapshot (166)"
+          "rejection_reasons": "no_edge (2180), stale_market (672), invalid_snapshot (166)"
         },
         {
           "sport": "NBA",
@@ -10480,18 +10372,18 @@ th {
           "market_family": "main_market",
           "market_type": "Spread",
           "bets": 7,
-          "sits": 5139,
+          "sits": 5153,
           "avg_edge": "0.49%",
-          "rejection_reasons": "invalid_snapshot (2618), no_edge (2002), stale_market (514)"
+          "rejection_reasons": "invalid_snapshot (2620), no_edge (2012), stale_market (516)"
         },
         {
           "sport": "NBA",
           "market_family": "main_market",
           "market_type": "Total",
           "bets": 0,
-          "sits": 6956,
+          "sits": 6978,
           "avg_edge": "0.37%",
-          "rejection_reasons": "invalid_snapshot (4120), no_edge (2252), stale_market (582)"
+          "rejection_reasons": "invalid_snapshot (4128), no_edge (2264), stale_market (584)"
         },
         {
           "sport": "NBA",
@@ -10516,54 +10408,54 @@ th {
           "market_family": "main_market",
           "market_type": "ML",
           "bets": 3,
-          "sits": 737,
+          "sits": 741,
           "avg_edge": "0.81%",
-          "rejection_reasons": "no_edge (479), stale_market (160), invalid_snapshot (92)"
+          "rejection_reasons": "no_edge (482), stale_market (160), invalid_snapshot (92)"
         },
         {
           "sport": "NCAAB",
           "market_family": "main_market",
           "market_type": "Spread",
           "bets": 2,
-          "sits": 1045,
-          "avg_edge": "0.45%",
-          "rejection_reasons": "no_edge (483), invalid_snapshot (436), stale_market (124)"
+          "sits": 1051,
+          "avg_edge": "0.46%",
+          "rejection_reasons": "no_edge (488), invalid_snapshot (436), stale_market (124)"
         },
         {
           "sport": "NCAAB",
           "market_family": "main_market",
           "market_type": "Total",
           "bets": 0,
-          "sits": 1094,
+          "sits": 1102,
           "avg_edge": "0.36%",
-          "rejection_reasons": "no_edge (508), invalid_snapshot (496), stale_market (90)"
+          "rejection_reasons": "no_edge (512), invalid_snapshot (500), stale_market (90)"
         },
         {
           "sport": "NHL",
           "market_family": "main_market",
           "market_type": "ML",
           "bets": 11,
-          "sits": 1559,
+          "sits": 1585,
           "avg_edge": "0.66%",
-          "rejection_reasons": "no_edge (1174), stale_market (292), invalid_snapshot (78)"
+          "rejection_reasons": "no_edge (1198), stale_market (294), invalid_snapshot (78)"
         },
         {
           "sport": "NHL",
           "market_family": "main_market",
           "market_type": "Spread",
           "bets": 20,
-          "sits": 1598,
-          "avg_edge": "0.94%",
-          "rejection_reasons": "no_edge (1160), stale_market (290), invalid_snapshot (106)"
+          "sits": 1624,
+          "avg_edge": "0.93%",
+          "rejection_reasons": "no_edge (1183), stale_market (292), invalid_snapshot (106)"
         },
         {
           "sport": "NHL",
           "market_family": "main_market",
           "market_type": "Total",
           "bets": 1,
-          "sits": 2403,
+          "sits": 2449,
           "avg_edge": "0.53%",
-          "rejection_reasons": "no_edge (1359), invalid_snapshot (746), stale_market (282)"
+          "rejection_reasons": "no_edge (1379), invalid_snapshot (770), stale_market (284)"
         },
         {
           "sport": "UFC",
@@ -10577,261 +10469,261 @@ th {
       ],
       "snapshot_integrity_failures": [
         {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "NHL",
-          "market_type": "Total",
-          "selection": "Under 5.5",
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "NBA",
+          "market_type": "Spread",
+          "selection": "San Antonio Spurs -25.5",
           "sportsbook": "FanDuel",
           "snapshot_status": "valid",
           "rejection_reason": "stale_market",
-          "spread_seconds": 22
+          "spread_seconds": 24
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "NHL",
-          "market_type": "Total",
-          "selection": "Over 5.5",
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "NBA",
+          "market_type": "Spread",
+          "selection": "Milwaukee Bucks +25.5",
           "sportsbook": "DraftKings",
           "snapshot_status": "valid",
           "rejection_reason": "stale_market",
-          "spread_seconds": 22
+          "spread_seconds": 24
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Athletics ML",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Toronto Blue Jays ML",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Tampa Bay Rays ML",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "St. Louis Cardinals ML",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
+          "timestamp_ct": "2026-03-28 15:04",
           "sport": "NHL",
           "market_type": "Spread",
           "selection": "Edmonton Oilers -1.5",
           "sportsbook": "FanDuel",
           "snapshot_status": "valid",
           "rejection_reason": "stale_market",
-          "spread_seconds": 22
+          "spread_seconds": 24
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
+          "timestamp_ct": "2026-03-28 15:04",
           "sport": "NHL",
           "market_type": "Spread",
           "selection": "Anaheim Ducks +1.5",
           "sportsbook": "DraftKings",
           "snapshot_status": "valid",
           "rejection_reason": "stale_market",
-          "spread_seconds": 22
+          "spread_seconds": 24
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Colorado Rockies ML",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Miami Marlins ML",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Texas Rangers ML",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Philadelphia Phillies ML",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Washington Nationals ML",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Chicago Cubs ML",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
+          "timestamp_ct": "2026-03-28 15:04",
           "sport": "NHL",
           "market_type": "ML",
           "selection": "Anaheim Ducks ML",
           "sportsbook": "FanDuel",
           "snapshot_status": "valid",
           "rejection_reason": "stale_market",
-          "spread_seconds": 22
+          "spread_seconds": 24
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
+          "timestamp_ct": "2026-03-28 15:04",
           "sport": "NHL",
           "market_type": "ML",
           "selection": "Edmonton Oilers ML",
           "sportsbook": "DraftKings",
           "snapshot_status": "valid",
           "rejection_reason": "stale_market",
-          "spread_seconds": 22
+          "spread_seconds": 24
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Minnesota Twins ML",
-          "sportsbook": "BetMGM",
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "NHL",
+          "market_type": "Total",
+          "selection": "Over 5.5",
+          "sportsbook": "DraftKings",
           "snapshot_status": "valid",
           "rejection_reason": "stale_market",
-          "spread_seconds": 13
+          "spread_seconds": 24
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Baltimore Orioles ML",
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "NHL",
+          "market_type": "Total",
+          "selection": "Under 5.5",
           "sportsbook": "FanDuel",
           "snapshot_status": "valid",
           "rejection_reason": "stale_market",
-          "spread_seconds": 13
+          "spread_seconds": 24
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Pittsburgh Pirates ML",
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "NBA",
+          "market_type": "Total",
+          "selection": "Under 223.5",
           "sportsbook": "BetMGM",
           "snapshot_status": "valid",
           "rejection_reason": "stale_market",
-          "spread_seconds": 13
+          "spread_seconds": 24
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "New York Mets ML",
-          "sportsbook": "FanDuel",
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "NBA",
+          "market_type": "Total",
+          "selection": "Over 223.5",
+          "sportsbook": "BetRivers",
           "snapshot_status": "valid",
           "rejection_reason": "stale_market",
-          "spread_seconds": 13
+          "spread_seconds": 24
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Cincinnati Reds ML",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "MLB",
-          "market_type": "ML",
-          "selection": "Boston Red Sox ML",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "valid",
-          "rejection_reason": "stale_market",
-          "spread_seconds": 13
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
+          "timestamp_ct": "2026-03-28 15:04",
           "sport": "NBA",
           "market_type": "ML",
           "selection": "Milwaukee Bucks ML",
+          "sportsbook": "DraftKings",
+          "snapshot_status": "valid",
+          "rejection_reason": "stale_market",
+          "spread_seconds": 24
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "NBA",
+          "market_type": "ML",
+          "selection": "San Antonio Spurs ML",
+          "sportsbook": "BetMGM",
+          "snapshot_status": "valid",
+          "rejection_reason": "stale_market",
+          "spread_seconds": 24
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Washington Nationals ML",
+          "sportsbook": "BetMGM",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Tampa Bay Rays ML",
+          "sportsbook": "BetMGM",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Athletics ML",
           "sportsbook": "DraftKings",
           "snapshot_status": "insufficient_valid_books",
           "rejection_reason": "invalid_snapshot",
           "spread_seconds": null
         },
         {
-          "timestamp_ct": "2026-03-28 15:00",
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Arizona Diamondbacks ML",
+          "sportsbook": "DraftKings",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Chicago White Sox ML",
+          "sportsbook": "FanDuel",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Colorado Rockies ML",
+          "sportsbook": "BetMGM",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Cleveland Guardians ML",
+          "sportsbook": "DraftKings",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Pittsburgh Pirates ML",
+          "sportsbook": "FanDuel",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Minnesota Twins ML",
+          "sportsbook": "DraftKings",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Kansas City Royals ML",
+          "sportsbook": "DraftKings",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Texas Rangers ML",
+          "sportsbook": "DraftKings",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
+          "sport": "MLB",
+          "market_type": "ML",
+          "selection": "Los Angeles Angels ML",
+          "sportsbook": "FanDuel",
+          "snapshot_status": "insufficient_valid_books",
+          "rejection_reason": "invalid_snapshot",
+          "spread_seconds": null
+        },
+        {
+          "timestamp_ct": "2026-03-28 15:04",
           "sport": "NHL",
           "market_type": "Total",
           "selection": "Over 6.5",
           "sportsbook": "FanDuel",
           "snapshot_status": "insufficient_valid_books",
           "rejection_reason": "invalid_snapshot",
-          "spread_seconds": 22
-        },
-        {
-          "timestamp_ct": "2026-03-28 15:00",
-          "sport": "NBA",
-          "market_type": "Total",
-          "selection": "Under 219.5",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": 1
+          "spread_seconds": 25
         }
       ]
     },
     "hidden_troubleshooting": {
       "edge_anomaly_count": 0,
-      "invalid_snapshot_count": 50,
-      "stale_market_count": 22,
+      "invalid_snapshot_count": 68,
+      "stale_market_count": 12,
       "latest_hunt_invalid_run_count": 4,
       "latest_close_capture_run_time_utc": "2026-03-26T12:50:05.961Z",
       "latest_close_capture_run_status": "ok"
@@ -10945,9 +10837,9 @@ th {
     "execution_quality": {
       "status": "computed",
       "execution_row_count": 19,
-      "matched_to_recommendation_count": 15,
-      "matched_to_recommendation_rate": 78.95,
-      "matched_to_recommendation_rate_label": "78.95%",
+      "matched_to_recommendation_count": 16,
+      "matched_to_recommendation_rate": 84.21,
+      "matched_to_recommendation_rate_label": "84.21%",
       "snapshot_coverage_pct": 100,
       "snapshot_coverage_pct_label": "100%",
       "same_book_quote_coverage_pct": 100,
@@ -11804,9 +11696,9 @@ th {
   "execution_quality": {
     "status": "computed",
     "execution_row_count": 19,
-    "matched_to_recommendation_count": 15,
-    "matched_to_recommendation_rate": 78.95,
-    "matched_to_recommendation_rate_label": "78.95%",
+    "matched_to_recommendation_count": 16,
+    "matched_to_recommendation_rate": 84.21,
+    "matched_to_recommendation_rate_label": "84.21%",
     "snapshot_coverage_pct": 100,
     "snapshot_coverage_pct_label": "100%",
     "same_book_quote_coverage_pct": 100,
@@ -11883,18 +11775,18 @@ th {
         "selection": "Texas Rangers ML",
         "sportsbook": "DraftKings",
         "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "network",
+        "current_quote_source": "cache",
         "current_book": "draftkings",
         "current_odds_american": "+128",
         "current_edge_pct": -2.86,
         "event_start_time_utc": "2026-03-28T20:06:00Z",
-        "minutes_to_start": 5.64,
+        "minutes_to_start": 1.75,
         "original_odds": "+144",
         "current_odds": "+128",
         "clv_cents": 16,
         "original_edge_pct": 2.26,
         "edge_decay": 5.12,
-        "time_to_game_start": 5.64,
+        "time_to_game_start": 1.75,
         "stake_size": 2,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -11938,13 +11830,13 @@ th {
         "current_odds_american": "+128",
         "current_edge_pct": -2.86,
         "event_start_time_utc": "2026-03-28T20:06:00Z",
-        "minutes_to_start": 5.64,
+        "minutes_to_start": 1.75,
         "original_odds": "+144",
         "current_odds": "+128",
         "clv_cents": 16,
         "original_edge_pct": 2.26,
         "edge_decay": 5.12,
-        "time_to_game_start": 5.64,
+        "time_to_game_start": 1.75,
         "stake_size": 2,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -11988,13 +11880,13 @@ th {
         "current_odds_american": "-198",
         "current_edge_pct": -27.44,
         "event_start_time_utc": "2026-03-29T23:10:00Z",
-        "minutes_to_start": 1629.64,
+        "minutes_to_start": 1625.75,
         "original_odds": "+160",
         "current_odds": "-198",
         "clv_cents": 358,
         "original_edge_pct": 2.12,
         "edge_decay": 29.56,
-        "time_to_game_start": 1629.64,
+        "time_to_game_start": 1625.75,
         "stake_size": 2.5,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -12038,13 +11930,13 @@ th {
         "current_odds_american": "-198",
         "current_edge_pct": -27.44,
         "event_start_time_utc": "2026-03-29T23:10:00Z",
-        "minutes_to_start": 1629.64,
+        "minutes_to_start": 1625.75,
         "original_odds": "+160",
         "current_odds": "-198",
         "clv_cents": 358,
         "original_edge_pct": 2.12,
         "edge_decay": 29.56,
-        "time_to_game_start": 1629.64,
+        "time_to_game_start": 1625.75,
         "stake_size": 4,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -12088,13 +11980,13 @@ th {
         "current_odds_american": "+130",
         "current_edge_pct": -0.48,
         "event_start_time_utc": "2026-03-28T21:30:00Z",
-        "minutes_to_start": 89.64,
+        "minutes_to_start": 85.75,
         "original_odds": "+136",
         "current_odds": "+130",
         "clv_cents": 6,
         "original_edge_pct": 2.17,
         "edge_decay": 2.65,
-        "time_to_game_start": 89.64,
+        "time_to_game_start": 85.75,
         "stake_size": 2,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -12133,18 +12025,18 @@ th {
         "selection": "Dallas Stars ML",
         "sportsbook": "BetMGM",
         "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "network",
+        "current_quote_source": "cache",
         "current_book": "betmgm",
         "current_odds_american": "-140",
         "current_edge_pct": -3.33,
         "event_start_time_utc": "2026-03-28T21:00:00Z",
-        "minutes_to_start": 59.63,
+        "minutes_to_start": 55.75,
         "original_odds": "-120",
         "current_odds": "-140",
         "clv_cents": 20,
         "original_edge_pct": 2.46,
         "edge_decay": 5.79,
-        "time_to_game_start": 59.63,
+        "time_to_game_start": 55.75,
         "stake_size": 24,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -12188,13 +12080,13 @@ th {
         "current_odds_american": "-140",
         "current_edge_pct": -3.33,
         "event_start_time_utc": "2026-03-28T21:00:00Z",
-        "minutes_to_start": 59.63,
+        "minutes_to_start": 55.75,
         "original_odds": "-120",
         "current_odds": "-140",
         "clv_cents": 20,
         "original_edge_pct": 2.46,
         "edge_decay": 5.79,
-        "time_to_game_start": 59.63,
+        "time_to_game_start": 55.75,
         "stake_size": 23,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -12450,7 +12342,7 @@ th {
         "bet_class": "EDGE_BET",
         "ev_at_bet_status": "captured",
         "ev_at_bet_source": "decision_ledger",
-        "match_status": "ambiguous_match",
+        "match_status": "matched_to_recommendation",
         "sport": "NHL",
         "league": "NHL",
         "placement_snapshot_status": "proxy_snapshot_captured",
@@ -12480,7 +12372,7 @@ th {
         },
         "placement_snapshot_warning": "Exact placement-time API snapshot unavailable; proxy quote stored.",
         "warnings": [],
-        "match_confidence": "low",
+        "match_confidence": "high",
         "normalized_event": "dallas stars @ pittsburgh penguins"
       },
       {
@@ -13800,7 +13692,7 @@ th {
       "bet_class": "EDGE_BET",
       "ev_at_bet_status": "captured",
       "ev_at_bet_source": "decision_ledger",
-      "match_status": "ambiguous_match",
+      "match_status": "matched_to_recommendation",
       "sport": "NHL",
       "league": "NHL",
       "placement_snapshot_status": "proxy_snapshot_captured",
@@ -13830,7 +13722,7 @@ th {
       },
       "placement_snapshot_warning": "Exact placement-time API snapshot unavailable; proxy quote stored.",
       "warnings": [],
-      "match_confidence": "low",
+      "match_confidence": "high",
       "normalized_event": "dallas stars @ pittsburgh penguins"
     },
     {
@@ -14987,7 +14879,7 @@ th {
       "bankroll_before": 1394.3,
       "bankroll_after": 1400.46,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-28T20:00:14.352Z"
+      "bankroll_after_reconciled_at_utc": "2026-03-28T20:04:13.740Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774551629841::loss::1774566696859",
@@ -15021,7 +14913,7 @@ th {
       "bankroll_before": 1396.3,
       "bankroll_after": 1394.3,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-28T20:00:14.352Z"
+      "bankroll_after_reconciled_at_utc": "2026-03-28T20:04:13.740Z"
     },
     {
       "grading_id": "reconciliation::execution::manual-recovered::2026-03-17::wild-ml::2026-03-18T10:05:00-05:00",
@@ -15063,7 +14955,7 @@ th {
       "bankroll_before": 1295.13,
       "bankroll_after": 1300.53,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-28T20:00:14.352Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-28T20:04:13.740Z",
       "legacy_bankroll_after_import": 1321.03
     },
     {
@@ -15106,7 +14998,7 @@ th {
       "bankroll_before": 1305.63,
       "bankroll_after": 1295.13,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-28T20:00:14.352Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-28T20:04:13.740Z",
       "legacy_bankroll_after_import": 1315.63
     },
     {
@@ -15149,12 +15041,12 @@ th {
       "bankroll_before": 1326.13,
       "bankroll_after": 1305.63,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-28T20:00:14.352Z",
+      "bankroll_after_reconciled_at_utc": "2026-03-28T20:04:13.740Z",
       "legacy_bankroll_after_import": 1300.53
     }
   ],
   "ledger_validation": {
-    "generated_at_utc": "2026-03-28T20:00:24.705Z",
+    "generated_at_utc": "2026-03-28T20:04:15.703Z",
     "require_output_match": false,
     "passed": true,
     "run_classification": "ledger_integrity_pass",
@@ -15188,15 +15080,15 @@ th {
     "bankroll_difference": "$0.00"
   },
   "decision_payload_v1": {
-    "verdict": "SIT",
-    "run_classification": "true_no_edge_sit",
-    "why": "Latest scheduled hunt found no qualifying edges.",
+    "verdict": "BET",
+    "run_classification": "bet_ready",
+    "why": "Latest scheduled hunt produced actionable bets.",
     "system_health": "PASS"
   },
   "decision_renderers": {
-    "terminal_text": "TIEREDGE DECISION\nVerdict: SIT\nRun classification: true_no_edge_sit\nWhy: Latest scheduled hunt found no qualifying edges.\nSystem health: PASS",
+    "terminal_text": "TIEREDGE DECISION\nVerdict: BET\nRun classification: bet_ready\nWhy: Latest scheduled hunt produced actionable bets.\nSystem health: PASS",
     "whatsapp_text": "WHATSAPP DISABLED\nTieredEdge WhatsApp operations are disabled.\nUse Telegram for operator commands and alerts.",
-    "evening_grading_report_text": "TIEREDGE DECISION\nVerdict: SIT\nRun classification: true_no_edge_sit\nWhy: Latest scheduled hunt found no qualifying edges.\nSystem health: PASS"
+    "evening_grading_report_text": "TIEREDGE DECISION\nVerdict: BET\nRun classification: bet_ready\nWhy: Latest scheduled hunt produced actionable bets.\nSystem health: PASS"
   },
   "prop_feature_flags": {
     "phase1_nba_spreads": {
@@ -15314,18 +15206,18 @@ th {
   },
   "latest_canonical_hunt_run": {
     "schema": "tierededge_canonical_hunt_run_v1",
-    "run_id": "canonical-hunt::2026-03-28::1500",
-    "generated_at_utc": "2026-03-28T20:00:08.748Z",
-    "run_at_ct": "2026-03-28 15:00",
+    "run_id": "canonical-hunt::2026-03-28::1504",
+    "generated_at_utc": "2026-03-28T20:04:12.852Z",
+    "run_at_ct": "2026-03-28 15:04",
     "status": "ok",
-    "message_type": "SIT",
+    "message_type": "BET",
     "requires_state_sync": false,
-    "has_actionable_bets": false,
-    "native_rows_appended": 196,
-    "native_bets_appended": 0,
-    "native_sits_appended": 196,
+    "has_actionable_bets": true,
+    "native_rows_appended": 194,
+    "native_bets_appended": 1,
+    "native_sits_appended": 193,
     "invalidated": false,
-    "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
+    "plain_reason": "Canonical repo-owned hunt completed and appended native decision rows.",
     "prop_feature_flags": {
       "configured_enabled": false,
       "enabled_for_run": false,
@@ -15370,10 +15262,10 @@ th {
         "enabled_for_run": true,
         "enable_source": "config",
         "fetched_event_count": 6,
-        "analyzed_row_count": 16,
+        "analyzed_row_count": 14,
         "selected_bet_count": 0,
-        "sit_count": 16,
-        "native_rows_appended": 16,
+        "sit_count": 14,
+        "native_rows_appended": 14,
         "min_book_count": 2,
         "eligible_books": [
           "bet365",
@@ -15455,10 +15347,30 @@ th {
       "SOON": "15 to 90 minutes to start",
       "LATER": "> 90 minutes to start or unknown"
     },
-    "selected_rows": [],
+    "selected_rows": [
+      {
+        "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::def835f85134dff31d0e29a14591d960::h2h::philadelphia-76ers-ml::fanduel",
+        "event_id": "def835f85134dff31d0e29a14591d960",
+        "event_label": "Philadelphia 76ers @ Charlotte Hornets",
+        "event_home_team": "Charlotte Hornets",
+        "event_away_team": "Philadelphia 76ers",
+        "line_key": null,
+        "tier": "T3",
+        "selection": "Philadelphia 76ers ML",
+        "sportsbook": "FanDuel",
+        "odds_american": "235",
+        "post_conf_edge_pct": 3.17,
+        "kelly_stake": 8,
+        "event_start_time": "2026-03-28T22:10:00Z",
+        "minutes_to_start": 125.79,
+        "urgency_tag": "LATER",
+        "actionable_book": true,
+        "executable_book": true
+      }
+    ],
     "executable_closest_misses": [
       {
-        "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::spreads::columbus-blue-jackets-1-5::draftkings",
+        "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::spreads::columbus-blue-jackets-1-5::draftkings",
         "event_id": "05bbc266ec222eeb545ad47a2eab94e0",
         "event_label": "San Jose Sharks @ Columbus Blue Jackets",
         "event_home_team": "Columbus Blue Jackets",
@@ -15470,120 +15382,122 @@ th {
         "post_conf_edge_pct": 1.87,
         "rejection_reason": "no_edge",
         "event_start_time": "2026-03-28T21:00:00Z",
-        "minutes_to_start": 59.86,
+        "minutes_to_start": 55.79,
         "urgency_tag": "SOON"
       },
       {
-        "rec_id": "canonical-hunt::2026-03-28::1500::basketball_nba::def835f85134dff31d0e29a14591d960::h2h::philadelphia-76ers-ml::fanduel",
-        "event_id": "def835f85134dff31d0e29a14591d960",
-        "event_label": "Philadelphia 76ers @ Charlotte Hornets",
-        "event_home_team": "Charlotte Hornets",
-        "event_away_team": "Philadelphia 76ers",
+        "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::61b1ef0450e08478d708e8ab8a384647::spreads::san-antonio-spurs-25-5::fanduel",
+        "event_id": "61b1ef0450e08478d708e8ab8a384647",
+        "event_label": "San Antonio Spurs @ Milwaukee Bucks",
+        "event_home_team": "Milwaukee Bucks",
+        "event_away_team": "San Antonio Spurs",
         "line_key": null,
-        "selection": "Philadelphia 76ers ML",
+        "selection": "San Antonio Spurs -25.5",
         "sportsbook": "FanDuel",
-        "odds_american": "220",
-        "post_conf_edge_pct": 1.83,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-03-28T22:10:00Z",
-        "minutes_to_start": 129.86,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-28::1500::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::spreads::arizona-wildcats-5-5::betmgm",
-        "event_id": "b8f1c265896037786f17893bf5c3df0d",
-        "event_label": "Purdue Boilermakers @ Arizona Wildcats",
-        "event_home_team": "Arizona Wildcats",
-        "event_away_team": "Purdue Boilermakers",
-        "line_key": null,
-        "selection": "Arizona Wildcats -5.5",
-        "sportsbook": "BetMGM",
-        "odds_american": "-110",
-        "post_conf_edge_pct": 1.74,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-03-29T00:49:00Z",
-        "minutes_to_start": 288.86,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::totals::under-5-5::fanduel",
-        "event_id": "f45b4166c05f76d1695468da00b89b63",
-        "event_label": "Anaheim Ducks @ Edmonton Oilers",
-        "event_home_team": "Edmonton Oilers",
-        "event_away_team": "Anaheim Ducks",
-        "line_key": null,
-        "selection": "Under 5.5",
-        "sportsbook": "FanDuel",
-        "odds_american": "106",
+        "odds_american": "-104",
         "post_conf_edge_pct": 1.71,
         "rejection_reason": "stale_market",
-        "event_start_time": "2026-03-28T19:38:00Z",
-        "minutes_to_start": -22.14,
+        "event_start_time": "2026-03-28T19:11:00Z",
+        "minutes_to_start": -53.21,
         "urgency_tag": "NOW"
       },
       {
-        "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::totals::over-5-5::draftkings",
-        "event_id": "f45b4166c05f76d1695468da00b89b63",
-        "event_label": "Anaheim Ducks @ Edmonton Oilers",
-        "event_home_team": "Edmonton Oilers",
-        "event_away_team": "Anaheim Ducks",
+        "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::61b1ef0450e08478d708e8ab8a384647::spreads::milwaukee-bucks-25-5::draftkings",
+        "event_id": "61b1ef0450e08478d708e8ab8a384647",
+        "event_label": "San Antonio Spurs @ Milwaukee Bucks",
+        "event_home_team": "Milwaukee Bucks",
+        "event_away_team": "San Antonio Spurs",
         "line_key": null,
-        "selection": "Over 5.5",
+        "selection": "Milwaukee Bucks +25.5",
         "sportsbook": "DraftKings",
-        "odds_american": "-120",
+        "odds_american": "-110",
         "post_conf_edge_pct": 1.71,
         "rejection_reason": "stale_market",
-        "event_start_time": "2026-03-28T19:38:00Z",
-        "minutes_to_start": -22.14,
+        "event_start_time": "2026-03-28T19:11:00Z",
+        "minutes_to_start": -53.21,
         "urgency_tag": "NOW"
       },
       {
-        "rec_id": "canonical-hunt::2026-03-28::1500::baseball_mlb::16b3a35b258eb3bcae569dd205bfd706::h2h::athletics-ml::fanduel",
-        "event_id": "16b3a35b258eb3bcae569dd205bfd706",
-        "event_label": "Athletics @ Toronto Blue Jays",
-        "event_home_team": "Toronto Blue Jays",
-        "event_away_team": "Athletics",
+        "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::h2h::columbus-blue-jackets-ml::draftkings",
+        "event_id": "05bbc266ec222eeb545ad47a2eab94e0",
+        "event_label": "San Jose Sharks @ Columbus Blue Jackets",
+        "event_home_team": "Columbus Blue Jackets",
+        "event_away_team": "San Jose Sharks",
         "line_key": null,
-        "selection": "Athletics ML",
+        "selection": "Columbus Blue Jackets ML",
+        "sportsbook": "DraftKings",
+        "odds_american": "-185",
+        "post_conf_edge_pct": 1.35,
+        "rejection_reason": "no_edge",
+        "event_start_time": "2026-03-28T21:00:00Z",
+        "minutes_to_start": 55.79,
+        "urgency_tag": "SOON"
+      },
+      {
+        "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::8bab68b12c9382d84d3e1f0a1d58621e::h2h::toronto-maple-leafs-ml::fanduel",
+        "event_id": "8bab68b12c9382d84d3e1f0a1d58621e",
+        "event_label": "Toronto Maple Leafs @ St Louis Blues",
+        "event_home_team": "St Louis Blues",
+        "event_away_team": "Toronto Maple Leafs",
+        "line_key": null,
+        "selection": "Toronto Maple Leafs ML",
         "sportsbook": "FanDuel",
-        "odds_american": "260",
-        "post_conf_edge_pct": 1.49,
-        "rejection_reason": "stale_market",
-        "event_start_time": "2026-03-28T19:08:00Z",
-        "minutes_to_start": -52.14,
-        "urgency_tag": "NOW"
+        "odds_american": "126",
+        "post_conf_edge_pct": 1.33,
+        "rejection_reason": "no_edge",
+        "event_start_time": "2026-03-28T23:00:00Z",
+        "minutes_to_start": 175.79,
+        "urgency_tag": "LATER"
+      },
+      {
+        "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::88beeeb0b117f3587fb9311c1e81d35e::h2h::vegas-golden-knights-ml::draftkings",
+        "event_id": "88beeeb0b117f3587fb9311c1e81d35e",
+        "event_label": "Washington Capitals @ Vegas Golden Knights",
+        "event_home_team": "Vegas Golden Knights",
+        "event_away_team": "Washington Capitals",
+        "line_key": null,
+        "selection": "Vegas Golden Knights ML",
+        "sportsbook": "DraftKings",
+        "odds_american": "-148",
+        "post_conf_edge_pct": 1.33,
+        "rejection_reason": "no_edge",
+        "event_start_time": "2026-03-29T02:30:00Z",
+        "minutes_to_start": 385.79,
+        "urgency_tag": "LATER"
       }
     ],
-    "summary": "TIERED EDGE HUNT — 2026-03-28\nBankroll: $1400.46 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Columbus Blue Jackets -1.5 @ 136 | DraftKings: +1.87% edge — no_edge | SOON | starts in 59.86 min\n- Philadelphia 76ers ML @ 220 | FanDuel: +1.83% edge — no_edge | LATER | starts in 129.86 min\n- Arizona Wildcats -5.5 @ -110 | BetMGM: +1.74% edge — no_edge | LATER | starts in 288.86 min\n- Under 5.5 @ 106 | FanDuel: +1.71% edge — stale_market | NOW | started 22.14 min ago\n- Over 5.5 @ -120 | DraftKings: +1.71% edge — stale_market | NOW | started 22.14 min ago\n- Athletics ML @ 260 | FanDuel: +1.49% edge — stale_market | NOW | started 52.14 min ago\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+    "summary": "TIERED EDGE HUNT — 2026-03-28\nBankroll: $1400.46 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Philadelphia 76ers ML @ 235 | FanDuel\n  Timestamp (CT): 2026-03-28 15:04\n  Start: 2026-03-28T22:10:00Z | Urgency: LATER | starts in 125.79 min\n  True Prob: 31.8% | Implied Prob (de-vig): 28.6% | Edge: +3.17%\n  Kelly Stake: $8.00\n\nEXECUTABLE CLOSE MISSES:\n- Columbus Blue Jackets -1.5 @ 136 | DraftKings: +1.87% edge — no_edge | SOON | starts in 55.79 min\n- San Antonio Spurs -25.5 @ -104 | FanDuel: +1.71% edge — stale_market | NOW | started 53.21 min ago\n- Milwaukee Bucks +25.5 @ -110 | DraftKings: +1.71% edge — stale_market | NOW | started 53.21 min ago\n- Columbus Blue Jackets ML @ -185 | DraftKings: +1.35% edge — no_edge | SOON | starts in 55.79 min\n- Toronto Maple Leafs ML @ 126 | FanDuel: +1.33% edge — no_edge | LATER | starts in 175.79 min\n- Vegas Golden Knights ML @ -148 | DraftKings: +1.33% edge — no_edge | LATER | starts in 385.79 min\n\nVERDICT: 1 plays found | 193 sat out",
     "rows": {
-      "bet_rec_ids": [],
+      "bet_rec_ids": [
+        "canonical-hunt::2026-03-28::1504::basketball_nba::def835f85134dff31d0e29a14591d960::h2h::philadelphia-76ers-ml::fanduel"
+      ],
       "sit_rec_ids": [
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::8bab68b12c9382d84d3e1f0a1d58621e::spreads::toronto-maple-leafs-1-5::fanduel",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::spreads::philadelphia-flyers-1-5::betrivers",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::spreads::columbus-blue-jackets-1-5::draftkings",
-        "canonical-hunt::2026-03-28::1500::basketball_nba::def835f85134dff31d0e29a14591d960::h2h::philadelphia-76ers-ml::fanduel",
-        "canonical-hunt::2026-03-28::1500::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::spreads::arizona-wildcats-5-5::betmgm",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::totals::under-5-5::fanduel",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::totals::over-5-5::draftkings",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::35e32918fc1dcb6bac7fcdf851867029::h2h::nashville-predators-ml::betrivers",
-        "canonical-hunt::2026-03-28::1500::baseball_mlb::16b3a35b258eb3bcae569dd205bfd706::h2h::athletics-ml::fanduel",
-        "canonical-hunt::2026-03-28::1500::baseball_mlb::16b3a35b258eb3bcae569dd205bfd706::h2h::toronto-blue-jays-ml::betmgm",
-        "canonical-hunt::2026-03-28::1500::basketball_nba::2f64bcd6f06f9cb1132a6be530d6848c::h2h::detroit-pistons-ml::betrivers",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::35e32918fc1dcb6bac7fcdf851867029::spreads::nashville-predators-1-5::betrivers",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::h2h::columbus-blue-jackets-ml::draftkings",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::8bab68b12c9382d84d3e1f0a1d58621e::h2h::toronto-maple-leafs-ml::fanduel",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::a805b62b105fd0aa26de4061e2b53337::spreads::winnipeg-jets-1-5::betrivers",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::h2h::philadelphia-flyers-ml::betrivers",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::0239b57a2eab58422b627445646022d5::spreads::boston-bruins-1-5::draftkings",
-        "canonical-hunt::2026-03-28::1500::basketball_nba::6ddf73112fefbe7dcb275c09ebdae6a6::h2h::phoenix-suns-ml::betrivers",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::01cd56053db51e1cd6f4c9ea60fc009d::totals::under-5-5::fanduel",
-        "canonical-hunt::2026-03-28::1500::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::totals::under-5-5::draftkings"
+        "canonical-hunt::2026-03-28::1504::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::h2h::arizona-wildcats-ml::fanduel",
+        "canonical-hunt::2026-03-28::1504::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::spreads::arizona-wildcats-5-5::fanduel",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::8bab68b12c9382d84d3e1f0a1d58621e::spreads::toronto-maple-leafs-1-5::fanduel",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::spreads::philadelphia-flyers-1-5::betrivers",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::spreads::columbus-blue-jackets-1-5::draftkings",
+        "canonical-hunt::2026-03-28::1504::basketball_nba::61b1ef0450e08478d708e8ab8a384647::spreads::san-antonio-spurs-25-5::fanduel",
+        "canonical-hunt::2026-03-28::1504::basketball_nba::61b1ef0450e08478d708e8ab8a384647::spreads::milwaukee-bucks-25-5::draftkings",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::35e32918fc1dcb6bac7fcdf851867029::h2h::nashville-predators-ml::betrivers",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::bd12a6cf2fbc34af92080f5d4cb8c142::h2h::seattle-kraken-ml::betrivers",
+        "canonical-hunt::2026-03-28::1504::basketball_nba::2f64bcd6f06f9cb1132a6be530d6848c::h2h::detroit-pistons-ml::betrivers",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::35e32918fc1dcb6bac7fcdf851867029::spreads::nashville-predators-1-5::betrivers",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::h2h::columbus-blue-jackets-ml::draftkings",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::8bab68b12c9382d84d3e1f0a1d58621e::h2h::toronto-maple-leafs-ml::fanduel",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::88beeeb0b117f3587fb9311c1e81d35e::h2h::vegas-golden-knights-ml::draftkings",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::a805b62b105fd0aa26de4061e2b53337::spreads::winnipeg-jets-1-5::betrivers",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::h2h::philadelphia-flyers-ml::betrivers",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::0239b57a2eab58422b627445646022d5::spreads::boston-bruins-1-5::draftkings",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::01cd56053db51e1cd6f4c9ea60fc009d::totals::under-5-5::fanduel",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::totals::under-5-5::draftkings",
+        "canonical-hunt::2026-03-28::1504::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::totals::over-5-5::fanduel"
       ],
       "research_only_rec_ids": []
     }
   },
   "runtime_status": {
-    "generated_at_utc": "2026-03-28T20:00:23.739Z",
+    "generated_at_utc": "2026-03-28T20:04:15.329Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -16818,21 +16732,21 @@ th {
       "status": "ok",
       "delivery_status": "repo_direct",
       "error": null,
-      "run_at_ms": 1774728008748,
-      "run_at_ct": "2026-03-28 15:00",
+      "run_at_ms": 1774728252852,
+      "run_at_ct": "2026-03-28 15:04",
       "date_key": "2026-03-28",
-      "summary": "TIERED EDGE HUNT — 2026-03-28\nBankroll: $1400.46 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Columbus Blue Jackets -1.5 @ 136 | DraftKings: +1.87% edge — no_edge | SOON | starts in 59.86 min\n- Philadelphia 76ers ML @ 220 | FanDuel: +1.83% edge — no_edge | LATER | starts in 129.86 min\n- Arizona Wildcats -5.5 @ -110 | BetMGM: +1.74% edge — no_edge | LATER | starts in 288.86 min\n- Under 5.5 @ 106 | FanDuel: +1.71% edge — stale_market | NOW | started 22.14 min ago\n- Over 5.5 @ -120 | DraftKings: +1.71% edge — stale_market | NOW | started 22.14 min ago\n- Athletics ML @ 260 | FanDuel: +1.49% edge — stale_market | NOW | started 52.14 min ago\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
-      "raw_summary": "TIERED EDGE HUNT — 2026-03-28\nBankroll: $1400.46 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Columbus Blue Jackets -1.5 @ 136 | DraftKings: +1.87% edge — no_edge | SOON | starts in 59.86 min\n- Philadelphia 76ers ML @ 220 | FanDuel: +1.83% edge — no_edge | LATER | starts in 129.86 min\n- Arizona Wildcats -5.5 @ -110 | BetMGM: +1.74% edge — no_edge | LATER | starts in 288.86 min\n- Under 5.5 @ 106 | FanDuel: +1.71% edge — stale_market | NOW | started 22.14 min ago\n- Over 5.5 @ -120 | DraftKings: +1.71% edge — stale_market | NOW | started 22.14 min ago\n- Athletics ML @ 260 | FanDuel: +1.49% edge — stale_market | NOW | started 52.14 min ago\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+      "summary": "TIERED EDGE HUNT — 2026-03-28\nBankroll: $1400.46 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Philadelphia 76ers ML @ 235 | FanDuel\n  Timestamp (CT): 2026-03-28 15:04\n  Start: 2026-03-28T22:10:00Z | Urgency: LATER | starts in 125.79 min\n  True Prob: 31.8% | Implied Prob (de-vig): 28.6% | Edge: +3.17%\n  Kelly Stake: $8.00\n\nEXECUTABLE CLOSE MISSES:\n- Columbus Blue Jackets -1.5 @ 136 | DraftKings: +1.87% edge — no_edge | SOON | starts in 55.79 min\n- San Antonio Spurs -25.5 @ -104 | FanDuel: +1.71% edge — stale_market | NOW | started 53.21 min ago\n- Milwaukee Bucks +25.5 @ -110 | DraftKings: +1.71% edge — stale_market | NOW | started 53.21 min ago\n- Columbus Blue Jackets ML @ -185 | DraftKings: +1.35% edge — no_edge | SOON | starts in 55.79 min\n- Toronto Maple Leafs ML @ 126 | FanDuel: +1.33% edge — no_edge | LATER | starts in 175.79 min\n- Vegas Golden Knights ML @ -148 | DraftKings: +1.33% edge — no_edge | LATER | starts in 385.79 min\n\nVERDICT: 1 plays found | 193 sat out",
+      "raw_summary": "TIERED EDGE HUNT — 2026-03-28\nBankroll: $1400.46 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Philadelphia 76ers ML @ 235 | FanDuel\n  Timestamp (CT): 2026-03-28 15:04\n  Start: 2026-03-28T22:10:00Z | Urgency: LATER | starts in 125.79 min\n  True Prob: 31.8% | Implied Prob (de-vig): 28.6% | Edge: +3.17%\n  Kelly Stake: $8.00\n\nEXECUTABLE CLOSE MISSES:\n- Columbus Blue Jackets -1.5 @ 136 | DraftKings: +1.87% edge — no_edge | SOON | starts in 55.79 min\n- San Antonio Spurs -25.5 @ -104 | FanDuel: +1.71% edge — stale_market | NOW | started 53.21 min ago\n- Milwaukee Bucks +25.5 @ -110 | DraftKings: +1.71% edge — stale_market | NOW | started 53.21 min ago\n- Columbus Blue Jackets ML @ -185 | DraftKings: +1.35% edge — no_edge | SOON | starts in 55.79 min\n- Toronto Maple Leafs ML @ 126 | FanDuel: +1.33% edge — no_edge | LATER | starts in 175.79 min\n- Vegas Golden Knights ML @ -148 | DraftKings: +1.33% edge — no_edge | LATER | starts in 385.79 min\n\nVERDICT: 1 plays found | 193 sat out",
       "session_id": null,
       "session_file": null,
-      "message_type": "SIT",
-      "has_actionable_bets": false,
+      "message_type": "BET",
+      "has_actionable_bets": true,
       "requires_state_sync": false,
       "data_failure_codes": [],
       "data_status": "verified",
-      "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
+      "plain_reason": "Canonical repo-owned hunt completed and appended native decision rows.",
       "source": "canonical_repo_hunt",
-      "native_rows_appended": 196
+      "native_rows_appended": 194
     },
     "latest_successful_hunt": {
       "status": "ok",
@@ -16854,18 +16768,18 @@ th {
     },
     "latest_canonical_hunt_run": {
       "schema": "tierededge_canonical_hunt_run_v1",
-      "run_id": "canonical-hunt::2026-03-28::1500",
-      "generated_at_utc": "2026-03-28T20:00:08.748Z",
-      "run_at_ct": "2026-03-28 15:00",
+      "run_id": "canonical-hunt::2026-03-28::1504",
+      "generated_at_utc": "2026-03-28T20:04:12.852Z",
+      "run_at_ct": "2026-03-28 15:04",
       "status": "ok",
-      "message_type": "SIT",
+      "message_type": "BET",
       "requires_state_sync": false,
-      "has_actionable_bets": false,
-      "native_rows_appended": 196,
-      "native_bets_appended": 0,
-      "native_sits_appended": 196,
+      "has_actionable_bets": true,
+      "native_rows_appended": 194,
+      "native_bets_appended": 1,
+      "native_sits_appended": 193,
       "invalidated": false,
-      "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
+      "plain_reason": "Canonical repo-owned hunt completed and appended native decision rows.",
       "prop_feature_flags": {
         "configured_enabled": false,
         "enabled_for_run": false,
@@ -16910,10 +16824,10 @@ th {
           "enabled_for_run": true,
           "enable_source": "config",
           "fetched_event_count": 6,
-          "analyzed_row_count": 16,
+          "analyzed_row_count": 14,
           "selected_bet_count": 0,
-          "sit_count": 16,
-          "native_rows_appended": 16,
+          "sit_count": 14,
+          "native_rows_appended": 14,
           "min_book_count": 2,
           "eligible_books": [
             "bet365",
@@ -16995,10 +16909,30 @@ th {
         "SOON": "15 to 90 minutes to start",
         "LATER": "> 90 minutes to start or unknown"
       },
-      "selected_rows": [],
+      "selected_rows": [
+        {
+          "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::def835f85134dff31d0e29a14591d960::h2h::philadelphia-76ers-ml::fanduel",
+          "event_id": "def835f85134dff31d0e29a14591d960",
+          "event_label": "Philadelphia 76ers @ Charlotte Hornets",
+          "event_home_team": "Charlotte Hornets",
+          "event_away_team": "Philadelphia 76ers",
+          "line_key": null,
+          "tier": "T3",
+          "selection": "Philadelphia 76ers ML",
+          "sportsbook": "FanDuel",
+          "odds_american": "235",
+          "post_conf_edge_pct": 3.17,
+          "kelly_stake": 8,
+          "event_start_time": "2026-03-28T22:10:00Z",
+          "minutes_to_start": 125.79,
+          "urgency_tag": "LATER",
+          "actionable_book": true,
+          "executable_book": true
+        }
+      ],
       "executable_closest_misses": [
         {
-          "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::spreads::columbus-blue-jackets-1-5::draftkings",
+          "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::spreads::columbus-blue-jackets-1-5::draftkings",
           "event_id": "05bbc266ec222eeb545ad47a2eab94e0",
           "event_label": "San Jose Sharks @ Columbus Blue Jackets",
           "event_home_team": "Columbus Blue Jackets",
@@ -17010,114 +16944,116 @@ th {
           "post_conf_edge_pct": 1.87,
           "rejection_reason": "no_edge",
           "event_start_time": "2026-03-28T21:00:00Z",
-          "minutes_to_start": 59.86,
+          "minutes_to_start": 55.79,
           "urgency_tag": "SOON"
         },
         {
-          "rec_id": "canonical-hunt::2026-03-28::1500::basketball_nba::def835f85134dff31d0e29a14591d960::h2h::philadelphia-76ers-ml::fanduel",
-          "event_id": "def835f85134dff31d0e29a14591d960",
-          "event_label": "Philadelphia 76ers @ Charlotte Hornets",
-          "event_home_team": "Charlotte Hornets",
-          "event_away_team": "Philadelphia 76ers",
+          "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::61b1ef0450e08478d708e8ab8a384647::spreads::san-antonio-spurs-25-5::fanduel",
+          "event_id": "61b1ef0450e08478d708e8ab8a384647",
+          "event_label": "San Antonio Spurs @ Milwaukee Bucks",
+          "event_home_team": "Milwaukee Bucks",
+          "event_away_team": "San Antonio Spurs",
           "line_key": null,
-          "selection": "Philadelphia 76ers ML",
+          "selection": "San Antonio Spurs -25.5",
           "sportsbook": "FanDuel",
-          "odds_american": "220",
-          "post_conf_edge_pct": 1.83,
-          "rejection_reason": "no_edge",
-          "event_start_time": "2026-03-28T22:10:00Z",
-          "minutes_to_start": 129.86,
-          "urgency_tag": "LATER"
-        },
-        {
-          "rec_id": "canonical-hunt::2026-03-28::1500::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::spreads::arizona-wildcats-5-5::betmgm",
-          "event_id": "b8f1c265896037786f17893bf5c3df0d",
-          "event_label": "Purdue Boilermakers @ Arizona Wildcats",
-          "event_home_team": "Arizona Wildcats",
-          "event_away_team": "Purdue Boilermakers",
-          "line_key": null,
-          "selection": "Arizona Wildcats -5.5",
-          "sportsbook": "BetMGM",
-          "odds_american": "-110",
-          "post_conf_edge_pct": 1.74,
-          "rejection_reason": "no_edge",
-          "event_start_time": "2026-03-29T00:49:00Z",
-          "minutes_to_start": 288.86,
-          "urgency_tag": "LATER"
-        },
-        {
-          "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::totals::under-5-5::fanduel",
-          "event_id": "f45b4166c05f76d1695468da00b89b63",
-          "event_label": "Anaheim Ducks @ Edmonton Oilers",
-          "event_home_team": "Edmonton Oilers",
-          "event_away_team": "Anaheim Ducks",
-          "line_key": null,
-          "selection": "Under 5.5",
-          "sportsbook": "FanDuel",
-          "odds_american": "106",
+          "odds_american": "-104",
           "post_conf_edge_pct": 1.71,
           "rejection_reason": "stale_market",
-          "event_start_time": "2026-03-28T19:38:00Z",
-          "minutes_to_start": -22.14,
+          "event_start_time": "2026-03-28T19:11:00Z",
+          "minutes_to_start": -53.21,
           "urgency_tag": "NOW"
         },
         {
-          "rec_id": "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::totals::over-5-5::draftkings",
-          "event_id": "f45b4166c05f76d1695468da00b89b63",
-          "event_label": "Anaheim Ducks @ Edmonton Oilers",
-          "event_home_team": "Edmonton Oilers",
-          "event_away_team": "Anaheim Ducks",
+          "rec_id": "canonical-hunt::2026-03-28::1504::basketball_nba::61b1ef0450e08478d708e8ab8a384647::spreads::milwaukee-bucks-25-5::draftkings",
+          "event_id": "61b1ef0450e08478d708e8ab8a384647",
+          "event_label": "San Antonio Spurs @ Milwaukee Bucks",
+          "event_home_team": "Milwaukee Bucks",
+          "event_away_team": "San Antonio Spurs",
           "line_key": null,
-          "selection": "Over 5.5",
+          "selection": "Milwaukee Bucks +25.5",
           "sportsbook": "DraftKings",
-          "odds_american": "-120",
+          "odds_american": "-110",
           "post_conf_edge_pct": 1.71,
           "rejection_reason": "stale_market",
-          "event_start_time": "2026-03-28T19:38:00Z",
-          "minutes_to_start": -22.14,
+          "event_start_time": "2026-03-28T19:11:00Z",
+          "minutes_to_start": -53.21,
           "urgency_tag": "NOW"
         },
         {
-          "rec_id": "canonical-hunt::2026-03-28::1500::baseball_mlb::16b3a35b258eb3bcae569dd205bfd706::h2h::athletics-ml::fanduel",
-          "event_id": "16b3a35b258eb3bcae569dd205bfd706",
-          "event_label": "Athletics @ Toronto Blue Jays",
-          "event_home_team": "Toronto Blue Jays",
-          "event_away_team": "Athletics",
+          "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::h2h::columbus-blue-jackets-ml::draftkings",
+          "event_id": "05bbc266ec222eeb545ad47a2eab94e0",
+          "event_label": "San Jose Sharks @ Columbus Blue Jackets",
+          "event_home_team": "Columbus Blue Jackets",
+          "event_away_team": "San Jose Sharks",
           "line_key": null,
-          "selection": "Athletics ML",
+          "selection": "Columbus Blue Jackets ML",
+          "sportsbook": "DraftKings",
+          "odds_american": "-185",
+          "post_conf_edge_pct": 1.35,
+          "rejection_reason": "no_edge",
+          "event_start_time": "2026-03-28T21:00:00Z",
+          "minutes_to_start": 55.79,
+          "urgency_tag": "SOON"
+        },
+        {
+          "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::8bab68b12c9382d84d3e1f0a1d58621e::h2h::toronto-maple-leafs-ml::fanduel",
+          "event_id": "8bab68b12c9382d84d3e1f0a1d58621e",
+          "event_label": "Toronto Maple Leafs @ St Louis Blues",
+          "event_home_team": "St Louis Blues",
+          "event_away_team": "Toronto Maple Leafs",
+          "line_key": null,
+          "selection": "Toronto Maple Leafs ML",
           "sportsbook": "FanDuel",
-          "odds_american": "260",
-          "post_conf_edge_pct": 1.49,
-          "rejection_reason": "stale_market",
-          "event_start_time": "2026-03-28T19:08:00Z",
-          "minutes_to_start": -52.14,
-          "urgency_tag": "NOW"
+          "odds_american": "126",
+          "post_conf_edge_pct": 1.33,
+          "rejection_reason": "no_edge",
+          "event_start_time": "2026-03-28T23:00:00Z",
+          "minutes_to_start": 175.79,
+          "urgency_tag": "LATER"
+        },
+        {
+          "rec_id": "canonical-hunt::2026-03-28::1504::icehockey_nhl::88beeeb0b117f3587fb9311c1e81d35e::h2h::vegas-golden-knights-ml::draftkings",
+          "event_id": "88beeeb0b117f3587fb9311c1e81d35e",
+          "event_label": "Washington Capitals @ Vegas Golden Knights",
+          "event_home_team": "Vegas Golden Knights",
+          "event_away_team": "Washington Capitals",
+          "line_key": null,
+          "selection": "Vegas Golden Knights ML",
+          "sportsbook": "DraftKings",
+          "odds_american": "-148",
+          "post_conf_edge_pct": 1.33,
+          "rejection_reason": "no_edge",
+          "event_start_time": "2026-03-29T02:30:00Z",
+          "minutes_to_start": 385.79,
+          "urgency_tag": "LATER"
         }
       ],
-      "summary": "TIERED EDGE HUNT — 2026-03-28\nBankroll: $1400.46 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Columbus Blue Jackets -1.5 @ 136 | DraftKings: +1.87% edge — no_edge | SOON | starts in 59.86 min\n- Philadelphia 76ers ML @ 220 | FanDuel: +1.83% edge — no_edge | LATER | starts in 129.86 min\n- Arizona Wildcats -5.5 @ -110 | BetMGM: +1.74% edge — no_edge | LATER | starts in 288.86 min\n- Under 5.5 @ 106 | FanDuel: +1.71% edge — stale_market | NOW | started 22.14 min ago\n- Over 5.5 @ -120 | DraftKings: +1.71% edge — stale_market | NOW | started 22.14 min ago\n- Athletics ML @ 260 | FanDuel: +1.49% edge — stale_market | NOW | started 52.14 min ago\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
+      "summary": "TIERED EDGE HUNT — 2026-03-28\nBankroll: $1400.46 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS:\n\nT3:\n- [ ] Philadelphia 76ers ML @ 235 | FanDuel\n  Timestamp (CT): 2026-03-28 15:04\n  Start: 2026-03-28T22:10:00Z | Urgency: LATER | starts in 125.79 min\n  True Prob: 31.8% | Implied Prob (de-vig): 28.6% | Edge: +3.17%\n  Kelly Stake: $8.00\n\nEXECUTABLE CLOSE MISSES:\n- Columbus Blue Jackets -1.5 @ 136 | DraftKings: +1.87% edge — no_edge | SOON | starts in 55.79 min\n- San Antonio Spurs -25.5 @ -104 | FanDuel: +1.71% edge — stale_market | NOW | started 53.21 min ago\n- Milwaukee Bucks +25.5 @ -110 | DraftKings: +1.71% edge — stale_market | NOW | started 53.21 min ago\n- Columbus Blue Jackets ML @ -185 | DraftKings: +1.35% edge — no_edge | SOON | starts in 55.79 min\n- Toronto Maple Leafs ML @ 126 | FanDuel: +1.33% edge — no_edge | LATER | starts in 175.79 min\n- Vegas Golden Knights ML @ -148 | DraftKings: +1.33% edge — no_edge | LATER | starts in 385.79 min\n\nVERDICT: 1 plays found | 193 sat out",
       "rows": {
-        "bet_rec_ids": [],
+        "bet_rec_ids": [
+          "canonical-hunt::2026-03-28::1504::basketball_nba::def835f85134dff31d0e29a14591d960::h2h::philadelphia-76ers-ml::fanduel"
+        ],
         "sit_rec_ids": [
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::8bab68b12c9382d84d3e1f0a1d58621e::spreads::toronto-maple-leafs-1-5::fanduel",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::spreads::philadelphia-flyers-1-5::betrivers",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::spreads::columbus-blue-jackets-1-5::draftkings",
-          "canonical-hunt::2026-03-28::1500::basketball_nba::def835f85134dff31d0e29a14591d960::h2h::philadelphia-76ers-ml::fanduel",
-          "canonical-hunt::2026-03-28::1500::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::spreads::arizona-wildcats-5-5::betmgm",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::totals::under-5-5::fanduel",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::f45b4166c05f76d1695468da00b89b63::totals::over-5-5::draftkings",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::35e32918fc1dcb6bac7fcdf851867029::h2h::nashville-predators-ml::betrivers",
-          "canonical-hunt::2026-03-28::1500::baseball_mlb::16b3a35b258eb3bcae569dd205bfd706::h2h::athletics-ml::fanduel",
-          "canonical-hunt::2026-03-28::1500::baseball_mlb::16b3a35b258eb3bcae569dd205bfd706::h2h::toronto-blue-jays-ml::betmgm",
-          "canonical-hunt::2026-03-28::1500::basketball_nba::2f64bcd6f06f9cb1132a6be530d6848c::h2h::detroit-pistons-ml::betrivers",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::35e32918fc1dcb6bac7fcdf851867029::spreads::nashville-predators-1-5::betrivers",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::h2h::columbus-blue-jackets-ml::draftkings",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::8bab68b12c9382d84d3e1f0a1d58621e::h2h::toronto-maple-leafs-ml::fanduel",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::a805b62b105fd0aa26de4061e2b53337::spreads::winnipeg-jets-1-5::betrivers",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::h2h::philadelphia-flyers-ml::betrivers",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::0239b57a2eab58422b627445646022d5::spreads::boston-bruins-1-5::draftkings",
-          "canonical-hunt::2026-03-28::1500::basketball_nba::6ddf73112fefbe7dcb275c09ebdae6a6::h2h::phoenix-suns-ml::betrivers",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::01cd56053db51e1cd6f4c9ea60fc009d::totals::under-5-5::fanduel",
-          "canonical-hunt::2026-03-28::1500::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::totals::under-5-5::draftkings"
+          "canonical-hunt::2026-03-28::1504::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::h2h::arizona-wildcats-ml::fanduel",
+          "canonical-hunt::2026-03-28::1504::basketball_ncaab::b8f1c265896037786f17893bf5c3df0d::spreads::arizona-wildcats-5-5::fanduel",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::8bab68b12c9382d84d3e1f0a1d58621e::spreads::toronto-maple-leafs-1-5::fanduel",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::spreads::philadelphia-flyers-1-5::betrivers",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::spreads::columbus-blue-jackets-1-5::draftkings",
+          "canonical-hunt::2026-03-28::1504::basketball_nba::61b1ef0450e08478d708e8ab8a384647::spreads::san-antonio-spurs-25-5::fanduel",
+          "canonical-hunt::2026-03-28::1504::basketball_nba::61b1ef0450e08478d708e8ab8a384647::spreads::milwaukee-bucks-25-5::draftkings",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::35e32918fc1dcb6bac7fcdf851867029::h2h::nashville-predators-ml::betrivers",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::bd12a6cf2fbc34af92080f5d4cb8c142::h2h::seattle-kraken-ml::betrivers",
+          "canonical-hunt::2026-03-28::1504::basketball_nba::2f64bcd6f06f9cb1132a6be530d6848c::h2h::detroit-pistons-ml::betrivers",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::35e32918fc1dcb6bac7fcdf851867029::spreads::nashville-predators-1-5::betrivers",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::05bbc266ec222eeb545ad47a2eab94e0::h2h::columbus-blue-jackets-ml::draftkings",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::8bab68b12c9382d84d3e1f0a1d58621e::h2h::toronto-maple-leafs-ml::fanduel",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::88beeeb0b117f3587fb9311c1e81d35e::h2h::vegas-golden-knights-ml::draftkings",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::a805b62b105fd0aa26de4061e2b53337::spreads::winnipeg-jets-1-5::betrivers",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::h2h::philadelphia-flyers-ml::betrivers",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::0239b57a2eab58422b627445646022d5::spreads::boston-bruins-1-5::draftkings",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::01cd56053db51e1cd6f4c9ea60fc009d::totals::under-5-5::fanduel",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::totals::under-5-5::draftkings",
+          "canonical-hunt::2026-03-28::1504::icehockey_nhl::370bf3bc5ac52a0421972e9a954378f6::totals::over-5-5::fanduel"
         ],
         "research_only_rec_ids": []
       }
@@ -17178,7 +17114,7 @@ th {
       "api_key_env": "ODDS_API_KEY",
       "api_key_source": "environment",
       "secure_key_present": true,
-      "secure_key_provider": "local_encrypted_store",
+      "secure_key_provider": "macos_keychain",
       "base_url": "https://api.the-odds-api.com/v4",
       "source_status": "present",
       "free_tier_scan_ct": null,
@@ -17201,7 +17137,7 @@ th {
       },
       "passed_opportunity_grades": {
         "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-        "file_mtime_ct": "2026-03-28 15:00 CT"
+        "file_mtime_ct": "2026-03-28 15:04 CT"
       }
     },
     "state_sync": {
