@@ -1,5 +1,5 @@
 TIEREDGE DECISION
-Verdict: BET
-Run classification: bet_ready
-Why: Latest scheduled hunt produced actionable bets.
+Verdict: SIT
+Run classification: true_no_edge_sit
+Why: Latest scheduled hunt found no qualifying edges.
 System health: PASS
