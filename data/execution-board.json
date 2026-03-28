@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-03-28T08:00:08.783Z",
-  "run_classification": "true_no_edge_sit",
+  "generated_at_utc": "2026-03-28T11:00:12.545Z",
+  "run_classification": "bet_ready",
   "policy": {
     "stale_recommendation_hours": 8,
     "odds_stale_minutes": 10,
@@ -87,16 +87,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "network",
       "current_book": "draftkings",
-      "current_odds_american": "-192",
-      "current_edge_pct": -27.75,
+      "current_odds_american": "-185",
+      "current_edge_pct": -26.91,
       "event_start_time_utc": "2026-03-28T17:00:00Z",
-      "minutes_to_start": 539.84,
+      "minutes_to_start": 359.78,
       "original_odds": "+170",
-      "current_odds": "-192",
-      "clv_cents": 362,
+      "current_odds": "-185",
+      "clv_cents": 355,
       "original_edge_pct": 2.01,
-      "edge_decay": 29.76,
-      "time_to_game_start": 539.84,
+      "edge_decay": 28.92,
+      "time_to_game_start": 359.78,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -125,7 +125,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -192\nCLV: +362 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -27.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -185\nCLV: +355 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -26.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1774549066205",
@@ -137,16 +137,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "-192",
-      "current_edge_pct": -27.75,
+      "current_odds_american": "-185",
+      "current_edge_pct": -26.91,
       "event_start_time_utc": "2026-03-28T17:00:00Z",
-      "minutes_to_start": 539.84,
+      "minutes_to_start": 359.78,
       "original_odds": "+170",
-      "current_odds": "-192",
-      "clv_cents": 362,
+      "current_odds": "-185",
+      "clv_cents": 355,
       "original_edge_pct": 2.01,
-      "edge_decay": 29.76,
-      "time_to_game_start": 539.84,
+      "edge_decay": 28.92,
+      "time_to_game_start": 359.78,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -175,7 +175,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -192\nCLV: +362 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -27.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -185\nCLV: +355 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -26.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1774550370229",
@@ -187,16 +187,16 @@
       "execution_status": "STALE_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "-192",
-      "current_edge_pct": -27.75,
+      "current_odds_american": "-185",
+      "current_edge_pct": -26.91,
       "event_start_time_utc": "2026-03-28T17:00:00Z",
-      "minutes_to_start": 539.84,
+      "minutes_to_start": 359.78,
       "original_odds": "+170",
-      "current_odds": "-192",
-      "clv_cents": 362,
+      "current_odds": "-185",
+      "clv_cents": 355,
       "original_edge_pct": 2.01,
-      "edge_decay": 29.76,
-      "time_to_game_start": 539.84,
+      "edge_decay": 28.92,
+      "time_to_game_start": 359.78,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -225,7 +225,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -192\nCLV: +362 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -27.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -185\nCLV: +355 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -26.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1774550370237",
@@ -237,16 +237,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "network",
       "current_book": "draftkings",
-      "current_odds_american": "+100",
-      "current_edge_pct": -9,
+      "current_odds_american": "-105",
+      "current_edge_pct": -10.22,
       "event_start_time_utc": "2026-03-28T20:05:00Z",
-      "minutes_to_start": 724.84,
+      "minutes_to_start": 544.77,
       "original_odds": "+144",
-      "current_odds": "+100",
-      "clv_cents": 44,
+      "current_odds": "-105",
+      "clv_cents": 249,
       "original_edge_pct": 2.26,
-      "edge_decay": 11.26,
-      "time_to_game_start": 724.84,
+      "edge_decay": 12.48,
+      "time_to_game_start": 544.77,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -275,7 +275,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +100\nCLV: +44 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -9%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -105\nCLV: +249 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -10.22%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1774550462991",
@@ -287,16 +287,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "+100",
-      "current_edge_pct": -9,
+      "current_odds_american": "-105",
+      "current_edge_pct": -10.22,
       "event_start_time_utc": "2026-03-28T20:05:00Z",
-      "minutes_to_start": 724.84,
+      "minutes_to_start": 544.77,
       "original_odds": "+144",
-      "current_odds": "+100",
-      "clv_cents": 44,
+      "current_odds": "-105",
+      "clv_cents": 249,
       "original_edge_pct": 2.26,
-      "edge_decay": 11.26,
-      "time_to_game_start": 724.84,
+      "edge_decay": 12.48,
+      "time_to_game_start": 544.77,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -325,7 +325,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +100\nCLV: +44 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -9%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -105\nCLV: +249 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -10.22%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1774551599056",
@@ -340,13 +340,13 @@
       "current_odds_american": "-225",
       "current_edge_pct": -30.23,
       "event_start_time_utc": "2026-03-29T00:00:00Z",
-      "minutes_to_start": 959.84,
+      "minutes_to_start": 779.77,
       "original_odds": "+160",
       "current_odds": "-225",
       "clv_cents": 385,
       "original_edge_pct": 2.12,
       "edge_decay": 32.35,
-      "time_to_game_start": 959.84,
+      "time_to_game_start": 779.77,
       "stake_size": 2.5,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -390,13 +390,13 @@
       "current_odds_american": "-225",
       "current_edge_pct": -30.23,
       "event_start_time_utc": "2026-03-29T00:00:00Z",
-      "minutes_to_start": 959.84,
+      "minutes_to_start": 779.77,
       "original_odds": "+160",
       "current_odds": "-225",
       "clv_cents": 385,
       "original_edge_pct": 2.12,
       "edge_decay": 32.35,
-      "time_to_game_start": 959.84,
+      "time_to_game_start": 779.77,
       "stake_size": 4,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -437,16 +437,16 @@
       "execution_status": "STALE_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "-192",
-      "current_edge_pct": -27.75,
+      "current_odds_american": "-185",
+      "current_edge_pct": -26.91,
       "event_start_time_utc": "2026-03-28T17:00:00Z",
-      "minutes_to_start": 539.84,
+      "minutes_to_start": 359.77,
       "original_odds": "+170",
-      "current_odds": "-192",
-      "clv_cents": 362,
+      "current_odds": "-185",
+      "clv_cents": 355,
       "original_edge_pct": 2.01,
-      "edge_decay": 29.76,
-      "time_to_game_start": 539.84,
+      "edge_decay": 28.92,
+      "time_to_game_start": 359.77,
       "stake_size": 2.01,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -475,7 +475,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -192\nCLV: +362 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -27.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -185\nCLV: +355 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -26.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     }
   ],
   "hedge_summary": {
@@ -485,14 +485,14 @@
     "strong_hedge_count": 0
   },
   "hedge_operator_output": [
-    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -192\nCLV: +362 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -27.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -192\nCLV: +362 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -27.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -192\nCLV: +362 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -27.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +100\nCLV: +44 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -9%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +100\nCLV: +44 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -9%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -185\nCLV: +355 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -26.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -185\nCLV: +355 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -26.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -185\nCLV: +355 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -26.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -105\nCLV: +249 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -10.22%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -105\nCLV: +249 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -10.22%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
     "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -225\nCLV: +385 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -30.23%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
     "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -225\nCLV: +385 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -30.23%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -192\nCLV: +362 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -27.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: -185\nCLV: +355 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -26.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
   ],
   "hedge_scan_frequency_mode": 3,
   "hedge_thresholds_active": {
