@@ -1,7 +1,7 @@
 {
   "entries": {
     "icehockey_nhl::draftkings::spreads": {
-      "fetched_at_ms": 1774771212563,
+      "fetched_at_ms": 1774782010365,
       "payload": [
         {
           "id": "234e07ca5a6aa75da94b75dabce4eade",
@@ -14,11 +14,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T08:00:04Z",
+              "last_update": "2026-03-29T11:00:06Z",
               "markets": [
                 {
                   "key": "spreads",
-                  "last_update": "2026-03-29T08:00:04Z",
+                  "last_update": "2026-03-29T11:00:06Z",
                   "outcomes": [
                     {
                       "name": "Florida Panthers",
@@ -47,11 +47,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T08:00:05Z",
+              "last_update": "2026-03-29T11:00:06Z",
               "markets": [
                 {
                   "key": "spreads",
-                  "last_update": "2026-03-29T08:00:04Z",
+                  "last_update": "2026-03-29T11:00:06Z",
                   "outcomes": [
                     {
                       "name": "Boston Bruins",
@@ -80,11 +80,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T08:00:05Z",
+              "last_update": "2026-03-29T11:00:06Z",
               "markets": [
                 {
                   "key": "spreads",
-                  "last_update": "2026-03-29T08:00:04Z",
+                  "last_update": "2026-03-29T11:00:06Z",
                   "outcomes": [
                     {
                       "name": "Carolina Hurricanes",
@@ -113,11 +113,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T08:00:05Z",
+              "last_update": "2026-03-29T11:00:06Z",
               "markets": [
                 {
                   "key": "spreads",
-                  "last_update": "2026-03-29T08:00:04Z",
+                  "last_update": "2026-03-29T11:00:06Z",
                   "outcomes": [
                     {
                       "name": "Nashville Predators",
@@ -146,11 +146,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T08:00:05Z",
+              "last_update": "2026-03-29T11:00:06Z",
               "markets": [
                 {
                   "key": "spreads",
-                  "last_update": "2026-03-29T08:00:04Z",
+                  "last_update": "2026-03-29T11:00:06Z",
                   "outcomes": [
                     {
                       "name": "Chicago Blackhawks",
@@ -179,11 +179,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T08:00:05Z",
+              "last_update": "2026-03-29T11:00:06Z",
               "markets": [
                 {
                   "key": "spreads",
-                  "last_update": "2026-03-29T08:00:04Z",
+                  "last_update": "2026-03-29T11:00:06Z",
                   "outcomes": [
                     {
                       "name": "Dallas Stars",
@@ -204,7 +204,7 @@
       ]
     },
     "baseball_mlb::draftkings::h2h": {
-      "fetched_at_ms": 1774771212691,
+      "fetched_at_ms": 1774782010583,
       "payload": [
         {
           "id": "cba87f51d6aaf782f15d618c9783d976",
@@ -217,11 +217,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "Atlanta Braves",
@@ -248,19 +248,19 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "Baltimore Orioles",
-                      "price": -156
+                      "price": -163
                     },
                     {
                       "name": "Minnesota Twins",
-                      "price": 129
+                      "price": 135
                     }
                   ]
                 }
@@ -279,11 +279,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "Philadelphia Phillies",
@@ -310,19 +310,19 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "Athletics",
-                      "price": 139
+                      "price": 141
                     },
                     {
                       "name": "Toronto Blue Jays",
-                      "price": -168
+                      "price": -171
                     }
                   ]
                 }
@@ -341,11 +341,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "Boston Red Sox",
@@ -372,11 +372,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "Colorado Rockies",
@@ -403,11 +403,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "New York Mets",
@@ -434,11 +434,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "Chicago White Sox",
@@ -465,11 +465,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "Houston Astros",
@@ -496,11 +496,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "St. Louis Cardinals",
@@ -527,15 +527,15 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "Chicago Cubs",
-                      "price": -259
+                      "price": -260
                     },
                     {
                       "name": "Washington Nationals",
@@ -558,11 +558,11 @@
             {
               "key": "draftkings",
               "title": "DraftKings",
-              "last_update": "2026-03-29T07:59:11Z",
+              "last_update": "2026-03-29T10:59:23Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:11Z",
+                  "last_update": "2026-03-29T10:59:23Z",
                   "outcomes": [
                     {
                       "name": "Cleveland Guardians",
@@ -581,7 +581,7 @@
       ]
     },
     "icehockey_nhl::betmgm::h2h": {
-      "fetched_at_ms": 1774771212791,
+      "fetched_at_ms": 1774782010822,
       "payload": [
         {
           "id": "234e07ca5a6aa75da94b75dabce4eade",
@@ -594,11 +594,11 @@
             {
               "key": "betmgm",
               "title": "BetMGM",
-              "last_update": "2026-03-29T07:59:32Z",
+              "last_update": "2026-03-29T10:59:21Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:32Z",
+                  "last_update": "2026-03-29T10:59:21Z",
                   "outcomes": [
                     {
                       "name": "Florida Panthers",
@@ -625,19 +625,19 @@
             {
               "key": "betmgm",
               "title": "BetMGM",
-              "last_update": "2026-03-29T07:59:32Z",
+              "last_update": "2026-03-29T10:59:21Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:32Z",
+                  "last_update": "2026-03-29T10:59:21Z",
                   "outcomes": [
                     {
                       "name": "Boston Bruins",
-                      "price": 125
+                      "price": 120
                     },
                     {
                       "name": "Columbus Blue Jackets",
-                      "price": -150
+                      "price": -145
                     }
                   ]
                 }
@@ -656,19 +656,19 @@
             {
               "key": "betmgm",
               "title": "BetMGM",
-              "last_update": "2026-03-29T07:59:32Z",
+              "last_update": "2026-03-29T10:59:21Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:32Z",
+                  "last_update": "2026-03-29T10:59:21Z",
                   "outcomes": [
                     {
                       "name": "Carolina Hurricanes",
-                      "price": -185
+                      "price": -175
                     },
                     {
                       "name": "Montréal Canadiens",
-                      "price": 150
+                      "price": 145
                     }
                   ]
                 }
@@ -687,11 +687,11 @@
             {
               "key": "betmgm",
               "title": "BetMGM",
-              "last_update": "2026-03-29T07:59:32Z",
+              "last_update": "2026-03-29T10:59:21Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:32Z",
+                  "last_update": "2026-03-29T10:59:21Z",
                   "outcomes": [
                     {
                       "name": "Nashville Predators",
@@ -718,19 +718,19 @@
             {
               "key": "betmgm",
               "title": "BetMGM",
-              "last_update": "2026-03-29T07:59:32Z",
+              "last_update": "2026-03-29T10:59:21Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:32Z",
+                  "last_update": "2026-03-29T10:59:21Z",
                   "outcomes": [
                     {
                       "name": "Chicago Blackhawks",
-                      "price": 140
+                      "price": 135
                     },
                     {
                       "name": "New Jersey Devils",
-                      "price": -170
+                      "price": -165
                     }
                   ]
                 }
@@ -749,11 +749,11 @@
             {
               "key": "betmgm",
               "title": "BetMGM",
-              "last_update": "2026-03-29T07:59:32Z",
+              "last_update": "2026-03-29T10:59:21Z",
               "markets": [
                 {
                   "key": "h2h",
-                  "last_update": "2026-03-29T07:59:32Z",
+                  "last_update": "2026-03-29T10:59:21Z",
                   "outcomes": [
                     {
                       "name": "Dallas Stars",
