@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-29T11:00:09.485Z",
+  "generated_at_utc": "2026-03-29T17:00:12.379Z",
   "run_classification": "true_no_edge_sit",
   "policy": {
     "stale_recommendation_hours": 8,
@@ -95,16 +95,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "network",
       "current_book": "draftkings",
-      "current_odds_american": "+129",
-      "current_edge_pct": -2.67,
+      "current_odds_american": "+135",
+      "current_edge_pct": -1.55,
       "event_start_time_utc": "2026-03-29T17:36:00Z",
-      "minutes_to_start": 395.82,
+      "minutes_to_start": 35.77,
       "original_odds": "+144",
-      "current_odds": "+129",
-      "clv_cents": 15,
+      "current_odds": "+135",
+      "clv_cents": 9,
       "original_edge_pct": 2.26,
-      "edge_decay": 4.93,
-      "time_to_game_start": 395.82,
+      "edge_decay": 3.81,
+      "time_to_game_start": 35.77,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -133,7 +133,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +129\nCLV: +15 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -2.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +135\nCLV: +9 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -1.55%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1774550462991",
@@ -145,16 +145,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "+129",
-      "current_edge_pct": -2.67,
+      "current_odds_american": "+135",
+      "current_edge_pct": -1.55,
       "event_start_time_utc": "2026-03-29T17:36:00Z",
-      "minutes_to_start": 395.82,
+      "minutes_to_start": 35.77,
       "original_odds": "+144",
-      "current_odds": "+129",
-      "clv_cents": 15,
+      "current_odds": "+135",
+      "clv_cents": 9,
       "original_edge_pct": 2.26,
-      "edge_decay": 4.93,
-      "time_to_game_start": 395.82,
+      "edge_decay": 3.81,
+      "time_to_game_start": 35.77,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -183,7 +183,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +129\nCLV: +15 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -2.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +135\nCLV: +9 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -1.55%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1774551599056",
@@ -195,16 +195,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "-205",
-      "current_edge_pct": -28.21,
+      "current_odds_american": "-185",
+      "current_edge_pct": -25.91,
       "event_start_time_utc": "2026-03-29T23:10:00Z",
-      "minutes_to_start": 729.82,
+      "minutes_to_start": 369.77,
       "original_odds": "+160",
-      "current_odds": "-205",
-      "clv_cents": 365,
+      "current_odds": "-185",
+      "clv_cents": 345,
       "original_edge_pct": 2.12,
-      "edge_decay": 30.33,
-      "time_to_game_start": 729.82,
+      "edge_decay": 28.03,
+      "time_to_game_start": 369.77,
       "stake_size": 2.5,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -233,7 +233,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -205\nCLV: +365 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -28.21%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -185\nCLV: +345 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -25.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1774551622795",
@@ -245,16 +245,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "-205",
-      "current_edge_pct": -28.21,
+      "current_odds_american": "-185",
+      "current_edge_pct": -25.91,
       "event_start_time_utc": "2026-03-29T23:10:00Z",
-      "minutes_to_start": 729.82,
+      "minutes_to_start": 369.77,
       "original_odds": "+160",
-      "current_odds": "-205",
-      "clv_cents": 365,
+      "current_odds": "-185",
+      "clv_cents": 345,
       "original_edge_pct": 2.12,
-      "edge_decay": 30.33,
-      "time_to_game_start": 729.82,
+      "edge_decay": 28.03,
+      "time_to_game_start": 369.77,
       "stake_size": 4,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -283,7 +283,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -205\nCLV: +365 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -28.21%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -185\nCLV: +345 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -25.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1774723535709",
@@ -295,16 +295,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "network",
       "current_book": "betmgm",
-      "current_odds_american": "-150",
-      "current_edge_pct": -5,
+      "current_odds_american": "-175",
+      "current_edge_pct": -8.64,
       "event_start_time_utc": "2026-03-29T23:10:00Z",
-      "minutes_to_start": 729.82,
+      "minutes_to_start": 369.76,
       "original_odds": "-120",
-      "current_odds": "-150",
-      "clv_cents": 30,
+      "current_odds": "-175",
+      "clv_cents": 55,
       "original_edge_pct": 2.46,
-      "edge_decay": 7.46,
-      "time_to_game_start": 729.82,
+      "edge_decay": 11.1,
+      "time_to_game_start": 369.76,
       "stake_size": 24,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -333,7 +333,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -150\nCLV: +30 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -5%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -175\nCLV: +55 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -8.64%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1774723555625",
@@ -345,16 +345,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "betmgm",
-      "current_odds_american": "-150",
-      "current_edge_pct": -5,
+      "current_odds_american": "-175",
+      "current_edge_pct": -8.64,
       "event_start_time_utc": "2026-03-29T23:10:00Z",
-      "minutes_to_start": 729.82,
+      "minutes_to_start": 369.76,
       "original_odds": "-120",
-      "current_odds": "-150",
-      "clv_cents": 30,
+      "current_odds": "-175",
+      "clv_cents": 55,
       "original_edge_pct": 2.46,
-      "edge_decay": 7.46,
-      "time_to_game_start": 729.82,
+      "edge_decay": 11.1,
+      "time_to_game_start": 369.76,
       "stake_size": 23,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -383,7 +383,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -150\nCLV: +30 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -5%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -175\nCLV: +55 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -8.64%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     }
   ],
   "hedge_summary": {
@@ -393,12 +393,12 @@
     "strong_hedge_count": 0
   },
   "hedge_operator_output": [
-    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +129\nCLV: +15 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -2.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +129\nCLV: +15 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -2.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -205\nCLV: +365 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -28.21%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -205\nCLV: +365 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -28.21%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -150\nCLV: +30 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -5%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -150\nCLV: +30 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -5%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +135\nCLV: +9 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -1.55%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +135\nCLV: +9 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -1.55%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -185\nCLV: +345 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -25.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -185\nCLV: +345 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -25.91%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -175\nCLV: +55 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -8.64%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -175\nCLV: +55 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -8.64%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
   ],
   "hedge_scan_frequency_mode": 3,
   "hedge_thresholds_active": {

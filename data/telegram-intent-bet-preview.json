@@ -1,53 +1,53 @@
 {
-  "generated_at_utc": "2026-03-29T00:20:38.967Z",
+  "generated_at_utc": "2026-03-29T12:20:18.346Z",
   "status": "requires_confirmation",
   "source_images": [
-    "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/telegram-media-inbox/8657197389__419781100__01.jpg"
+    "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/telegram-media-inbox/8657197389__419781102__01.jpg"
   ],
   "screenshot_previews": [
     {
-      "image_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/telegram-media-inbox/8657197389__419781100__01.jpg",
-      "screenshot_filename": "8657197389__419781100__01.jpg",
+      "image_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/telegram-media-inbox/8657197389__419781102__01.jpg",
+      "screenshot_filename": "8657197389__419781102__01.jpg",
       "sportsbook": null,
       "average_confidence": 1,
       "parsed_bets": [
         {
-          "screenshot_filename": "8657197389__419781100__01.jpg",
+          "screenshot_filename": "8657197389__419781102__01.jpg",
           "sportsbook": null,
-          "event": null,
-          "market_type": "LOST",
-          "selection": "Today",
+          "event": "Tampa Bay Rays at St. Louis Cardinals",
+          "market_type": "Straights (1)",
+          "selection": "Your bet has been accepted. Good luck!",
           "odds": null,
           "stake": null,
           "to_win_or_payout": null,
           "bet_type": "EDGE_BET",
           "ticket_timestamp": null,
-          "status": "settled",
-          "extraction_confidence": 0.55,
+          "status": "unknown",
+          "extraction_confidence": 0.9,
           "parse_warnings": [
             "unsupported_layout",
             "missing_odds",
-            "missing_stake",
-            "missing_event_identity"
+            "missing_stake"
           ],
           "raw_lines": [
-            "Today",
-            "LOST",
-            "Over 220.5",
-            "Totals",
-            "196",
-            "220.5",
-            "Pistons",
-            "Timberwolves",
-            "109",
-            "87",
-            "Final",
-            "Stake: $20.00",
+            "Your bet has been accepted. Good luck!",
+            "Straights (1)",
+            "^",
+            "Cardinals",
+            "Moneyline",
+            "Tampa Bay Rays at St. Louis Cardinals",
+            "Promotion used",
+            "Stake",
+            "Total payout",
+            "incl. Boosted Winnings $4.75 in Cash",
+            "+100 +125",
             "Odds Boost",
-            "MO • 3/28/26 • 3:16 PM",
-            "9) Bet slip ID: 20H530FXHK",
-            "-115",
-            "Payout: -"
+            "$19.00",
+            "$42.75",
+            "Keep placed bets in bet slip",
+            "Share My Bet",
+            "View my bets",
+            "Done"
           ]
         }
       ]
@@ -55,45 +55,45 @@
   ],
   "items": [
     {
-      "preview_id": "8657197389__419781100__01.jpg::today",
-      "screenshot_filename": "8657197389__419781100__01.jpg",
+      "preview_id": "8657197389__419781102__01.jpg::yourbethasbeenaccepted.goodluck",
+      "screenshot_filename": "8657197389__419781102__01.jpg",
       "extracted_fields": {
-        "screenshot_filename": "8657197389__419781100__01.jpg",
+        "screenshot_filename": "8657197389__419781102__01.jpg",
         "sportsbook": null,
-        "event": null,
-        "market_type": "LOST",
-        "selection": "Today",
+        "event": "Tampa Bay Rays at St. Louis Cardinals",
+        "market_type": "Straights (1)",
+        "selection": "Your bet has been accepted. Good luck!",
         "odds": null,
         "stake": null,
         "to_win_or_payout": null,
         "bet_type": "EDGE_BET",
         "ticket_timestamp": null,
-        "status": "settled",
-        "extraction_confidence": 0.55,
+        "status": "unknown",
+        "extraction_confidence": 0.9,
         "parse_warnings": [
           "unsupported_layout",
           "missing_odds",
-          "missing_stake",
-          "missing_event_identity"
+          "missing_stake"
         ],
         "raw_lines": [
-          "Today",
-          "LOST",
-          "Over 220.5",
-          "Totals",
-          "196",
-          "220.5",
-          "Pistons",
-          "Timberwolves",
-          "109",
-          "87",
-          "Final",
-          "Stake: $20.00",
+          "Your bet has been accepted. Good luck!",
+          "Straights (1)",
+          "^",
+          "Cardinals",
+          "Moneyline",
+          "Tampa Bay Rays at St. Louis Cardinals",
+          "Promotion used",
+          "Stake",
+          "Total payout",
+          "incl. Boosted Winnings $4.75 in Cash",
+          "+100 +125",
           "Odds Boost",
-          "MO • 3/28/26 • 3:16 PM",
-          "9) Bet slip ID: 20H530FXHK",
-          "-115",
-          "Payout: -"
+          "$19.00",
+          "$42.75",
+          "Keep placed bets in bet slip",
+          "Share My Bet",
+          "View my bets",
+          "Done"
         ]
       },
       "matched_rec_id": null,
@@ -104,7 +104,6 @@
         "unsupported_layout",
         "missing_odds",
         "missing_stake",
-        "missing_event_identity",
         "no_recommendation_match"
       ],
       "proposed_execution_log_row": {
@@ -112,35 +111,33 @@
         "run_id": null,
         "sport": null,
         "league": null,
-        "normalized_event": null,
+        "normalized_event": "Tampa Bay Rays at St. Louis Cardinals",
         "match_status": "unmatched_manual_bet",
         "sportsbook": null,
-        "event": null,
-        "market": "LOST",
-        "selection": "Today",
+        "event": "Tampa Bay Rays at St. Louis Cardinals",
+        "market": "Straights (1)",
+        "selection": "Your bet has been accepted. Good luck!",
         "recommended_odds": null,
         "actual_odds": null,
         "recommended_stake": null,
         "actual_stake": null,
         "line_price_drift": "N/A",
-        "screenshot_filename": "8657197389__419781100__01.jpg",
-        "extraction_confidence": 0.55,
+        "screenshot_filename": "8657197389__419781102__01.jpg",
+        "extraction_confidence": 0.9,
         "manual_override_flag": true,
         "override_reason": "unmatched_manual_bet",
-        "override_justification": "Confirmed via screenshot ingestion. Match status=unmatched_manual_bet; warnings=unsupported_layout,missing_odds,missing_stake,missing_event_identity,no_recommendation_match.",
-        "ingestion_timestamp": "2026-03-29T00:20:38.967Z",
+        "override_justification": "Confirmed via screenshot ingestion. Match status=unmatched_manual_bet; warnings=unsupported_layout,missing_odds,missing_stake,no_recommendation_match.",
+        "ingestion_timestamp": "2026-03-29T12:20:18.346Z",
         "notes": [
           "unsupported_layout",
           "missing_odds",
           "missing_stake",
-          "missing_event_identity",
           "no_recommendation_match"
         ],
         "warnings": [
           "unsupported_layout",
           "missing_odds",
           "missing_stake",
-          "missing_event_identity",
           "no_recommendation_match"
         ],
         "execution_approval_result": "REJECT_EXECUTION",
@@ -148,7 +145,7 @@
         "actual_sportsbook": null,
         "recommendation_timestamp": null,
         "bet_slip_timestamp": null,
-        "actual_status": "settled",
+        "actual_status": "unknown",
         "bet_type": "EDGE_BET",
         "to_win_or_payout": null
       }
@@ -160,5 +157,5 @@
     "REJECT",
     "EDIT_FIELDS"
   ],
-  "preview_text": "SCREENSHOT EXECUTION PREVIEW (1 bets)\nStatus: requires_confirmation\nGenerated: 2026-03-29T00:20:38.967Z\n\n1. Today | UNKNOWN EVENT\n   Screenshot: 8657197389__419781100__01.jpg\n   Sportsbook: UNKNOWN\n   Market: LOST | Odds: MISSING | Stake: MISSING\n   Match: unmatched_manual_bet | Confidence: low\n   rec_id: NONE\n   Proposed row: actual_odds=MISSING actual_stake=MISSING approval=REJECT_EXECUTION\n   Warnings: unsupported_layout, missing_odds, missing_stake, missing_event_identity, no_recommendation_match"
+  "preview_text": "SCREENSHOT EXECUTION PREVIEW (1 bets)\nStatus: requires_confirmation\nGenerated: 2026-03-29T12:20:18.346Z\n\n1. Your bet has been accepted. Good luck! | Tampa Bay Rays at St. Louis Cardinals\n   Screenshot: 8657197389__419781102__01.jpg\n   Sportsbook: UNKNOWN\n   Market: Straights (1) | Odds: MISSING | Stake: MISSING\n   Match: unmatched_manual_bet | Confidence: low\n   rec_id: NONE\n   Proposed row: actual_odds=MISSING actual_stake=MISSING approval=REJECT_EXECUTION\n   Warnings: unsupported_layout, missing_odds, missing_stake, no_recommendation_match"
 }

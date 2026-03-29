@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-29T11:00:17.473Z",
+  "generated_at_utc": "2026-03-29T17:00:22.024Z",
   "require_output_match": true,
   "passed": false,
   "run_classification": "open_risk_mismatch",
@@ -7,8 +7,8 @@
     "open_risk_mismatch"
   ],
   "summary": {
-    "executions_total": 21,
-    "executions_pending": 14,
+    "executions_total": 22,
+    "executions_pending": 15,
     "final_execution_grades": 7,
     "bankroll": {
       "starting_bankroll": 100,
@@ -19,31 +19,31 @@
       "difference": 0
     },
     "open_risk": {
-      "pending_ticket_count": 14,
-      "total_stake_at_risk": 145.51,
-      "open_exposure_pct_of_bankroll": 10.18
+      "pending_ticket_count": 15,
+      "total_stake_at_risk": 164.51,
+      "open_exposure_pct_of_bankroll": 11.51
     }
   },
   "issues": [
     {
       "kind": "open_risk_mismatch",
       "output": "canonical_state",
-      "expected_pending_ticket_count": 14,
-      "actual_pending_ticket_count": 13,
-      "expected_total_stake_at_risk": 145.51,
-      "actual_total_stake_at_risk": 120.51,
-      "expected_open_exposure_pct": 10.18,
-      "actual_open_exposure_pct": 8.43
+      "expected_pending_ticket_count": 15,
+      "actual_pending_ticket_count": 14,
+      "expected_total_stake_at_risk": 164.51,
+      "actual_total_stake_at_risk": 139.51,
+      "expected_open_exposure_pct": 11.51,
+      "actual_open_exposure_pct": 9.76
     },
     {
       "kind": "open_risk_mismatch",
       "output": "public_data",
-      "expected_pending_ticket_count": 14,
-      "actual_pending_ticket_count": 13,
-      "expected_total_stake_at_risk": 145.51,
-      "actual_total_stake_at_risk": 120.51,
-      "expected_open_exposure_pct": 10.18,
-      "actual_open_exposure_pct": 8.43
+      "expected_pending_ticket_count": 15,
+      "actual_pending_ticket_count": 14,
+      "expected_total_stake_at_risk": 164.51,
+      "actual_total_stake_at_risk": 139.51,
+      "expected_open_exposure_pct": 11.51,
+      "actual_open_exposure_pct": 9.76
     }
   ]
 }

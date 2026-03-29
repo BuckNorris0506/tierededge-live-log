@@ -1,55 +1,54 @@
 {
-  "generated_at_utc": "2026-03-29T00:20:41.109Z",
+  "generated_at_utc": "2026-03-29T12:20:20.100Z",
   "status": "ready_for_confirmation",
   "source_images": [
-    "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/telegram-media-inbox/8657197389__419781100__01.jpg"
+    "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/telegram-media-inbox/8657197389__419781102__01.jpg"
   ],
   "items": [
     {
-      "preview_id": "8657197389__419781100__01.jpg::PROFIT BOOST",
-      "screenshot_filename": "8657197389__419781100__01.jpg",
+      "preview_id": "8657197389__419781102__01.jpg::PROFIT BOOST",
+      "screenshot_filename": "8657197389__419781102__01.jpg",
       "extracted_fields": {
         "promo_type": "PROFIT BOOST",
         "sportsbook": null,
         "boost_percent": null,
-        "scope": null,
+        "scope": "MONEYLINE",
         "max_wager": null,
-        "bet_types": null,
+        "bet_types": "Moneyline",
         "min_total_odds": null,
         "expires_raw": "Not specified",
         "status": "ACTIVE",
-        "extraction_confidence": 0.65,
+        "extraction_confidence": 0.75,
         "parse_warnings": [
           "missing_sportsbook",
-          "missing_boost_percent",
-          "missing_scope"
+          "missing_boost_percent"
         ],
         "raw_lines": [
-          "Today",
-          "LOST",
-          "Over 220.5",
-          "Totals",
-          "196",
-          "220.5",
-          "Pistons",
-          "Timberwolves",
-          "109",
-          "87",
-          "Final",
-          "Stake: $20.00",
+          "Your bet has been accepted. Good luck!",
+          "Straights (1)",
+          "^",
+          "Cardinals",
+          "Moneyline",
+          "Tampa Bay Rays at St. Louis Cardinals",
+          "Promotion used",
+          "Stake",
+          "Total payout",
+          "incl. Boosted Winnings $4.75 in Cash",
+          "+100 +125",
           "Odds Boost",
-          "MO • 3/28/26 • 3:16 PM",
-          "9) Bet slip ID: 20H530FXHK",
-          "-115",
-          "Payout: -"
+          "$19.00",
+          "$42.75",
+          "Keep placed bets in bet slip",
+          "Share My Bet",
+          "View my bets",
+          "Done"
         ]
       },
       "warnings": [
         "missing_sportsbook",
-        "missing_boost_percent",
-        "missing_scope"
+        "missing_boost_percent"
       ],
-      "confidence_level": "medium"
+      "confidence_level": "high"
     }
   ]
 }

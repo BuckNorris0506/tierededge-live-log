@@ -50,14 +50,17 @@ function formatMinutes(value) {
   return Number.isFinite(num) ? Math.max(0, Math.round(num)) : null;
 }
 
-function actionableRowsForNotification(state, rows) {
+function latestSelectedRows(state, rows) {
   const run = state?.latest_canonical_hunt_run;
   if (!run || run.invalidated) return [];
   if (nativeAppendStatus(state) !== 'succeeded') return [];
-  const selectedRows = Array.isArray(run.selected_rows) && run.selected_rows.length
+  return Array.isArray(run.selected_rows) && run.selected_rows.length
     ? run.selected_rows
     : rows.filter((row) => row.final_decision === 'BET');
-  return selectedRows.filter((row) => {
+}
+
+function actionableRowsForNotification(state, rows) {
+  return latestSelectedRows(state, rows).filter((row) => {
     const urgency = String(row.urgency_tag || '').toUpperCase();
     const rejectionReason = normalizeText(row.rejection_reason);
     return row.actionable_book !== false
@@ -67,12 +70,17 @@ function actionableRowsForNotification(state, rows) {
   });
 }
 
-function buildActionableCandidate(state, rows) {
-  const run = state?.latest_canonical_hunt_run;
-  const actionable = actionableRowsForNotification(state, rows);
-  if (!run || !actionable.length) return null;
+function allOperatorActionableRows(state, rows) {
+  return latestSelectedRows(state, rows).filter((row) => {
+    const rejectionReason = normalizeText(row.rejection_reason);
+    return row.actionable_book !== false
+      && row.executable_book !== false
+      && !['stale_market', 'invalid_snapshot'].includes(rejectionReason);
+  });
+}
 
-  const boardSignature = actionable.map((row) => ({
+function summarizeCoreRows(rows) {
+  return rows.map((row) => ({
     rec_id: row.rec_id || null,
     event_id: row.event_id || null,
     event_label: row.event_label || null,
@@ -83,26 +91,102 @@ function buildActionableCandidate(state, rows) {
     minutes_to_start: formatMinutes(row.minutes_to_start),
     urgency_tag: String(row.urgency_tag || 'LATER').toUpperCase(),
   }));
+}
 
-  const lines = [
-    'TIERED EDGE — ACTION REQUIRED',
-    '',
-    `Run: ${run.run_id}`,
-  ];
+function summarizeBoostOpportunity(state) {
+  const runId = state?.latest_canonical_hunt_run?.run_id || null;
+  const best = state?.best_boost_use_today || null;
+  if (!best) return null;
+  if (runId && String(best.run_id || '').trim() !== String(runId).trim()) return null;
+  if (normalizeText(best.eligibility_status) !== 'eligible') return null;
+  if (!['best boost use', 'boost adjusted', 'boost eligible'].includes(normalizeText(best.recommendation_label))) return null;
+  if (normalizeText(best.recommendation_reason) !== 'boost_creates_positive_opportunity') return null;
+  return {
+    boost_id: best.boost_id || null,
+    rec_id: best.rec_id || null,
+    selection: best.selection || null,
+    sportsbook: best.sportsbook || best.boost_sportsbook || null,
+    boosted_odds_american: parseNumber(best.boosted_odds_american),
+    boosted_ev_pct: round2(parseNumber(best.boosted_ev_pct) || 0),
+    boost_capped_stake: parseNumber(best.boost_capped_stake),
+    boost_scope: best.boost_scope || best.scope || null,
+    minutes_to_start: formatMinutes(best.minutes_to_start),
+    urgency_tag: String(best.urgency_tag || 'LATER').toUpperCase(),
+    recommendation_label: best.recommendation_label || null,
+  };
+}
 
-  for (const row of boardSignature) {
-    lines.push('');
-    lines.push(`Game: ${row.event_label || 'Unknown game'}`);
-    lines.push(`Play: ${row.selection} @ ${row.sportsbook}`);
-    lines.push(`Edge: +${Number(row.edge_pct || 0).toFixed(2)}%`);
-    lines.push(`Start: ${row.minutes_to_start ?? 'Unknown'} minutes (${row.urgency_tag})`);
+function summarizeFridayFun(state) {
+  const summary = state?.friday_fun_summary || null;
+  if (!summary) return null;
+  if (summary.current_day_output_available !== true) return null;
+  if (summary.latest_has_actionable_play !== true) return null;
+  if (normalizeText(summary.current_relevance) !== 'today') return null;
+  return {
+    run_time_ct: summary.latest_run_time_ct || null,
+    status: summary.latest_message_type || summary.latest_status || 'BET',
+    plain_reason: summary.latest_plain_reason || null,
+    excerpt: summary.latest_summary_excerpt || null,
+  };
+}
+
+function buildActionableCandidate(state, rows) {
+  const run = state?.latest_canonical_hunt_run;
+  if (!run) return null;
+
+  const urgentCoreRows = actionableRowsForNotification(state, rows);
+  const allCoreRows = allOperatorActionableRows(state, rows);
+  const coreRows = urgentCoreRows.length ? urgentCoreRows : allCoreRows;
+  const coreSummary = summarizeCoreRows(coreRows);
+  const boostSummary = summarizeBoostOpportunity(state);
+  const fridaySummary = summarizeFridayFun(state);
+
+  if (!coreSummary.length && !boostSummary && !fridaySummary) return null;
+
+  const boardSignature = {
+    core: coreSummary,
+    boost: boostSummary,
+    friday_fun: fridaySummary ? {
+      run_time_ct: fridaySummary.run_time_ct,
+      status: fridaySummary.status,
+    } : null,
+  };
+
+  const header = coreSummary.length
+    ? 'TIERED EDGE — ACTION REQUIRED'
+    : boostSummary
+      ? 'TIERED EDGE — BOOST OPPORTUNITY'
+      : 'TIERED EDGE — FRIDAY FUN PLAY READY';
+
+  const lines = [header, '', `Run: ${run.run_id}`];
+
+  if (coreSummary.length) {
+    lines.push(`Core Plays: ${coreSummary.length}`);
+    const first = coreSummary[0];
+    lines.push(`Top Core Play: ${first.selection} @ ${first.sportsbook} | edge +${Number(first.edge_pct || 0).toFixed(2)}% | start ${first.minutes_to_start ?? 'Unknown'} min (${first.urgency_tag})`);
+  }
+
+  if (boostSummary) {
+    lines.push(`Boost Opportunity: ${boostSummary.selection} @ ${boostSummary.sportsbook} | ${boostSummary.boosted_odds_american >= 0 ? '+' : ''}${boostSummary.boosted_odds_american} | stake ${boostSummary.boost_capped_stake === null ? 'N/A' : `$${boostSummary.boost_capped_stake.toFixed(2)}`}`);
+  }
+
+  if (fridaySummary) {
+    lines.push(`Friday Fun: READY${fridaySummary.run_time_ct ? ` | ${fridaySummary.run_time_ct}` : ''}`);
   }
 
   return {
     tier: 'A',
     type: 'actionable',
-    reason: 'actionable_board_changed',
-    trigger: 'new_actionable_board',
+    reason: coreSummary.length
+      ? (urgentCoreRows.length ? 'actionable_board_changed' : 'actionable_board_available')
+      : boostSummary
+        ? 'boost_opportunity_ready'
+        : 'friday_fun_play_ready',
+    trigger: coreSummary.length
+      ? (urgentCoreRows.length ? 'new_actionable_board' : 'actionable_board_available')
+      : boostSummary
+        ? 'boost_opportunity_ready'
+        : 'friday_fun_play_ready',
     run_id: run.run_id,
     channel_preference: 'telegram',
     board_signature: boardSignature,

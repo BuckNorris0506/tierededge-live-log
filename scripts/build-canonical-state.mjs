@@ -1026,6 +1026,25 @@ function buildNotificationSummary(notificationEvents) {
   };
 }
 
+function buildScheduledHuntHeartbeatSummary(notificationEvents) {
+  const events = [...(notificationEvents || [])]
+    .filter((row) => String(row.notification_type || '').trim() === 'scheduled_hunt_heartbeat')
+    .sort((a, b) => String(b.created_at_utc || '').localeCompare(String(a.created_at_utc || '')));
+  const sent = events.filter((row) => String(row.status || '').trim().toLowerCase() === 'sent');
+  const latest = events[0] || null;
+  const latestSent = sent[0] || null;
+  return {
+    enabled: String(process.env.TIEREDGE_SCHEDULED_HUNT_HEARTBEAT_ENABLED || 'true').trim().toLowerCase() !== 'false',
+    last_heartbeat_time_utc: latestSent?.created_at_utc || null,
+    last_heartbeat_job_name: latestSent?.job_name || null,
+    last_heartbeat_run_id: latestSent?.run_id || null,
+    last_heartbeat_verdict: latestSent?.verdict || null,
+    last_heartbeat_status: latest?.status || 'not_run',
+    sent_count: sent.length,
+    recent_events: events.slice(0, 10),
+  };
+}
+
 function readSchedulerBoundarySummary(logPath = CRON_DEBUG_LOG_PATH) {
   if (!fs.existsSync(logPath)) {
     return {
@@ -2595,6 +2614,7 @@ function main() {
   const schedulerBoundarySummary = readSchedulerBoundarySummary();
   const apiBurnReductionSummary = buildApiBurnReductionSummary(directAutomationConfig, openclawJobs);
   const notificationSummary = buildNotificationSummary(notificationEvents);
+  const scheduledHuntHeartbeatSummary = buildScheduledHuntHeartbeatSummary(notificationEvents);
   const profitBoostSummary = buildProfitBoostSummary(profitBoostRows);
   const operatorPromoSummary = buildOperatorPromoSummary(operatorPromoRows);
   const boostAdjustedSummary = buildBoostAdjustedSummary({
@@ -2783,6 +2803,8 @@ function main() {
     last_automatic_settlement_run: automaticSettlementSummary.last_automatic_settlement_run,
     automation_lock_summary: automationLockSummary,
     notification_summary: notificationSummary,
+    scheduled_hunt_heartbeat_enabled: scheduledHuntHeartbeatSummary.enabled,
+    scheduled_hunt_heartbeat_summary: scheduledHuntHeartbeatSummary,
     friday_fun_summary: fridayFunSummary,
     active_profit_boosts: profitBoostSummary.active_profit_boosts,
     profit_boost_summary: profitBoostSummary,

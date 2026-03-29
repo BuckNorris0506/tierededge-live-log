@@ -73,6 +73,13 @@ function detectSportsbook(lines) {
   if (joined.includes('draftkings sportsbook') || joined.includes('draftkings')) return 'DraftKings';
   if (joined.includes('fanduel')) return 'FanDuel';
   if (joined.includes('betmgm')) return 'BetMGM';
+  if (
+    joined.includes('your bet has been accepted good luck')
+    || joined.includes('keep placed bets in bet slip')
+    || joined.includes('share my bet')
+    || joined.includes('view my bets')
+    || joined.includes('boosted winnings')
+  ) return 'BetMGM';
   if (joined.includes('caesars')) return 'Caesars';
   return null;
 }
@@ -102,6 +109,89 @@ function parseHeader(headerLine) {
   if (!selection) warnings.push('missing_selection');
   if (!odds) warnings.push('missing_odds');
   return { selection: selection || null, odds, warnings };
+}
+
+function isGenericConfirmationLine(line) {
+  const trimmed = String(line || '').trim();
+  if (!trimmed) return true;
+  return /your bet has been accepted|good luck|keep placed bets in bet slip|share my bet|view my bets|done|promotion used|stake|total payout|straights?\s*\(\d+\)/i.test(trimmed);
+}
+
+function parseOddsFromLines(lines) {
+  for (const line of lines) {
+    const matches = [...String(line || '').matchAll(/([+-]\d{2,4})/g)].map((match) => match[1]);
+    if (matches.length >= 2) return matches[matches.length - 1];
+    if (matches.length === 1) return matches[0];
+  }
+  return null;
+}
+
+function parseLabeledMoney(lines, labelPattern) {
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = String(lines[index] || '').trim();
+    if (!labelPattern.test(line)) continue;
+    const exactMoneyLines = [];
+    let fallbackMoney = null;
+    for (let nextIndex = index + 1; nextIndex < Math.min(lines.length, index + 9); nextIndex += 1) {
+      const nextLine = String(lines[nextIndex] || '').trim();
+      const moneyMatch = nextLine.match(/\$([0-9]+(?:\.[0-9]{2})?)/);
+      if (!moneyMatch) continue;
+      if (/^\$[0-9]+(?:\.[0-9]{2})?$/.test(nextLine)) {
+        exactMoneyLines.push(moneyMatch[1]);
+        continue;
+      }
+      if (!fallbackMoney) fallbackMoney = moneyMatch[1];
+    }
+    if (exactMoneyLines.length) {
+      return labelPattern.test('Total payout')
+        ? exactMoneyLines[exactMoneyLines.length - 1]
+        : exactMoneyLines[0];
+    }
+    if (fallbackMoney) return fallbackMoney;
+  }
+  return null;
+}
+
+function parseSelectionFromLines(lines, marketLine) {
+  const marketIndex = lines.findIndex((line) => String(line || '').trim() === String(marketLine || '').trim());
+  if (marketIndex > 0) {
+    for (let index = marketIndex - 1; index >= 0; index -= 1) {
+      const candidate = String(lines[index] || '').replace(/\s+/g, ' ').trim();
+      if (!candidate || isGenericConfirmationLine(candidate)) continue;
+      if (looksLikeEventLine(candidate)) continue;
+      if (/^\$/.test(candidate)) continue;
+      if (/^[+-]\d{2,4}$/.test(candidate)) continue;
+      return candidate;
+    }
+  }
+  return null;
+}
+
+function expandSelectionFromEvent(selection, event, marketType) {
+  const rawSelection = prettifySelection(selection);
+  if (!rawSelection) return null;
+  const rawEvent = String(event || '').trim();
+  if (!rawEvent) {
+    return /moneyline/i.test(String(marketType || '')) && !/\bML\b/i.test(rawSelection)
+      ? `${rawSelection} ML`
+      : rawSelection;
+  }
+  const participants = rawEvent
+    .split(/\s+@\s+|\s+at\s+|vs\.?|versus/i)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const normalizedSelection = normalize(rawSelection);
+  const matchedParticipant = participants.find((participant) => {
+    const normalizedParticipant = normalize(participant);
+    return normalizedParticipant === normalizedSelection
+      || normalizedParticipant.endsWith(normalizedSelection)
+      || normalizedParticipant.includes(` ${normalizedSelection}`);
+  });
+  const resolvedSelection = matchedParticipant || rawSelection;
+  if (/moneyline/i.test(String(marketType || '')) && !/\bML\b/i.test(resolvedSelection)) {
+    return `${resolvedSelection} ML`;
+  }
+  return resolvedSelection;
 }
 
 function parseStakeLine(line) {
@@ -152,7 +242,11 @@ function parseEvent(lines) {
     if (/^(moneyline|spread|total|sgp|open|pending|won|lost)$/i.test(trimmed)) continue;
     if (trimmed.length < 3) continue;
     if (looksLikeEventLine(trimmed)) {
-      return trimmed.replace(/\s+/g, ' ').replace(/\s*@\s*/g, ' @ ').trim();
+      return trimmed
+        .replace(/\s+/g, ' ')
+        .replace(/\s*@\s*/g, ' @ ')
+        .replace(/\s+at\s+/gi, ' @ ')
+        .trim();
     }
   }
   return null;
@@ -209,22 +303,33 @@ function parseSingleBetBlock({ screenshotFilename, sportsbook, block, averageCon
   const lines = block.lines.map((line) => String(line || '').replace(/\s+/g, ' ').trim()).filter(Boolean);
   const warnings = [...block.warnings];
   const wagerIndex = lines.findIndex((line) => /wager:\s*\$/i.test(line));
-  const headerLine = wagerIndex > 0 ? lines[wagerIndex - 2] || lines[wagerIndex - 1] : lines[0];
-  const marketLine = wagerIndex > 0 ? lines[wagerIndex - 1] : lines[1];
+  const marketLine = lines.find((line) => /^(moneyline|spread|total|totals?)$/i.test(String(line || '').trim()))
+    || (wagerIndex > 0 ? lines[wagerIndex - 1] : lines[1]);
+  const headerLine = wagerIndex > 0 ? lines[wagerIndex - 2] || lines[wagerIndex - 1] : parseSelectionFromLines(lines, marketLine) || lines[0];
   const header = parseHeader(headerLine);
-  warnings.push(...header.warnings);
   const stakeLine = lines.find((line) => /wager:\s*\$/i.test(line)) || '';
-  const { wager, toPay } = parseStakeLine(stakeLine);
-  if (!wager) warnings.push('missing_stake');
   const event = parseEvent(lines);
-  if (!event) warnings.push('missing_event_identity');
+  const fallbackSelection = parseSelectionFromLines(lines, marketLine);
   const ticketTimestamp = parseTicketTimestamp(lines);
   const status = detectStatus(lines);
   const marketType = inferMarketType(lines, marketLine);
+  const selection = expandSelectionFromEvent(header.selection || fallbackSelection, event, marketType);
+  if (!selection) warnings.push('missing_selection');
+  const odds = header.odds || parseOddsFromLines(lines);
+  if (!odds) warnings.push('missing_odds');
+  const { wager: inlineWager, toPay: inlineToPay } = parseStakeLine(stakeLine);
+  const exactMoneyLines = lines
+    .map((line) => String(line || '').trim())
+    .filter((line) => /^\$[0-9]+(?:\.[0-9]{2})?$/.test(line))
+    .map((line) => line.replace(/^\$/, ''));
+  const wager = inlineWager || parseLabeledMoney(lines, /^stake$/i) || exactMoneyLines[0] || null;
+  const toPay = inlineToPay || parseLabeledMoney(lines, /^total payout$/i) || exactMoneyLines[1] || null;
+  if (!wager) warnings.push('missing_stake');
+  if (!event) warnings.push('missing_event_identity');
   const betType = marketType === 'SGP' ? 'FUN_SGP' : 'EDGE_BET';
   const confidence = scoreCompleteness({
-    selection: header.selection,
-    odds: header.odds,
+    selection,
+    odds,
     stake: wager,
     event,
     ticket_timestamp: ticketTimestamp,
@@ -238,8 +343,8 @@ function parseSingleBetBlock({ screenshotFilename, sportsbook, block, averageCon
     sportsbook,
     event,
     market_type: marketType,
-    selection: header.selection ? prettifySelection(header.selection) : null,
-    odds: header.odds,
+    selection: selection ? prettifySelection(selection) : null,
+    odds,
     stake: wager,
     to_win_or_payout: toPay,
     bet_type: betType,

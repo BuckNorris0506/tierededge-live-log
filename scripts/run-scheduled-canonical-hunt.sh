@@ -32,6 +32,28 @@ cleanup() {
 }
 trap cleanup EXIT
 
+send_scheduled_heartbeat() {
+  local completed_status="$1"
+  local deploy_status="${2:-}"
+  local deploy_error="${3:-}"
+  local -a heartbeat_args
+  heartbeat_args=(
+    scripts/send-scheduled-hunt-heartbeat.mjs
+    --job-name "$JOB_NAME"
+    --runner-json-file "$RUNNER_JSON_FILE"
+    --automation-run-id "$AUTOMATION_RUN_ID"
+    --started-at-utc "$STARTED_AT_UTC"
+    --completed-status "$completed_status"
+  )
+  if [[ -n "$deploy_status" ]]; then
+    heartbeat_args+=(--deploy-status "$deploy_status")
+  fi
+  if [[ -n "$deploy_error" ]]; then
+    heartbeat_args+=(--deploy-error "$deploy_error")
+  fi
+  node "${heartbeat_args[@]}" >/dev/null 2>&1 || true
+}
+
 if node scripts/run-canonical-hunt.mjs --json >"$RUNNER_JSON_FILE" 2>"$RUNNER_STDERR_FILE"; then
   :
 else
@@ -95,6 +117,7 @@ appendDirectAutomationRun({
   rebuild_status: 'ok',
 });
 EOF
+  send_scheduled_heartbeat "ok"
   cat "$RUNNER_JSON_FILE"
   exit 0
 fi
@@ -130,6 +153,7 @@ process.stdout.write(JSON.stringify({
   deploy_error: combined || 'deploy_push_failed',
 }));
 EOF
+  send_scheduled_heartbeat "complete_with_deploy_warning" "failed" "$REBUILD_COMBINED"
   exit 0
 fi
 

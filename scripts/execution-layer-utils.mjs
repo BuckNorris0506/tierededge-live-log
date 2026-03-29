@@ -528,6 +528,53 @@ function latestCanonicalRunId() {
   return String(publicData?.latest_canonical_hunt_run?.run_id || '').trim() || null;
 }
 
+function loadBoostRecommendationUniverse() {
+  const publicData = readJson(CORE_PATHS.publicData, {});
+  const opportunities = Array.isArray(publicData?.boost_adjusted_opportunities)
+    ? publicData.boost_adjusted_opportunities
+    : [];
+  const best = publicData?.best_boost_use_today ? [publicData.best_boost_use_today] : [];
+  const seen = new Set();
+  const rows = [];
+  for (const row of [...best, ...opportunities]) {
+    const key = String(row?.boost_id || '') + '::' + String(row?.rec_id || '');
+    if (!row || seen.has(key)) continue;
+    seen.add(key);
+    rows.push({
+      rec_id: row.rec_id || null,
+      recommendation_key: row.rec_id || row.boost_id || null,
+      run_id: row.run_id || null,
+      sport: row.sport || null,
+      league: row.sport || null,
+      selection: row.selection || null,
+      event_label: row.event_label || null,
+      normalized_event: row.event_label ? normalizeEvent(row.event_label) : null,
+      sportsbook: row.sportsbook || row.boost_sportsbook || null,
+      sportsbook_options: [row.sportsbook || row.boost_sportsbook].filter(Boolean),
+      odds_american: row.original_odds_american ?? null,
+      boosted_odds_american: row.boosted_odds_american ?? null,
+      market_type: row.market_type || null,
+      timestamp_ct: row.run_id ? extractRunDate(row.run_id) : null,
+      post_conf_true_prob: row.true_prob ?? null,
+      devig_implied_prob: null,
+      post_conf_edge_pct: row.original_edge_pct ?? null,
+      raw_edge_pct: null,
+      kelly_stake: parseNumber(row.original_kelly_stake),
+      boost_capped_stake: parseNumber(row.boost_capped_stake),
+      boost_id: row.boost_id || null,
+      boost_percent: parseNumber(row.boost_percent),
+      boost_scope: row.boost_scope || null,
+      promo_type: 'PROFIT BOOST',
+      recommendation_label: row.recommendation_label || null,
+      recommendation_reason: row.recommendation_reason || null,
+      source: 'boost_adjusted_lane',
+      context_message_type: 'BOOST',
+      context_data_failure_codes: [],
+    });
+  }
+  return rows;
+}
+
 function buildRecommendationScopes(recommendations) {
   const latestRunId = latestCanonicalRunId();
   const orderedRunIds = uniqueRunIdsInOrder(recommendations);
@@ -631,8 +678,61 @@ function classifyExecutionRecommendationMatch(row, recommendations) {
   };
 }
 
+function executionBoostScore(row, candidate) {
+  let score = 0;
+  if (row.selection && candidate.selection && normalizeText(row.selection) === normalizeText(candidate.selection)) score += 45;
+  const rowEvent = normalizeEvent(row.event || row.normalized_event || '');
+  const candidateEvent = normalizeEvent(candidate.event_label || candidate.normalized_event || '');
+  if (rowEvent && candidateEvent && rowEvent === candidateEvent) score += 25;
+  if (sportsbookMatch(row.actual_sportsbook || row.recommended_sportsbook || row.sportsbook, candidate)) score += 15;
+
+  const rowOdds = parseNumber(row.actual_odds ?? row.recommended_odds);
+  const boostedOdds = parseNumber(candidate.boosted_odds_american);
+  if (Number.isFinite(rowOdds) && Number.isFinite(boostedOdds)) {
+    const diff = Math.abs(rowOdds - boostedOdds);
+    if (diff === 0) score += 30;
+    else if (diff <= 5) score += 20;
+    else if (diff <= 10) score += 10;
+  }
+
+  const rowStake = parseNumber(row.actual_stake ?? row.recommended_stake);
+  const boostStake = parseNumber(candidate.boost_capped_stake);
+  if (Number.isFinite(rowStake) && Number.isFinite(boostStake)) {
+    const diff = Math.abs(rowStake - boostStake);
+    if (diff < 0.01) score += 20;
+    else if (diff <= 1) score += 12;
+    else if (diff <= 3) score += 5;
+  }
+
+  const promoType = normalizePromoType(row.promo_type || row.promo);
+  if (!promoType || promoType === 'PROFIT BOOST') score += 8;
+
+  const rowRunId = normalizeText(row.run_id);
+  const candidateRunId = normalizeText(candidate.run_id);
+  if (rowRunId && candidateRunId && rowRunId === candidateRunId) score += 10;
+
+  return score;
+}
+
+function classifyExecutionBoostMatch(row, recommendations) {
+  const scored = recommendations.map((candidate) => ({ candidate, score: executionBoostScore(row, candidate) }))
+    .sort((a, b) => b.score - a.score);
+  const top = scored[0];
+  const second = scored[1];
+  if (!top || top.score < 70) return { match_status: 'unmatched_manual_bet', candidate: null, confidence: 'low' };
+  if (second && top.score - second.score <= 5) {
+    return { match_status: 'ambiguous_match', candidate: top.candidate, confidence: 'low' };
+  }
+  return {
+    match_status: top.score >= 90 ? 'matched_to_boost_lane' : 'matched_with_low_confidence',
+    candidate: top.candidate,
+    confidence: top.score >= 90 ? 'high' : 'medium',
+  };
+}
+
 export function previewExecutionRecommendationMatch(row, recommendations = null) {
   const universe = recommendations || loadRecommendationUniverse();
+  const boostUniverse = loadBoostRecommendationUniverse();
   const scopes = buildRecommendationScopes(universe);
 
   const evaluateMatch = (match, scopeName) => {
@@ -673,6 +773,34 @@ export function previewExecutionRecommendationMatch(row, recommendations = null)
     const historicalPreview = evaluateMatch(classifyExecutionRecommendationMatch(row, scopes.recentHistoricalCandidates), 'recent_historical_runs');
     if (historicalPreview.approved) {
       return historicalPreview;
+    }
+  }
+
+  if (boostUniverse.length) {
+    const boostMatch = classifyExecutionBoostMatch(row, boostUniverse);
+    const candidate = boostMatch.candidate || null;
+    const approved = Boolean(candidate)
+      && ['matched_to_boost_lane', 'matched_with_low_confidence'].includes(boostMatch.match_status)
+      && normalizeText(candidate.context_message_type) === 'boost'
+      && normalizeText(candidate.recommendation_reason) === 'boost_creates_positive_opportunity';
+    const boostPreview = {
+      match_status: boostMatch.match_status,
+      match_confidence: boostMatch.confidence || 'low',
+      approved,
+      candidate,
+      match_scope: 'latest_boost_lane',
+      latest_run_id: scopes.latestRunId,
+      historical_run_ids_considered: scopes.recentRunIds,
+      stale_execution: false,
+      execution_approval_result: approved
+        ? 'BOOST_EXECUTION'
+        : (boostMatch.match_status === 'ambiguous_match' ? 'AMBIGUOUS_MATCH' : 'REJECT_EXECUTION'),
+      execution_approval_result_reason: approved
+        ? 'matched_boost_adjusted_opportunity'
+        : (boostMatch.match_status === 'ambiguous_match' ? 'ambiguous_boost_match' : 'no_matching_recommendation_found'),
+    };
+    if (boostPreview.approved) {
+      return boostPreview;
     }
   }
 
@@ -727,6 +855,7 @@ function reclassifyExecutionRow(row, recommendations = null) {
     && (!Array.isArray(candidate.context_data_failure_codes) || candidate.context_data_failure_codes.length === 0);
   const preserveStaleExecution = String(row.execution_approval_result || '').trim() === 'STALE_EXECUTION';
   const preserveOffPlanExecution = String(row.execution_approval_result || '').trim() === 'OFF_PLAN_EXECUTION';
+  const preserveBoostExecution = String(row.execution_approval_result || '').trim() === 'BOOST_EXECUTION';
 
   const next = {
     ...row,
@@ -743,12 +872,16 @@ function reclassifyExecutionRow(row, recommendations = null) {
     match_confidence: match.confidence,
     execution_approval_result: preserveOffPlanExecution
       ? 'OFF_PLAN_EXECUTION'
+      : preserveBoostExecution
+      ? 'BOOST_EXECUTION'
       : preserveStaleExecution
       ? 'STALE_EXECUTION'
       : (approved ? 'APPROVED_EXECUTION' : (match.match_status === 'ambiguous_match' ? 'AMBIGUOUS_MATCH' : (row.execution_approval_result || 'REJECT_EXECUTION'))),
     manual_override_flag: approved ? false : Boolean(row.manual_override_flag),
     execution_approval_result_reason: preserveOffPlanExecution
       ? (row.execution_approval_result_reason || 'no_matching_recommendation_found')
+      : preserveBoostExecution
+      ? (row.execution_approval_result_reason || 'matched_boost_adjusted_opportunity')
       : preserveStaleExecution
       ? 'matched_recent_historical_recommendation'
       : (approved ? 'matched_originating_recommendation' : row.execution_approval_result_reason),
@@ -1582,13 +1715,13 @@ export function ingestStructuredExecutionPlacement(row) {
     selection: row.selection || candidate?.selection || null,
     recommendation_timestamp: candidate?.timestamp_ct || null,
     recommended_sportsbook: candidate?.sportsbook || null,
-    recommended_odds: candidate?.odds_american || null,
-    recommended_stake: candidate?.kelly_stake ?? null,
+    recommended_odds: candidate?.boosted_odds_american || candidate?.odds_american || null,
+    recommended_stake: candidate?.boost_capped_stake ?? candidate?.kelly_stake ?? null,
     actual_sportsbook: row.actual_sportsbook,
     actual_odds: row.actual_odds,
     actual_stake: row.actual_stake,
-    promo_type: normalizePromoType(row.promo_type || row.promo),
-    reward_type: normalizePromoType(row.promo_type || row.promo),
+    promo_type: normalizePromoType(row.promo_type || row.promo) || (classification === 'BOOST_EXECUTION' ? 'PROFIT BOOST' : null),
+    reward_type: normalizePromoType(row.promo_type || row.promo) || (classification === 'BOOST_EXECUTION' ? 'PROFIT BOOST' : null),
     bet_slip_timestamp: timestamp,
     execution_id: row.execution_id || `execution::telegram-operator::${Date.now()}`,
     logged_at_utc: row.logged_at_utc || new Date().toISOString(),
@@ -1599,7 +1732,10 @@ export function ingestStructuredExecutionPlacement(row) {
     execution_approval_result_reason: classificationReason,
     stale_execution_match: Boolean(preview.stale_execution),
     matched_from_run_scope: preview.match_scope || null,
+    matched_boost_id: candidate?.boost_id || null,
   };
+
+  Object.assign(executionRow, evAtBetFieldsFromCandidate(executionRow, candidate));
 
   if (classification === 'OFF_PLAN_EXECUTION') {
     executionRow.override_reason = classificationReason;
@@ -1615,7 +1751,7 @@ export function ingestStructuredExecutionPlacement(row) {
   const actualOdds = parseNumber(executionRow.actual_odds);
   const stakeChanged = Number.isFinite(recommendedStake) && Number.isFinite(actualStake) && Math.abs(recommendedStake - actualStake) > 0.009;
   const priceChanged = Number.isFinite(recommendedOdds) && Number.isFinite(actualOdds) && recommendedOdds !== actualOdds;
-  if (!executionRow.override_reason && (classification !== 'APPROVED_EXECUTION' || stakeChanged || priceChanged)) {
+  if (!executionRow.override_reason && (!['APPROVED_EXECUTION', 'BOOST_EXECUTION'].includes(classification) || stakeChanged || priceChanged)) {
     executionRow.override_reason = classificationReason || 'execution_differs_from_recommendation';
   }
   if (stakeChanged || priceChanged) {
