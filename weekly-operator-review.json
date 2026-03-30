@@ -1,6 +1,6 @@
 {
   "schema": "tierededge_weekly_operator_review_v1",
-  "generated_at_utc": "2026-03-29T17:00:08.945Z",
+  "generated_at_utc": "2026-03-30T08:00:10.859Z",
   "window": "last_7_days",
   "sections": {
     "run_truth": {
