@@ -127,19 +127,25 @@ REBUILD_STDOUT="$(cat "$REBUILD_STDOUT_FILE" 2>/dev/null || true)"
 REBUILD_COMBINED="$(printf '%s\n%s' "$REBUILD_STDERR" "$REBUILD_STDOUT" | sed '/^$/d')"
 
 if printf '%s' "$REBUILD_COMBINED" | grep -Eiq 'failed to push some refs|remote unpack failed|early EOF|mmap failed'; then
-  node --input-type=module <<EOF
+  AUTOMATION_RUN_ID="$AUTOMATION_RUN_ID" \
+  JOB_NAME="$JOB_NAME" \
+  STARTED_AT_UTC="$STARTED_AT_UTC" \
+  RUN_ID="$RUN_ID" \
+  ROOT_DIR="$ROOT_DIR" \
+  REBUILD_COMBINED="$REBUILD_COMBINED" \
+  node --input-type=module <<'EOF'
 import { appendDirectAutomationRun } from './scripts/direct-automation-log-utils.mjs';
 
-const combined = ${REBUILD_COMBINED@Q};
+const combined = process.env.REBUILD_COMBINED || '';
 appendDirectAutomationRun({
-  automation_run_id: '$AUTOMATION_RUN_ID',
-  job_name: '$JOB_NAME',
-  started_at_utc: '$STARTED_AT_UTC',
+  automation_run_id: process.env.AUTOMATION_RUN_ID,
+  job_name: process.env.JOB_NAME,
+  started_at_utc: process.env.STARTED_AT_UTC,
   completed_at_utc: new Date().toISOString(),
   status: 'complete_with_deploy_warning',
-  command_path: process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH || '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
+  command_path: process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH || `${process.env.ROOT_DIR}/scripts/run-scheduled-canonical-hunt.sh`,
   child_command: process.env.TIEREDGE_SCHEDULED_HUNT_CHILD_COMMAND || 'node scripts/run-canonical-hunt.mjs --json && ./scripts/update-live-log.sh',
-  run_id: '$RUN_ID',
+  run_id: process.env.RUN_ID,
   rebuild_status: 'ok',
   deploy_status: 'failed',
   deploy_error: combined || 'deploy_push_failed',
@@ -147,32 +153,44 @@ appendDirectAutomationRun({
 });
 process.stdout.write(JSON.stringify({
   status: 'complete_with_deploy_warning',
-  run_id: '$RUN_ID',
+  run_id: process.env.RUN_ID,
   rebuild_status: 'ok',
   deploy_status: 'failed',
   deploy_error: combined || 'deploy_push_failed',
-}));
+  }));
 EOF
   send_scheduled_heartbeat "complete_with_deploy_warning" "failed" "$REBUILD_COMBINED"
   exit 0
 fi
 
-node --input-type=module <<EOF
+AUTOMATION_RUN_ID="$AUTOMATION_RUN_ID" \
+JOB_NAME="$JOB_NAME" \
+STARTED_AT_UTC="$STARTED_AT_UTC" \
+RUN_ID="$RUN_ID" \
+ROOT_DIR="$ROOT_DIR" \
+REBUILD_COMBINED="$REBUILD_COMBINED" \
+node --input-type=module <<'EOF'
 import { appendDirectAutomationRun } from './scripts/direct-automation-log-utils.mjs';
 
-const combined = ${REBUILD_COMBINED@Q};
+const combined = process.env.REBUILD_COMBINED || '';
 appendDirectAutomationRun({
-  automation_run_id: '$AUTOMATION_RUN_ID',
-  job_name: '$JOB_NAME',
-  started_at_utc: '$STARTED_AT_UTC',
+  automation_run_id: process.env.AUTOMATION_RUN_ID,
+  job_name: process.env.JOB_NAME,
+  started_at_utc: process.env.STARTED_AT_UTC,
   completed_at_utc: new Date().toISOString(),
   status: 'failed',
-  command_path: process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH || '$ROOT_DIR/scripts/run-scheduled-canonical-hunt.sh',
+  command_path: process.env.TIEREDGE_SCHEDULED_HUNT_COMMAND_PATH || `${process.env.ROOT_DIR}/scripts/run-scheduled-canonical-hunt.sh`,
   child_command: process.env.TIEREDGE_SCHEDULED_HUNT_CHILD_COMMAND || 'node scripts/run-canonical-hunt.mjs --json && ./scripts/update-live-log.sh',
-  run_id: '$RUN_ID',
+  run_id: process.env.RUN_ID,
   rebuild_status: 'failed',
   error: combined || 'update_live_log_failed',
 });
+process.stdout.write(JSON.stringify({
+  status: 'failed',
+  run_id: process.env.RUN_ID,
+  rebuild_status: 'failed',
+  error: combined || 'update_live_log_failed',
+}));
 EOF
 
 cat "$REBUILD_STDERR_FILE" >&2
