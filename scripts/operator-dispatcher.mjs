@@ -10,6 +10,7 @@ const OPENCLAW_JOBS_PATH = '/Users/jaredbuckman/.openclaw/cron/jobs.json';
 const LIVE_LOG_REBUILD_SCRIPT = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/update-live-log.sh';
 const CANONICAL_HUNT_RUNNER = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-canonical-hunt.mjs';
 const TELEGRAM_HUNT_WRAPPER = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-scheduled-canonical-hunt.sh';
+const TELEGRAM_HUNT_TIMEOUT_MS = 180000;
 
 export const SUPPORTED_OPERATOR_COMMANDS = [
   'HELP',
@@ -1308,6 +1309,22 @@ function blockedHuntText(blockStatus) {
   ].join('\n');
 }
 
+function compactDeployErrorText(value, maxLines = 6, maxChars = 900) {
+  const lines = String(value || '')
+    .split('\n')
+    .map((line) => line.trimEnd())
+    .filter(Boolean);
+  const sliced = lines.slice(0, Math.max(1, maxLines));
+  let text = sliced.join('\n');
+  if (lines.length > sliced.length) {
+    text += '\n...';
+  }
+  if (text.length > maxChars) {
+    text = `${text.slice(0, maxChars - 4).trimEnd()}\n...`;
+  }
+  return text || 'Deploy push failed.';
+}
+
 function runHuntText(stateBefore) {
   const fridayFunLines = renderFridayFunSection(stateBefore, { compact: true });
   const blockStatus = readHuntBlockStatus();
@@ -1323,7 +1340,10 @@ function runHuntText(stateBefore) {
     };
   }
 
-  const wrapperResult = spawnSync(TELEGRAM_HUNT_WRAPPER, ['--job-name', 'telegram-operator-run-hunt'], { encoding: 'utf8' });
+  const wrapperResult = spawnSync(TELEGRAM_HUNT_WRAPPER, ['--job-name', 'telegram-operator-run-hunt'], {
+    encoding: 'utf8',
+    timeout: TELEGRAM_HUNT_TIMEOUT_MS,
+  });
   let wrapperPayload = null;
   if (String(wrapperResult.stdout || '').trim()) {
     try {
@@ -1331,6 +1351,24 @@ function runHuntText(stateBefore) {
     } catch {
       wrapperPayload = null;
     }
+  }
+
+  if (wrapperResult.error?.code === 'ETIMEDOUT') {
+    const lines = [
+      'RUN HUNT',
+      'Status: FAILED',
+      'Stage: wrapper_timeout',
+      `Reason: hunt wrapper exceeded ${Math.round(TELEGRAM_HUNT_TIMEOUT_MS / 1000)} seconds without completing.`,
+      `Last known verdict: ${stateBefore.decision_payload_v1?.verdict || 'UNKNOWN'}`,
+    ];
+    if (fridayFunLines.length) {
+      lines.push('', ...fridayFunLines);
+    }
+    return {
+      response_type: 'run_hunt_failed',
+      run_id: wrapperPayload?.run_id || stateBefore?.latest_canonical_hunt_run?.run_id || null,
+      text: lines.join('\n'),
+    };
   }
 
   if (wrapperResult.status !== 0) {
@@ -1354,21 +1392,27 @@ function runHuntText(stateBefore) {
   if (wrapperPayload?.status === 'complete_with_deploy_warning') {
     const freshState = loadOperatorState();
     const run = freshState.latest_canonical_hunt_run || {};
-    const deployError = String(wrapperPayload?.deploy_error || wrapperResult.stderr || wrapperResult.stdout || 'Deploy push failed.').trim();
+    const deployError = compactDeployErrorText(wrapperPayload?.deploy_error || wrapperResult.stderr || wrapperResult.stdout || 'Deploy push failed.');
+    const verdict = run.message_type || freshState.decision_payload_v1?.verdict || 'UNKNOWN';
+    const actionableCount = Array.isArray(run.selected_rows) ? run.selected_rows.length : 0;
+    const lines = [
+      'RUN HUNT',
+      'Status: COMPLETE_WITH_DEPLOY_WARNING',
+      '',
+      `Verdict: ${verdict}`,
+      'Hunt completed locally.',
+      'Deploy push failed:',
+      deployError,
+      '',
+      `Run: ${wrapperPayload?.run_id || run.run_id || stateBefore?.latest_canonical_hunt_run?.run_id || 'unknown'}`,
+    ];
+    if (actionableCount > 0) {
+      lines.push(`Actionable Plays: ${actionableCount}`);
+    }
     return {
       response_type: 'run_hunt_complete_with_deploy_warning',
       run_id: wrapperPayload?.run_id || run.run_id || stateBefore?.latest_canonical_hunt_run?.run_id || null,
-      text: [
-        'RUN HUNT',
-        'Status: COMPLETE_WITH_DEPLOY_WARNING',
-        '',
-        `Verdict: ${run.message_type || freshState.decision_payload_v1?.verdict || 'UNKNOWN'}`,
-        'Hunt and rebuild completed.',
-        'Deploy push failed:',
-        deployError,
-        '',
-        latestBoardText(freshState),
-      ].join('\n'),
+      text: lines.join('\n'),
     };
   }
 

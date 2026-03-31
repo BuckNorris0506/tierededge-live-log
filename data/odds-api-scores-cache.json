@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-03-31T11:19:14.963Z",
+  "updated_at": "2026-03-31T18:09:49.655Z",
   "sports": {
     "basketball_nba": {
-      "fetched_at": "2026-03-31T11:19:14.801Z",
+      "fetched_at": "2026-03-31T18:09:49.398Z",
       "events": [
         {
           "id": "61b1ef0450e08478d708e8ab8a384647",
@@ -544,48 +544,8 @@
       ]
     },
     "icehockey_nhl": {
-      "fetched_at": "2026-03-31T11:19:14.871Z",
+      "fetched_at": "2026-03-31T18:09:49.509Z",
       "events": [
-        {
-          "id": "394c593042fe9fe839d6c58647c093df",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-28T17:06:00Z",
-          "completed": true,
-          "home_team": "Tampa Bay Lightning",
-          "away_team": "Ottawa Senators",
-          "scores": [
-            {
-              "name": "Tampa Bay Lightning",
-              "score": "4"
-            },
-            {
-              "name": "Ottawa Senators",
-              "score": "2"
-            }
-          ],
-          "last_update": "2026-03-29T16:55:23Z"
-        },
-        {
-          "id": "9aaeedabcec3cd78e36ce1f5a44d513d",
-          "sport_key": "icehockey_nhl",
-          "sport_title": "NHL",
-          "commence_time": "2026-03-28T17:09:00Z",
-          "completed": true,
-          "home_team": "New York Islanders",
-          "away_team": "Florida Panthers",
-          "scores": [
-            {
-              "name": "New York Islanders",
-              "score": "5"
-            },
-            {
-              "name": "Florida Panthers",
-              "score": "2"
-            }
-          ],
-          "last_update": "2026-03-29T16:55:23Z"
-        },
         {
           "id": "f45b4166c05f76d1695468da00b89b63",
           "sport_key": "icehockey_nhl",
@@ -1175,11 +1135,44 @@
           "away_team": "Seattle Kraken",
           "scores": null,
           "last_update": null
+        },
+        {
+          "id": "902c8f6ff45c6855541ed7cef351aed8",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-04-02T00:30:00Z",
+          "completed": false,
+          "home_team": "Colorado Avalanche",
+          "away_team": "Vancouver Canucks",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "96ceffc5fa63fb301b4128bb29041f01",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-04-02T01:00:00Z",
+          "completed": false,
+          "home_team": "San Jose Sharks",
+          "away_team": "Anaheim Ducks",
+          "scores": null,
+          "last_update": null
+        },
+        {
+          "id": "643d656ddcc5756af5e6115f9f134a28",
+          "sport_key": "icehockey_nhl",
+          "sport_title": "NHL",
+          "commence_time": "2026-04-02T01:00:00Z",
+          "completed": false,
+          "home_team": "Los Angeles Kings",
+          "away_team": "St Louis Blues",
+          "scores": null,
+          "last_update": null
         }
       ]
     },
     "basketball_ncaab": {
-      "fetched_at": "2026-03-31T11:19:14.942Z",
+      "fetched_at": "2026-03-31T18:09:49.631Z",
       "events": [
         {
           "id": "ad862e3e6452856177edb4d763ef9df9",

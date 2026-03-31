@@ -824,8 +824,20 @@ function buildFinalResponseForPending(pending) {
   return dispatchOperatorCommand(buildStructuredCommandFromPending(pending));
 }
 
+function compactTelegramText(text, maxChars = 3500) {
+  const raw = String(text || '').trim();
+  if (raw.length <= maxChars) return raw;
+  const suffix = '\n\n[Message truncated for Telegram length limit]';
+  return `${raw.slice(0, Math.max(0, maxChars - suffix.length)).trimEnd()}${suffix}`;
+}
+
 async function sendText(chatId, text) {
-  return sendTelegramMessage(text, { chatId, keyboard: commandKeyboard() });
+  const initial = await sendTelegramMessage(text, { chatId, keyboard: commandKeyboard() });
+  const description = String(initial?.diagnostics?.response_description || '').toLowerCase();
+  if (!initial.ok && initial.error === 'telegram_http_400' && description.includes('message is too long')) {
+    return sendTelegramMessage(compactTelegramText(text), { chatId, keyboard: commandKeyboard() });
+  }
+  return initial;
 }
 
 async function processUpdate(update, allowedChatId, now, state) {

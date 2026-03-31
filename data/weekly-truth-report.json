@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-31T11:19:16.025Z",
+  "generated_at_utc": "2026-03-31T18:09:50.702Z",
   "window": "last_7_days",
   "settled_bet_count": 0,
   "expected_vs_realized_summary": {
@@ -31,18 +31,18 @@
       "book": "betmgm",
       "owned_book": true,
       "recommendations_count": 12,
-      "best_price_count": 5737,
-      "executable_near_miss_count": 126,
-      "stale_or_missing_count": 3311,
+      "best_price_count": 5787,
+      "executable_near_miss_count": 127,
+      "stale_or_missing_count": 3361,
       "rejected_non_executable_count": 0
     },
     {
       "book": "betrivers",
       "owned_book": false,
       "recommendations_count": 1,
-      "best_price_count": 4215,
+      "best_price_count": 4246,
       "executable_near_miss_count": 0,
-      "stale_or_missing_count": 2165,
+      "stale_or_missing_count": 2214,
       "rejected_non_executable_count": 7
     },
     {
@@ -67,18 +67,18 @@
       "book": "draftkings",
       "owned_book": true,
       "recommendations_count": 24,
-      "best_price_count": 6324,
-      "executable_near_miss_count": 123,
-      "stale_or_missing_count": 3177,
+      "best_price_count": 6456,
+      "executable_near_miss_count": 128,
+      "stale_or_missing_count": 3258,
       "rejected_non_executable_count": 0
     },
     {
       "book": "fanduel",
       "owned_book": true,
       "recommendations_count": 12,
-      "best_price_count": 8278,
-      "executable_near_miss_count": 171,
-      "stale_or_missing_count": 4055,
+      "best_price_count": 8411,
+      "executable_near_miss_count": 175,
+      "stale_or_missing_count": 4137,
       "rejected_non_executable_count": 0
     }
   ],
