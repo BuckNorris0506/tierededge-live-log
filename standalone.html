@@ -291,8 +291,8 @@ th {
 
   <script>window.__LIVE_DATA__ = {
   "schema": "tierededge_canonical_v2",
-  "generated_at_utc": "2026-04-01T02:00:26.331Z",
-  "last_updated_ct": "2026-03-31 21:00 CT",
+  "generated_at_utc": "2026-04-01T02:05:57.700Z",
+  "last_updated_ct": "2026-03-31 21:05 CT",
   "current_status": {
     "Bankroll": "$1429.71",
     "Phase": "GROWTH",
@@ -1498,7 +1498,7 @@ th {
       }
     },
     "weekly_truth_report_summary": {
-      "generated_at_utc": "2026-04-01T02:00:26.843Z",
+      "generated_at_utc": "2026-04-01T02:05:58.196Z",
       "settled_bet_count": 0,
       "top_bleeding_categories": [],
       "top_strongest_categories": [],
@@ -1526,18 +1526,18 @@ th {
           "book": "betmgm",
           "owned_book": true,
           "recommendations_count": 4,
-          "best_price_count": 5387,
-          "executable_near_miss_count": 113,
-          "stale_or_missing_count": 3339,
+          "best_price_count": 5333,
+          "executable_near_miss_count": 110,
+          "stale_or_missing_count": 3287,
           "rejected_non_executable_count": 0
         },
         {
           "book": "betrivers",
           "owned_book": false,
           "recommendations_count": 0,
-          "best_price_count": 3737,
+          "best_price_count": 3723,
           "executable_near_miss_count": 0,
-          "stale_or_missing_count": 2204,
+          "stale_or_missing_count": 2194,
           "rejected_non_executable_count": 5
         },
         {
@@ -1562,32 +1562,32 @@ th {
           "book": "draftkings",
           "owned_book": true,
           "recommendations_count": 20,
-          "best_price_count": 5964,
+          "best_price_count": 5911,
           "executable_near_miss_count": 113,
-          "stale_or_missing_count": 3201,
+          "stale_or_missing_count": 3156,
           "rejected_non_executable_count": 0
         },
         {
           "book": "fanduel",
           "owned_book": true,
           "recommendations_count": 1,
-          "best_price_count": 7934,
-          "executable_near_miss_count": 163,
-          "stale_or_missing_count": 4074,
+          "best_price_count": 7875,
+          "executable_near_miss_count": 160,
+          "stale_or_missing_count": 4019,
           "rejected_non_executable_count": 0
         }
       ]
     },
     "weekly_operator_review_summary": {
-      "generated_at_utc": "2026-04-01T02:00:23.209Z",
+      "generated_at_utc": "2026-04-01T02:05:54.581Z",
       "window": "last_7_days",
       "run_truth": {
-        "valid_runs": 155,
+        "valid_runs": 153,
         "invalidated_runs": 0
       },
       "hunt_totals": {
         "total_bets": 25,
-        "total_sits": 22997
+        "total_sits": 22817
       },
       "actual_clv_summary": {
         "settled_bet_count": 0,
@@ -1598,39 +1598,39 @@ th {
       },
       "rejected_clv_summary": {
         "1.0_to_1.49": {
-          "count": 1392,
+          "count": 1380,
           "captured_count": 10,
           "avg_clv_delta_pct": -1.52,
           "positive_clv_rate": 40
         },
         "1.5_to_1.99": {
-          "count": 516,
+          "count": 510,
           "captured_count": 7,
           "avg_clv_delta_pct": 0.75,
           "positive_clv_rate": 85.71
         },
         "2.0_plus_rejected": {
-          "count": 490,
+          "count": 482,
           "captured_count": 3,
           "avg_clv_delta_pct": 1.32,
           "positive_clv_rate": 100
         }
       },
       "market_integrity": {
-        "invalid_snapshot_count": 9688,
-        "stale_market_count": 3130,
+        "invalid_snapshot_count": 9610,
+        "stale_market_count": 3046,
         "top_rejection_reasons": [
           {
             "reason": "no_edge",
-            "count": 10095
+            "count": 10077
           },
           {
             "reason": "invalid_snapshot",
-            "count": 9688
+            "count": 9610
           },
           {
             "reason": "stale_market",
-            "count": 3130
+            "count": 3046
           },
           {
             "reason": "sub_minimum_kelly",
@@ -1646,14 +1646,14 @@ th {
         {
           "level": "RED",
           "code": "invalid_snapshot_spike",
-          "occurrences": 139,
-          "message": "139 run(s) crossed the invalid snapshot spike threshold."
+          "occurrences": 138,
+          "message": "138 run(s) crossed the invalid snapshot spike threshold."
         },
         {
           "level": "RED",
           "code": "stale_market_spike",
-          "occurrences": 20,
-          "message": "20 run(s) crossed the stale market spike threshold."
+          "occurrences": 19,
+          "message": "19 run(s) crossed the stale market spike threshold."
         },
         {
           "level": "YELLOW",
@@ -1664,8 +1664,8 @@ th {
         {
           "level": "INFO",
           "code": "clean_sit_day",
-          "occurrences": 139,
-          "message": "139 clean SIT run(s) recorded this week."
+          "occurrences": 137,
+          "message": "137 clean SIT run(s) recorded this week."
         }
       ]
     }
@@ -5973,14 +5973,14 @@ th {
     "scheduler_type": "system_cron",
     "timezone": "America/Chicago",
     "model_backed_scheduler_in_critical_path": false,
-    "total_runs_logged": 3150,
+    "total_runs_logged": 3153,
     "critical_jobs": [
       {
         "name": "telegram-operator-poll",
         "critical": true,
         "schedule_expr": "* * * * *",
         "entrypoint": "./scripts/run-telegram-operator-poll.sh",
-        "last_run_time_utc": "2026-04-01T01:58:41.628Z",
+        "last_run_time_utc": "2026-04-01T02:04:12.868Z",
         "last_status": "ok",
         "last_run_id": null,
         "execution_mode": "direct_local_command"
@@ -6077,6 +6077,45 @@ th {
       }
     ],
     "recent_runs": [
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T02:03:22.646Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T02:03:22.646Z",
+        "completed_at_utc": "2026-04-01T02:04:12.868Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T02:01:32.258Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T02:01:32.258Z",
+        "completed_at_utc": "2026-04-01T02:02:22.488Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:59:41.802Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:59:41.802Z",
+        "completed_at_utc": "2026-04-01T02:00:32.084Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
       {
         "automation_run_id": "telegram-operator-poll::2026-04-01T01:57:51.414Z",
         "scheduler_type": "launchd",
@@ -6358,45 +6397,6 @@ th {
         "job_name": "telegram-operator-poll",
         "started_at_utc": "2026-04-01T01:19:11.829Z",
         "completed_at_utc": "2026-04-01T01:20:02.202Z",
-        "status": "ok",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "processed_updates": 0
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-04-01T01:17:21.392Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-04-01T01:17:21.392Z",
-        "completed_at_utc": "2026-04-01T01:18:11.653Z",
-        "status": "ok",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "processed_updates": 0
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-04-01T01:15:31.032Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-04-01T01:15:31.032Z",
-        "completed_at_utc": "2026-04-01T01:16:21.224Z",
-        "status": "ok",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "processed_updates": 0
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-04-01T01:13:40.664Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-04-01T01:13:40.664Z",
-        "completed_at_utc": "2026-04-01T01:14:30.856Z",
         "status": "ok",
         "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
         "child_command": "node scripts/telegram-operator-bot.mjs --json",
@@ -9049,7 +9049,7 @@ th {
   },
   "operator_dashboard": {
     "schema": "tierededge_operator_dashboard_v1",
-    "generated_at_utc": "2026-04-01T02:00:26.394Z",
+    "generated_at_utc": "2026-04-01T02:05:57.758Z",
     "top_level_sections": [
       {
         "key": "system_health",
@@ -14038,7 +14038,7 @@ th {
       "bankroll_before": 1431.71,
       "bankroll_after": 1429.71,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:05:53.814Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774733862862::win::1774733971338",
@@ -14072,7 +14072,7 @@ th {
       "bankroll_before": 1400.46,
       "bankroll_after": 1431.71,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:05:53.814Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774551623980::win::1774610653299",
@@ -14110,7 +14110,7 @@ th {
       "bankroll_before": 1394.3,
       "bankroll_after": 1400.46,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:05:53.814Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774551629841::loss::1774566696859",
@@ -14144,7 +14144,7 @@ th {
       "bankroll_before": 1396.3,
       "bankroll_after": 1394.3,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:05:53.814Z"
     },
     {
       "grading_id": "reconciliation::execution::manual-recovered::2026-03-17::wild-ml::2026-03-18T10:05:00-05:00",
@@ -14186,7 +14186,7 @@ th {
       "bankroll_before": 1295.13,
       "bankroll_after": 1300.53,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z",
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:05:53.814Z",
       "legacy_bankroll_after_import": 1321.03
     },
     {
@@ -14229,7 +14229,7 @@ th {
       "bankroll_before": 1305.63,
       "bankroll_after": 1295.13,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z",
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:05:53.814Z",
       "legacy_bankroll_after_import": 1315.63
     },
     {
@@ -14272,12 +14272,12 @@ th {
       "bankroll_before": 1326.13,
       "bankroll_after": 1305.63,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z",
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:05:53.814Z",
       "legacy_bankroll_after_import": 1300.53
     }
   ],
   "ledger_validation": {
-    "generated_at_utc": "2026-04-01T02:00:26.331Z",
+    "generated_at_utc": "2026-04-01T02:05:57.700Z",
     "require_output_match": false,
     "passed": true,
     "run_classification": "ledger_integrity_pass",
@@ -14451,7 +14451,7 @@ th {
     "summary": "TIERED EDGE HUNT — 2026-03-31\nCANNOT_VERIFY_ODDS — SIT\nReason: odds_transport_failed:basketball_nba:tls_certificate_problem:api.the-odds-api.com:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com"
   },
   "runtime_status": {
-    "generated_at_utc": "2026-04-01T02:00:25.951Z",
+    "generated_at_utc": "2026-04-01T02:05:57.329Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
