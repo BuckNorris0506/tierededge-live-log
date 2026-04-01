@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-31T18:09:53.159Z",
+  "generated_at_utc": "2026-04-01T02:00:25.951Z",
   "jobs": {
     "morning_edge_hunt": {
       "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -1231,24 +1231,24 @@
     "data_failure_codes": []
   },
   "latest_hunt_current": {
-    "status": "ok",
-    "delivery_status": "repo_direct",
-    "error": null,
-    "run_at_ms": 1774980588760,
-    "run_at_ct": "2026-03-31 13:09",
-    "date_key": "2026-03-31",
-    "summary": "TIERED EDGE HUNT — 2026-03-31\nBankroll: $1429.71 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Chicago Blackhawks +1.5 @ -188 | FanDuel: +1.86% edge — no_edge | LATER | starts in 390.19 min\n- Carolina Hurricanes -1.5 @ 190 | DraftKings: +1.75% edge — no_edge | LATER | starts in 330.19 min\n- Detroit Tigers ML @ -102 | DraftKings: +1.74% edge — no_edge | LATER | starts in 450.19 min\n- Edmonton Oilers ML @ -176 | FanDuel: +1.18% edge — no_edge | LATER | starts in 420.19 min\n- Texas Rangers ML @ -126 | DraftKings: +1.06% edge — no_edge | LATER | starts in 266.19 min\n- Chicago Cubs ML @ -135 | BetMGM: +1.05% edge — no_edge | LATER | starts in 331.19 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
-    "raw_summary": "TIERED EDGE HUNT — 2026-03-31\nBankroll: $1429.71 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Chicago Blackhawks +1.5 @ -188 | FanDuel: +1.86% edge — no_edge | LATER | starts in 390.19 min\n- Carolina Hurricanes -1.5 @ 190 | DraftKings: +1.75% edge — no_edge | LATER | starts in 330.19 min\n- Detroit Tigers ML @ -102 | DraftKings: +1.74% edge — no_edge | LATER | starts in 450.19 min\n- Edmonton Oilers ML @ -176 | FanDuel: +1.18% edge — no_edge | LATER | starts in 420.19 min\n- Texas Rangers ML @ -126 | DraftKings: +1.06% edge — no_edge | LATER | starts in 266.19 min\n- Chicago Cubs ML @ -135 | BetMGM: +1.05% edge — no_edge | LATER | starts in 331.19 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
-    "session_id": null,
-    "session_file": null,
-    "message_type": "SIT",
+    "status": "error",
+    "delivery_status": "delivered",
+    "error": "⚠️ API rate limit reached. Please try again later.",
+    "run_at_ms": 1774522800013,
+    "run_at_ct": "2026-03-26 06:00 CT",
+    "date_key": "2026-03-26",
+    "summary": "⚠️ API rate limit reached. Please try again later.",
+    "raw_summary": "⚠️ API rate limit reached. Please try again later.",
+    "session_id": "022e8c59-8361-4451-b981-13ac550f212c",
+    "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/022e8c59-8361-4451-b981-13ac550f212c.jsonl",
+    "message_type": "UNKNOWN",
     "has_actionable_bets": false,
     "requires_state_sync": false,
-    "data_failure_codes": [],
-    "data_status": "verified",
-    "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
-    "source": "canonical_repo_hunt",
-    "native_rows_appended": 168
+    "data_failure_codes": [
+      "quota_or_rate_limit"
+    ],
+    "data_status": "degraded_data",
+    "plain_reason": "The latest scheduled scan could not be classified reliably."
   },
   "latest_successful_hunt": {
     "status": "ok",
@@ -1270,273 +1270,33 @@
   },
   "latest_canonical_hunt_run": {
     "schema": "tierededge_canonical_hunt_run_v1",
-    "run_id": "canonical-hunt::2026-03-31::1309",
-    "generated_at_utc": "2026-03-31T18:09:48.760Z",
-    "run_at_ct": "2026-03-31 13:09",
-    "status": "ok",
-    "message_type": "SIT",
+    "run_id": "canonical-hunt::2026-03-31::1500",
+    "generated_at_utc": "2026-03-31T20:00:00.839Z",
+    "run_at_ct": "2026-03-31 15:00",
+    "status": "failed",
+    "message_type": "BLOCKED",
     "requires_state_sync": false,
     "has_actionable_bets": false,
-    "native_rows_appended": 168,
-    "native_bets_appended": 0,
-    "native_sits_appended": 168,
+    "native_rows_appended": 0,
     "invalidated": false,
-    "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
-    "prop_feature_flags": {
-      "configured_enabled": false,
-      "enabled_for_run": false,
-      "enable_source": "config",
-      "config": {
-        "enabled": false,
-        "league": "NBA",
-        "sport_key": "basketball_nba",
-        "market_key": "player_points",
-        "prop_type": "points",
-        "markets": [
-          "player_points"
-        ],
-        "min_book_count": 2,
-        "eligible_books": [
-          "draftkings",
-          "fanduel",
-          "betmgm",
-          "circa",
-          "bet365",
-          "caesars"
-        ],
-        "sides": [
-          "over",
-          "under"
-        ],
-        "main_line_only": true,
-        "alt_lines_allowed": false,
-        "trusted_books": [
-          "draftkings",
-          "fanduel",
-          "betmgm",
-          "circa",
-          "bet365",
-          "caesars"
-        ]
-      }
+    "plain_reason": "odds_transport_failed:basketball_nba:tls_certificate_problem:api.the-odds-api.com:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com",
+    "transport_diagnostics": {
+      "service": "the-odds-api",
+      "request_method": "GET",
+      "timeout_ms": null,
+      "auth_env_presence": {
+        "ODDS_API_KEY": true,
+        "THE_ODDS_API_KEY": false
+      },
+      "request_target_domain": "api.the-odds-api.com",
+      "request_path": "/v4/sports/basketball_nba/odds",
+      "error_class": "tls_certificate_problem",
+      "error_code": "ERR_TLS_CERT_ALTNAME_INVALID",
+      "primary_cause": "TLS/certificate hostname mismatch",
+      "error_message": "fetch failed",
+      "cause_message": "Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com"
     },
-    "prop_summary": {
-      "phase1_nba_spreads": {
-        "configured_enabled": true,
-        "enabled_for_run": true,
-        "enable_source": "config",
-        "fetched_event_count": 7,
-        "analyzed_row_count": 28,
-        "selected_bet_count": 0,
-        "sit_count": 28,
-        "native_rows_appended": 28,
-        "min_book_count": 2,
-        "eligible_books": [
-          "bet365",
-          "betmgm",
-          "caesars",
-          "circa",
-          "draftkings",
-          "fanduel"
-        ]
-      },
-      "phase1_mlb_moneylines": {
-        "configured_enabled": true,
-        "enabled_for_run": true,
-        "enable_source": "config",
-        "fetched_event_count": 14,
-        "analyzed_row_count": 28,
-        "selected_bet_count": 0,
-        "sit_count": 28,
-        "native_rows_appended": 28,
-        "min_book_count": 2,
-        "eligible_books": [
-          "bet365",
-          "betmgm",
-          "caesars",
-          "circa",
-          "draftkings",
-          "fanduel"
-        ]
-      },
-      "phase1_nba_points_props": {
-        "configured_enabled": false,
-        "enabled_for_run": false,
-        "enable_source": "config",
-        "fetched_event_count": 0,
-        "analyzed_row_count": 0,
-        "selected_bet_count": 0,
-        "sit_count": 0,
-        "native_rows_appended": 0,
-        "min_book_count": 2,
-        "eligible_books": [
-          "bet365",
-          "betmgm",
-          "caesars",
-          "circa",
-          "draftkings",
-          "fanduel"
-        ]
-      }
-    },
-    "owned_books": [
-      "bet365",
-      "betmgm",
-      "caesars",
-      "circa",
-      "draftkings",
-      "fanduel"
-    ],
-    "live_feed_books": [
-      "betmgm",
-      "betrivers",
-      "draftkings",
-      "fanduel"
-    ],
-    "actionable_books_for_run": [
-      "betmgm",
-      "draftkings",
-      "fanduel"
-    ],
-    "feed_unavailable_owned_books": [
-      "bet365",
-      "caesars",
-      "circa"
-    ],
-    "research_only_books": [
-      "betrivers"
-    ],
-    "urgency_thresholds": {
-      "NOW": "<= 15 minutes to start",
-      "SOON": "15 to 90 minutes to start",
-      "LATER": "> 90 minutes to start or unknown"
-    },
-    "selected_rows": [],
-    "executable_closest_misses": [
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::icehockey_nhl::6ab93a48138c49071cc0c76f5fa04c81::spreads::chicago-blackhawks-1-5::fanduel",
-        "event_id": "6ab93a48138c49071cc0c76f5fa04c81",
-        "event_label": "Winnipeg Jets @ Chicago Blackhawks",
-        "event_home_team": "Chicago Blackhawks",
-        "event_away_team": "Winnipeg Jets",
-        "line_key": null,
-        "selection": "Chicago Blackhawks +1.5",
-        "sportsbook": "FanDuel",
-        "odds_american": "-188",
-        "post_conf_edge_pct": 1.86,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-04-01T00:40:00Z",
-        "minutes_to_start": 390.19,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::icehockey_nhl::ade39773836ad914294bb9660ae31a85::spreads::carolina-hurricanes-1-5::draftkings",
-        "event_id": "ade39773836ad914294bb9660ae31a85",
-        "event_label": "Carolina Hurricanes @ Columbus Blue Jackets",
-        "event_home_team": "Columbus Blue Jackets",
-        "event_away_team": "Carolina Hurricanes",
-        "line_key": null,
-        "selection": "Carolina Hurricanes -1.5",
-        "sportsbook": "DraftKings",
-        "odds_american": "190",
-        "post_conf_edge_pct": 1.75,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-03-31T23:40:00Z",
-        "minutes_to_start": 330.19,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::85518e9fa7d88ada5c7ef6acc3fb06fc::h2h::detroit-tigers-ml::draftkings",
-        "event_id": "85518e9fa7d88ada5c7ef6acc3fb06fc",
-        "event_label": "Detroit Tigers @ Arizona Diamondbacks",
-        "event_home_team": "Arizona Diamondbacks",
-        "event_away_team": "Detroit Tigers",
-        "line_key": null,
-        "selection": "Detroit Tigers ML",
-        "sportsbook": "DraftKings",
-        "odds_american": "-102",
-        "post_conf_edge_pct": 1.74,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-04-01T01:40:00Z",
-        "minutes_to_start": 450.19,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::h2h::edmonton-oilers-ml::fanduel",
-        "event_id": "8a5ff06eaed1de4d1a11137b32051fd8",
-        "event_label": "Seattle Kraken @ Edmonton Oilers",
-        "event_home_team": "Edmonton Oilers",
-        "event_away_team": "Seattle Kraken",
-        "line_key": null,
-        "selection": "Edmonton Oilers ML",
-        "sportsbook": "FanDuel",
-        "odds_american": "-176",
-        "post_conf_edge_pct": 1.18,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-04-01T01:10:00Z",
-        "minutes_to_start": 420.19,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::a7ee9fc9ac1db47a494d6c4c39dfc4de::h2h::texas-rangers-ml::draftkings",
-        "event_id": "a7ee9fc9ac1db47a494d6c4c39dfc4de",
-        "event_label": "Texas Rangers @ Baltimore Orioles",
-        "event_home_team": "Baltimore Orioles",
-        "event_away_team": "Texas Rangers",
-        "line_key": null,
-        "selection": "Texas Rangers ML",
-        "sportsbook": "DraftKings",
-        "odds_american": "-126",
-        "post_conf_edge_pct": 1.06,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-03-31T22:36:00Z",
-        "minutes_to_start": 266.19,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::4f785ad4f8847d0e028769afc44d9942::h2h::chicago-cubs-ml::betmgm",
-        "event_id": "4f785ad4f8847d0e028769afc44d9942",
-        "event_label": "Los Angeles Angels @ Chicago Cubs",
-        "event_home_team": "Chicago Cubs",
-        "event_away_team": "Los Angeles Angels",
-        "line_key": null,
-        "selection": "Chicago Cubs ML",
-        "sportsbook": "BetMGM",
-        "odds_american": "-135",
-        "post_conf_edge_pct": 1.05,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-03-31T23:41:00Z",
-        "minutes_to_start": 331.19,
-        "urgency_tag": "LATER"
-      }
-    ],
-    "summary": "TIERED EDGE HUNT — 2026-03-31\nBankroll: $1429.71 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Chicago Blackhawks +1.5 @ -188 | FanDuel: +1.86% edge — no_edge | LATER | starts in 390.19 min\n- Carolina Hurricanes -1.5 @ 190 | DraftKings: +1.75% edge — no_edge | LATER | starts in 330.19 min\n- Detroit Tigers ML @ -102 | DraftKings: +1.74% edge — no_edge | LATER | starts in 450.19 min\n- Edmonton Oilers ML @ -176 | FanDuel: +1.18% edge — no_edge | LATER | starts in 420.19 min\n- Texas Rangers ML @ -126 | DraftKings: +1.06% edge — no_edge | LATER | starts in 266.19 min\n- Chicago Cubs ML @ -135 | BetMGM: +1.05% edge — no_edge | LATER | starts in 331.19 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
-    "rows": {
-      "bet_rec_ids": [],
-      "sit_rec_ids": [
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8b316c9640300bedb485a6556bbdd1f5::totals::under-6-5::fanduel",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::6ab93a48138c49071cc0c76f5fa04c81::spreads::chicago-blackhawks-1-5::fanduel",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::ade39773836ad914294bb9660ae31a85::spreads::carolina-hurricanes-1-5::draftkings",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::85518e9fa7d88ada5c7ef6acc3fb06fc::h2h::detroit-tigers-ml::draftkings",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::e8b33f9489e018bf61d55e3862f41831::h2h::new-york-rangers-ml::betrivers",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::spreads::seattle-kraken-1-5::betrivers",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::h2h::seattle-kraken-ml::betrivers",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::h2h::edmonton-oilers-ml::fanduel",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8b316c9640300bedb485a6556bbdd1f5::h2h::montr-al-canadiens-ml::betrivers",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::a7ee9fc9ac1db47a494d6c4c39dfc4de::h2h::texas-rangers-ml::draftkings",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::4f785ad4f8847d0e028769afc44d9942::h2h::chicago-cubs-ml::betmgm",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::totals::over-6-5::betrivers",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::522613bca37febfdc7fe1b1b858dea09::h2h::milwaukee-brewers-ml::betmgm",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::b724336c8a25a94c67ba0d63ea2c98a0::h2h::toronto-blue-jays-ml::fanduel",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::ade39773836ad914294bb9660ae31a85::h2h::columbus-blue-jackets-ml::betrivers",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::b294b3f2eb02e42a436d439795c7f125::h2h::st-louis-cardinals-ml::betmgm",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::8d928227a51e9c7b63c36bcf0a8083f0::h2h::new-york-yankees-ml::draftkings",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::023399264d3924b30aa040acd7837804::h2h::atlanta-braves-ml::fanduel",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::5fa4f7bd1d1be2a30a40c0d7f653d9ff::h2h::boston-red-sox-ml::fanduel",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::ff972e427e6e1837407bfcfc6d64844d::spreads::pittsburgh-penguins-1-5::fanduel"
-      ],
-      "research_only_rec_ids": []
-    }
+    "summary": "TIERED EDGE HUNT — 2026-03-31\nCANNOT_VERIFY_ODDS — SIT\nReason: odds_transport_failed:basketball_nba:tls_certificate_problem:api.the-odds-api.com:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com"
   },
   "latest_successful_grading": {
     "status": "ok",
@@ -1594,7 +1354,7 @@
     "api_key_env": "ODDS_API_KEY",
     "api_key_source": "environment",
     "secure_key_present": true,
-    "secure_key_provider": "macos_keychain",
+    "secure_key_provider": "local_encrypted_store",
     "base_url": "https://api.the-odds-api.com/v4",
     "source_status": "present",
     "free_tier_scan_ct": null,
@@ -1617,7 +1377,7 @@
     },
     "passed_opportunity_grades": {
       "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-      "file_mtime_ct": "2026-03-31 13:09 CT"
+      "file_mtime_ct": "2026-03-31 21:00 CT"
     }
   },
   "state_sync": {

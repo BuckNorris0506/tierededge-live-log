@@ -1,7 +1,7 @@
 {
   "schema": "tierededge_canonical_v2",
-  "generated_at_utc": "2026-03-31T18:09:53.524Z",
-  "last_updated_ct": "2026-03-31 13:09 CT",
+  "generated_at_utc": "2026-04-01T02:00:26.331Z",
+  "last_updated_ct": "2026-03-31 21:00 CT",
   "current_status": {
     "Bankroll": "$1429.71",
     "Phase": "GROWTH",
@@ -9,10 +9,10 @@
     "Open Tickets": 14,
     "Snapshot Coverage": "100%",
     "CLV Coverage": "17.24%",
-    "Override Count (month)": 12,
+    "Override Count (month)": 0,
     "Post-Mortem Status": "CLEAR",
     "Invalid Hunt Runs": 4,
-    "Model Daily Exposure (latest hunt)": "0%",
+    "Model Daily Exposure (latest hunt)": "N/A",
     "Circuit Breaker": "OFF"
   },
   "lifetime_stats": {
@@ -570,7 +570,22 @@
       "bet_class": "EDGE_BET"
     }
   ],
-  "todays_bets": [],
+  "todays_bets": [
+    {
+      "Timestamp (CT)": "2026-03-26T23:11:36.636Z",
+      "Sport": "",
+      "Market": "",
+      "Bet": "Random Test FC ML",
+      "Odds (US)": "",
+      "Odds (Dec)": "",
+      "Book": "",
+      "Stake": "$2.00",
+      "Tier": "T3",
+      "Result": "LOSS",
+      "P/L": "$-2.00",
+      "CLV": "N/A"
+    }
+  ],
   "pending_count": 14,
   "pending_bets": [
     {
@@ -994,7 +1009,7 @@
   },
   "behavioral_accountability": {
     "overrides": {
-      "monthly_override_count": 12,
+      "monthly_override_count": 0,
       "blocked_run_override_count": 0,
       "off_model_override_count": 6,
       "recent_overrides": [
@@ -1192,7 +1207,7 @@
       }
     },
     "weekly_truth_report_summary": {
-      "generated_at_utc": "2026-03-31T18:09:54.021Z",
+      "generated_at_utc": "2026-04-01T02:00:26.843Z",
       "settled_bet_count": 0,
       "top_bleeding_categories": [],
       "top_strongest_categories": [],
@@ -1200,7 +1215,7 @@
         "total_override_events": 12,
         "blocked_run_override_count": 0,
         "off_model_override_count": 6,
-        "monthly_override_count": 12
+        "monthly_override_count": 0
       },
       "missing_coverage": {
         "missing_snapshot_count": 0,
@@ -1219,20 +1234,20 @@
         {
           "book": "betmgm",
           "owned_book": true,
-          "recommendations_count": 12,
-          "best_price_count": 5787,
-          "executable_near_miss_count": 127,
-          "stale_or_missing_count": 3361,
+          "recommendations_count": 4,
+          "best_price_count": 5387,
+          "executable_near_miss_count": 113,
+          "stale_or_missing_count": 3339,
           "rejected_non_executable_count": 0
         },
         {
           "book": "betrivers",
           "owned_book": false,
-          "recommendations_count": 1,
-          "best_price_count": 4246,
+          "recommendations_count": 0,
+          "best_price_count": 3737,
           "executable_near_miss_count": 0,
-          "stale_or_missing_count": 2214,
-          "rejected_non_executable_count": 7
+          "stale_or_missing_count": 2204,
+          "rejected_non_executable_count": 5
         },
         {
           "book": "caesars",
@@ -1255,33 +1270,33 @@
         {
           "book": "draftkings",
           "owned_book": true,
-          "recommendations_count": 24,
-          "best_price_count": 6456,
-          "executable_near_miss_count": 128,
-          "stale_or_missing_count": 3258,
+          "recommendations_count": 20,
+          "best_price_count": 5964,
+          "executable_near_miss_count": 113,
+          "stale_or_missing_count": 3201,
           "rejected_non_executable_count": 0
         },
         {
           "book": "fanduel",
           "owned_book": true,
-          "recommendations_count": 12,
-          "best_price_count": 8411,
-          "executable_near_miss_count": 175,
-          "stale_or_missing_count": 4137,
+          "recommendations_count": 1,
+          "best_price_count": 7934,
+          "executable_near_miss_count": 163,
+          "stale_or_missing_count": 4074,
           "rejected_non_executable_count": 0
         }
       ]
     },
     "weekly_operator_review_summary": {
-      "generated_at_utc": "2026-03-31T18:09:50.974Z",
+      "generated_at_utc": "2026-04-01T02:00:23.209Z",
       "window": "last_7_days",
       "run_truth": {
-        "valid_runs": 165,
-        "invalidated_runs": 1
+        "valid_runs": 155,
+        "invalidated_runs": 0
       },
       "hunt_totals": {
-        "total_bets": 49,
-        "total_sits": 24851
+        "total_bets": 25,
+        "total_sits": 22997
       },
       "actual_clv_summary": {
         "settled_bet_count": 0,
@@ -1292,57 +1307,51 @@
       },
       "rejected_clv_summary": {
         "1.0_to_1.49": {
-          "count": 1589,
+          "count": 1392,
           "captured_count": 10,
           "avg_clv_delta_pct": -1.52,
           "positive_clv_rate": 40
         },
         "1.5_to_1.99": {
-          "count": 631,
+          "count": 516,
           "captured_count": 7,
           "avg_clv_delta_pct": 0.75,
           "positive_clv_rate": 85.71
         },
         "2.0_plus_rejected": {
-          "count": 568,
+          "count": 490,
           "captured_count": 3,
           "avg_clv_delta_pct": 1.32,
           "positive_clv_rate": 100
         }
       },
       "market_integrity": {
-        "invalid_snapshot_count": 9714,
-        "stale_market_count": 3256,
+        "invalid_snapshot_count": 9688,
+        "stale_market_count": 3130,
         "top_rejection_reasons": [
           {
             "reason": "no_edge",
-            "count": 11725
+            "count": 10095
           },
           {
             "reason": "invalid_snapshot",
-            "count": 9714
+            "count": 9688
           },
           {
             "reason": "stale_market",
-            "count": 3256
+            "count": 3130
           },
           {
             "reason": "sub_minimum_kelly",
-            "count": 99
+            "count": 79
           },
           {
-            "reason": "exposure_cap_reached",
-            "count": 50
+            "reason": "research_only_non_owned_book",
+            "count": 5
           }
         ]
       },
       "action_flags_seen": [
-        {
-          "level": "RED",
-          "code": "latest_run_invalidated",
-          "occurrences": 1,
-          "message": "1 invalidated run(s) recorded this week."
-        },
         {
           "level": "RED",
           "code": "invalid_snapshot_spike",
@@ -1352,8 +1361,8 @@
         {
           "level": "RED",
           "code": "stale_market_spike",
-          "occurrences": 21,
-          "message": "21 run(s) crossed the stale market spike threshold."
+          "occurrences": 20,
+          "message": "20 run(s) crossed the stale market spike threshold."
         },
         {
           "level": "YELLOW",
@@ -1364,8 +1373,8 @@
         {
           "level": "INFO",
           "code": "clean_sit_day",
-          "occurrences": 140,
-          "message": "140 clean SIT run(s) recorded this week."
+          "occurrences": 139,
+          "message": "139 clean SIT run(s) recorded this week."
         }
       ]
     }
@@ -3881,11 +3890,11 @@
     "net_counterfactual_pl_if_bet": -3
   },
   "daily_rejection_summary": {
-    "Total Markets Checked": 682,
-    "Total Rejected": 682,
-    "no_edge": 365,
+    "Total Markets Checked": 2924,
+    "Total Rejected": 2906,
+    "no_edge": 1925,
     "low_confidence": 0,
-    "Plays Recommended": 0,
+    "Plays Recommended": 18,
     "Excluded Invalid Rows": 0
   },
   "rejected_opportunity_summary": {
@@ -3925,9 +3934,10 @@
       "non_executable_edge": 5
     },
     "latest_date_rejection_reason_distribution": {
-      "no_edge": 365,
-      "invalid_snapshot": 314,
-      "sub_minimum_kelly": 3
+      "sub_minimum_kelly": 9,
+      "no_edge": 1925,
+      "invalid_snapshot": 862,
+      "stale_market": 110
     },
     "close_capture_status_distribution": {
       "not_available": 11436,
@@ -5630,7 +5640,7 @@
     "recent_rows": []
   },
   "actionable_board_continuity_summary": {
-    "latest_run_id": "canonical-hunt::2026-03-31::1309",
+    "latest_run_id": "canonical-hunt::2026-03-31::1500",
     "latest_actionable_run_id": "canonical-hunt::2026-03-28::1504",
     "counts_by_status": {
       "new_actionable": 0,
@@ -5672,15 +5682,15 @@
     "scheduler_type": "system_cron",
     "timezone": "America/Chicago",
     "model_backed_scheduler_in_critical_path": false,
-    "total_runs_logged": 2995,
+    "total_runs_logged": 3150,
     "critical_jobs": [
       {
         "name": "telegram-operator-poll",
         "critical": true,
         "schedule_expr": "* * * * *",
         "entrypoint": "./scripts/run-telegram-operator-poll.sh",
-        "last_run_time_utc": "2026-03-31T17:54:58.528Z",
-        "last_status": "failed",
+        "last_run_time_utc": "2026-04-01T01:58:41.628Z",
+        "last_status": "ok",
         "last_run_id": null,
         "execution_mode": "direct_local_command"
       },
@@ -5729,9 +5739,9 @@
         "critical": true,
         "schedule_expr": "0 15 * * *",
         "entrypoint": "node ./scripts/run-scheduled-canonical-hunt-launcher.mjs --job-name afternoon-edge-hunt",
-        "last_run_time_utc": "2026-03-28T20:00:31.595Z",
-        "last_status": "complete_with_deploy_warning",
-        "last_run_id": "canonical-hunt::2026-03-28::1500",
+        "last_run_time_utc": "2026-03-31T20:00:00.899Z",
+        "last_status": "failed",
+        "last_run_id": null,
         "execution_mode": "direct_local_command"
       },
       {
@@ -5777,337 +5787,342 @@
     ],
     "recent_runs": [
       {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T17:54:58.275Z",
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:57:51.414Z",
         "scheduler_type": "launchd",
         "execution_mode": "direct_local_command",
         "model_backed_scheduler_in_path": false,
         "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T17:54:58.275Z",
-        "completed_at_utc": "2026-03-31T17:54:58.528Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T17:27:54.288Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T17:27:54.288Z",
-        "completed_at_utc": "2026-03-31T17:27:54.555Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T17:19:18.863Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T17:19:18.863Z",
-        "completed_at_utc": "2026-03-31T17:19:19.131Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T17:01:06.920Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T17:01:06.920Z",
-        "completed_at_utc": "2026-03-31T17:01:07.168Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T16:21:01.084Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T16:21:01.084Z",
-        "completed_at_utc": "2026-03-31T16:21:01.391Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T15:50:23.762Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T15:50:23.762Z",
-        "completed_at_utc": "2026-03-31T15:50:23.993Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T14:44:07.318Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T14:44:07.318Z",
-        "completed_at_utc": "2026-03-31T14:44:08.054Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T14:14:10.373Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T14:14:10.373Z",
-        "completed_at_utc": "2026-03-31T14:14:10.628Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T14:07:45.933Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T14:07:45.933Z",
-        "completed_at_utc": "2026-03-31T14:07:46.453Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "midmorning-edge-hunt::2026-03-31T14:01:28Z",
-        "scheduler_type": "system_cron",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "midmorning-edge-hunt",
-        "started_at_utc": "2026-03-31T14:01:28Z",
-        "completed_at_utc": "2026-03-31T14:01:29.250Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-scheduled-canonical-hunt-launcher.mjs",
-        "child_command": "/bin/zsh /Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-scheduled-canonical-hunt.sh --job-name midmorning-edge-hunt",
-        "error": "{\"error\":\"odds_transport_failed:basketball_nba:tls_certificate_problem:api.the-odds-api.com:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\",\"transport_diagnostics\":{\"service\":\"the-odds-api\",\"request_method\":\"GET\",\"timeout_ms\":null,\"auth_env_presence\":{\"ODDS_API_KEY\":true,\"THE_ODDS_API_KEY\":false},\"request_target_domain\":\"api.the-odds-api.com\",\"request_path\":\"/v4/sports/basketball_nba/odds\",\"error_class\":\"tls_certificate_problem\",\"error_code\":\"ERR_TLS_CERT_ALTNAME_INVALID\",\"primary_cause\":\"TLS/certificate hostname mismatch\",\"error_message\":\"fetch failed\",\"cause_message\":\"Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"}}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T13:45:56.469Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T13:45:56.469Z",
-        "completed_at_utc": "2026-03-31T13:45:56.965Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T13:29:33.200Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T13:29:33.200Z",
-        "completed_at_utc": "2026-03-31T13:29:33.470Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T13:24:01.035Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T13:24:01.035Z",
-        "completed_at_utc": "2026-03-31T13:24:01.385Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T13:13:07.116Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T13:13:07.116Z",
-        "completed_at_utc": "2026-03-31T13:13:07.378Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T13:12:06.697Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T13:12:06.697Z",
-        "completed_at_utc": "2026-03-31T13:12:06.953Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T13:10:20.310Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T13:10:20.310Z",
-        "completed_at_utc": "2026-03-31T13:11:06.541Z",
+        "started_at_utc": "2026-04-01T01:57:51.414Z",
+        "completed_at_utc": "2026-04-01T01:58:41.628Z",
         "status": "ok",
         "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
         "child_command": "node scripts/telegram-operator-bot.mjs --json",
         "processed_updates": 0
       },
       {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T13:08:31.702Z",
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:56:00.886Z",
         "scheduler_type": "launchd",
         "execution_mode": "direct_local_command",
         "model_backed_scheduler_in_path": false,
         "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T13:08:31.702Z",
-        "completed_at_utc": "2026-03-31T13:09:20.163Z",
+        "started_at_utc": "2026-04-01T01:56:00.886Z",
+        "completed_at_utc": "2026-04-01T01:56:51.258Z",
         "status": "ok",
         "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
         "child_command": "node scripts/telegram-operator-bot.mjs --json",
         "processed_updates": 0
       },
       {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T13:06:41.556Z",
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:54:10.445Z",
         "scheduler_type": "launchd",
         "execution_mode": "direct_local_command",
         "model_backed_scheduler_in_path": false,
         "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T13:06:41.556Z",
-        "completed_at_utc": "2026-03-31T13:07:31.533Z",
+        "started_at_utc": "2026-04-01T01:54:10.445Z",
+        "completed_at_utc": "2026-04-01T01:55:00.715Z",
         "status": "ok",
         "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
         "child_command": "node scripts/telegram-operator-bot.mjs --json",
         "processed_updates": 0
       },
       {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T13:05:41.002Z",
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:52:20.043Z",
         "scheduler_type": "launchd",
         "execution_mode": "direct_local_command",
         "model_backed_scheduler_in_path": false,
         "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T13:05:41.002Z",
-        "completed_at_utc": "2026-03-31T13:05:41.279Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:tls_certificate_problem:api.telegram.org:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"tls_certificate_problem\",\n  \"error_code\": \"ERR_TLS_CERT_ALTNAME_INVALID\",\n  \"primary_cause\": \"TLS/certificate hostname mismatch\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"Hostname/IP does not match certificate's altnames: Host: api.telegram.org. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T11:40:59.514Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T11:40:59.514Z",
-        "completed_at_utc": "2026-03-31T12:17:19.892Z",
-        "status": "failed",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "error": "telegram_transport_failed:getUpdates:timeout:api.telegram.org:ETIMEDOUT:read ETIMEDOUT\n{\n  \"service\": \"telegram\",\n  \"request_method\": \"POST\",\n  \"timeout_ms\": null,\n  \"auth_env_presence\": {\n    \"TIEREDGE_TELEGRAM_BOT_TOKEN\": true,\n    \"TELEGRAM_BOT_TOKEN\": false\n  },\n  \"request_target_domain\": \"api.telegram.org\",\n  \"request_path\": \"/bot8645026427:AAEHmuK9T_bPc4Bl3FALoVMeVsn4PIu_W9o/getUpdates\",\n  \"error_class\": \"timeout\",\n  \"error_code\": \"ETIMEDOUT\",\n  \"primary_cause\": \"Request timed out\",\n  \"error_message\": \"fetch failed\",\n  \"cause_message\": \"read ETIMEDOUT\"\n}"
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T11:39:06.011Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T11:39:06.011Z",
-        "completed_at_utc": "2026-03-31T11:39:56.274Z",
+        "started_at_utc": "2026-04-01T01:52:20.043Z",
+        "completed_at_utc": "2026-04-01T01:53:10.276Z",
         "status": "ok",
         "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
         "child_command": "node scripts/telegram-operator-bot.mjs --json",
         "processed_updates": 0
       },
       {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T11:37:15.879Z",
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:50:29.633Z",
         "scheduler_type": "launchd",
         "execution_mode": "direct_local_command",
         "model_backed_scheduler_in_path": false,
         "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T11:37:15.879Z",
-        "completed_at_utc": "2026-03-31T11:38:05.846Z",
+        "started_at_utc": "2026-04-01T01:50:29.633Z",
+        "completed_at_utc": "2026-04-01T01:51:19.870Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:48:39.223Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:48:39.223Z",
+        "completed_at_utc": "2026-04-01T01:49:29.467Z",
         "status": "ok",
         "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
         "child_command": "node scripts/telegram-operator-bot.mjs --json",
         "processed_updates": 1
       },
       {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T11:35:25.429Z",
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:46:48.788Z",
         "scheduler_type": "launchd",
         "execution_mode": "direct_local_command",
         "model_backed_scheduler_in_path": false,
         "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T11:35:25.429Z",
-        "completed_at_utc": "2026-03-31T11:36:15.710Z",
+        "started_at_utc": "2026-04-01T01:46:48.788Z",
+        "completed_at_utc": "2026-04-01T01:47:39.032Z",
         "status": "ok",
         "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
         "child_command": "node scripts/telegram-operator-bot.mjs --json",
         "processed_updates": 0
       },
       {
-        "automation_run_id": "telegram-operator-poll::2026-03-31T11:33:35.106Z",
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:44:58.310Z",
         "scheduler_type": "launchd",
         "execution_mode": "direct_local_command",
         "model_backed_scheduler_in_path": false,
         "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-03-31T11:33:35.106Z",
-        "completed_at_utc": "2026-03-31T11:34:25.289Z",
+        "started_at_utc": "2026-04-01T01:44:58.310Z",
+        "completed_at_utc": "2026-04-01T01:45:48.620Z",
         "status": "ok",
         "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
         "child_command": "node scripts/telegram-operator-bot.mjs --json",
         "processed_updates": 0
       },
       {
-        "automation_run_id": "telegram-operator-run-hunt::2026-03-31T11:33:06Z",
-        "scheduler_type": "system_cron",
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:43:07.821Z",
+        "scheduler_type": "launchd",
         "execution_mode": "direct_local_command",
         "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-run-hunt",
-        "started_at_utc": "2026-03-31T11:33:06Z",
-        "completed_at_utc": "2026-03-31T11:33:11.618Z",
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:43:07.821Z",
+        "completed_at_utc": "2026-04-01T01:43:58.130Z",
         "status": "ok",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-scheduled-canonical-hunt.sh",
-        "child_command": "node scripts/run-canonical-hunt.mjs --json && ./scripts/update-live-log.sh",
-        "run_id": "canonical-hunt::2026-03-31::0633",
-        "rebuild_status": "ok"
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:41:17.295Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:41:17.295Z",
+        "completed_at_utc": "2026-04-01T01:42:07.638Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:39:26.831Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:39:26.831Z",
+        "completed_at_utc": "2026-04-01T01:40:17.126Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:37:36.298Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:37:36.298Z",
+        "completed_at_utc": "2026-04-01T01:38:26.659Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:35:45.732Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:35:45.732Z",
+        "completed_at_utc": "2026-04-01T01:36:36.125Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:33:55.279Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:33:55.279Z",
+        "completed_at_utc": "2026-04-01T01:34:45.556Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:32:04.950Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:32:04.950Z",
+        "completed_at_utc": "2026-04-01T01:32:55.111Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:30:14.515Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:30:14.515Z",
+        "completed_at_utc": "2026-04-01T01:31:04.774Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:28:24.163Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:28:24.163Z",
+        "completed_at_utc": "2026-04-01T01:29:14.348Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:26:33.791Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:26:33.791Z",
+        "completed_at_utc": "2026-04-01T01:27:23.994Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:24:43.445Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:24:43.445Z",
+        "completed_at_utc": "2026-04-01T01:25:33.654Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:22:52.876Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:22:52.876Z",
+        "completed_at_utc": "2026-04-01T01:23:43.289Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:21:02.458Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:21:02.458Z",
+        "completed_at_utc": "2026-04-01T01:21:52.690Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:19:11.829Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:19:11.829Z",
+        "completed_at_utc": "2026-04-01T01:20:02.202Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:17:21.392Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:17:21.392Z",
+        "completed_at_utc": "2026-04-01T01:18:11.653Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:15:31.032Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:15:31.032Z",
+        "completed_at_utc": "2026-04-01T01:16:21.224Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-01T01:13:40.664Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-01T01:13:40.664Z",
+        "completed_at_utc": "2026-04-01T01:14:30.856Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
       }
     ]
   },
   "scheduler_boundary_summary": {
-    "last_scheduler_boundary_fire_time": "2026-03-31T14:01:28.000Z",
-    "last_scheduler_boundary_fire_job_name": "midmorning-edge-hunt",
+    "last_scheduler_boundary_fire_time": "2026-03-31T20:00:00.000Z",
+    "last_scheduler_boundary_fire_job_name": "afternoon-edge-hunt",
     "scheduler_boundary_recent_events": [
+      {
+        "raw_line": "CRON FIRED Tue Mar 31 15:00:00 CDT 2026 afternoon-edge-hunt",
+        "scheduler_boundary_fire_time_raw": "Tue Mar 31 15:00:00 CDT 2026",
+        "scheduler_boundary_fire_time_utc": "2026-03-31T20:00:00.000Z",
+        "scheduler_boundary_fire_job_name": "afternoon-edge-hunt"
+      },
       {
         "raw_line": "CRON FIRED Tue Mar 31 09:01:28 CDT 2026 midmorning-edge-hunt",
         "scheduler_boundary_fire_time_raw": "Tue Mar 31 09:01:28 CDT 2026",
@@ -6213,8 +6228,8 @@
     ],
     "scheduler_boundary_log_path": "/tmp/tierededge-cron-debug.log"
   },
-  "last_scheduler_boundary_fire_time": "2026-03-31T14:01:28.000Z",
-  "last_scheduler_boundary_fire_job_name": "midmorning-edge-hunt",
+  "last_scheduler_boundary_fire_time": "2026-03-31T20:00:00.000Z",
+  "last_scheduler_boundary_fire_job_name": "afternoon-edge-hunt",
   "model_backed_usage_in_critical_path": false,
   "whatsapp_enabled": false,
   "scheduled_hunt_times": [
@@ -6719,8 +6734,8 @@
   },
   "automation_lock_summary": {
     "canonical_hunt": {
-      "last_run_time_utc": "2026-03-31T18:09:48.760Z",
-      "last_run_status": "ok",
+      "last_run_time_utc": "2026-03-31T20:00:00.842Z",
+      "last_run_status": "failed",
       "last_skip_time_utc": "2026-03-26T19:10:02.796Z",
       "skipped_due_to_active_lock_count": 4,
       "recent_skips": [
@@ -6840,25 +6855,54 @@
     }
   },
   "notification_summary": {
-    "last_notification_time_utc": "2026-03-28T23:00:20.937Z",
+    "last_notification_time_utc": "2026-04-01T02:00:13.963Z",
     "notification_type": "warning",
     "notification_tier": "B",
-    "triggering_reason": "stale_market_spike",
+    "triggering_reason": "native_append_runner_failed",
     "channel_used": "log_only",
-    "last_notification_status": "failed",
-    "sent_count": 8,
+    "last_notification_status": "skipped_duplicate",
+    "sent_count": 9,
     "status_distribution": {
-      "failed": 2,
-      "skipped_duplicate": 6,
-      "sent": 8
+      "skipped_duplicate": 7,
+      "sent": 9,
+      "failed": 2
     },
     "channel_distribution": {
+      "log_only": 11,
       "telegram_failed": 2,
-      "log_only": 9,
       "telegram": 2,
       "unknown": 3
     },
     "recent_events": [
+      {
+        "notification_id": "notify::2026-04-01T02:00:25.700Z",
+        "created_at_utc": "2026-04-01T02:00:25.700Z",
+        "status": "skipped_duplicate",
+        "notification_type": "warning",
+        "notification_tier": "B",
+        "triggering_reason": "native_append_runner_failed",
+        "trigger": "native_append_runner_failed",
+        "test_marker": false,
+        "run_id": "canonical-hunt::2026-03-31::1500",
+        "fingerprint": "701e8f406413bdc61fcc",
+        "channel_used": "log_only",
+        "message": "TIERED EDGE — WARNING\n\nRun: canonical-hunt::2026-03-31::1500\nReasons: native_append_runner_failed"
+      },
+      {
+        "notification_id": "notify::2026-04-01T02:00:13.963Z",
+        "created_at_utc": "2026-04-01T02:00:13.963Z",
+        "status": "sent",
+        "notification_type": "warning",
+        "notification_tier": "B",
+        "triggering_reason": "native_append_runner_failed",
+        "trigger": "native_append_runner_failed",
+        "test_marker": false,
+        "run_id": "canonical-hunt::2026-03-31::1500",
+        "fingerprint": "701e8f406413bdc61fcc",
+        "channel_used": "log_only",
+        "delivery_error": null,
+        "message": "TIERED EDGE — WARNING\n\nRun: canonical-hunt::2026-03-31::1500\nReasons: native_append_runner_failed"
+      },
       {
         "notification_id": "notify::2026-03-29T13:23:35.504Z",
         "created_at_utc": "2026-03-29T13:23:35.504Z",
@@ -6976,38 +7020,10 @@
         "channel_used": "log_only",
         "delivery_error": null,
         "message": "TIERED EDGE — WARNING\n\nRun: canonical-hunt::2026-03-26::1147\nReasons: native_append_runner_failed"
-      },
-      {
-        "notification_id": "notify::2026-03-26T12:50:39.409Z",
-        "created_at_utc": "2026-03-26T12:50:39.409Z",
-        "status": "skipped_duplicate",
-        "notification_type": "warning",
-        "notification_tier": "B",
-        "triggering_reason": "native_append_runner_failed",
-        "trigger": "native_append_runner_failed",
-        "test_marker": false,
-        "run_id": "canonical-hunt::2026-03-26::0745",
-        "fingerprint": "79e1a5d4fc75b688a305",
-        "channel_used": "log_only",
-        "message": "TIERED EDGE — WARNING\n\nRun: canonical-hunt::2026-03-26::0745\nReasons: native_append_runner_failed"
-      },
-      {
-        "notification_id": "notify::2026-03-26T12:50:09.894Z",
-        "created_at_utc": "2026-03-26T12:50:09.894Z",
-        "status": "sent",
-        "notification_type": "warning",
-        "notification_tier": "B",
-        "triggering_reason": "native_append_runner_failed",
-        "trigger": "native_append_runner_failed",
-        "test_marker": false,
-        "run_id": "canonical-hunt::2026-03-26::0745",
-        "fingerprint": "79e1a5d4fc75b688a305",
-        "channel_used": "log_only",
-        "delivery_error": null,
-        "message": "TIERED EDGE — WARNING\n\nRun: canonical-hunt::2026-03-26::0745\nReasons: native_append_runner_failed"
       }
     ]
   },
+  "deploy_sync_summary": null,
   "scheduled_hunt_heartbeat_enabled": true,
   "scheduled_hunt_heartbeat_summary": {
     "enabled": true,
@@ -7904,237 +7920,82 @@
   "boost_adjusted_opportunities": [],
   "best_boost_use_today": null,
   "boost_eligibility_summary": {
-    "latest_run_id": "canonical-hunt::2026-03-31::1309",
+    "latest_run_id": "canonical-hunt::2026-03-31::1500",
     "active_boost_count": 6,
-    "evaluated_candidate_count": 1008,
+    "evaluated_candidate_count": 0,
     "eligible_count": 0,
     "boost_adjusted_count": 0,
-    "not_eligible_count": 1008,
-    "reason_breakdown": {
-      "sportsbook_mismatch": 724,
-      "missing_bet_type_restriction": 161,
-      "invalid_snapshot": 123
-    },
-    "not_eligible_examples": [
-      {
-        "run_id": "canonical-hunt::2026-03-31::1309",
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::85518e9fa7d88ada5c7ef6acc3fb06fc::h2h::arizona-diamondbacks-ml::fanduel",
-        "selection": "Arizona Diamondbacks ML",
-        "sportsbook": "FanDuel",
-        "sport": "MLB",
-        "market_type": "ML",
-        "event_id": "85518e9fa7d88ada5c7ef6acc3fb06fc",
-        "event_label": "Detroit Tigers @ Arizona Diamondbacks",
-        "event_start_time": "2026-04-01T01:40:00Z",
-        "minutes_to_start": 450.19,
-        "urgency_tag": "LATER",
-        "original_final_decision": "SIT",
-        "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774619244080",
-        "boost_sportsbook": "FanDuel",
-        "boost_percent": 40,
-        "boost_scope": "NCAAB",
-        "max_wager": null,
-        "bet_types": null,
-        "min_total_odds": null,
-        "expires_raw": "2026-03-27 11:59 PM CT",
-        "expires_at_utc": null,
-        "eligibility_status": "NOT_ELIGIBLE",
-        "eligibility_reason": "missing_bet_type_restriction"
-      },
-      {
-        "run_id": "canonical-hunt::2026-03-31::1309",
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::85518e9fa7d88ada5c7ef6acc3fb06fc::h2h::arizona-diamondbacks-ml::fanduel",
-        "selection": "Arizona Diamondbacks ML",
-        "sportsbook": "FanDuel",
-        "sport": "MLB",
-        "market_type": "ML",
-        "event_id": "85518e9fa7d88ada5c7ef6acc3fb06fc",
-        "event_label": "Detroit Tigers @ Arizona Diamondbacks",
-        "event_start_time": "2026-04-01T01:40:00Z",
-        "minutes_to_start": 450.19,
-        "urgency_tag": "LATER",
-        "original_final_decision": "SIT",
-        "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774619183585",
-        "boost_sportsbook": "FanDuel",
-        "boost_percent": 25,
-        "boost_scope": "NCAAB",
-        "max_wager": null,
-        "bet_types": null,
-        "min_total_odds": null,
-        "expires_raw": "Not specified",
-        "expires_at_utc": null,
-        "eligibility_status": "NOT_ELIGIBLE",
-        "eligibility_reason": "missing_bet_type_restriction"
-      },
-      {
-        "run_id": "canonical-hunt::2026-03-31::1309",
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::023399264d3924b30aa040acd7837804::h2h::athletics-ml::draftkings",
-        "selection": "Athletics ML",
-        "sportsbook": "DraftKings",
-        "sport": "MLB",
-        "market_type": "ML",
-        "event_id": "023399264d3924b30aa040acd7837804",
-        "event_label": "Athletics @ Atlanta Braves",
-        "event_start_time": "2026-03-31T23:16:00Z",
-        "minutes_to_start": 306.19,
-        "urgency_tag": "LATER",
-        "original_final_decision": "SIT",
-        "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774716341933",
-        "boost_sportsbook": "DraftKings",
-        "boost_percent": 100,
-        "boost_scope": "MLB",
-        "max_wager": 10,
-        "bet_types": null,
-        "min_total_odds": null,
-        "expires_raw": "Today",
-        "expires_at_utc": null,
-        "eligibility_status": "NOT_ELIGIBLE",
-        "eligibility_reason": "missing_bet_type_restriction"
-      },
-      {
-        "run_id": "canonical-hunt::2026-03-31::1309",
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::023399264d3924b30aa040acd7837804::h2h::athletics-ml::draftkings",
-        "selection": "Athletics ML",
-        "sportsbook": "DraftKings",
-        "sport": "MLB",
-        "market_type": "ML",
-        "event_id": "023399264d3924b30aa040acd7837804",
-        "event_label": "Athletics @ Atlanta Braves",
-        "event_start_time": "2026-03-31T23:16:00Z",
-        "minutes_to_start": 306.19,
-        "urgency_tag": "LATER",
-        "original_final_decision": "SIT",
-        "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774716170157",
-        "boost_sportsbook": "DraftKings",
-        "boost_percent": 20,
-        "boost_scope": "GENERAL",
-        "max_wager": 5,
-        "bet_types": null,
-        "min_total_odds": null,
-        "expires_raw": "Not specified",
-        "expires_at_utc": null,
-        "eligibility_status": "NOT_ELIGIBLE",
-        "eligibility_reason": "missing_bet_type_restriction"
-      },
-      {
-        "run_id": "canonical-hunt::2026-03-31::1309",
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::023399264d3924b30aa040acd7837804::h2h::athletics-ml::draftkings",
-        "selection": "Athletics ML",
-        "sportsbook": "DraftKings",
-        "sport": "MLB",
-        "market_type": "ML",
-        "event_id": "023399264d3924b30aa040acd7837804",
-        "event_label": "Athletics @ Atlanta Braves",
-        "event_start_time": "2026-03-31T23:16:00Z",
-        "minutes_to_start": 306.19,
-        "urgency_tag": "LATER",
-        "original_final_decision": "SIT",
-        "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774611278031",
-        "boost_sportsbook": "DraftKings",
-        "boost_percent": 100,
-        "boost_scope": "MLB",
-        "max_wager": null,
-        "bet_types": null,
-        "min_total_odds": null,
-        "expires_raw": "Not specified",
-        "expires_at_utc": null,
-        "eligibility_status": "NOT_ELIGIBLE",
-        "eligibility_reason": "missing_bet_type_restriction"
-      },
-      {
-        "run_id": "canonical-hunt::2026-03-31::1309",
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::023399264d3924b30aa040acd7837804::h2h::atlanta-braves-ml::fanduel",
-        "selection": "Atlanta Braves ML",
-        "sportsbook": "FanDuel",
-        "sport": "MLB",
-        "market_type": "ML",
-        "event_id": "023399264d3924b30aa040acd7837804",
-        "event_label": "Athletics @ Atlanta Braves",
-        "event_start_time": "2026-03-31T23:16:00Z",
-        "minutes_to_start": 306.19,
-        "urgency_tag": "LATER",
-        "original_final_decision": "SIT",
-        "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774619244080",
-        "boost_sportsbook": "FanDuel",
-        "boost_percent": 40,
-        "boost_scope": "NCAAB",
-        "max_wager": null,
-        "bet_types": null,
-        "min_total_odds": null,
-        "expires_raw": "2026-03-27 11:59 PM CT",
-        "expires_at_utc": null,
-        "eligibility_status": "NOT_ELIGIBLE",
-        "eligibility_reason": "missing_bet_type_restriction"
-      },
-      {
-        "run_id": "canonical-hunt::2026-03-31::1309",
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::023399264d3924b30aa040acd7837804::h2h::atlanta-braves-ml::fanduel",
-        "selection": "Atlanta Braves ML",
-        "sportsbook": "FanDuel",
-        "sport": "MLB",
-        "market_type": "ML",
-        "event_id": "023399264d3924b30aa040acd7837804",
-        "event_label": "Athletics @ Atlanta Braves",
-        "event_start_time": "2026-03-31T23:16:00Z",
-        "minutes_to_start": 306.19,
-        "urgency_tag": "LATER",
-        "original_final_decision": "SIT",
-        "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774619183585",
-        "boost_sportsbook": "FanDuel",
-        "boost_percent": 25,
-        "boost_scope": "NCAAB",
-        "max_wager": null,
-        "bet_types": null,
-        "min_total_odds": null,
-        "expires_raw": "Not specified",
-        "expires_at_utc": null,
-        "eligibility_status": "NOT_ELIGIBLE",
-        "eligibility_reason": "missing_bet_type_restriction"
-      },
-      {
-        "run_id": "canonical-hunt::2026-03-31::1309",
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::a7ee9fc9ac1db47a494d6c4c39dfc4de::h2h::baltimore-orioles-ml::fanduel",
-        "selection": "Baltimore Orioles ML",
-        "sportsbook": "FanDuel",
-        "sport": "MLB",
-        "market_type": "ML",
-        "event_id": "a7ee9fc9ac1db47a494d6c4c39dfc4de",
-        "event_label": "Texas Rangers @ Baltimore Orioles",
-        "event_start_time": "2026-03-31T22:36:00Z",
-        "minutes_to_start": 266.19,
-        "urgency_tag": "LATER",
-        "original_final_decision": "SIT",
-        "original_kelly_stake": 0,
-        "boost_id": "profit-boost::1774619244080",
-        "boost_sportsbook": "FanDuel",
-        "boost_percent": 40,
-        "boost_scope": "NCAAB",
-        "max_wager": null,
-        "bet_types": null,
-        "min_total_odds": null,
-        "expires_raw": "2026-03-27 11:59 PM CT",
-        "expires_at_utc": null,
-        "eligibility_status": "NOT_ELIGIBLE",
-        "eligibility_reason": "missing_bet_type_restriction"
-      }
-    ]
+    "not_eligible_count": 0,
+    "reason_breakdown": {},
+    "not_eligible_examples": []
   },
   "telegram_operator_summary": {
     "last_inbound_telegram_command": "LATEST BOARD",
-    "last_inbound_command_time_utc": "2026-03-31T18:09:05.123Z",
+    "last_inbound_command_time_utc": "2026-04-01T01:48:39.692Z",
     "last_command_status": "sent",
-    "last_outbound_alert_time_utc": "2026-03-28T23:00:20.937Z",
+    "last_outbound_alert_time_utc": "2026-04-01T02:00:13.963Z",
     "last_outbound_alert_type": "warning",
-    "accepted_command_count": 155,
+    "accepted_command_count": 157,
     "rejected_attempt_count": 6,
     "recent_events": [
+      {
+        "telegram_event_id": "telegram-operator::2026-04-01T01:48:39.692Z::419781119",
+        "inbound_timestamp_utc": "2026-04-01T01:48:39.692Z",
+        "telegram_update_id": 419781119,
+        "chat_id": "8657197389",
+        "raw_text": "LATEST BOARD",
+        "inbound_has_media": false,
+        "inbound_media_count": 0,
+        "outbound_timestamp_utc": "2026-04-01T01:48:39.715Z",
+        "command": "LATEST BOARD",
+        "resolved_command": "LATEST BOARD",
+        "auth_status": "accepted",
+        "acknowledgment_sent": false,
+        "acknowledgment_timestamp_utc": null,
+        "acknowledgment_delivery_status": null,
+        "acknowledgment_delivery_error": null,
+        "response_type": "latest_board",
+        "run_id": "canonical-hunt::2026-03-31::1309",
+        "notification_tier": null,
+        "duplicate_suppression_status": null,
+        "outbound_channel": "telegram",
+        "delivery_status": "sent",
+        "delivery_error": null,
+        "delivery_diagnostics": null,
+        "legacy_alias_used": false,
+        "pending_confirmation_status": null,
+        "last_outbound_alert_time": "2026-03-28T23:00:20.937Z",
+        "last_outbound_alert_type": "warning"
+      },
+      {
+        "telegram_event_id": "telegram-operator::2026-03-31T18:09:47.308Z::419781118",
+        "inbound_timestamp_utc": "2026-03-31T18:09:47.308Z",
+        "telegram_update_id": 419781118,
+        "chat_id": "8657197389",
+        "raw_text": "RUN HUNT",
+        "inbound_has_media": false,
+        "inbound_media_count": 0,
+        "outbound_timestamp_utc": "2026-03-31T18:10:07.244Z",
+        "command": "RUN HUNT",
+        "resolved_command": "RUN HUNT",
+        "auth_status": "accepted",
+        "acknowledgment_sent": true,
+        "acknowledgment_timestamp_utc": "2026-03-31T18:09:47.309Z",
+        "acknowledgment_delivery_status": "sent",
+        "acknowledgment_delivery_error": null,
+        "response_type": "run_hunt_complete_with_deploy_warning",
+        "run_id": "canonical-hunt::2026-03-31::1309",
+        "notification_tier": null,
+        "duplicate_suppression_status": null,
+        "outbound_channel": "telegram",
+        "delivery_status": "sent",
+        "delivery_error": null,
+        "delivery_diagnostics": null,
+        "legacy_alias_used": false,
+        "pending_confirmation_status": null,
+        "last_outbound_alert_time": "2026-03-28T23:00:20.937Z",
+        "last_outbound_alert_type": "warning"
+      },
       {
         "telegram_event_id": "telegram-operator::2026-03-31T18:09:05.123Z::419781117",
         "inbound_timestamp_utc": "2026-03-31T18:09:05.123Z",
@@ -8381,64 +8242,6 @@
         "acknowledgment_delivery_error": null,
         "response_type": "run_hunt_failed",
         "run_id": "canonical-hunt::2026-03-30::0900",
-        "notification_tier": null,
-        "duplicate_suppression_status": null,
-        "outbound_channel": "telegram",
-        "delivery_status": "sent",
-        "delivery_error": null,
-        "delivery_diagnostics": null,
-        "legacy_alias_used": false,
-        "pending_confirmation_status": null,
-        "last_outbound_alert_time": "2026-03-28T23:00:20.937Z",
-        "last_outbound_alert_type": "warning"
-      },
-      {
-        "telegram_event_id": "telegram-operator::2026-03-30T14:44:49.526Z::419781109",
-        "inbound_timestamp_utc": "2026-03-30T14:44:49.526Z",
-        "telegram_update_id": 419781109,
-        "chat_id": "8657197389",
-        "raw_text": "PROFIT BOOST\nSportsbook: BetMGM\nBoost: 25%\nScope: MLB\nExpires: Tomorrow",
-        "inbound_has_media": false,
-        "inbound_media_count": 0,
-        "outbound_timestamp_utc": "2026-03-30T14:44:52.119Z",
-        "command": "PROFIT BOOST",
-        "resolved_command": "PROFIT BOOST",
-        "auth_status": "accepted",
-        "acknowledgment_sent": false,
-        "acknowledgment_timestamp_utc": null,
-        "acknowledgment_delivery_status": null,
-        "acknowledgment_delivery_error": null,
-        "response_type": "profit_boost_logged",
-        "run_id": "canonical-hunt::2026-03-30::0600",
-        "notification_tier": null,
-        "duplicate_suppression_status": null,
-        "outbound_channel": "telegram",
-        "delivery_status": "sent",
-        "delivery_error": null,
-        "delivery_diagnostics": null,
-        "legacy_alias_used": false,
-        "pending_confirmation_status": "direct_structured_log",
-        "last_outbound_alert_time": "2026-03-28T23:00:20.937Z",
-        "last_outbound_alert_type": "warning"
-      },
-      {
-        "telegram_event_id": "telegram-operator::2026-03-30T14:41:09.020Z::419781108",
-        "inbound_timestamp_utc": "2026-03-30T14:41:09.020Z",
-        "telegram_update_id": 419781108,
-        "chat_id": "8657197389",
-        "raw_text": "LATEST BOARD",
-        "inbound_has_media": false,
-        "inbound_media_count": 0,
-        "outbound_timestamp_utc": "2026-03-30T14:41:09.044Z",
-        "command": "LATEST BOARD",
-        "resolved_command": "LATEST BOARD",
-        "auth_status": "accepted",
-        "acknowledgment_sent": false,
-        "acknowledgment_timestamp_utc": null,
-        "acknowledgment_delivery_status": null,
-        "acknowledgment_delivery_error": null,
-        "response_type": "latest_board",
-        "run_id": "canonical-hunt::2026-03-30::0600",
         "notification_tier": null,
         "duplicate_suppression_status": null,
         "outbound_channel": "telegram",
@@ -8931,25 +8734,17 @@
         "bet365",
         "caesars"
       ],
-      "live_feed_books": [
-        "betmgm",
-        "betrivers",
-        "draftkings",
-        "fanduel"
-      ],
-      "actionable_books_for_run": [
+      "live_feed_books": [],
+      "actionable_books_for_run": [],
+      "feed_unavailable_owned_books": [
         "draftkings",
         "fanduel",
-        "betmgm"
-      ],
-      "feed_unavailable_owned_books": [
         "circa",
+        "betmgm",
         "bet365",
         "caesars"
       ],
-      "research_only_books": [
-        "betrivers"
-      ]
+      "research_only_books": []
     }
   },
   "recommendation_timing_summary": {
@@ -8963,7 +8758,7 @@
   },
   "operator_dashboard": {
     "schema": "tierededge_operator_dashboard_v1",
-    "generated_at_utc": "2026-03-31T18:09:53.580Z",
+    "generated_at_utc": "2026-04-01T02:00:26.394Z",
     "top_level_sections": [
       {
         "key": "system_health",
@@ -8975,19 +8770,19 @@
             "metrics": [
               {
                 "label": "last_scheduler_boundary_fire_time",
-                "value": "2026-03-31T14:01:28.000Z"
+                "value": "2026-03-31T20:00:00.000Z"
               },
               {
                 "label": "last_scheduler_boundary_fire_job_name",
-                "value": "midmorning-edge-hunt"
+                "value": "afternoon-edge-hunt"
               },
               {
                 "label": "latest_run_id",
-                "value": "canonical-hunt::2026-03-31::1309"
+                "value": "canonical-hunt::2026-03-31::1500"
               },
               {
                 "label": "latest_run_status",
-                "value": "ok"
+                "value": "failed"
               },
               {
                 "label": "verdict",
@@ -9009,7 +8804,7 @@
               },
               {
                 "label": "native_append_status",
-                "value": "succeeded"
+                "value": "runner_failed"
               },
               {
                 "label": "latest_run_invalidated",
@@ -9023,11 +8818,11 @@
             "metrics": [
               {
                 "label": "valid_snapshot_count",
-                "value": 88
+                "value": 0
               },
               {
                 "label": "invalid_snapshot_count",
-                "value": 80
+                "value": 0
               },
               {
                 "label": "stale_market_count",
@@ -9055,7 +8850,7 @@
               },
               {
                 "label": "best_executable_edge_today",
-                "value": "2.39%"
+                "value": null
               },
               {
                 "label": "soon_actionable_count",
@@ -9069,15 +8864,15 @@
             "metrics": [
               {
                 "label": "total_sits",
-                "value": 168
+                "value": 0
               },
               {
                 "label": "executable_closest_misses_count",
-                "value": 6
+                "value": 0
               },
               {
                 "label": "books_actually_scanned_today",
-                "value": "betmgm, betrivers, draftkings, fanduel"
+                "value": "None"
               }
             ]
           },
@@ -9087,11 +8882,11 @@
             "metrics": [
               {
                 "label": "feed_unavailable_owned_books",
-                "value": "bet365, caesars, circa"
+                "value": "None"
               },
               {
                 "label": "markets_scanned_by_sport_market",
-                "value": "MLB ML (28) • NBA ML (14) • NBA Spread (28) • NBA Total (26) • NHL ML (20) • NHL Spread (22) • NHL Total (30)"
+                "value": null
               }
             ]
           },
@@ -9129,15 +8924,15 @@
             "metrics": [
               {
                 "label": "near_miss_count_1.0_to_1.49",
-                "value": 31
+                "value": 149
               },
               {
                 "label": "near_miss_count_1.5_to_1.99",
-                "value": 12
+                "value": 46
               },
               {
                 "label": "executable_near_miss_count_1.5_to_1.99",
-                "value": 11
+                "value": 31
               }
             ]
           },
@@ -9253,11 +9048,11 @@
               },
               {
                 "label": "yellow",
-                "value": 2
+                "value": 1
               },
               {
                 "label": "info",
-                "value": 1
+                "value": 0
               }
             ]
           }
@@ -9267,27 +9062,15 @@
     "action_flags": [
       {
         "level": "RED",
-        "code": "invalid_snapshot_spike",
-        "title": "Invalid snapshot spike",
-        "message": "80 of 168 rows (47.62%) failed snapshot integrity."
+        "code": "native_append_failure",
+        "title": "Native append failure",
+        "message": "Latest hunt append status: runner_failed."
       },
       {
         "level": "YELLOW",
         "code": "low_clv_coverage",
         "title": "Low CLV coverage",
         "message": "Settled-bet CLV coverage is 22.73%."
-      },
-      {
-        "level": "YELLOW",
-        "code": "owned_books_missing_from_feed",
-        "title": "Owned books missing from feed",
-        "message": "bet365, caesars, circa"
-      },
-      {
-        "level": "INFO",
-        "code": "clean_sit_day",
-        "title": "Clean SIT day",
-        "message": "The latest hunt completed cleanly and found no actionable executable edges."
       }
     ],
     "recommendation_timing_summary": {
@@ -9750,262 +9533,11 @@
           "rejection_reasons": ""
         }
       ],
-      "snapshot_integrity_failures": [
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "ML",
-          "selection": "Brooklyn Nets ML",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "ML",
-          "selection": "Portland Trail Blazers ML",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "ML",
-          "selection": "Toronto Raptors ML",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "ML",
-          "selection": "Cleveland Cavaliers ML",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "ML",
-          "selection": "Milwaukee Bucks ML",
-          "sportsbook": "DraftKings",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NHL",
-          "market_type": "Spread",
-          "selection": "Boston Bruins -0.5",
-          "sportsbook": "BetRivers",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": 14
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "ML",
-          "selection": "Phoenix Suns ML",
-          "sportsbook": "BetRivers",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Spread",
-          "selection": "New York Knicks -1.5",
-          "sportsbook": "DraftKings",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NHL",
-          "market_type": "Total",
-          "selection": "Under 6",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "desynchronized_snapshot",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": 14
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Spread",
-          "selection": "Dallas Mavericks -2.5",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Total",
-          "selection": "Under 217.5",
-          "sportsbook": "DraftKings",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Spread",
-          "selection": "Los Angeles Lakers -2.5",
-          "sportsbook": "DraftKings",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Spread",
-          "selection": "Cleveland Cavaliers +1.5",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NHL",
-          "market_type": "Total",
-          "selection": "Under 6",
-          "sportsbook": "BetRivers",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": 14
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "ML",
-          "selection": "Houston Rockets ML",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Spread",
-          "selection": "Charlotte Hornets -17.5",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Total",
-          "selection": "Over 219.5",
-          "sportsbook": "DraftKings",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Total",
-          "selection": "Under 229.5",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Spread",
-          "selection": "Detroit Pistons -3.5",
-          "sportsbook": "DraftKings",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Total",
-          "selection": "Under 219.5",
-          "sportsbook": "DraftKings",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Total",
-          "selection": "Over 218.5",
-          "sportsbook": "BetMGM",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Spread",
-          "selection": "Los Angeles Clippers -5.5",
-          "sportsbook": "DraftKings",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NHL",
-          "market_type": "Total",
-          "selection": "Over 6",
-          "sportsbook": "BetRivers",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": 14
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Total",
-          "selection": "Under 224.5",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        },
-        {
-          "timestamp_ct": "2026-03-31 13:09",
-          "sport": "NBA",
-          "market_type": "Spread",
-          "selection": "New York Knicks -1",
-          "sportsbook": "FanDuel",
-          "snapshot_status": "insufficient_valid_books",
-          "rejection_reason": "invalid_snapshot",
-          "spread_seconds": null
-        }
-      ]
+      "snapshot_integrity_failures": []
     },
     "hidden_troubleshooting": {
       "edge_anomaly_count": 0,
-      "invalid_snapshot_count": 80,
+      "invalid_snapshot_count": 0,
       "stale_market_count": 0,
       "latest_hunt_invalid_run_count": 4,
       "latest_close_capture_run_time_utc": "2026-03-26T12:50:05.961Z",
@@ -11044,525 +10576,13 @@
     "operator_summary": [],
     "operator_output_text": "",
     "hedge_summary": {
-      "total_positions": 10,
-      "let_ride_count": 10,
+      "total_positions": 0,
+      "let_ride_count": 0,
       "consider_hedge_count": 0,
       "strong_hedge_count": 0
     },
-    "hedge_decisions": [
-      {
-        "execution_id": "execution::telegram-operator::1774549053205",
-        "run_id": "canonical-hunt::2026-03-26::1239",
-        "rec_id": "canonical-hunt::2026-03-26::1239::icehockey_nhl::8642b100ab8ed115ed6acecb443e230e::spreads::ottawa-senators-1-5::draftkings",
-        "event_label": "Pittsburgh Penguins @ Ottawa Senators",
-        "selection": "Ottawa Senators -1.5",
-        "sportsbook": "DraftKings",
-        "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "network",
-        "current_book": "draftkings",
-        "current_odds_american": "+142",
-        "current_edge_pct": -3.32,
-        "event_start_time_utc": "2026-03-31T23:10:00Z",
-        "minutes_to_start": 300.13,
-        "original_odds": "+170",
-        "current_odds": "+142",
-        "clv_cents": 28,
-        "original_edge_pct": 2.01,
-        "edge_decay": 5.33,
-        "time_to_game_start": 300.13,
-        "stake_size": 2,
-        "bankroll": null,
-        "stake_pct_of_bankroll": null,
-        "meaningful_stake": false,
-        "is_live_market": false,
-        "market_type": "PREGAME",
-        "hedge_scan_frequency_mode": 3,
-        "hedge_thresholds_active": {
-          "consider_hedge": {
-            "clv_cents_min": 25,
-            "current_edge_pct_max": 0.25,
-            "time_to_start_minutes_max": 240
-          },
-          "strong_hedge": {
-            "clv_cents_min": 40,
-            "current_edge_pct_max": 0,
-            "time_to_start_minutes_max": 120
-          }
-        },
-        "meaningful_stake_rule": {
-          "pct_of_bankroll": 2,
-          "minimum_stake": 25
-        },
-        "decision": "LET RIDE",
-        "hedge_decision_reason": "stake_too_small_to_manage",
-        "reason": [
-          "stake_too_small_to_manage"
-        ],
-        "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +142\nCLV: +28 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -3.32%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-      },
-      {
-        "execution_id": "execution::telegram-operator::1774549066205",
-        "run_id": "canonical-hunt::2026-03-26::1239",
-        "rec_id": "canonical-hunt::2026-03-26::1239::icehockey_nhl::8642b100ab8ed115ed6acecb443e230e::spreads::ottawa-senators-1-5::draftkings",
-        "event_label": "Pittsburgh Penguins @ Ottawa Senators",
-        "selection": "Ottawa Senators -1.5",
-        "sportsbook": "DraftKings",
-        "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "cache",
-        "current_book": "draftkings",
-        "current_odds_american": "+142",
-        "current_edge_pct": -3.32,
-        "event_start_time_utc": "2026-03-31T23:10:00Z",
-        "minutes_to_start": 300.13,
-        "original_odds": "+170",
-        "current_odds": "+142",
-        "clv_cents": 28,
-        "original_edge_pct": 2.01,
-        "edge_decay": 5.33,
-        "time_to_game_start": 300.13,
-        "stake_size": 2,
-        "bankroll": null,
-        "stake_pct_of_bankroll": null,
-        "meaningful_stake": false,
-        "is_live_market": false,
-        "market_type": "PREGAME",
-        "hedge_scan_frequency_mode": 3,
-        "hedge_thresholds_active": {
-          "consider_hedge": {
-            "clv_cents_min": 25,
-            "current_edge_pct_max": 0.25,
-            "time_to_start_minutes_max": 240
-          },
-          "strong_hedge": {
-            "clv_cents_min": 40,
-            "current_edge_pct_max": 0,
-            "time_to_start_minutes_max": 120
-          }
-        },
-        "meaningful_stake_rule": {
-          "pct_of_bankroll": 2,
-          "minimum_stake": 25
-        },
-        "decision": "LET RIDE",
-        "hedge_decision_reason": "stake_too_small_to_manage",
-        "reason": [
-          "stake_too_small_to_manage"
-        ],
-        "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +142\nCLV: +28 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -3.32%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-      },
-      {
-        "execution_id": "execution::telegram-operator::1774550370229",
-        "run_id": "canonical-hunt::2026-03-26::1239",
-        "rec_id": "canonical-hunt::2026-03-26::1239::icehockey_nhl::8642b100ab8ed115ed6acecb443e230e::spreads::ottawa-senators-1-5::draftkings",
-        "event_label": "Pittsburgh Penguins @ Ottawa Senators",
-        "selection": "Ottawa Senators -1.5",
-        "sportsbook": "DraftKings",
-        "execution_status": "STALE_EXECUTION",
-        "current_quote_source": "cache",
-        "current_book": "draftkings",
-        "current_odds_american": "+142",
-        "current_edge_pct": -3.32,
-        "event_start_time_utc": "2026-03-31T23:10:00Z",
-        "minutes_to_start": 300.13,
-        "original_odds": "+170",
-        "current_odds": "+142",
-        "clv_cents": 28,
-        "original_edge_pct": 2.01,
-        "edge_decay": 5.33,
-        "time_to_game_start": 300.13,
-        "stake_size": 2,
-        "bankroll": null,
-        "stake_pct_of_bankroll": null,
-        "meaningful_stake": false,
-        "is_live_market": false,
-        "market_type": "PREGAME",
-        "hedge_scan_frequency_mode": 3,
-        "hedge_thresholds_active": {
-          "consider_hedge": {
-            "clv_cents_min": 25,
-            "current_edge_pct_max": 0.25,
-            "time_to_start_minutes_max": 240
-          },
-          "strong_hedge": {
-            "clv_cents_min": 40,
-            "current_edge_pct_max": 0,
-            "time_to_start_minutes_max": 120
-          }
-        },
-        "meaningful_stake_rule": {
-          "pct_of_bankroll": 2,
-          "minimum_stake": 25
-        },
-        "decision": "LET RIDE",
-        "hedge_decision_reason": "stake_too_small_to_manage",
-        "reason": [
-          "stake_too_small_to_manage"
-        ],
-        "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +142\nCLV: +28 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -3.32%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-      },
-      {
-        "execution_id": "execution::telegram-operator::1774550370237",
-        "run_id": "canonical-hunt::2026-03-26::1256",
-        "rec_id": "canonical-hunt::2026-03-26::1256::baseball_mlb::ac57f6f9aed299cfeb9551b910fa7248::h2h::texas-rangers-ml::draftkings",
-        "event_label": "Texas Rangers @ Philadelphia Phillies",
-        "selection": "Texas Rangers ML",
-        "sportsbook": "DraftKings",
-        "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "network",
-        "current_book": "draftkings",
-        "current_odds_american": "-126",
-        "current_edge_pct": -14.75,
-        "event_start_time_utc": "2026-03-31T22:36:00Z",
-        "minutes_to_start": 266.12,
-        "original_odds": "+144",
-        "current_odds": "-126",
-        "clv_cents": 270,
-        "original_edge_pct": 2.26,
-        "edge_decay": 17.01,
-        "time_to_game_start": 266.12,
-        "stake_size": 2,
-        "bankroll": null,
-        "stake_pct_of_bankroll": null,
-        "meaningful_stake": false,
-        "is_live_market": false,
-        "market_type": "PREGAME",
-        "hedge_scan_frequency_mode": 3,
-        "hedge_thresholds_active": {
-          "consider_hedge": {
-            "clv_cents_min": 25,
-            "current_edge_pct_max": 0.25,
-            "time_to_start_minutes_max": 240
-          },
-          "strong_hedge": {
-            "clv_cents_min": 40,
-            "current_edge_pct_max": 0,
-            "time_to_start_minutes_max": 120
-          }
-        },
-        "meaningful_stake_rule": {
-          "pct_of_bankroll": 2,
-          "minimum_stake": 25
-        },
-        "decision": "LET RIDE",
-        "hedge_decision_reason": "stake_too_small_to_manage",
-        "reason": [
-          "stake_too_small_to_manage"
-        ],
-        "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -126\nCLV: +270 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -14.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-      },
-      {
-        "execution_id": "execution::telegram-operator::1774550462991",
-        "run_id": "canonical-hunt::2026-03-26::1256",
-        "rec_id": "canonical-hunt::2026-03-26::1256::baseball_mlb::ac57f6f9aed299cfeb9551b910fa7248::h2h::texas-rangers-ml::draftkings",
-        "event_label": "Texas Rangers @ Philadelphia Phillies",
-        "selection": "Texas Rangers ML",
-        "sportsbook": "DraftKings",
-        "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "cache",
-        "current_book": "draftkings",
-        "current_odds_american": "-126",
-        "current_edge_pct": -14.75,
-        "event_start_time_utc": "2026-03-31T22:36:00Z",
-        "minutes_to_start": 266.12,
-        "original_odds": "+144",
-        "current_odds": "-126",
-        "clv_cents": 270,
-        "original_edge_pct": 2.26,
-        "edge_decay": 17.01,
-        "time_to_game_start": 266.12,
-        "stake_size": 2,
-        "bankroll": null,
-        "stake_pct_of_bankroll": null,
-        "meaningful_stake": false,
-        "is_live_market": false,
-        "market_type": "PREGAME",
-        "hedge_scan_frequency_mode": 3,
-        "hedge_thresholds_active": {
-          "consider_hedge": {
-            "clv_cents_min": 25,
-            "current_edge_pct_max": 0.25,
-            "time_to_start_minutes_max": 240
-          },
-          "strong_hedge": {
-            "clv_cents_min": 40,
-            "current_edge_pct_max": 0,
-            "time_to_start_minutes_max": 120
-          }
-        },
-        "meaningful_stake_rule": {
-          "pct_of_bankroll": 2,
-          "minimum_stake": 25
-        },
-        "decision": "LET RIDE",
-        "hedge_decision_reason": "stake_too_small_to_manage",
-        "reason": [
-          "stake_too_small_to_manage"
-        ],
-        "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -126\nCLV: +270 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -14.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-      },
-      {
-        "execution_id": "execution::telegram-operator::1774551599056",
-        "run_id": "canonical-hunt::2026-03-26::1256",
-        "rec_id": "canonical-hunt::2026-03-26::1256::icehockey_nhl::0d07b0bc16914cd16d27e6efdda5709c::spreads::philadelphia-flyers-1-5::draftkings",
-        "event_label": "Chicago Blackhawks @ Philadelphia Flyers",
-        "selection": "Philadelphia Flyers -1.5",
-        "sportsbook": "DraftKings",
-        "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "cache",
-        "current_book": "draftkings",
-        "current_odds_american": "-230",
-        "current_edge_pct": -30.7,
-        "event_start_time_utc": "2026-03-31T23:10:00Z",
-        "minutes_to_start": 300.12,
-        "original_odds": "+160",
-        "current_odds": "-230",
-        "clv_cents": 390,
-        "original_edge_pct": 2.12,
-        "edge_decay": 32.82,
-        "time_to_game_start": 300.12,
-        "stake_size": 2.5,
-        "bankroll": null,
-        "stake_pct_of_bankroll": null,
-        "meaningful_stake": false,
-        "is_live_market": false,
-        "market_type": "PREGAME",
-        "hedge_scan_frequency_mode": 3,
-        "hedge_thresholds_active": {
-          "consider_hedge": {
-            "clv_cents_min": 25,
-            "current_edge_pct_max": 0.25,
-            "time_to_start_minutes_max": 240
-          },
-          "strong_hedge": {
-            "clv_cents_min": 40,
-            "current_edge_pct_max": 0,
-            "time_to_start_minutes_max": 120
-          }
-        },
-        "meaningful_stake_rule": {
-          "pct_of_bankroll": 2,
-          "minimum_stake": 25
-        },
-        "decision": "LET RIDE",
-        "hedge_decision_reason": "stake_too_small_to_manage",
-        "reason": [
-          "stake_too_small_to_manage"
-        ],
-        "operator_output": "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -230\nCLV: +390 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -30.7%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-      },
-      {
-        "execution_id": "execution::telegram-operator::1774551622795",
-        "run_id": "canonical-hunt::2026-03-26::1256",
-        "rec_id": "canonical-hunt::2026-03-26::1256::icehockey_nhl::0d07b0bc16914cd16d27e6efdda5709c::spreads::philadelphia-flyers-1-5::draftkings",
-        "event_label": "Chicago Blackhawks @ Philadelphia Flyers",
-        "selection": "Philadelphia Flyers -1.5",
-        "sportsbook": "DraftKings",
-        "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "cache",
-        "current_book": "draftkings",
-        "current_odds_american": "-230",
-        "current_edge_pct": -30.7,
-        "event_start_time_utc": "2026-03-31T23:10:00Z",
-        "minutes_to_start": 300.12,
-        "original_odds": "+160",
-        "current_odds": "-230",
-        "clv_cents": 390,
-        "original_edge_pct": 2.12,
-        "edge_decay": 32.82,
-        "time_to_game_start": 300.12,
-        "stake_size": 4,
-        "bankroll": null,
-        "stake_pct_of_bankroll": null,
-        "meaningful_stake": false,
-        "is_live_market": false,
-        "market_type": "PREGAME",
-        "hedge_scan_frequency_mode": 3,
-        "hedge_thresholds_active": {
-          "consider_hedge": {
-            "clv_cents_min": 25,
-            "current_edge_pct_max": 0.25,
-            "time_to_start_minutes_max": 240
-          },
-          "strong_hedge": {
-            "clv_cents_min": 40,
-            "current_edge_pct_max": 0,
-            "time_to_start_minutes_max": 120
-          }
-        },
-        "meaningful_stake_rule": {
-          "pct_of_bankroll": 2,
-          "minimum_stake": 25
-        },
-        "decision": "LET RIDE",
-        "hedge_decision_reason": "stake_too_small_to_manage",
-        "reason": [
-          "stake_too_small_to_manage"
-        ],
-        "operator_output": "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -230\nCLV: +390 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -30.7%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-      },
-      {
-        "execution_id": "execution::telegram-operator::1774551629044",
-        "run_id": "canonical-hunt::2026-03-26::1239",
-        "rec_id": "canonical-hunt::2026-03-26::1239::icehockey_nhl::8642b100ab8ed115ed6acecb443e230e::spreads::ottawa-senators-1-5::draftkings",
-        "event_label": "Pittsburgh Penguins @ Ottawa Senators",
-        "selection": "Ottawa Senators -1.5",
-        "sportsbook": "DraftKings",
-        "execution_status": "STALE_EXECUTION",
-        "current_quote_source": "cache",
-        "current_book": "draftkings",
-        "current_odds_american": "+142",
-        "current_edge_pct": -3.32,
-        "event_start_time_utc": "2026-03-31T23:10:00Z",
-        "minutes_to_start": 300.12,
-        "original_odds": "+170",
-        "current_odds": "+142",
-        "clv_cents": 28,
-        "original_edge_pct": 2.01,
-        "edge_decay": 5.33,
-        "time_to_game_start": 300.12,
-        "stake_size": 2.01,
-        "bankroll": null,
-        "stake_pct_of_bankroll": null,
-        "meaningful_stake": false,
-        "is_live_market": false,
-        "market_type": "PREGAME",
-        "hedge_scan_frequency_mode": 3,
-        "hedge_thresholds_active": {
-          "consider_hedge": {
-            "clv_cents_min": 25,
-            "current_edge_pct_max": 0.25,
-            "time_to_start_minutes_max": 240
-          },
-          "strong_hedge": {
-            "clv_cents_min": 40,
-            "current_edge_pct_max": 0,
-            "time_to_start_minutes_max": 120
-          }
-        },
-        "meaningful_stake_rule": {
-          "pct_of_bankroll": 2,
-          "minimum_stake": 25
-        },
-        "decision": "LET RIDE",
-        "hedge_decision_reason": "stake_too_small_to_manage",
-        "reason": [
-          "stake_too_small_to_manage"
-        ],
-        "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +142\nCLV: +28 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -3.32%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-      },
-      {
-        "execution_id": "execution::telegram-operator::1774723535709",
-        "run_id": "canonical-hunt::2026-03-28::1248",
-        "rec_id": "canonical-hunt::2026-03-28::1248::icehockey_nhl::f3e3cc3e6294cf13fed8a7d33adc8956::h2h::dallas-stars-ml::betmgm",
-        "event_label": "Dallas Stars @ Pittsburgh Penguins",
-        "selection": "Dallas Stars ML",
-        "sportsbook": "BetMGM",
-        "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "network",
-        "current_book": "betmgm",
-        "current_odds_american": "-130",
-        "current_edge_pct": -1.52,
-        "event_start_time_utc": "2026-03-31T23:10:00Z",
-        "minutes_to_start": 300.12,
-        "original_odds": "-120",
-        "current_odds": "-130",
-        "clv_cents": 10,
-        "original_edge_pct": 2.46,
-        "edge_decay": 3.98,
-        "time_to_game_start": 300.12,
-        "stake_size": 24,
-        "bankroll": null,
-        "stake_pct_of_bankroll": null,
-        "meaningful_stake": false,
-        "is_live_market": false,
-        "market_type": "PREGAME",
-        "hedge_scan_frequency_mode": 3,
-        "hedge_thresholds_active": {
-          "consider_hedge": {
-            "clv_cents_min": 25,
-            "current_edge_pct_max": 0.25,
-            "time_to_start_minutes_max": 240
-          },
-          "strong_hedge": {
-            "clv_cents_min": 40,
-            "current_edge_pct_max": 0,
-            "time_to_start_minutes_max": 120
-          }
-        },
-        "meaningful_stake_rule": {
-          "pct_of_bankroll": 2,
-          "minimum_stake": 25
-        },
-        "decision": "LET RIDE",
-        "hedge_decision_reason": "stake_too_small_to_manage",
-        "reason": [
-          "stake_too_small_to_manage"
-        ],
-        "operator_output": "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -130\nCLV: +10 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -1.52%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-      },
-      {
-        "execution_id": "execution::telegram-operator::1774723555625",
-        "run_id": "canonical-hunt::2026-03-28::1248",
-        "rec_id": "canonical-hunt::2026-03-28::1248::icehockey_nhl::f3e3cc3e6294cf13fed8a7d33adc8956::h2h::dallas-stars-ml::betmgm",
-        "event_label": "Dallas Stars @ Pittsburgh Penguins",
-        "selection": "Dallas Stars ML",
-        "sportsbook": "BetMGM",
-        "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "cache",
-        "current_book": "betmgm",
-        "current_odds_american": "-130",
-        "current_edge_pct": -1.52,
-        "event_start_time_utc": "2026-03-31T23:10:00Z",
-        "minutes_to_start": 300.12,
-        "original_odds": "-120",
-        "current_odds": "-130",
-        "clv_cents": 10,
-        "original_edge_pct": 2.46,
-        "edge_decay": 3.98,
-        "time_to_game_start": 300.12,
-        "stake_size": 23,
-        "bankroll": null,
-        "stake_pct_of_bankroll": null,
-        "meaningful_stake": false,
-        "is_live_market": false,
-        "market_type": "PREGAME",
-        "hedge_scan_frequency_mode": 3,
-        "hedge_thresholds_active": {
-          "consider_hedge": {
-            "clv_cents_min": 25,
-            "current_edge_pct_max": 0.25,
-            "time_to_start_minutes_max": 240
-          },
-          "strong_hedge": {
-            "clv_cents_min": 40,
-            "current_edge_pct_max": 0,
-            "time_to_start_minutes_max": 120
-          }
-        },
-        "meaningful_stake_rule": {
-          "pct_of_bankroll": 2,
-          "minimum_stake": 25
-        },
-        "decision": "LET RIDE",
-        "hedge_decision_reason": "stake_too_small_to_manage",
-        "reason": [
-          "stake_too_small_to_manage"
-        ],
-        "operator_output": "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -130\nCLV: +10 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -1.52%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-      }
-    ],
-    "hedge_operator_output": [
-      "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +142\nCLV: +28 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -3.32%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-      "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +142\nCLV: +28 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -3.32%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-      "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +142\nCLV: +28 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -3.32%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-      "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -126\nCLV: +270 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -14.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-      "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -126\nCLV: +270 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -14.75%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-      "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -230\nCLV: +390 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -30.7%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-      "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: -230\nCLV: +390 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: -30.7%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-      "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +142\nCLV: +28 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: -3.32%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-      "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -130\nCLV: +10 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -1.52%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-      "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -130\nCLV: +10 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: -1.52%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
-    ],
+    "hedge_decisions": [],
+    "hedge_operator_output": [],
     "hedge_scan_frequency_mode": 3,
     "hedge_thresholds_active": {
       "consider_hedge": {
@@ -14727,7 +13747,7 @@
       "bankroll_before": 1431.71,
       "bankroll_after": 1429.71,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-31T18:09:50.250Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774733862862::win::1774733971338",
@@ -14761,7 +13781,7 @@
       "bankroll_before": 1400.46,
       "bankroll_after": 1431.71,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-31T18:09:50.250Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774551623980::win::1774610653299",
@@ -14799,7 +13819,7 @@
       "bankroll_before": 1394.3,
       "bankroll_after": 1400.46,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-31T18:09:50.250Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774551629841::loss::1774566696859",
@@ -14833,7 +13853,7 @@
       "bankroll_before": 1396.3,
       "bankroll_after": 1394.3,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-31T18:09:50.250Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z"
     },
     {
       "grading_id": "reconciliation::execution::manual-recovered::2026-03-17::wild-ml::2026-03-18T10:05:00-05:00",
@@ -14875,7 +13895,7 @@
       "bankroll_before": 1295.13,
       "bankroll_after": 1300.53,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-31T18:09:50.250Z",
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z",
       "legacy_bankroll_after_import": 1321.03
     },
     {
@@ -14918,7 +13938,7 @@
       "bankroll_before": 1305.63,
       "bankroll_after": 1295.13,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-31T18:09:50.250Z",
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z",
       "legacy_bankroll_after_import": 1315.63
     },
     {
@@ -14961,12 +13981,12 @@
       "bankroll_before": 1326.13,
       "bankroll_after": 1305.63,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-03-31T18:09:50.250Z",
+      "bankroll_after_reconciled_at_utc": "2026-04-01T02:00:22.492Z",
       "legacy_bankroll_after_import": 1300.53
     }
   ],
   "ledger_validation": {
-    "generated_at_utc": "2026-03-31T18:09:53.523Z",
+    "generated_at_utc": "2026-04-01T02:00:26.331Z",
     "require_output_match": false,
     "passed": true,
     "run_classification": "ledger_integrity_pass",
@@ -15027,7 +14047,7 @@
         "bet365",
         "caesars"
       ],
-      "latest_run_enabled": true
+      "latest_run_enabled": false
     },
     "phase1_mlb_moneylines": {
       "enabled": true,
@@ -15058,7 +14078,7 @@
         "betrivers",
         "caesars"
       ],
-      "latest_run_enabled": true
+      "latest_run_enabled": false
     },
     "phase1_nba_points_props": {
       "enabled": false,
@@ -15104,298 +14124,43 @@
       "bet365",
       "caesars"
     ],
-    "live_feed_books": [
-      "betmgm",
-      "betrivers",
-      "draftkings",
-      "fanduel"
-    ],
-    "actionable_books_for_run": [
-      "betmgm",
-      "draftkings",
-      "fanduel"
-    ],
-    "feed_unavailable_owned_books": [
-      "bet365",
-      "caesars",
-      "circa"
-    ],
-    "research_only_books": [
-      "betrivers"
-    ]
+    "live_feed_books": [],
+    "actionable_books_for_run": [],
+    "feed_unavailable_owned_books": [],
+    "research_only_books": []
   },
   "latest_canonical_hunt_run": {
     "schema": "tierededge_canonical_hunt_run_v1",
-    "run_id": "canonical-hunt::2026-03-31::1309",
-    "generated_at_utc": "2026-03-31T18:09:48.760Z",
-    "run_at_ct": "2026-03-31 13:09",
-    "status": "ok",
-    "message_type": "SIT",
+    "run_id": "canonical-hunt::2026-03-31::1500",
+    "generated_at_utc": "2026-03-31T20:00:00.839Z",
+    "run_at_ct": "2026-03-31 15:00",
+    "status": "failed",
+    "message_type": "BLOCKED",
     "requires_state_sync": false,
     "has_actionable_bets": false,
-    "native_rows_appended": 168,
-    "native_bets_appended": 0,
-    "native_sits_appended": 168,
+    "native_rows_appended": 0,
     "invalidated": false,
-    "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
-    "prop_feature_flags": {
-      "configured_enabled": false,
-      "enabled_for_run": false,
-      "enable_source": "config",
-      "config": {
-        "enabled": false,
-        "league": "NBA",
-        "sport_key": "basketball_nba",
-        "market_key": "player_points",
-        "prop_type": "points",
-        "markets": [
-          "player_points"
-        ],
-        "min_book_count": 2,
-        "eligible_books": [
-          "draftkings",
-          "fanduel",
-          "betmgm",
-          "circa",
-          "bet365",
-          "caesars"
-        ],
-        "sides": [
-          "over",
-          "under"
-        ],
-        "main_line_only": true,
-        "alt_lines_allowed": false,
-        "trusted_books": [
-          "draftkings",
-          "fanduel",
-          "betmgm",
-          "circa",
-          "bet365",
-          "caesars"
-        ]
-      }
+    "plain_reason": "odds_transport_failed:basketball_nba:tls_certificate_problem:api.the-odds-api.com:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com",
+    "transport_diagnostics": {
+      "service": "the-odds-api",
+      "request_method": "GET",
+      "timeout_ms": null,
+      "auth_env_presence": {
+        "ODDS_API_KEY": true,
+        "THE_ODDS_API_KEY": false
+      },
+      "request_target_domain": "api.the-odds-api.com",
+      "request_path": "/v4/sports/basketball_nba/odds",
+      "error_class": "tls_certificate_problem",
+      "error_code": "ERR_TLS_CERT_ALTNAME_INVALID",
+      "primary_cause": "TLS/certificate hostname mismatch",
+      "error_message": "fetch failed",
+      "cause_message": "Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com"
     },
-    "prop_summary": {
-      "phase1_nba_spreads": {
-        "configured_enabled": true,
-        "enabled_for_run": true,
-        "enable_source": "config",
-        "fetched_event_count": 7,
-        "analyzed_row_count": 28,
-        "selected_bet_count": 0,
-        "sit_count": 28,
-        "native_rows_appended": 28,
-        "min_book_count": 2,
-        "eligible_books": [
-          "bet365",
-          "betmgm",
-          "caesars",
-          "circa",
-          "draftkings",
-          "fanduel"
-        ]
-      },
-      "phase1_mlb_moneylines": {
-        "configured_enabled": true,
-        "enabled_for_run": true,
-        "enable_source": "config",
-        "fetched_event_count": 14,
-        "analyzed_row_count": 28,
-        "selected_bet_count": 0,
-        "sit_count": 28,
-        "native_rows_appended": 28,
-        "min_book_count": 2,
-        "eligible_books": [
-          "bet365",
-          "betmgm",
-          "caesars",
-          "circa",
-          "draftkings",
-          "fanduel"
-        ]
-      },
-      "phase1_nba_points_props": {
-        "configured_enabled": false,
-        "enabled_for_run": false,
-        "enable_source": "config",
-        "fetched_event_count": 0,
-        "analyzed_row_count": 0,
-        "selected_bet_count": 0,
-        "sit_count": 0,
-        "native_rows_appended": 0,
-        "min_book_count": 2,
-        "eligible_books": [
-          "bet365",
-          "betmgm",
-          "caesars",
-          "circa",
-          "draftkings",
-          "fanduel"
-        ]
-      }
-    },
-    "owned_books": [
-      "bet365",
-      "betmgm",
-      "caesars",
-      "circa",
-      "draftkings",
-      "fanduel"
-    ],
-    "live_feed_books": [
-      "betmgm",
-      "betrivers",
-      "draftkings",
-      "fanduel"
-    ],
-    "actionable_books_for_run": [
-      "betmgm",
-      "draftkings",
-      "fanduel"
-    ],
-    "feed_unavailable_owned_books": [
-      "bet365",
-      "caesars",
-      "circa"
-    ],
-    "research_only_books": [
-      "betrivers"
-    ],
-    "urgency_thresholds": {
-      "NOW": "<= 15 minutes to start",
-      "SOON": "15 to 90 minutes to start",
-      "LATER": "> 90 minutes to start or unknown"
-    },
-    "selected_rows": [],
-    "executable_closest_misses": [
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::icehockey_nhl::6ab93a48138c49071cc0c76f5fa04c81::spreads::chicago-blackhawks-1-5::fanduel",
-        "event_id": "6ab93a48138c49071cc0c76f5fa04c81",
-        "event_label": "Winnipeg Jets @ Chicago Blackhawks",
-        "event_home_team": "Chicago Blackhawks",
-        "event_away_team": "Winnipeg Jets",
-        "line_key": null,
-        "selection": "Chicago Blackhawks +1.5",
-        "sportsbook": "FanDuel",
-        "odds_american": "-188",
-        "post_conf_edge_pct": 1.86,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-04-01T00:40:00Z",
-        "minutes_to_start": 390.19,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::icehockey_nhl::ade39773836ad914294bb9660ae31a85::spreads::carolina-hurricanes-1-5::draftkings",
-        "event_id": "ade39773836ad914294bb9660ae31a85",
-        "event_label": "Carolina Hurricanes @ Columbus Blue Jackets",
-        "event_home_team": "Columbus Blue Jackets",
-        "event_away_team": "Carolina Hurricanes",
-        "line_key": null,
-        "selection": "Carolina Hurricanes -1.5",
-        "sportsbook": "DraftKings",
-        "odds_american": "190",
-        "post_conf_edge_pct": 1.75,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-03-31T23:40:00Z",
-        "minutes_to_start": 330.19,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::85518e9fa7d88ada5c7ef6acc3fb06fc::h2h::detroit-tigers-ml::draftkings",
-        "event_id": "85518e9fa7d88ada5c7ef6acc3fb06fc",
-        "event_label": "Detroit Tigers @ Arizona Diamondbacks",
-        "event_home_team": "Arizona Diamondbacks",
-        "event_away_team": "Detroit Tigers",
-        "line_key": null,
-        "selection": "Detroit Tigers ML",
-        "sportsbook": "DraftKings",
-        "odds_american": "-102",
-        "post_conf_edge_pct": 1.74,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-04-01T01:40:00Z",
-        "minutes_to_start": 450.19,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::h2h::edmonton-oilers-ml::fanduel",
-        "event_id": "8a5ff06eaed1de4d1a11137b32051fd8",
-        "event_label": "Seattle Kraken @ Edmonton Oilers",
-        "event_home_team": "Edmonton Oilers",
-        "event_away_team": "Seattle Kraken",
-        "line_key": null,
-        "selection": "Edmonton Oilers ML",
-        "sportsbook": "FanDuel",
-        "odds_american": "-176",
-        "post_conf_edge_pct": 1.18,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-04-01T01:10:00Z",
-        "minutes_to_start": 420.19,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::a7ee9fc9ac1db47a494d6c4c39dfc4de::h2h::texas-rangers-ml::draftkings",
-        "event_id": "a7ee9fc9ac1db47a494d6c4c39dfc4de",
-        "event_label": "Texas Rangers @ Baltimore Orioles",
-        "event_home_team": "Baltimore Orioles",
-        "event_away_team": "Texas Rangers",
-        "line_key": null,
-        "selection": "Texas Rangers ML",
-        "sportsbook": "DraftKings",
-        "odds_american": "-126",
-        "post_conf_edge_pct": 1.06,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-03-31T22:36:00Z",
-        "minutes_to_start": 266.19,
-        "urgency_tag": "LATER"
-      },
-      {
-        "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::4f785ad4f8847d0e028769afc44d9942::h2h::chicago-cubs-ml::betmgm",
-        "event_id": "4f785ad4f8847d0e028769afc44d9942",
-        "event_label": "Los Angeles Angels @ Chicago Cubs",
-        "event_home_team": "Chicago Cubs",
-        "event_away_team": "Los Angeles Angels",
-        "line_key": null,
-        "selection": "Chicago Cubs ML",
-        "sportsbook": "BetMGM",
-        "odds_american": "-135",
-        "post_conf_edge_pct": 1.05,
-        "rejection_reason": "no_edge",
-        "event_start_time": "2026-03-31T23:41:00Z",
-        "minutes_to_start": 331.19,
-        "urgency_tag": "LATER"
-      }
-    ],
-    "summary": "TIERED EDGE HUNT — 2026-03-31\nBankroll: $1429.71 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Chicago Blackhawks +1.5 @ -188 | FanDuel: +1.86% edge — no_edge | LATER | starts in 390.19 min\n- Carolina Hurricanes -1.5 @ 190 | DraftKings: +1.75% edge — no_edge | LATER | starts in 330.19 min\n- Detroit Tigers ML @ -102 | DraftKings: +1.74% edge — no_edge | LATER | starts in 450.19 min\n- Edmonton Oilers ML @ -176 | FanDuel: +1.18% edge — no_edge | LATER | starts in 420.19 min\n- Texas Rangers ML @ -126 | DraftKings: +1.06% edge — no_edge | LATER | starts in 266.19 min\n- Chicago Cubs ML @ -135 | BetMGM: +1.05% edge — no_edge | LATER | starts in 331.19 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
-    "rows": {
-      "bet_rec_ids": [],
-      "sit_rec_ids": [
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8b316c9640300bedb485a6556bbdd1f5::totals::under-6-5::fanduel",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::6ab93a48138c49071cc0c76f5fa04c81::spreads::chicago-blackhawks-1-5::fanduel",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::ade39773836ad914294bb9660ae31a85::spreads::carolina-hurricanes-1-5::draftkings",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::85518e9fa7d88ada5c7ef6acc3fb06fc::h2h::detroit-tigers-ml::draftkings",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::e8b33f9489e018bf61d55e3862f41831::h2h::new-york-rangers-ml::betrivers",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::spreads::seattle-kraken-1-5::betrivers",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::h2h::seattle-kraken-ml::betrivers",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::h2h::edmonton-oilers-ml::fanduel",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8b316c9640300bedb485a6556bbdd1f5::h2h::montr-al-canadiens-ml::betrivers",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::a7ee9fc9ac1db47a494d6c4c39dfc4de::h2h::texas-rangers-ml::draftkings",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::4f785ad4f8847d0e028769afc44d9942::h2h::chicago-cubs-ml::betmgm",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::totals::over-6-5::betrivers",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::522613bca37febfdc7fe1b1b858dea09::h2h::milwaukee-brewers-ml::betmgm",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::b724336c8a25a94c67ba0d63ea2c98a0::h2h::toronto-blue-jays-ml::fanduel",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::ade39773836ad914294bb9660ae31a85::h2h::columbus-blue-jackets-ml::betrivers",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::b294b3f2eb02e42a436d439795c7f125::h2h::st-louis-cardinals-ml::betmgm",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::8d928227a51e9c7b63c36bcf0a8083f0::h2h::new-york-yankees-ml::draftkings",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::023399264d3924b30aa040acd7837804::h2h::atlanta-braves-ml::fanduel",
-        "canonical-hunt::2026-03-31::1309::baseball_mlb::5fa4f7bd1d1be2a30a40c0d7f653d9ff::h2h::boston-red-sox-ml::fanduel",
-        "canonical-hunt::2026-03-31::1309::icehockey_nhl::ff972e427e6e1837407bfcfc6d64844d::spreads::pittsburgh-penguins-1-5::fanduel"
-      ],
-      "research_only_rec_ids": []
-    }
+    "summary": "TIERED EDGE HUNT — 2026-03-31\nCANNOT_VERIFY_ODDS — SIT\nReason: odds_transport_failed:basketball_nba:tls_certificate_problem:api.the-odds-api.com:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com"
   },
   "runtime_status": {
-    "generated_at_utc": "2026-03-31T18:09:53.159Z",
+    "generated_at_utc": "2026-04-01T02:00:25.951Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
@@ -16627,24 +15392,24 @@
       "data_failure_codes": []
     },
     "latest_hunt_current": {
-      "status": "ok",
-      "delivery_status": "repo_direct",
-      "error": null,
-      "run_at_ms": 1774980588760,
-      "run_at_ct": "2026-03-31 13:09",
-      "date_key": "2026-03-31",
-      "summary": "TIERED EDGE HUNT — 2026-03-31\nBankroll: $1429.71 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Chicago Blackhawks +1.5 @ -188 | FanDuel: +1.86% edge — no_edge | LATER | starts in 390.19 min\n- Carolina Hurricanes -1.5 @ 190 | DraftKings: +1.75% edge — no_edge | LATER | starts in 330.19 min\n- Detroit Tigers ML @ -102 | DraftKings: +1.74% edge — no_edge | LATER | starts in 450.19 min\n- Edmonton Oilers ML @ -176 | FanDuel: +1.18% edge — no_edge | LATER | starts in 420.19 min\n- Texas Rangers ML @ -126 | DraftKings: +1.06% edge — no_edge | LATER | starts in 266.19 min\n- Chicago Cubs ML @ -135 | BetMGM: +1.05% edge — no_edge | LATER | starts in 331.19 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
-      "raw_summary": "TIERED EDGE HUNT — 2026-03-31\nBankroll: $1429.71 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Chicago Blackhawks +1.5 @ -188 | FanDuel: +1.86% edge — no_edge | LATER | starts in 390.19 min\n- Carolina Hurricanes -1.5 @ 190 | DraftKings: +1.75% edge — no_edge | LATER | starts in 330.19 min\n- Detroit Tigers ML @ -102 | DraftKings: +1.74% edge — no_edge | LATER | starts in 450.19 min\n- Edmonton Oilers ML @ -176 | FanDuel: +1.18% edge — no_edge | LATER | starts in 420.19 min\n- Texas Rangers ML @ -126 | DraftKings: +1.06% edge — no_edge | LATER | starts in 266.19 min\n- Chicago Cubs ML @ -135 | BetMGM: +1.05% edge — no_edge | LATER | starts in 331.19 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
-      "session_id": null,
-      "session_file": null,
-      "message_type": "SIT",
+      "status": "error",
+      "delivery_status": "delivered",
+      "error": "⚠️ API rate limit reached. Please try again later.",
+      "run_at_ms": 1774522800013,
+      "run_at_ct": "2026-03-26 06:00 CT",
+      "date_key": "2026-03-26",
+      "summary": "⚠️ API rate limit reached. Please try again later.",
+      "raw_summary": "⚠️ API rate limit reached. Please try again later.",
+      "session_id": "022e8c59-8361-4451-b981-13ac550f212c",
+      "session_file": "/Users/jaredbuckman/.openclaw/agents/main/sessions/022e8c59-8361-4451-b981-13ac550f212c.jsonl",
+      "message_type": "UNKNOWN",
       "has_actionable_bets": false,
       "requires_state_sync": false,
-      "data_failure_codes": [],
-      "data_status": "verified",
-      "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
-      "source": "canonical_repo_hunt",
-      "native_rows_appended": 168
+      "data_failure_codes": [
+        "quota_or_rate_limit"
+      ],
+      "data_status": "degraded_data",
+      "plain_reason": "The latest scheduled scan could not be classified reliably."
     },
     "latest_successful_hunt": {
       "status": "ok",
@@ -16666,273 +15431,33 @@
     },
     "latest_canonical_hunt_run": {
       "schema": "tierededge_canonical_hunt_run_v1",
-      "run_id": "canonical-hunt::2026-03-31::1309",
-      "generated_at_utc": "2026-03-31T18:09:48.760Z",
-      "run_at_ct": "2026-03-31 13:09",
-      "status": "ok",
-      "message_type": "SIT",
+      "run_id": "canonical-hunt::2026-03-31::1500",
+      "generated_at_utc": "2026-03-31T20:00:00.839Z",
+      "run_at_ct": "2026-03-31 15:00",
+      "status": "failed",
+      "message_type": "BLOCKED",
       "requires_state_sync": false,
       "has_actionable_bets": false,
-      "native_rows_appended": 168,
-      "native_bets_appended": 0,
-      "native_sits_appended": 168,
+      "native_rows_appended": 0,
       "invalidated": false,
-      "plain_reason": "Canonical repo-owned hunt completed with verified odds and no qualifying edges.",
-      "prop_feature_flags": {
-        "configured_enabled": false,
-        "enabled_for_run": false,
-        "enable_source": "config",
-        "config": {
-          "enabled": false,
-          "league": "NBA",
-          "sport_key": "basketball_nba",
-          "market_key": "player_points",
-          "prop_type": "points",
-          "markets": [
-            "player_points"
-          ],
-          "min_book_count": 2,
-          "eligible_books": [
-            "draftkings",
-            "fanduel",
-            "betmgm",
-            "circa",
-            "bet365",
-            "caesars"
-          ],
-          "sides": [
-            "over",
-            "under"
-          ],
-          "main_line_only": true,
-          "alt_lines_allowed": false,
-          "trusted_books": [
-            "draftkings",
-            "fanduel",
-            "betmgm",
-            "circa",
-            "bet365",
-            "caesars"
-          ]
-        }
+      "plain_reason": "odds_transport_failed:basketball_nba:tls_certificate_problem:api.the-odds-api.com:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com",
+      "transport_diagnostics": {
+        "service": "the-odds-api",
+        "request_method": "GET",
+        "timeout_ms": null,
+        "auth_env_presence": {
+          "ODDS_API_KEY": true,
+          "THE_ODDS_API_KEY": false
+        },
+        "request_target_domain": "api.the-odds-api.com",
+        "request_path": "/v4/sports/basketball_nba/odds",
+        "error_class": "tls_certificate_problem",
+        "error_code": "ERR_TLS_CERT_ALTNAME_INVALID",
+        "primary_cause": "TLS/certificate hostname mismatch",
+        "error_message": "fetch failed",
+        "cause_message": "Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com"
       },
-      "prop_summary": {
-        "phase1_nba_spreads": {
-          "configured_enabled": true,
-          "enabled_for_run": true,
-          "enable_source": "config",
-          "fetched_event_count": 7,
-          "analyzed_row_count": 28,
-          "selected_bet_count": 0,
-          "sit_count": 28,
-          "native_rows_appended": 28,
-          "min_book_count": 2,
-          "eligible_books": [
-            "bet365",
-            "betmgm",
-            "caesars",
-            "circa",
-            "draftkings",
-            "fanduel"
-          ]
-        },
-        "phase1_mlb_moneylines": {
-          "configured_enabled": true,
-          "enabled_for_run": true,
-          "enable_source": "config",
-          "fetched_event_count": 14,
-          "analyzed_row_count": 28,
-          "selected_bet_count": 0,
-          "sit_count": 28,
-          "native_rows_appended": 28,
-          "min_book_count": 2,
-          "eligible_books": [
-            "bet365",
-            "betmgm",
-            "caesars",
-            "circa",
-            "draftkings",
-            "fanduel"
-          ]
-        },
-        "phase1_nba_points_props": {
-          "configured_enabled": false,
-          "enabled_for_run": false,
-          "enable_source": "config",
-          "fetched_event_count": 0,
-          "analyzed_row_count": 0,
-          "selected_bet_count": 0,
-          "sit_count": 0,
-          "native_rows_appended": 0,
-          "min_book_count": 2,
-          "eligible_books": [
-            "bet365",
-            "betmgm",
-            "caesars",
-            "circa",
-            "draftkings",
-            "fanduel"
-          ]
-        }
-      },
-      "owned_books": [
-        "bet365",
-        "betmgm",
-        "caesars",
-        "circa",
-        "draftkings",
-        "fanduel"
-      ],
-      "live_feed_books": [
-        "betmgm",
-        "betrivers",
-        "draftkings",
-        "fanduel"
-      ],
-      "actionable_books_for_run": [
-        "betmgm",
-        "draftkings",
-        "fanduel"
-      ],
-      "feed_unavailable_owned_books": [
-        "bet365",
-        "caesars",
-        "circa"
-      ],
-      "research_only_books": [
-        "betrivers"
-      ],
-      "urgency_thresholds": {
-        "NOW": "<= 15 minutes to start",
-        "SOON": "15 to 90 minutes to start",
-        "LATER": "> 90 minutes to start or unknown"
-      },
-      "selected_rows": [],
-      "executable_closest_misses": [
-        {
-          "rec_id": "canonical-hunt::2026-03-31::1309::icehockey_nhl::6ab93a48138c49071cc0c76f5fa04c81::spreads::chicago-blackhawks-1-5::fanduel",
-          "event_id": "6ab93a48138c49071cc0c76f5fa04c81",
-          "event_label": "Winnipeg Jets @ Chicago Blackhawks",
-          "event_home_team": "Chicago Blackhawks",
-          "event_away_team": "Winnipeg Jets",
-          "line_key": null,
-          "selection": "Chicago Blackhawks +1.5",
-          "sportsbook": "FanDuel",
-          "odds_american": "-188",
-          "post_conf_edge_pct": 1.86,
-          "rejection_reason": "no_edge",
-          "event_start_time": "2026-04-01T00:40:00Z",
-          "minutes_to_start": 390.19,
-          "urgency_tag": "LATER"
-        },
-        {
-          "rec_id": "canonical-hunt::2026-03-31::1309::icehockey_nhl::ade39773836ad914294bb9660ae31a85::spreads::carolina-hurricanes-1-5::draftkings",
-          "event_id": "ade39773836ad914294bb9660ae31a85",
-          "event_label": "Carolina Hurricanes @ Columbus Blue Jackets",
-          "event_home_team": "Columbus Blue Jackets",
-          "event_away_team": "Carolina Hurricanes",
-          "line_key": null,
-          "selection": "Carolina Hurricanes -1.5",
-          "sportsbook": "DraftKings",
-          "odds_american": "190",
-          "post_conf_edge_pct": 1.75,
-          "rejection_reason": "no_edge",
-          "event_start_time": "2026-03-31T23:40:00Z",
-          "minutes_to_start": 330.19,
-          "urgency_tag": "LATER"
-        },
-        {
-          "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::85518e9fa7d88ada5c7ef6acc3fb06fc::h2h::detroit-tigers-ml::draftkings",
-          "event_id": "85518e9fa7d88ada5c7ef6acc3fb06fc",
-          "event_label": "Detroit Tigers @ Arizona Diamondbacks",
-          "event_home_team": "Arizona Diamondbacks",
-          "event_away_team": "Detroit Tigers",
-          "line_key": null,
-          "selection": "Detroit Tigers ML",
-          "sportsbook": "DraftKings",
-          "odds_american": "-102",
-          "post_conf_edge_pct": 1.74,
-          "rejection_reason": "no_edge",
-          "event_start_time": "2026-04-01T01:40:00Z",
-          "minutes_to_start": 450.19,
-          "urgency_tag": "LATER"
-        },
-        {
-          "rec_id": "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::h2h::edmonton-oilers-ml::fanduel",
-          "event_id": "8a5ff06eaed1de4d1a11137b32051fd8",
-          "event_label": "Seattle Kraken @ Edmonton Oilers",
-          "event_home_team": "Edmonton Oilers",
-          "event_away_team": "Seattle Kraken",
-          "line_key": null,
-          "selection": "Edmonton Oilers ML",
-          "sportsbook": "FanDuel",
-          "odds_american": "-176",
-          "post_conf_edge_pct": 1.18,
-          "rejection_reason": "no_edge",
-          "event_start_time": "2026-04-01T01:10:00Z",
-          "minutes_to_start": 420.19,
-          "urgency_tag": "LATER"
-        },
-        {
-          "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::a7ee9fc9ac1db47a494d6c4c39dfc4de::h2h::texas-rangers-ml::draftkings",
-          "event_id": "a7ee9fc9ac1db47a494d6c4c39dfc4de",
-          "event_label": "Texas Rangers @ Baltimore Orioles",
-          "event_home_team": "Baltimore Orioles",
-          "event_away_team": "Texas Rangers",
-          "line_key": null,
-          "selection": "Texas Rangers ML",
-          "sportsbook": "DraftKings",
-          "odds_american": "-126",
-          "post_conf_edge_pct": 1.06,
-          "rejection_reason": "no_edge",
-          "event_start_time": "2026-03-31T22:36:00Z",
-          "minutes_to_start": 266.19,
-          "urgency_tag": "LATER"
-        },
-        {
-          "rec_id": "canonical-hunt::2026-03-31::1309::baseball_mlb::4f785ad4f8847d0e028769afc44d9942::h2h::chicago-cubs-ml::betmgm",
-          "event_id": "4f785ad4f8847d0e028769afc44d9942",
-          "event_label": "Los Angeles Angels @ Chicago Cubs",
-          "event_home_team": "Chicago Cubs",
-          "event_away_team": "Los Angeles Angels",
-          "line_key": null,
-          "selection": "Chicago Cubs ML",
-          "sportsbook": "BetMGM",
-          "odds_american": "-135",
-          "post_conf_edge_pct": 1.05,
-          "rejection_reason": "no_edge",
-          "event_start_time": "2026-03-31T23:41:00Z",
-          "minutes_to_start": 331.19,
-          "urgency_tag": "LATER"
-        }
-      ],
-      "summary": "TIERED EDGE HUNT — 2026-03-31\nBankroll: $1429.71 | Phase: STANDARD | Daily Exposure Used: 0%\nOwned books: bet365, betmgm, caesars, circa, draftkings, fanduel\nLive feed books this run: betmgm, betrivers, draftkings, fanduel\nActionable books this run: betmgm, draftkings, fanduel\nOwned but unavailable in feed: bet365, caesars, circa\nResearch-only books this run: betrivers\n\nRECOMMENDED PLAYS: None\n\nEXECUTABLE CLOSE MISSES:\n- Chicago Blackhawks +1.5 @ -188 | FanDuel: +1.86% edge — no_edge | LATER | starts in 390.19 min\n- Carolina Hurricanes -1.5 @ 190 | DraftKings: +1.75% edge — no_edge | LATER | starts in 330.19 min\n- Detroit Tigers ML @ -102 | DraftKings: +1.74% edge — no_edge | LATER | starts in 450.19 min\n- Edmonton Oilers ML @ -176 | FanDuel: +1.18% edge — no_edge | LATER | starts in 420.19 min\n- Texas Rangers ML @ -126 | DraftKings: +1.06% edge — no_edge | LATER | starts in 266.19 min\n- Chicago Cubs ML @ -135 | BetMGM: +1.05% edge — no_edge | LATER | starts in 331.19 min\n\nVERDICT: SIT — No qualifying edges found after consensus de-vig analysis.",
-      "rows": {
-        "bet_rec_ids": [],
-        "sit_rec_ids": [
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::8b316c9640300bedb485a6556bbdd1f5::totals::under-6-5::fanduel",
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::6ab93a48138c49071cc0c76f5fa04c81::spreads::chicago-blackhawks-1-5::fanduel",
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::ade39773836ad914294bb9660ae31a85::spreads::carolina-hurricanes-1-5::draftkings",
-          "canonical-hunt::2026-03-31::1309::baseball_mlb::85518e9fa7d88ada5c7ef6acc3fb06fc::h2h::detroit-tigers-ml::draftkings",
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::e8b33f9489e018bf61d55e3862f41831::h2h::new-york-rangers-ml::betrivers",
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::spreads::seattle-kraken-1-5::betrivers",
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::h2h::seattle-kraken-ml::betrivers",
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::h2h::edmonton-oilers-ml::fanduel",
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::8b316c9640300bedb485a6556bbdd1f5::h2h::montr-al-canadiens-ml::betrivers",
-          "canonical-hunt::2026-03-31::1309::baseball_mlb::a7ee9fc9ac1db47a494d6c4c39dfc4de::h2h::texas-rangers-ml::draftkings",
-          "canonical-hunt::2026-03-31::1309::baseball_mlb::4f785ad4f8847d0e028769afc44d9942::h2h::chicago-cubs-ml::betmgm",
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::8a5ff06eaed1de4d1a11137b32051fd8::totals::over-6-5::betrivers",
-          "canonical-hunt::2026-03-31::1309::baseball_mlb::522613bca37febfdc7fe1b1b858dea09::h2h::milwaukee-brewers-ml::betmgm",
-          "canonical-hunt::2026-03-31::1309::baseball_mlb::b724336c8a25a94c67ba0d63ea2c98a0::h2h::toronto-blue-jays-ml::fanduel",
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::ade39773836ad914294bb9660ae31a85::h2h::columbus-blue-jackets-ml::betrivers",
-          "canonical-hunt::2026-03-31::1309::baseball_mlb::b294b3f2eb02e42a436d439795c7f125::h2h::st-louis-cardinals-ml::betmgm",
-          "canonical-hunt::2026-03-31::1309::baseball_mlb::8d928227a51e9c7b63c36bcf0a8083f0::h2h::new-york-yankees-ml::draftkings",
-          "canonical-hunt::2026-03-31::1309::baseball_mlb::023399264d3924b30aa040acd7837804::h2h::atlanta-braves-ml::fanduel",
-          "canonical-hunt::2026-03-31::1309::baseball_mlb::5fa4f7bd1d1be2a30a40c0d7f653d9ff::h2h::boston-red-sox-ml::fanduel",
-          "canonical-hunt::2026-03-31::1309::icehockey_nhl::ff972e427e6e1837407bfcfc6d64844d::spreads::pittsburgh-penguins-1-5::fanduel"
-        ],
-        "research_only_rec_ids": []
-      }
+      "summary": "TIERED EDGE HUNT — 2026-03-31\nCANNOT_VERIFY_ODDS — SIT\nReason: odds_transport_failed:basketball_nba:tls_certificate_problem:api.the-odds-api.com:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com"
     },
     "latest_successful_grading": {
       "status": "ok",
@@ -16990,7 +15515,7 @@
       "api_key_env": "ODDS_API_KEY",
       "api_key_source": "environment",
       "secure_key_present": true,
-      "secure_key_provider": "macos_keychain",
+      "secure_key_provider": "local_encrypted_store",
       "base_url": "https://api.the-odds-api.com/v4",
       "source_status": "present",
       "free_tier_scan_ct": null,
@@ -17013,7 +15538,7 @@
       },
       "passed_opportunity_grades": {
         "path": "/Users/jaredbuckman/.openclaw/workspace/memory/passed-opportunity-grades.json",
-        "file_mtime_ct": "2026-03-31 13:09 CT"
+        "file_mtime_ct": "2026-03-31 21:00 CT"
       }
     },
     "state_sync": {
@@ -17043,6 +15568,7 @@
     "operator_promo_log_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/operator-promo-log.jsonl",
     "clean_run_summary_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/clean-run-summary.json",
     "weekly_operator_review_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/weekly-operator-review.json",
+    "deploy_sync_status_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/deploy-sync-status.json",
     "ledger_validation_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json",
     "canonical_state_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/canonical-state.json",
     "public_data_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/public/data.json",

@@ -1,7 +1,7 @@
 {
-  "offset": 419781118,
-  "last_polled_at_utc": "2026-03-31T18:09:05.958Z",
-  "processed_count": 95,
+  "offset": 419781120,
+  "last_polled_at_utc": "2026-04-01T01:58:41.616Z",
+  "processed_count": 97,
   "pending_confirmation": {
     "chat_id": "12345",
     "created_at_utc": "2026-03-28T21:39:39.140Z",

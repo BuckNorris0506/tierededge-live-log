@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-31T18:09:50.702Z",
+  "generated_at_utc": "2026-04-01T02:00:22.960Z",
   "window": "last_7_days",
   "settled_bet_count": 0,
   "expected_vs_realized_summary": {
@@ -11,7 +11,7 @@
     "total_override_events": 12,
     "blocked_run_override_count": 0,
     "off_model_override_count": 6,
-    "monthly_override_count": 12
+    "monthly_override_count": 0
   },
   "missing_coverage": {
     "missing_snapshot_count": 0,
@@ -30,20 +30,20 @@
     {
       "book": "betmgm",
       "owned_book": true,
-      "recommendations_count": 12,
-      "best_price_count": 5787,
-      "executable_near_miss_count": 127,
-      "stale_or_missing_count": 3361,
+      "recommendations_count": 4,
+      "best_price_count": 5387,
+      "executable_near_miss_count": 113,
+      "stale_or_missing_count": 3339,
       "rejected_non_executable_count": 0
     },
     {
       "book": "betrivers",
       "owned_book": false,
-      "recommendations_count": 1,
-      "best_price_count": 4246,
+      "recommendations_count": 0,
+      "best_price_count": 3737,
       "executable_near_miss_count": 0,
-      "stale_or_missing_count": 2214,
-      "rejected_non_executable_count": 7
+      "stale_or_missing_count": 2204,
+      "rejected_non_executable_count": 5
     },
     {
       "book": "caesars",
@@ -66,19 +66,19 @@
     {
       "book": "draftkings",
       "owned_book": true,
-      "recommendations_count": 24,
-      "best_price_count": 6456,
-      "executable_near_miss_count": 128,
-      "stale_or_missing_count": 3258,
+      "recommendations_count": 20,
+      "best_price_count": 5964,
+      "executable_near_miss_count": 113,
+      "stale_or_missing_count": 3201,
       "rejected_non_executable_count": 0
     },
     {
       "book": "fanduel",
       "owned_book": true,
-      "recommendations_count": 12,
-      "best_price_count": 8411,
-      "executable_near_miss_count": 175,
-      "stale_or_missing_count": 4137,
+      "recommendations_count": 1,
+      "best_price_count": 7934,
+      "executable_near_miss_count": 163,
+      "stale_or_missing_count": 4074,
       "rejected_non_executable_count": 0
     }
   ],

@@ -19,6 +19,7 @@ const MISSED_EXECUTION_WINDOWS_PATH = CORE_PATHS.missedExecutionWindows;
 const WEEKLY_OPERATOR_REVIEW_PATH = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/weekly-operator-review.json';
 const OPENCLAW_JOBS_PATH = '/Users/jaredbuckman/.openclaw/cron/jobs.json';
 const CRON_DEBUG_LOG_PATH = '/tmp/tierededge-cron-debug.log';
+const DEPLOY_SYNC_STATUS_PATH = '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/deploy-sync-status.json';
 
 function parsePhase(bankroll) {
   if (!Number.isFinite(bankroll)) return 'UNKNOWN';
@@ -2509,6 +2510,7 @@ function main() {
   const ledgerValidation = validateLedgerInvariants({ requireOutputMatch: false });
   const latestCanonicalHuntRun = readJson(CORE_PATHS.canonicalHuntRun, null);
   const weeklyOperatorReview = readJson(WEEKLY_OPERATOR_REVIEW_PATH, null);
+  const deploySyncStatus = readJson(DEPLOY_SYNC_STATUS_PATH, null);
   const scanCoveragePolicy = loadScanCoveragePolicy();
   const directAutomationConfig = loadDirectAutomationConfig();
   const openclawJobs = readJson(OPENCLAW_JOBS_PATH, { jobs: [] })?.jobs || [];
@@ -2803,6 +2805,7 @@ function main() {
     last_automatic_settlement_run: automaticSettlementSummary.last_automatic_settlement_run,
     automation_lock_summary: automationLockSummary,
     notification_summary: notificationSummary,
+    deploy_sync_summary: deploySyncStatus,
     scheduled_hunt_heartbeat_enabled: scheduledHuntHeartbeatSummary.enabled,
     scheduled_hunt_heartbeat_summary: scheduledHuntHeartbeatSummary,
     friday_fun_summary: fridayFunSummary,
@@ -2952,6 +2955,7 @@ function main() {
       operator_promo_log_path: CORE_PATHS.operatorPromoLog,
       clean_run_summary_path: CORE_PATHS.cleanRunSummary,
       weekly_operator_review_path: WEEKLY_OPERATOR_REVIEW_PATH,
+      deploy_sync_status_path: DEPLOY_SYNC_STATUS_PATH,
       ledger_validation_path: '/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/data/ledger-validator.json',
       canonical_state_path: CORE_PATHS.canonicalState,
       public_data_path: CORE_PATHS.publicData,

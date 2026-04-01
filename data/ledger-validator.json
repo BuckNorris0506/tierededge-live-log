@@ -1,11 +1,9 @@
 {
-  "generated_at_utc": "2026-03-31T18:09:54.530Z",
-  "require_output_match": true,
-  "passed": false,
-  "run_classification": "open_risk_mismatch",
-  "failure_classes": [
-    "open_risk_mismatch"
-  ],
+  "generated_at_utc": "2026-04-01T02:00:26.331Z",
+  "require_output_match": false,
+  "passed": true,
+  "run_classification": "ledger_integrity_pass",
+  "failure_classes": [],
   "summary": {
     "executions_total": 22,
     "executions_pending": 15,
@@ -24,26 +22,5 @@
       "open_exposure_pct_of_bankroll": 11.51
     }
   },
-  "issues": [
-    {
-      "kind": "open_risk_mismatch",
-      "output": "canonical_state",
-      "expected_pending_ticket_count": 15,
-      "actual_pending_ticket_count": 14,
-      "expected_total_stake_at_risk": 164.51,
-      "actual_total_stake_at_risk": 139.51,
-      "expected_open_exposure_pct": 11.51,
-      "actual_open_exposure_pct": 9.76
-    },
-    {
-      "kind": "open_risk_mismatch",
-      "output": "public_data",
-      "expected_pending_ticket_count": 15,
-      "actual_pending_ticket_count": 14,
-      "expected_total_stake_at_risk": 164.51,
-      "actual_total_stake_at_risk": 139.51,
-      "expected_open_exposure_pct": 11.51,
-      "actual_open_exposure_pct": 9.76
-    }
-  ]
+  "issues": []
 }
