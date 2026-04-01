@@ -1,44 +1,44 @@
 WEEKLY OPERATOR REVIEW
-Generated: 2026-04-01T02:05:54.581Z
+Generated: 2026-04-01T02:06:16.172Z
 Window: last_7_days
 
-Valid runs: 153
+Valid runs: 152
 Invalidated runs: 0
 Total bets: 25
-Total sits: 22817
+Total sits: 22727
 Actual CLV: covered=0/0 | avg=N/A | positive=N/A%
-Rejected CLV 1.5–1.99: count=510 | captured=7 | avg=0.75
-Invalid snapshots: 9610
-Stale markets: 3046
+Rejected CLV 1.5–1.99: count=504 | captured=7 | avg=0.75
+Invalid snapshots: 9576
+Stale markets: 2994
 
 Top Rejection Reasons:
-- no_edge: 10077
-- invalid_snapshot: 9610
-- stale_market: 3046
+- no_edge: 10073
+- invalid_snapshot: 9576
+- stale_market: 2994
 - sub_minimum_kelly: 79
 - research_only_non_owned_book: 5
 
 Per-Book Usefulness:
 - bet365 | recs=0 | best=0 | near_miss=0 | stale_missing=0
-- betmgm | recs=4 | best=5333 | near_miss=110 | stale_missing=3287
-- betrivers | recs=0 | best=3723 | near_miss=0 | stale_missing=2194
+- betmgm | recs=4 | best=5296 | near_miss=107 | stale_missing=3252
+- betrivers | recs=0 | best=3718 | near_miss=0 | stale_missing=2189
 - caesars | recs=0 | best=0 | near_miss=0 | stale_missing=0
 - circa | recs=0 | best=0 | near_miss=0 | stale_missing=0
-- draftkings | recs=20 | best=5911 | near_miss=113 | stale_missing=3156
-- fanduel | recs=1 | best=7875 | near_miss=160 | stale_missing=4019
+- draftkings | recs=20 | best=5899 | near_miss=113 | stale_missing=3144
+- fanduel | recs=1 | best=7839 | near_miss=157 | stale_missing=3985
 
 Market-Type Performance:
 - MLB ML | bets=5 | sits=1175 | avg_edge=0.43
-- NBA ML | bets=3 | sits=2953 | avg_edge=0.85
-- NBA Spread | bets=0 | sits=4850 | avg_edge=0.56
-- NBA Total | bets=0 | sits=6724 | avg_edge=0.41
-- NCAAB ML | bets=0 | sits=624 | avg_edge=0.81
-- NCAAB Spread | bets=0 | sits=898 | avg_edge=0.44
-- NCAAB Total | bets=0 | sits=944 | avg_edge=0.41
-- NHL ML | bets=2 | sits=1298 | avg_edge=0.56
+- NBA ML | bets=3 | sits=2947 | avg_edge=0.85
+- NBA Spread | bets=0 | sits=4838 | avg_edge=0.56
+- NBA Total | bets=0 | sits=6714 | avg_edge=0.41
+- NCAAB ML | bets=0 | sits=622 | avg_edge=0.81
+- NCAAB Spread | bets=0 | sits=896 | avg_edge=0.44
+- NCAAB Total | bets=0 | sits=940 | avg_edge=0.41
+- NHL ML | bets=2 | sits=1282 | avg_edge=0.56
 
 Action Flags Seen:
-- RED invalid_snapshot_spike: 138 run(s) crossed the invalid snapshot spike threshold.
-- RED stale_market_spike: 19 run(s) crossed the stale market spike threshold.
+- RED invalid_snapshot_spike: 137 run(s) crossed the invalid snapshot spike threshold.
+- RED stale_market_spike: 18 run(s) crossed the stale market spike threshold.
 - YELLOW owned_books_missing_from_feed: Owned books with no observed pricing this week: circa, bet365, caesars
-- INFO clean_sit_day: 137 clean SIT run(s) recorded this week.
+- INFO clean_sit_day: 136 clean SIT run(s) recorded this week.

@@ -10,7 +10,7 @@ source "$ROOT_DIR/scripts/live-log-automation-guard.sh"
 acquire_live_log_lock "update-live-log.sh"
 
 write_deploy_sync_status() {
-  local status="$1"
+  local deploy_state="$1"
   local attempts="${2:-0}"
   local push_error_file="${3:-}"
   local last_error=""
@@ -29,7 +29,7 @@ write_deploy_sync_status() {
     last_error="$(cat "$push_error_file" 2>/dev/null || true)"
   fi
 
-  STATUS="$status" \
+  DEPLOY_STATE="$deploy_state" \
   ATTEMPTS="$attempts" \
   HEAD_SHA="$head_sha" \
   UPSTREAM_SHA="$upstream_sha" \
@@ -40,9 +40,9 @@ write_deploy_sync_status() {
   node --input-type=module <<'EOF'
 import fs from 'node:fs';
 
-const payload = {
-  generated_at_utc: new Date().toISOString(),
-  status: process.env.STATUS || 'unknown',
+  const payload = {
+    generated_at_utc: new Date().toISOString(),
+    status: process.env.DEPLOY_STATE || 'unknown',
   attempts: Number(process.env.ATTEMPTS || '0'),
   branch: process.env.BRANCH_NAME || null,
   local_head: process.env.HEAD_SHA || null,
