@@ -74,6 +74,12 @@ attempt_live_log_push() {
   return 1
 }
 
+refresh_deploy_sync_views() {
+  node scripts/build-canonical-state.mjs
+  node scripts/build-live-log.mjs
+  node scripts/build-standalone.mjs
+}
+
 node scripts/build-runtime-status.mjs
 if ! node scripts/update-passed-opportunity-grades.mjs; then
   echo "WARN: passed-opportunity grading failed; continuing with existing grades."
@@ -163,16 +169,19 @@ if [[ -n "${LIVE_LOG_DEPLOY_REPO:-}" ]]; then
     PUSH_ERROR_FILE="$(mktemp)"
     if attempt_live_log_push "$PUSH_ERROR_FILE"; then
       write_deploy_sync_status "in_sync" "2" "$PUSH_ERROR_FILE"
+      refresh_deploy_sync_views
       rm -f "$PUSH_ERROR_FILE" "$PUSH_ERROR_FILE.stdout"
       echo "Synced and pushed live log to: $LIVE_LOG_DEPLOY_REPO"
     else
       write_deploy_sync_status "push_failed" "2" "$PUSH_ERROR_FILE"
+      refresh_deploy_sync_views
       cat "$PUSH_ERROR_FILE" >&2
       rm -f "$PUSH_ERROR_FILE" "$PUSH_ERROR_FILE.stdout"
       exit 1
     fi
   else
     write_deploy_sync_status "no_changes" "0"
+    refresh_deploy_sync_views
     echo "No content changes to push."
   fi
 fi

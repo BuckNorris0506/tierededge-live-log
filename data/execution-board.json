@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-01T02:06:16.427Z",
+  "generated_at_utc": "2026-04-01T08:00:11.540Z",
   "run_classification": "true_no_edge_sit",
   "policy": {
     "stale_recommendation_hours": 8,
@@ -84,14 +84,118 @@
   },
   "recommendations": [],
   "operator_summary": [],
-  "hedge_decisions": [],
+  "hedge_decisions": [
+    {
+      "execution_id": "execution::telegram-operator::1774550370237",
+      "run_id": "canonical-hunt::2026-03-26::1256",
+      "rec_id": "canonical-hunt::2026-03-26::1256::baseball_mlb::ac57f6f9aed299cfeb9551b910fa7248::h2h::texas-rangers-ml::draftkings",
+      "event_label": "Texas Rangers @ Philadelphia Phillies",
+      "selection": "Texas Rangers ML",
+      "sportsbook": "DraftKings",
+      "execution_status": "APPROVED_EXECUTION",
+      "current_quote_source": "network",
+      "current_book": "draftkings",
+      "current_odds_american": "-108",
+      "current_edge_pct": -10.92,
+      "event_start_time_utc": "2026-04-01T16:36:00Z",
+      "minutes_to_start": 515.79,
+      "original_odds": "+144",
+      "current_odds": "-108",
+      "clv_cents": 252,
+      "original_edge_pct": 2.26,
+      "edge_decay": 13.18,
+      "time_to_game_start": 515.79,
+      "stake_size": 2,
+      "bankroll": null,
+      "stake_pct_of_bankroll": null,
+      "meaningful_stake": false,
+      "is_live_market": false,
+      "market_type": "PREGAME",
+      "hedge_scan_frequency_mode": 3,
+      "hedge_thresholds_active": {
+        "consider_hedge": {
+          "clv_cents_min": 25,
+          "current_edge_pct_max": 0.25,
+          "time_to_start_minutes_max": 240
+        },
+        "strong_hedge": {
+          "clv_cents_min": 40,
+          "current_edge_pct_max": 0,
+          "time_to_start_minutes_max": 120
+        }
+      },
+      "meaningful_stake_rule": {
+        "pct_of_bankroll": 2,
+        "minimum_stake": 25
+      },
+      "decision": "LET RIDE",
+      "hedge_decision_reason": "stake_too_small_to_manage",
+      "reason": [
+        "stake_too_small_to_manage"
+      ],
+      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -108\nCLV: +252 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -10.92%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+    },
+    {
+      "execution_id": "execution::telegram-operator::1774550462991",
+      "run_id": "canonical-hunt::2026-03-26::1256",
+      "rec_id": "canonical-hunt::2026-03-26::1256::baseball_mlb::ac57f6f9aed299cfeb9551b910fa7248::h2h::texas-rangers-ml::draftkings",
+      "event_label": "Texas Rangers @ Philadelphia Phillies",
+      "selection": "Texas Rangers ML",
+      "sportsbook": "DraftKings",
+      "execution_status": "APPROVED_EXECUTION",
+      "current_quote_source": "cache",
+      "current_book": "draftkings",
+      "current_odds_american": "-108",
+      "current_edge_pct": -10.92,
+      "event_start_time_utc": "2026-04-01T16:36:00Z",
+      "minutes_to_start": 515.79,
+      "original_odds": "+144",
+      "current_odds": "-108",
+      "clv_cents": 252,
+      "original_edge_pct": 2.26,
+      "edge_decay": 13.18,
+      "time_to_game_start": 515.79,
+      "stake_size": 2,
+      "bankroll": null,
+      "stake_pct_of_bankroll": null,
+      "meaningful_stake": false,
+      "is_live_market": false,
+      "market_type": "PREGAME",
+      "hedge_scan_frequency_mode": 3,
+      "hedge_thresholds_active": {
+        "consider_hedge": {
+          "clv_cents_min": 25,
+          "current_edge_pct_max": 0.25,
+          "time_to_start_minutes_max": 240
+        },
+        "strong_hedge": {
+          "clv_cents_min": 40,
+          "current_edge_pct_max": 0,
+          "time_to_start_minutes_max": 120
+        }
+      },
+      "meaningful_stake_rule": {
+        "pct_of_bankroll": 2,
+        "minimum_stake": 25
+      },
+      "decision": "LET RIDE",
+      "hedge_decision_reason": "stake_too_small_to_manage",
+      "reason": [
+        "stake_too_small_to_manage"
+      ],
+      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -108\nCLV: +252 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -10.92%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+    }
+  ],
   "hedge_summary": {
-    "total_positions": 0,
-    "let_ride_count": 0,
+    "total_positions": 2,
+    "let_ride_count": 2,
     "consider_hedge_count": 0,
     "strong_hedge_count": 0
   },
-  "hedge_operator_output": [],
+  "hedge_operator_output": [
+    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -108\nCLV: +252 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -10.92%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -108\nCLV: +252 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -10.92%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+  ],
   "hedge_scan_frequency_mode": 3,
   "hedge_thresholds_active": {
     "consider_hedge": {

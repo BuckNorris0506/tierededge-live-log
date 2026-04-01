@@ -1,2 +1,3 @@
 .DS_Store
 data/ocr-runtime/
+data/deploy-sync-status.json
