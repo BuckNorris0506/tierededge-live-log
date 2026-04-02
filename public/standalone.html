@@ -291,7 +291,7 @@ th {
 
   <script>window.__LIVE_DATA__ = {
   "schema": "tierededge_canonical_v2",
-  "generated_at_utc": "2026-04-02T08:00:31.486Z",
+  "generated_at_utc": "2026-04-02T08:00:57.913Z",
   "last_updated_ct": "2026-04-02 03:00 CT",
   "current_status": {
     "Bankroll": "$1452.21",
@@ -1530,7 +1530,7 @@ th {
       }
     },
     "weekly_truth_report_summary": {
-      "generated_at_utc": "2026-04-02T08:00:33.276Z",
+      "generated_at_utc": "2026-04-02T08:00:59.658Z",
       "settled_bet_count": 0,
       "top_bleeding_categories": [],
       "top_strongest_categories": [],
@@ -1611,7 +1611,7 @@ th {
       ]
     },
     "weekly_operator_review_summary": {
-      "generated_at_utc": "2026-04-02T08:00:19.243Z",
+      "generated_at_utc": "2026-04-02T08:00:47.586Z",
       "window": "last_7_days",
       "run_truth": {
         "valid_runs": 42,
@@ -6005,14 +6005,14 @@ th {
     "scheduler_type": "system_cron",
     "timezone": "America/Chicago",
     "model_backed_scheduler_in_critical_path": false,
-    "total_runs_logged": 4093,
+    "total_runs_logged": 4095,
     "critical_jobs": [
       {
         "name": "telegram-operator-poll",
         "critical": true,
         "schedule_expr": "* * * * *",
         "entrypoint": "./scripts/run-telegram-operator-poll.sh",
-        "last_run_time_utc": "2026-04-02T07:58:59.909Z",
+        "last_run_time_utc": "2026-04-02T08:00:50.382Z",
         "last_status": "ok",
         "last_run_id": null,
         "execution_mode": "direct_local_command"
@@ -6022,7 +6022,7 @@ th {
         "critical": true,
         "schedule_expr": "0 3 * * *",
         "entrypoint": "node ./scripts/run-automatic-settlement-launcher.mjs --job-name nightly-automatic-settlement",
-        "last_run_time_utc": "2026-04-01T08:00:44.943Z",
+        "last_run_time_utc": "2026-04-02T08:00:42.961Z",
         "last_status": "ok",
         "last_run_id": null,
         "execution_mode": "direct_local_command"
@@ -6109,6 +6109,44 @@ th {
       }
     ],
     "recent_runs": [
+      {
+        "automation_run_id": "telegram-operator-poll::2026-04-02T08:00:00.080Z",
+        "scheduler_type": "launchd",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "telegram-operator-poll",
+        "started_at_utc": "2026-04-02T08:00:00.080Z",
+        "completed_at_utc": "2026-04-02T08:00:50.382Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
+        "child_command": "node scripts/telegram-operator-bot.mjs --json",
+        "processed_updates": 0
+      },
+      {
+        "automation_run_id": "nightly-automatic-settlement::2026-04-02T08:00:00.854Z",
+        "scheduler_type": "system_cron",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "job_name": "nightly-automatic-settlement",
+        "started_at_utc": "2026-04-02T08:00:00.854Z",
+        "completed_at_utc": "2026-04-02T08:00:42.961Z",
+        "status": "ok",
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-automatic-settlement-launcher.mjs",
+        "child_command": "node scripts/run-automatic-settlement.mjs",
+        "lock_name": "automatic-settlement",
+        "rebuild_status": "ok",
+        "rows_scanned": 15,
+        "rows_settled": 0,
+        "rows_unresolved": 15,
+        "rows_skipped_already_settled": 8,
+        "unresolved_reason_breakdown": {
+          "multi_execution_cluster_manual_review": 10,
+          "unsupported_market_type": 5
+        },
+        "scores_cache_hits": 0,
+        "scores_api_calls": 3,
+        "settled_rows": []
+      },
       {
         "automation_run_id": "telegram-operator-poll::2026-04-02T07:58:09.648Z",
         "scheduler_type": "launchd",
@@ -6403,32 +6441,6 @@ th {
         "job_name": "telegram-operator-poll",
         "started_at_utc": "2026-04-02T07:17:40.481Z",
         "completed_at_utc": "2026-04-02T07:18:30.756Z",
-        "status": "ok",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "processed_updates": 0
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-04-02T07:15:50.064Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-04-02T07:15:50.064Z",
-        "completed_at_utc": "2026-04-02T07:16:40.302Z",
-        "status": "ok",
-        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
-        "child_command": "node scripts/telegram-operator-bot.mjs --json",
-        "processed_updates": 0
-      },
-      {
-        "automation_run_id": "telegram-operator-poll::2026-04-02T07:13:59.637Z",
-        "scheduler_type": "launchd",
-        "execution_mode": "direct_local_command",
-        "model_backed_scheduler_in_path": false,
-        "job_name": "telegram-operator-poll",
-        "started_at_utc": "2026-04-02T07:13:59.637Z",
-        "completed_at_utc": "2026-04-02T07:14:49.887Z",
         "status": "ok",
         "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-telegram-operator-poll-launcher.mjs",
         "child_command": "node scripts/telegram-operator-bot.mjs --json",
@@ -6829,10 +6841,10 @@ th {
   },
   "automatic_settlement_summary": {
     "last_automatic_settlement_run": {
-      "automation_run_id": "nightly-automatic-settlement::2026-04-01T08:00:01.685Z",
+      "automation_run_id": "nightly-automatic-settlement::2026-04-02T08:00:00.854Z",
       "job_name": "nightly-automatic-settlement",
-      "started_at_utc": "2026-04-01T08:00:01.685Z",
-      "completed_at_utc": "2026-04-01T08:00:44.943Z",
+      "started_at_utc": "2026-04-02T08:00:00.854Z",
+      "completed_at_utc": "2026-04-02T08:00:42.961Z",
       "status": "ok",
       "rows_scanned": 15,
       "rows_settled": 0,
@@ -6851,6 +6863,31 @@ th {
       "unsupported_market_type": 5
     },
     "recent_runs": [
+      {
+        "automation_run_id": "nightly-automatic-settlement::2026-04-02T08:00:00.854Z",
+        "job_name": "nightly-automatic-settlement",
+        "started_at_utc": "2026-04-02T08:00:00.854Z",
+        "completed_at_utc": "2026-04-02T08:00:42.961Z",
+        "status": "ok",
+        "scheduler_type": "system_cron",
+        "execution_mode": "direct_local_command",
+        "model_backed_scheduler_in_path": false,
+        "command_path": "/Users/jaredbuckman/Documents/Playground/TieredEdge-Live-Bet-Log/scripts/run-automatic-settlement-launcher.mjs",
+        "child_command": "node scripts/run-automatic-settlement.mjs",
+        "lock_name": "automatic-settlement",
+        "rebuild_status": "ok",
+        "rows_scanned": 15,
+        "rows_settled": 0,
+        "rows_unresolved": 15,
+        "rows_skipped_already_settled": 8,
+        "unresolved_reason_breakdown": {
+          "multi_execution_cluster_manual_review": 10,
+          "unsupported_market_type": 5
+        },
+        "scores_cache_hits": 0,
+        "scores_api_calls": 3,
+        "settled_rows": []
+      },
       {
         "automation_run_id": "nightly-automatic-settlement::2026-04-01T08:00:01.685Z",
         "job_name": "nightly-automatic-settlement",
@@ -7102,10 +7139,10 @@ th {
     ]
   },
   "last_automatic_settlement_run": {
-    "automation_run_id": "nightly-automatic-settlement::2026-04-01T08:00:01.685Z",
+    "automation_run_id": "nightly-automatic-settlement::2026-04-02T08:00:00.854Z",
     "job_name": "nightly-automatic-settlement",
-    "started_at_utc": "2026-04-01T08:00:01.685Z",
-    "completed_at_utc": "2026-04-01T08:00:44.943Z",
+    "started_at_utc": "2026-04-02T08:00:00.854Z",
+    "completed_at_utc": "2026-04-02T08:00:42.961Z",
     "status": "ok",
     "rows_scanned": 15,
     "rows_settled": 0,
@@ -7244,20 +7281,34 @@ th {
     "notification_tier": "B",
     "triggering_reason": "native_append_runner_failed",
     "channel_used": "log_only",
-    "last_notification_status": "sent",
+    "last_notification_status": "skipped_duplicate",
     "sent_count": 10,
     "status_distribution": {
+      "skipped_duplicate": 8,
       "sent": 10,
-      "skipped_duplicate": 7,
       "failed": 2
     },
     "channel_distribution": {
-      "log_only": 12,
+      "log_only": 13,
       "telegram_failed": 2,
       "telegram": 2,
       "unknown": 3
     },
     "recent_events": [
+      {
+        "notification_id": "notify::2026-04-02T08:00:56.221Z",
+        "created_at_utc": "2026-04-02T08:00:56.221Z",
+        "status": "skipped_duplicate",
+        "notification_type": "warning",
+        "notification_tier": "B",
+        "triggering_reason": "native_append_runner_failed",
+        "trigger": "native_append_runner_failed",
+        "test_marker": false,
+        "run_id": "canonical-hunt::2026-04-01::1800",
+        "fingerprint": "a18bf3ddb2861770c62b",
+        "channel_used": "log_only",
+        "message": "TIERED EDGE — WARNING\n\nRun: canonical-hunt::2026-04-01::1800\nReasons: native_append_runner_failed"
+      },
       {
         "notification_id": "notify::2026-04-02T08:00:29.664Z",
         "created_at_utc": "2026-04-02T08:00:29.664Z",
@@ -7389,33 +7440,18 @@ th {
         "fingerprint": "a1575186732889475e11",
         "channel_used": "log_only",
         "message": "TIERED EDGE — WARNING\n\nRun: canonical-hunt::2026-03-26::1800\nReasons: stale_market_spike"
-      },
-      {
-        "notification_id": "notify::2026-03-26T23:00:18.291Z",
-        "created_at_utc": "2026-03-26T23:00:18.291Z",
-        "status": "sent",
-        "notification_type": "warning",
-        "notification_tier": "B",
-        "triggering_reason": "stale_market_spike",
-        "trigger": "stale_market_spike",
-        "test_marker": false,
-        "run_id": "canonical-hunt::2026-03-26::1800",
-        "fingerprint": "a1575186732889475e11",
-        "channel_used": "log_only",
-        "delivery_error": null,
-        "message": "TIERED EDGE — WARNING\n\nRun: canonical-hunt::2026-03-26::1800\nReasons: stale_market_spike"
       }
     ]
   },
   "deploy_sync_summary": {
-    "generated_at_utc": "2026-04-01T08:01:05.828Z",
+    "generated_at_utc": "2026-04-02T08:00:37.396Z",
     "status": "in_sync",
     "attempts": 2,
     "branch": "main",
-    "local_head": "34587e88172c3d76c9bdbb14dc8f2495e58f9491",
-    "upstream_head": "34587e88172c3d76c9bdbb14dc8f2495e58f9491",
+    "local_head": "3f3bb0f458b0a055890438bcb18b3f77b3f4b081",
+    "upstream_head": "3f3bb0f458b0a055890438bcb18b3f77b3f4b081",
     "ahead_of_upstream_count": 0,
-    "last_error": "To github.com:BuckNorris0506/tierededge-live-log.git\n   0eae150..34587e8  main -> main"
+    "last_error": "To github.com:BuckNorris0506/tierededge-live-log.git\n   34587e8..3f3bb0f  main -> main"
   },
   "scheduled_hunt_heartbeat_enabled": true,
   "scheduled_hunt_heartbeat_summary": {
@@ -9151,7 +9187,7 @@ th {
   },
   "operator_dashboard": {
     "schema": "tierededge_operator_dashboard_v1",
-    "generated_at_utc": "2026-04-02T08:00:31.880Z",
+    "generated_at_utc": "2026-04-02T08:00:58.271Z",
     "top_level_sections": [
       {
         "key": "system_health",
@@ -10989,18 +11025,18 @@ th {
         "selection": "Ottawa Senators -1.5",
         "sportsbook": "DraftKings",
         "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "network",
+        "current_quote_source": "cache",
         "current_book": "draftkings",
         "current_odds_american": "+205",
         "current_edge_pct": 5.21,
         "event_start_time_utc": "2026-04-02T23:00:00Z",
-        "minutes_to_start": 899.65,
+        "minutes_to_start": 899.19,
         "original_odds": "+170",
         "current_odds": "+205",
         "clv_cents": -35,
         "original_edge_pct": 2.01,
         "edge_decay": -3.2,
-        "time_to_game_start": 899.65,
+        "time_to_game_start": 899.19,
         "stake_size": 2,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -11044,13 +11080,13 @@ th {
         "current_odds_american": "+205",
         "current_edge_pct": 5.21,
         "event_start_time_utc": "2026-04-02T23:00:00Z",
-        "minutes_to_start": 899.65,
+        "minutes_to_start": 899.19,
         "original_odds": "+170",
         "current_odds": "+205",
         "clv_cents": -35,
         "original_edge_pct": 2.01,
         "edge_decay": -3.2,
-        "time_to_game_start": 899.65,
+        "time_to_game_start": 899.19,
         "stake_size": 2,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -11094,13 +11130,13 @@ th {
         "current_odds_american": "+205",
         "current_edge_pct": 5.21,
         "event_start_time_utc": "2026-04-02T23:00:00Z",
-        "minutes_to_start": 899.65,
+        "minutes_to_start": 899.19,
         "original_odds": "+170",
         "current_odds": "+205",
         "clv_cents": -35,
         "original_edge_pct": 2.01,
         "edge_decay": -3.2,
-        "time_to_game_start": 899.65,
+        "time_to_game_start": 899.19,
         "stake_size": 2,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -11144,13 +11180,13 @@ th {
         "current_odds_american": "+215",
         "current_edge_pct": 7.25,
         "event_start_time_utc": "2026-04-02T23:00:00Z",
-        "minutes_to_start": 899.65,
+        "minutes_to_start": 899.19,
         "original_odds": "+160",
         "current_odds": "+215",
         "clv_cents": -55,
         "original_edge_pct": 2.12,
         "edge_decay": -5.13,
-        "time_to_game_start": 899.65,
+        "time_to_game_start": 899.19,
         "stake_size": 2.5,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -11194,13 +11230,13 @@ th {
         "current_odds_american": "+215",
         "current_edge_pct": 7.25,
         "event_start_time_utc": "2026-04-02T23:00:00Z",
-        "minutes_to_start": 899.65,
+        "minutes_to_start": 899.19,
         "original_odds": "+160",
         "current_odds": "+215",
         "clv_cents": -55,
         "original_edge_pct": 2.12,
         "edge_decay": -5.13,
-        "time_to_game_start": 899.65,
+        "time_to_game_start": 899.19,
         "stake_size": 4,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -11244,13 +11280,13 @@ th {
         "current_odds_american": "+205",
         "current_edge_pct": 5.21,
         "event_start_time_utc": "2026-04-02T23:00:00Z",
-        "minutes_to_start": 899.65,
+        "minutes_to_start": 899.19,
         "original_odds": "+170",
         "current_odds": "+205",
         "clv_cents": -35,
         "original_edge_pct": 2.01,
         "edge_decay": -3.2,
-        "time_to_game_start": 899.65,
+        "time_to_game_start": 899.19,
         "stake_size": 2.01,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -11289,18 +11325,18 @@ th {
         "selection": "Dallas Stars ML",
         "sportsbook": "BetMGM",
         "execution_status": "APPROVED_EXECUTION",
-        "current_quote_source": "network",
+        "current_quote_source": "cache",
         "current_book": "betmgm",
         "current_odds_american": "-170",
         "current_edge_pct": -7.96,
         "event_start_time_utc": "2026-04-03T00:00:00Z",
-        "minutes_to_start": 959.64,
+        "minutes_to_start": 959.19,
         "original_odds": "-120",
         "current_odds": "-170",
         "clv_cents": 50,
         "original_edge_pct": 2.46,
         "edge_decay": 10.42,
-        "time_to_game_start": 959.64,
+        "time_to_game_start": 959.19,
         "stake_size": 24,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -11344,13 +11380,13 @@ th {
         "current_odds_american": "-170",
         "current_edge_pct": -7.96,
         "event_start_time_utc": "2026-04-03T00:00:00Z",
-        "minutes_to_start": 959.64,
+        "minutes_to_start": 959.19,
         "original_odds": "-120",
         "current_odds": "-170",
         "clv_cents": 50,
         "original_edge_pct": 2.46,
         "edge_decay": 10.42,
-        "time_to_game_start": 959.64,
+        "time_to_game_start": 959.19,
         "stake_size": 23,
         "bankroll": null,
         "stake_pct_of_bankroll": null,
@@ -14746,7 +14782,7 @@ th {
       "bankroll_before": 1429.71,
       "bankroll_after": 1452.21,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:17.306Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:45.620Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774697931905::loss::1774771203417",
@@ -14784,7 +14820,7 @@ th {
       "bankroll_before": 1431.71,
       "bankroll_after": 1429.71,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:17.306Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:45.620Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774733862862::win::1774733971338",
@@ -14818,7 +14854,7 @@ th {
       "bankroll_before": 1400.46,
       "bankroll_after": 1431.71,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:17.306Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:45.620Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774551623980::win::1774610653299",
@@ -14856,7 +14892,7 @@ th {
       "bankroll_before": 1394.3,
       "bankroll_after": 1400.46,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:17.306Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:45.620Z"
     },
     {
       "grading_id": "reconciliation::execution::telegram-operator::1774551629841::loss::1774566696859",
@@ -14890,7 +14926,7 @@ th {
       "bankroll_before": 1396.3,
       "bankroll_after": 1394.3,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:17.306Z"
+      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:45.620Z"
     },
     {
       "grading_id": "reconciliation::execution::manual-recovered::2026-03-17::wild-ml::2026-03-18T10:05:00-05:00",
@@ -14932,7 +14968,7 @@ th {
       "bankroll_before": 1295.13,
       "bankroll_after": 1300.53,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:17.306Z",
+      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:45.620Z",
       "legacy_bankroll_after_import": 1321.03
     },
     {
@@ -14975,7 +15011,7 @@ th {
       "bankroll_before": 1305.63,
       "bankroll_after": 1295.13,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:17.306Z",
+      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:45.620Z",
       "legacy_bankroll_after_import": 1315.63
     },
     {
@@ -15018,12 +15054,12 @@ th {
       "bankroll_before": 1326.13,
       "bankroll_after": 1305.63,
       "bankroll_after_source": "deterministic_ledger_reconciliation",
-      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:17.306Z",
+      "bankroll_after_reconciled_at_utc": "2026-04-02T08:00:45.620Z",
       "legacy_bankroll_after_import": 1300.53
     }
   ],
   "ledger_validation": {
-    "generated_at_utc": "2026-04-02T08:00:31.482Z",
+    "generated_at_utc": "2026-04-02T08:00:57.912Z",
     "require_output_match": false,
     "passed": true,
     "run_classification": "ledger_integrity_pass",
@@ -15182,7 +15218,7 @@ th {
     "summary": "TIERED EDGE HUNT — 2026-04-01\nCANNOT_VERIFY_ODDS — SIT\nReason: odds_fetch_failed:baseball_mlb:503:{\"message\":\"Service Unavailable\"}"
   },
   "runtime_status": {
-    "generated_at_utc": "2026-04-02T08:00:30.394Z",
+    "generated_at_utc": "2026-04-02T08:00:56.937Z",
     "jobs": {
       "morning_edge_hunt": {
         "id": "2766547c-e6a0-40ca-a680-972c7842579c",
