@@ -1,30 +1,15 @@
 {
   "schema": "tierededge_canonical_hunt_run_v1",
-  "run_id": "canonical-hunt::2026-03-31::1500",
-  "generated_at_utc": "2026-03-31T20:00:00.839Z",
-  "run_at_ct": "2026-03-31 15:00",
+  "run_id": "canonical-hunt::2026-04-01::1800",
+  "generated_at_utc": "2026-04-01T23:00:07.948Z",
+  "run_at_ct": "2026-04-01 18:00",
   "status": "failed",
   "message_type": "BLOCKED",
   "requires_state_sync": false,
   "has_actionable_bets": false,
   "native_rows_appended": 0,
   "invalidated": false,
-  "plain_reason": "odds_transport_failed:basketball_nba:tls_certificate_problem:api.the-odds-api.com:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com",
-  "transport_diagnostics": {
-    "service": "the-odds-api",
-    "request_method": "GET",
-    "timeout_ms": null,
-    "auth_env_presence": {
-      "ODDS_API_KEY": true,
-      "THE_ODDS_API_KEY": false
-    },
-    "request_target_domain": "api.the-odds-api.com",
-    "request_path": "/v4/sports/basketball_nba/odds",
-    "error_class": "tls_certificate_problem",
-    "error_code": "ERR_TLS_CERT_ALTNAME_INVALID",
-    "primary_cause": "TLS/certificate hostname mismatch",
-    "error_message": "fetch failed",
-    "cause_message": "Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com"
-  },
-  "summary": "TIERED EDGE HUNT — 2026-03-31\nCANNOT_VERIFY_ODDS — SIT\nReason: odds_transport_failed:basketball_nba:tls_certificate_problem:api.the-odds-api.com:ERR_TLS_CERT_ALTNAME_INVALID:Hostname/IP does not match certificate's altnames: Host: api.the-odds-api.com. is not in the cert's altnames: DNS:*.securly.com, DNS:*.geo.useast.v1api.securly.com, DNS:securly.com, DNS:*.pacrpc.useast.v1api.securly.com"
+  "plain_reason": "odds_fetch_failed:baseball_mlb:503:{\"message\":\"Service Unavailable\"}",
+  "transport_diagnostics": null,
+  "summary": "TIERED EDGE HUNT — 2026-04-01\nCANNOT_VERIFY_ODDS — SIT\nReason: odds_fetch_failed:baseball_mlb:503:{\"message\":\"Service Unavailable\"}"
 }

@@ -284,6 +284,99 @@ function normalizePromoType(value) {
   return null;
 }
 
+export function normalizeStakeType(value) {
+  const normalized = String(value || '').trim().replace(/\s+/g, ' ').toUpperCase();
+  if (!normalized) return null;
+  if (normalized === 'CASH') return 'Cash';
+  if (normalized === 'BONUS BET') return 'Bonus Bet';
+  if (normalized === 'NO SWEAT') return 'No Sweat';
+  if (normalized === 'OTHER') return 'Other';
+  return null;
+}
+
+export function normalizeBetSource(value) {
+  const normalized = String(value || '').trim().replace(/\s+/g, ' ').toUpperCase();
+  if (!normalized) return null;
+  if (normalized === 'ODDSJAM') return 'OddsJam';
+  if (normalized === 'MANUAL') return 'Manual';
+  if (normalized === 'TIERDEDGE') return 'TieredEdge';
+  return null;
+}
+
+function normalizeLedgerDate(value, fallback = null) {
+  const raw = String(value || '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+  return toCtIsoDate(raw || fallback || new Date().toISOString());
+}
+
+function normalizeLedgerNotes(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item || '').trim()).filter(Boolean).join(' | ');
+  }
+  return String(value || '').trim() || '';
+}
+
+function inferStakeType(row) {
+  const explicit = normalizeStakeType(row?.stake_type || row?.ledger_stake_type);
+  if (explicit) return explicit;
+  const promo = String(row?.promo || row?.promo_type || row?.ledger_promo || '').trim();
+  if (/bonus bet/i.test(promo)) return 'Bonus Bet';
+  if (/no sweat/i.test(promo)) return 'No Sweat';
+  return 'Cash';
+}
+
+function inferLedgerSource(row) {
+  const explicit = normalizeBetSource(row?.bet_source || row?.ledger_source);
+  if (explicit) return explicit;
+  const raw = String(row?.source || '').trim().toLowerCase();
+  if (raw === 'telegram_operator' || raw === 'whatsapp_operator') return 'Manual';
+  return 'TieredEdge';
+}
+
+export function buildCanonicalBetPlacedFields(row) {
+  return {
+    ledger_event_type: 'BET PLACED',
+    ledger_schema_version: 'oddsjam_canonical_v1',
+    ledger_date: normalizeLedgerDate(row?.ledger_date || row?.date, row?.bet_slip_timestamp || row?.logged_at_utc),
+    ledger_sport: String(row?.sport || '').trim() || null,
+    ledger_event: String(row?.event || row?.event_label || '').trim() || null,
+    ledger_market: String(row?.market || row?.market_type || '').trim() || null,
+    ledger_selection: String(row?.selection || '').trim() || null,
+    ledger_book: String(row?.actual_sportsbook || row?.recommended_sportsbook || row?.sportsbook || '').trim() || null,
+    ledger_odds: Number.isFinite(parseNumber(row?.actual_odds ?? row?.recommended_odds)) ? String(parseNumber(row?.actual_odds ?? row?.recommended_odds)) : null,
+    ledger_stake: Number.isFinite(parseNumber(row?.actual_stake ?? row?.recommended_stake)) ? round2(parseNumber(row?.actual_stake ?? row?.recommended_stake)) : null,
+    ledger_stake_type: inferStakeType(row),
+    ledger_promo: String(row?.promo || row?.promo_type || row?.ledger_promo || '').trim() || 'None',
+    ledger_source: inferLedgerSource(row),
+    ledger_notes: normalizeLedgerNotes(row?.ledger_notes || row?.notes),
+  };
+}
+
+export function buildCanonicalBetSettledFields(row, executionRow = null) {
+  const execution = executionRow || row || {};
+  const normalizedResult = normalizeSettlementResult(row?.result || row?.settlement_status);
+  if (!normalizedResult) return {};
+  return {
+    ledger_event_type: 'BET SETTLED',
+    ledger_schema_version: 'oddsjam_canonical_v1',
+    ledger_date: normalizeLedgerDate(row?.ledger_date || row?.date, row?.timestamp_ct || row?.logged_at_utc || row?.ingestion_timestamp),
+    ledger_sport: String(row?.sport || execution?.sport || '').trim() || null,
+    ledger_event: String(row?.event || execution?.event || execution?.event_label || '').trim() || null,
+    ledger_market: String(row?.market || execution?.market || execution?.market_type || '').trim() || null,
+    ledger_selection: String(row?.selection || execution?.selection || '').trim() || null,
+    ledger_book: String(row?.sportsbook || execution?.actual_sportsbook || execution?.recommended_sportsbook || '').trim() || null,
+    ledger_odds: Number.isFinite(parseNumber(row?.actual_odds ?? execution?.actual_odds)) ? String(parseNumber(row?.actual_odds ?? execution?.actual_odds)) : null,
+    ledger_stake: Number.isFinite(parseNumber(row?.actual_stake ?? row?.stake ?? execution?.actual_stake)) ? round2(parseNumber(row?.actual_stake ?? row?.stake ?? execution?.actual_stake)) : null,
+    ledger_stake_type: inferStakeType({ ...execution, ...row }),
+    ledger_promo: String(row?.promo || row?.promo_type || execution?.promo || execution?.promo_type || '').trim() || 'None',
+    ledger_source: inferLedgerSource({ ...execution, ...row }),
+    ledger_result: normalizedResult,
+    ledger_payout: Number.isFinite(parseNumber(row?.settlement_payout ?? row?.payout)) ? round2(parseNumber(row?.settlement_payout ?? row?.payout)) : null,
+    ledger_pl: Number.isFinite(parseNumber(row?.profit_loss ?? row?.pl)) ? round2(parseNumber(row?.profit_loss ?? row?.pl)) : null,
+    ledger_notes: normalizeLedgerNotes(row?.ledger_notes || row?.notes),
+  };
+}
+
 function loadActiveOperatorPromos() {
   const rows = readJsonl(CORE_PATHS.operatorPromoLog);
   return rows.filter((row) => String(row.status || '').toUpperCase() === 'ACTIVE');
@@ -1675,9 +1768,35 @@ export function readExecutionLog() {
     .map((row) => enrichExecutionLogRow(row, { metadataIndex }));
 }
 
+export function readCanonicalBetPlacedLedger() {
+  return readExecutionLog().map((row) => ({
+    execution_id: row.execution_id || null,
+    rec_id: row.rec_id || null,
+    run_id: row.run_id || null,
+    ...buildCanonicalBetPlacedFields(row),
+  }));
+}
+
+export function readCanonicalBetSettledLedger() {
+  const executionById = new Map(readExecutionLog().map((row) => [String(row.execution_id || '').trim(), row]));
+  return readJsonl(CORE_PATHS.gradingLedger).map((row) => {
+    const executionRow = executionById.get(String(row.execution_log_id || row.execution_id || row.ref_id || '').trim()) || null;
+    const canonical = buildCanonicalBetSettledFields(row, executionRow);
+    if (!canonical.ledger_event_type) return null;
+    return {
+      grading_id: row.grading_id || null,
+      execution_id: row.execution_log_id || row.execution_id || row.ref_id || null,
+      rec_id: row.rec_id || executionRow?.rec_id || null,
+      run_id: row.run_id || executionRow?.run_id || null,
+      ...canonical,
+    };
+  }).filter(Boolean);
+}
+
 export function appendExecutionLogRow(row) {
   const metadataIndex = buildExecutionMetadataIndex();
   const enriched = enrichExecutionLogRow(reclassifyExecutionRow(row), { metadataIndex });
+  Object.assign(enriched, buildCanonicalBetPlacedFields(enriched));
   const overrideEvents = deriveOverrideEventsFromExecution(enriched);
   const missingJustification = overrideEvents.filter((event) => !String(event.freeform_justification || '').trim());
   if (missingJustification.length) {
@@ -1720,7 +1839,10 @@ export function ingestStructuredExecutionPlacement(row) {
     actual_sportsbook: row.actual_sportsbook,
     actual_odds: row.actual_odds,
     actual_stake: row.actual_stake,
+    stake_type: normalizeStakeType(row.stake_type) || inferStakeType(row),
     promo_type: normalizePromoType(row.promo_type || row.promo) || (classification === 'BOOST_EXECUTION' ? 'PROFIT BOOST' : null),
+    promo: String(row.promo || normalizePromoType(row.promo_type || row.promo) || (classification === 'BOOST_EXECUTION' ? 'PROFIT BOOST' : 'None')).trim() || 'None',
+    bet_source: normalizeBetSource(row.bet_source) || inferLedgerSource(row),
     reward_type: normalizePromoType(row.promo_type || row.promo) || (classification === 'BOOST_EXECUTION' ? 'PROFIT BOOST' : null),
     bet_slip_timestamp: timestamp,
     execution_id: row.execution_id || `execution::telegram-operator::${Date.now()}`,
@@ -1789,6 +1911,7 @@ function normalizeSettlementResult(value) {
   if (normalized === 'win' || normalized === 'won') return 'WIN';
   if (normalized === 'loss' || normalized === 'lost') return 'LOSS';
   if (normalized === 'push') return 'PUSH';
+  if (normalized === 'cash_out' || normalized === 'cashout') return 'CASH OUT';
   return null;
 }
 
@@ -1797,28 +1920,42 @@ function settlementStatusFromResult(result) {
   return normalized ? normalized.toLowerCase() : null;
 }
 
-function settlementPayoutFromOdds(result, stake, americanOdds) {
+function settlementPayoutFromOdds(result, stake, americanOdds, options = {}) {
   const normalized = normalizeSettlementResult(result);
   const stakeNum = parseNumber(stake);
   const oddsNum = parseNumber(americanOdds);
+  const explicitPayout = parseNumber(options.payout);
+  const stakeType = normalizeStakeType(options.stake_type) || inferStakeType(options);
+  if (Number.isFinite(explicitPayout)) return round2(explicitPayout);
   if (!Number.isFinite(stakeNum)) return null;
   if (normalized === 'LOSS') return 0;
   if (normalized === 'PUSH') return round2(stakeNum);
+  if (normalized === 'CASH OUT') return null;
   if (normalized !== 'WIN' || !Number.isFinite(oddsNum)) return null;
+  if (stakeType === 'Bonus Bet') {
+    return oddsNum > 0
+      ? round2(stakeNum * oddsNum / 100)
+      : round2(stakeNum * 100 / Math.abs(oddsNum));
+  }
   if (oddsNum > 0) {
     return round2(stakeNum + (stakeNum * oddsNum / 100));
   }
   return round2(stakeNum + (stakeNum * 100 / Math.abs(oddsNum)));
 }
 
-function settlementProfitLoss(result, stake, americanOdds) {
-  const payout = settlementPayoutFromOdds(result, stake, americanOdds);
+function settlementProfitLoss(result, stake, americanOdds, options = {}) {
+  const explicitProfitLoss = parseNumber(options.profit_loss ?? options.pl);
+  if (Number.isFinite(explicitProfitLoss)) return round2(explicitProfitLoss);
+  const payout = settlementPayoutFromOdds(result, stake, americanOdds, options);
   const stakeNum = parseNumber(stake);
+  const stakeType = normalizeStakeType(options.stake_type) || inferStakeType(options);
   if (!Number.isFinite(stakeNum)) return null;
   const normalized = normalizeSettlementResult(result);
-  if (normalized === 'LOSS') return round2(-stakeNum);
+  if (normalized === 'LOSS') return stakeType === 'Bonus Bet' ? 0 : round2(-stakeNum);
   if (normalized === 'PUSH') return 0;
+  if (normalized === 'CASH OUT') return null;
   if (!Number.isFinite(payout)) return null;
+  if (stakeType === 'Bonus Bet') return round2(payout);
   return round2(payout - stakeNum);
 }
 
@@ -1854,7 +1991,10 @@ function findExistingSettlement(matchExecution) {
 }
 
 function appendStructuredGradingRow(row) {
-  const enriched = enrichGradingRowWithClv(row);
+  const enriched = enrichGradingRowWithClv({
+    ...row,
+    ...buildCanonicalBetSettledFields(row),
+  });
   const existingRows = readJsonl(CORE_PATHS.gradingLedger);
   const reconciled = reconcileGradingBankrollAnnotations([...existingRows, enriched], readJsonl(CORE_PATHS.bankrollLedger));
   const annotationById = new Map(reconciled.rows.map((entry) => [entry.grading_id, entry]));
@@ -1903,22 +2043,30 @@ export function ingestAutomaticExecutionSettlementForExecution(executionRow, res
     run_id: executionRow.run_id || null,
     date: toCtIsoDate(timestamp),
     timestamp_ct: timestamp,
+    sport: executionRow.sport || null,
+    event: executionRow.event || executionRow.event_label || null,
+    market: executionRow.market || executionRow.market_type || null,
     selection: executionRow.selection,
     sportsbook: executionRow.actual_sportsbook,
     actual_odds: executionRow.actual_odds,
     actual_stake: parseNumber(executionRow.actual_stake),
     stake: parseNumber(executionRow.actual_stake),
+    stake_type: executionRow.stake_type || inferStakeType(executionRow),
+    promo: executionRow.promo || executionRow.promo_type || 'None',
+    promo_type: executionRow.promo_type || null,
+    bet_source: executionRow.bet_source || inferLedgerSource(executionRow),
     settlement_status: settlementStatusFromResult(normalizedResult),
-    settlement_payout: settlementPayoutFromOdds(normalizedResult, executionRow.actual_stake, executionRow.actual_odds),
+    settlement_payout: settlementPayoutFromOdds(normalizedResult, executionRow.actual_stake, executionRow.actual_odds, executionRow),
     settlement_source: options.settlement_source || options.source || 'automatic_settlement_job',
     result: normalizedResult,
-    profit_loss: settlementProfitLoss(normalizedResult, executionRow.actual_stake, executionRow.actual_odds),
+    profit_loss: settlementProfitLoss(normalizedResult, executionRow.actual_stake, executionRow.actual_odds, executionRow),
     source: options.source || 'automatic_settlement_job',
     notes: Array.isArray(options.notes) ? options.notes : (options.notes ? [options.notes] : []),
     auto_settlement: true,
     auto_settlement_reason: options.auto_settlement_reason || null,
   };
 
+  Object.assign(gradingRow, buildCanonicalBetSettledFields(gradingRow, executionRow));
   const appended = appendStructuredGradingRow(gradingRow);
   return {
     ok: true,
@@ -1961,7 +2109,6 @@ export function ingestStructuredExecutionSettlement(row) {
   }
 
   const timestamp = row.settlement_timestamp || row.logged_at_utc || new Date().toISOString();
-  const payout = settlementPayoutFromOdds(normalizedResult, executionRow.actual_stake, executionRow.actual_odds);
   const gradingRow = {
     grading_id: row.grading_id || `reconciliation::${executionRow.execution_id}::${normalizeText(normalizedResult)}::${Date.now()}`,
     grading_type: 'RECONCILIATION',
@@ -1972,20 +2119,40 @@ export function ingestStructuredExecutionSettlement(row) {
     run_id: executionRow.run_id || null,
     date: toCtIsoDate(timestamp),
     timestamp_ct: timestamp,
+    sport: row.sport || executionRow.sport || null,
+    event: row.event || executionRow.event || executionRow.event_label || null,
+    market: row.market || executionRow.market || executionRow.market_type || null,
     selection: executionRow.selection,
     sportsbook: executionRow.actual_sportsbook,
     actual_odds: executionRow.actual_odds,
     actual_stake: parseNumber(executionRow.actual_stake),
     stake: parseNumber(executionRow.actual_stake),
+    stake_type: normalizeStakeType(row.stake_type) || executionRow.stake_type || inferStakeType(executionRow),
+    promo: executionRow.promo || executionRow.promo_type || 'None',
+    promo_type: executionRow.promo_type || null,
+    bet_source: executionRow.bet_source || inferLedgerSource(executionRow),
     settlement_status: settlementStatusFromResult(normalizedResult),
-    settlement_payout: payout,
+    settlement_payout: settlementPayoutFromOdds(normalizedResult, executionRow.actual_stake, executionRow.actual_odds, {
+      ...executionRow,
+      payout: row.payout,
+      settlement_payout: row.settlement_payout,
+      stake_type: row.stake_type || executionRow.stake_type,
+    }),
     settlement_source: row.source || 'telegram_operator',
     result: normalizedResult,
-    profit_loss: settlementProfitLoss(normalizedResult, executionRow.actual_stake, executionRow.actual_odds),
+    profit_loss: settlementProfitLoss(normalizedResult, executionRow.actual_stake, executionRow.actual_odds, {
+      ...executionRow,
+      payout: row.payout,
+      settlement_payout: row.settlement_payout,
+      profit_loss: row.profit_loss,
+      pl: row.pl,
+      stake_type: row.stake_type || executionRow.stake_type,
+    }),
     source: row.source || 'telegram_operator',
     notes: Array.isArray(row.notes) ? row.notes : [],
   };
 
+  Object.assign(gradingRow, buildCanonicalBetSettledFields(gradingRow, executionRow));
   const appended = appendStructuredGradingRow(gradingRow);
   return {
     ok: true,

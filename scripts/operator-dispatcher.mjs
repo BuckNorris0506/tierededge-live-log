@@ -58,6 +58,7 @@ function parseSettlementResultToken(value) {
   if (normalized === 'WIN') return 'WIN';
   if (normalized === 'LOSS') return 'LOSS';
   if (normalized === 'PUSH') return 'PUSH';
+  if (normalized === 'CASHOUT') return 'CASH OUT';
   return null;
 }
 
@@ -553,6 +554,36 @@ function parseStakeToken(value) {
   return Number(match[1]).toFixed(2);
 }
 
+function parseSignedMoneyToken(value) {
+  const raw = String(value || '').trim();
+  const match = raw.match(/^([+-])?\$?\s*([0-9]+(?:\.[0-9]{1,2})?)$/);
+  if (!match) return null;
+  const sign = match[1] === '-' ? -1 : 1;
+  return (sign * Number(match[2])).toFixed(2);
+}
+
+function parseDateToken(value) {
+  const raw = String(value || '').trim();
+  return /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : null;
+}
+
+function parseStakeTypeToken(value) {
+  const normalized = normalizeOperatorCommand(value);
+  if (normalized === 'CASH') return 'Cash';
+  if (normalized === 'BONUS BET') return 'Bonus Bet';
+  if (normalized === 'NO SWEAT') return 'No Sweat';
+  if (normalized === 'OTHER') return 'Other';
+  return null;
+}
+
+function parseBetSourceToken(value) {
+  const normalized = normalizeOperatorCommand(value);
+  if (normalized === 'ODDSJAM') return 'OddsJam';
+  if (normalized === 'MANUAL') return 'Manual';
+  if (normalized === 'TIERDEDGE') return 'TieredEdge';
+  return null;
+}
+
 export function parseBetPlacedMessage(input) {
   const lines = String(input || '')
     .split('\n')
@@ -564,7 +595,7 @@ export function parseBetPlacedMessage(input) {
   const labeledFieldMap = new Map();
   let allLabeled = labeledLines.length >= 4;
   for (const line of labeledLines) {
-    const match = String(line || '').match(/^\s*([^:]+)\s*:\s*(.+?)\s*$/);
+    const match = String(line || '').match(/^\s*([^:]+)\s*:\s*(.*?)\s*$/);
     if (!match) {
       allLabeled = false;
       break;
@@ -573,26 +604,58 @@ export function parseBetPlacedMessage(input) {
   }
 
   if (allLabeled && labeledFieldMap.size) {
+    const date = parseDateToken(labeledFieldMap.get('DATE'));
+    const sport = String(labeledFieldMap.get('SPORT') || '').trim();
+    const event = String(labeledFieldMap.get('EVENT') || labeledFieldMap.get('GAME') || '').trim();
+    const market = String(labeledFieldMap.get('MARKET') || '').trim();
     const selection = String(labeledFieldMap.get('SELECTION') || '').trim();
-    const sportsbook = canonicalSportsbook(labeledFieldMap.get('SPORTSBOOK'));
+    const sportsbook = canonicalSportsbook(labeledFieldMap.get('BOOK') || labeledFieldMap.get('SPORTSBOOK'));
     const odds = parseOddsToken(labeledFieldMap.get('ODDS'));
     const stake = parseStakeToken(labeledFieldMap.get('STAKE'));
-    const promoTypeRaw = labeledFieldMap.get('PROMO');
-    const promoType = promoTypeRaw ? canonicalExecutionPromoType(promoTypeRaw) : null;
-    if (!selection) {
-      return { ok: false, reason: 'missing selection', details: 'Selection is required.' };
+    const stakeType = parseStakeTypeToken(labeledFieldMap.get('STAKE TYPE'));
+    const promoRaw = String(labeledFieldMap.get('PROMO') || '').trim();
+    const sourceLabel = parseBetSourceToken(labeledFieldMap.get('SOURCE'));
+    const notes = String(labeledFieldMap.get('NOTES') || '').trim();
+
+    const looksCanonical = ['DATE', 'SPORT', 'EVENT', 'MARKET', 'SELECTION', 'BOOK', 'STAKE TYPE', 'SOURCE'].some((label) => labeledFieldMap.has(label));
+    if (looksCanonical) {
+      if (!date) return { ok: false, reason: 'missing date', details: 'Date is required and must be YYYY-MM-DD.' };
+      if (!sport) return { ok: false, reason: 'missing sport', details: 'Sport is required.' };
+      if (!event) return { ok: false, reason: 'missing event', details: 'Event is required.' };
+      if (!market) return { ok: false, reason: 'missing market', details: 'Market is required.' };
+      if (!selection) return { ok: false, reason: 'missing selection', details: 'Selection is required.' };
+      if (!sportsbook) return { ok: false, reason: 'missing book', details: 'Book is missing or unsupported.' };
+      if (!odds) return { ok: false, reason: 'missing odds', details: 'Odds line must be a valid American price like +170 or -120.' };
+      if (!stake) return { ok: false, reason: 'missing stake', details: 'Stake line must be a dollar amount like 15.00.' };
+      if (!stakeType) return { ok: false, reason: 'missing stake type', details: 'Stake Type must be Cash, Bonus Bet, No Sweat, or Other.' };
+      if (!sourceLabel) return { ok: false, reason: 'missing source', details: 'Source must be OddsJam, Manual, or TieredEdge.' };
+      return {
+        ok: true,
+        payload: {
+          ledger_date: date,
+          sport,
+          event,
+          market,
+          selection,
+          actual_sportsbook: sportsbook,
+          actual_odds: odds,
+          actual_stake: stake,
+          stake_type: stakeType,
+          promo_type: canonicalExecutionPromoType(promoRaw) || null,
+          promo: promoRaw || 'None',
+          bet_source: sourceLabel,
+          notes,
+        },
+      };
     }
-    if (!sportsbook) {
-      return { ok: false, reason: 'missing sportsbook', details: 'Sportsbook is missing or unsupported.' };
-    }
-    if (!odds) {
-      return { ok: false, reason: 'missing odds', details: 'Odds line must be a valid American price like +170 or -120.' };
-    }
-    if (!stake) {
-      return { ok: false, reason: 'missing stake', details: 'Stake line must be a dollar amount like $2.00.' };
-    }
-    if (promoTypeRaw && !promoType) {
-      return { ok: false, reason: 'unsupported promo type', details: 'Promo must be NO SWEAT TOKEN, EARLY WIN TOKEN, or PROFIT BOOST.' };
+
+    const promoType = promoRaw ? canonicalExecutionPromoType(promoRaw) : null;
+    if (!selection) return { ok: false, reason: 'missing selection', details: 'Selection is required.' };
+    if (!sportsbook) return { ok: false, reason: 'missing sportsbook', details: 'Sportsbook is missing or unsupported.' };
+    if (!odds) return { ok: false, reason: 'missing odds', details: 'Odds line must be a valid American price like +170 or -120.' };
+    if (!stake) return { ok: false, reason: 'missing stake', details: 'Stake line must be a dollar amount like $2.00.' };
+    if (promoRaw && !promoType && normalizeOperatorCommand(promoRaw) !== 'NONE') {
+      return { ok: false, reason: 'unsupported promo type', details: 'Promo must be None, NO SWEAT TOKEN, EARLY WIN TOKEN, or PROFIT BOOST.' };
     }
     return {
       ok: true,
@@ -601,9 +664,14 @@ export function parseBetPlacedMessage(input) {
         actual_sportsbook: sportsbook,
         actual_odds: odds,
         actual_stake: stake,
+        stake_type: promoType === 'NO SWEAT TOKEN' ? 'No Sweat' : (/bonus bet/i.test(promoRaw) ? 'Bonus Bet' : 'Cash'),
         promo_type: promoType,
-        promo: promoType,
-        event: String(labeledFieldMap.get('GAME') || '').trim() || null,
+        promo: promoType || (promoRaw || 'None'),
+        bet_source: 'Manual',
+        event: event || null,
+        market: market || null,
+        sport: sport || null,
+        notes,
         start_time_ct: String(labeledFieldMap.get('START TIME') || '').trim() || null,
       },
     };
@@ -633,7 +701,10 @@ export function parseBetPlacedMessage(input) {
         actual_sportsbook: sportsbook,
         actual_odds: odds,
         actual_stake: stake,
+        stake_type: 'Cash',
         promo_type: null,
+        promo: 'None',
+        bet_source: 'Manual',
       },
     };
   }
@@ -668,8 +739,10 @@ export function parseBetPlacedMessage(input) {
           actual_sportsbook: sportsbook,
           actual_odds: odds,
           actual_stake: stake,
+          stake_type: promoType === 'NO SWEAT TOKEN' ? 'No Sweat' : 'Cash',
           promo_type: promoType,
           promo: promoType,
+          bet_source: 'Manual',
         },
       };
     }
@@ -693,7 +766,10 @@ export function parseBetPlacedMessage(input) {
         actual_sportsbook: sportsbook,
         actual_odds: odds,
         actual_stake: stake,
+        stake_type: 'Cash',
         promo_type: null,
+        promo: 'None',
+        bet_source: 'Manual',
       },
     };
   }
@@ -720,6 +796,51 @@ export function parseBetSettledMessage(input) {
     'WIN',
   ];
   const rawPayloadLines = lines.slice(1);
+  const labeledFieldMap = new Map();
+  let allLabeled = rawPayloadLines.length >= 4;
+  for (const line of rawPayloadLines) {
+    const match = String(line || '').match(/^\s*([^:]+)\s*:\s*(.*?)\s*$/);
+    if (!match) {
+      allLabeled = false;
+      break;
+    }
+    labeledFieldMap.set(normalizeOperatorCommand(match[1]), match[2].trim());
+  }
+
+  if (allLabeled && labeledFieldMap.size) {
+    const date = parseDateToken(labeledFieldMap.get('DATE'));
+    const sport = String(labeledFieldMap.get('SPORT') || '').trim();
+    const event = String(labeledFieldMap.get('EVENT') || '').trim();
+    const market = String(labeledFieldMap.get('MARKET') || '').trim();
+    const selection = String(labeledFieldMap.get('SELECTION') || '').trim();
+    const result = parseSettlementResultToken(labeledFieldMap.get('RESULT'));
+    const payout = parseSignedMoneyToken(labeledFieldMap.get('PAYOUT'));
+    const pl = parseSignedMoneyToken(labeledFieldMap.get('P/L'));
+    const notes = String(labeledFieldMap.get('NOTES') || '').trim();
+    if (!date) return { ok: false, reason: 'missing date', details: `Use:\n${expectedLines.join('\n')}` };
+    if (!sport) return { ok: false, reason: 'missing sport', details: 'Sport is required.' };
+    if (!event) return { ok: false, reason: 'missing event', details: 'Event is required.' };
+    if (!market) return { ok: false, reason: 'missing market', details: 'Market is required.' };
+    if (!selection) return { ok: false, reason: 'missing selection', details: 'Selection is required.' };
+    if (!result) return { ok: false, reason: 'invalid settlement result', details: 'Result must be WIN, LOSS, PUSH, or CASH OUT.' };
+    if (payout === null) return { ok: false, reason: 'missing payout', details: 'Payout is required and must be a money amount.' };
+    if (pl === null) return { ok: false, reason: 'missing p/l', details: 'P/L is required and must be a signed money amount.' };
+    return {
+      ok: true,
+      payload: {
+        ledger_date: date,
+        sport,
+        event,
+        market,
+        selection,
+        result,
+        payout,
+        pl,
+        notes,
+      },
+    };
+  }
+
   if (rawPayloadLines.length < 4) {
     const missingLineMap = {
       0: 'missing selection and sportsbook line',
@@ -793,7 +914,15 @@ export function parseBetSettledMessage(input) {
     return {
       ok: false,
       reason: 'invalid settlement result',
-      details: `Result must be WIN, LOSS, or PUSH.\nUse:\n${expectedLines.join('\n')}`,
+      details: `Result must be WIN, LOSS, PUSH, or CASH OUT.\nUse:\n${expectedLines.join('\n')}`,
+    };
+  }
+
+  if (result === 'CASH OUT') {
+    return {
+      ok: false,
+      reason: 'missing payout',
+      details: 'CASH OUT requires the labeled settlement format with explicit Payout and P/L fields.',
     };
   }
 
@@ -805,6 +934,8 @@ export function parseBetSettledMessage(input) {
       actual_odds: odds,
       actual_stake: stake,
       result,
+      payout: null,
+      pl: null,
     },
   };
 }
@@ -814,11 +945,14 @@ function renderExecutionLogSuccess(result) {
   const lines = [
     'LOGGED ✅',
     '',
+    ...(String(row.ledger_event_type || '').trim() ? [`Ledger Event: ${row.ledger_event_type}`] : []),
     `Selection: ${row.selection || 'Unknown'}`,
     `Sportsbook: ${row.actual_sportsbook || 'Unknown'}`,
     `Odds: ${renderCanonicalPrice(row.actual_odds) || 'Unknown'}`,
     `Stake: ${Number.isFinite(parseNumber(row.actual_stake)) ? `$${parseNumber(row.actual_stake).toFixed(2)}` : 'Unknown'}`,
+    ...(String(row.stake_type || row.ledger_stake_type || '').trim() ? [`Stake Type: ${row.stake_type || row.ledger_stake_type}`] : []),
     ...(String(row.promo_type || '').trim() ? [`Promo: ${row.promo_type}`] : []),
+    ...(String(row.bet_source || row.ledger_source || '').trim() ? [`Source: ${row.bet_source || row.ledger_source}`] : []),
     `Execution Status: ${row.execution_approval_result || 'UNKNOWN'}`,
   ];
   if (Number.isFinite(parseNumber(row.standard_ev_pct))) {
@@ -883,12 +1017,15 @@ function renderSettlementSuccess(result) {
   return [
     'SETTLED ✅',
     '',
+    ...(String(grading.ledger_event_type || '').trim() ? [`Ledger Event: ${grading.ledger_event_type}`] : []),
     `Selection: ${execution.selection || grading.selection || 'Unknown'}`,
     `Sportsbook: ${execution.actual_sportsbook || grading.sportsbook || 'Unknown'}`,
     `Odds: ${renderCanonicalPrice(execution.actual_odds || grading.actual_odds) || 'Unknown'}`,
     `Stake: ${Number.isFinite(parseNumber(execution.actual_stake || grading.stake)) ? `$${parseNumber(execution.actual_stake || grading.stake).toFixed(2)}` : 'Unknown'}`,
     `Result: ${grading.result || 'UNKNOWN'}`,
     `Settlement Status: ${String(grading.settlement_status || 'unknown').toUpperCase()}`,
+    ...(Number.isFinite(parseNumber(grading.settlement_payout ?? grading.ledger_payout)) ? [`Payout: $${parseNumber(grading.settlement_payout ?? grading.ledger_payout).toFixed(2)}`] : []),
+    ...(Number.isFinite(parseNumber(grading.profit_loss ?? grading.ledger_pl)) ? [`P/L: ${parseNumber(grading.profit_loss ?? grading.ledger_pl) >= 0 ? '+' : ''}$${Math.abs(parseNumber(grading.profit_loss ?? grading.ledger_pl)).toFixed(2)}`] : []),
     ...(grading.run_id ? [`Run ID: ${grading.run_id}`] : []),
     ...(grading.rec_id ? [`Rec ID: ${grading.rec_id}`] : []),
   ].join('\n');

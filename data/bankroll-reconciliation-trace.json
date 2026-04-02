@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-04-01T08:00:47.617Z",
-  "ending_bankroll": 1429.71,
-  "annotated_count": 29,
+  "generated_at_utc": "2026-04-02T08:00:17.318Z",
+  "ending_bankroll": 1452.21,
+  "annotated_count": 30,
   "trace": [
     {
       "date": "2026-02-28",
@@ -383,6 +383,18 @@
       "bankroll_before": 1431.71,
       "bankroll_after": 1429.71,
       "realized_pl_contribution": -2,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-04-01",
+      "timestamp_ct": "2026-04-02T03:05:00.000Z",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "reconciliation::execution::schema-proof::placed-76ers::win::1775100860998",
+      "bankroll_before": 1429.71,
+      "bankroll_after": 1452.21,
+      "realized_pl_contribution": 22.5,
       "included_in_derived_bankroll": true,
       "included_in_displayed_bankroll": true
     }
