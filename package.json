@@ -13,6 +13,7 @@
     "build:data": "node scripts/build-live-log.mjs",
     "build:standalone": "node scripts/build-standalone.mjs",
     "build:all": "npm run build:runtime && npm run build:execution && npm run build:canonical && npm run build:data && npm run build:standalone",
+    "reporting:google-sheets": "node scripts/sync-google-sheet-reporting.mjs",
     "append:rec": "node scripts/append-recommendation-row.mjs",
     "append:native-decision": "node scripts/append-native-decision-log.mjs",
     "append:hunt-audit": "node scripts/append-hunt-audit-log.mjs",
