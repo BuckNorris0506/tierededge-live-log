@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-04T14:06:20.389Z",
+  "generated_at_utc": "2026-04-04T17:00:14.975Z",
   "window": "last_7_days",
   "settled_bet_count": 0,
   "expected_vs_realized_summary": {
@@ -8,10 +8,10 @@
     "units_risked": 0
   },
   "override_totals": {
-    "total_override_events": 13,
+    "total_override_events": 17,
     "blocked_run_override_count": 0,
-    "off_model_override_count": 7,
-    "monthly_override_count": 1
+    "off_model_override_count": 11,
+    "monthly_override_count": 5
   },
   "missing_coverage": {
     "missing_snapshot_count": 0,
@@ -31,19 +31,19 @@
       "book": "betmgm",
       "owned_book": true,
       "recommendations_count": 2,
-      "best_price_count": 661,
-      "executable_near_miss_count": 22,
-      "stale_or_missing_count": 266,
+      "best_price_count": 643,
+      "executable_near_miss_count": 25,
+      "stale_or_missing_count": 265,
       "rejected_non_executable_count": 0
     },
     {
       "book": "betrivers",
       "owned_book": false,
       "recommendations_count": 0,
-      "best_price_count": 616,
+      "best_price_count": 621,
       "executable_near_miss_count": 0,
-      "stale_or_missing_count": 224,
-      "rejected_non_executable_count": 4
+      "stale_or_missing_count": 208,
+      "rejected_non_executable_count": 2
     },
     {
       "book": "caesars",
@@ -67,18 +67,18 @@
       "book": "draftkings",
       "owned_book": true,
       "recommendations_count": 0,
-      "best_price_count": 863,
+      "best_price_count": 850,
       "executable_near_miss_count": 13,
-      "stale_or_missing_count": 343,
+      "stale_or_missing_count": 345,
       "rejected_non_executable_count": 0
     },
     {
       "book": "fanduel",
       "owned_book": true,
       "recommendations_count": 1,
-      "best_price_count": 1118,
-      "executable_near_miss_count": 26,
-      "stale_or_missing_count": 417,
+      "best_price_count": 1112,
+      "executable_near_miss_count": 23,
+      "stale_or_missing_count": 436,
       "rejected_non_executable_count": 0
     }
   ],

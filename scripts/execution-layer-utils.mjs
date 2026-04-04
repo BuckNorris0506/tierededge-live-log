@@ -1829,6 +1829,8 @@ export function ingestStructuredExecutionPlacement(row) {
     run_id: candidate?.run_id || null,
     event: candidate?.event_label || row.event || null,
     event_label: candidate?.event_label || row.event || null,
+    sport: row.sport || candidate?.sport || null,
+    league: row.league || row.sport || candidate?.league || candidate?.sport || null,
     market: candidate?.market_type || row.market || 'Unknown',
     market_type: candidate?.market_type || row.market || null,
     selection: row.selection || candidate?.selection || null,

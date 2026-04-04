@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-04T14:06:21.499Z",
+  "generated_at_utc": "2026-04-04T17:00:16.177Z",
   "run_classification": "true_no_edge_sit",
   "policy": {
     "stale_recommendation_hours": 8,
@@ -95,16 +95,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "network",
       "current_book": "draftkings",
-      "current_odds_american": "+215",
-      "current_edge_pct": 6.25,
+      "current_odds_american": "+200",
+      "current_edge_pct": 4.67,
       "event_start_time_utc": "2026-04-04T17:10:00Z",
-      "minutes_to_start": 183.63,
+      "minutes_to_start": 9.71,
       "original_odds": "+170",
-      "current_odds": "+215",
-      "clv_cents": -45,
+      "current_odds": "+200",
+      "clv_cents": -30,
       "original_edge_pct": 2.01,
-      "edge_decay": -4.24,
-      "time_to_game_start": 183.63,
+      "edge_decay": -2.66,
+      "time_to_game_start": 9.71,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -133,7 +133,7 @@
       "reason": [
         "edge_still_present"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +215\nCLV: -45 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 6.25%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
+      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +200\nCLV: -30 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 4.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
     },
     {
       "execution_id": "execution::telegram-operator::1774549066205",
@@ -145,16 +145,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "+215",
-      "current_edge_pct": 6.25,
+      "current_odds_american": "+200",
+      "current_edge_pct": 4.67,
       "event_start_time_utc": "2026-04-04T17:10:00Z",
-      "minutes_to_start": 183.63,
+      "minutes_to_start": 9.71,
       "original_odds": "+170",
-      "current_odds": "+215",
-      "clv_cents": -45,
+      "current_odds": "+200",
+      "clv_cents": -30,
       "original_edge_pct": 2.01,
-      "edge_decay": -4.24,
-      "time_to_game_start": 183.63,
+      "edge_decay": -2.66,
+      "time_to_game_start": 9.71,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -183,7 +183,7 @@
       "reason": [
         "edge_still_present"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +215\nCLV: -45 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 6.25%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
+      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +200\nCLV: -30 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 4.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
     },
     {
       "execution_id": "execution::telegram-operator::1774550370229",
@@ -195,16 +195,16 @@
       "execution_status": "STALE_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "+215",
-      "current_edge_pct": 6.25,
+      "current_odds_american": "+200",
+      "current_edge_pct": 4.67,
       "event_start_time_utc": "2026-04-04T17:10:00Z",
-      "minutes_to_start": 183.63,
+      "minutes_to_start": 9.71,
       "original_odds": "+170",
-      "current_odds": "+215",
-      "clv_cents": -45,
+      "current_odds": "+200",
+      "clv_cents": -30,
       "original_edge_pct": 2.01,
-      "edge_decay": -4.24,
-      "time_to_game_start": 183.63,
+      "edge_decay": -2.66,
+      "time_to_game_start": 9.71,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -233,7 +233,7 @@
       "reason": [
         "edge_still_present"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +215\nCLV: -45 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 6.25%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
+      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +200\nCLV: -30 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 4.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
     },
     {
       "execution_id": "execution::telegram-operator::1774550370237",
@@ -248,13 +248,13 @@
       "current_odds_american": "-143",
       "current_edge_pct": -17.85,
       "event_start_time_utc": "2026-04-04T23:06:00Z",
-      "minutes_to_start": 539.63,
+      "minutes_to_start": 365.7,
       "original_odds": "+144",
       "current_odds": "-143",
       "clv_cents": 287,
       "original_edge_pct": 2.26,
       "edge_decay": 20.11,
-      "time_to_game_start": 539.63,
+      "time_to_game_start": 365.7,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -298,13 +298,13 @@
       "current_odds_american": "-143",
       "current_edge_pct": -17.85,
       "event_start_time_utc": "2026-04-04T23:06:00Z",
-      "minutes_to_start": 539.63,
+      "minutes_to_start": 365.7,
       "original_odds": "+144",
       "current_odds": "-143",
       "clv_cents": 287,
       "original_edge_pct": 2.26,
       "edge_decay": 20.11,
-      "time_to_game_start": 539.63,
+      "time_to_game_start": 365.7,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -336,6 +336,106 @@
       "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -143\nCLV: +287 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -17.85%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
+      "execution_id": "execution::telegram-operator::1774551599056",
+      "run_id": "canonical-hunt::2026-03-26::1256",
+      "rec_id": "canonical-hunt::2026-03-26::1256::icehockey_nhl::0d07b0bc16914cd16d27e6efdda5709c::spreads::philadelphia-flyers-1-5::draftkings",
+      "event_label": "Chicago Blackhawks @ Philadelphia Flyers",
+      "selection": "Philadelphia Flyers -1.5",
+      "sportsbook": "DraftKings",
+      "execution_status": "APPROVED_EXECUTION",
+      "current_quote_source": "cache",
+      "current_book": "draftkings",
+      "current_odds_american": "+180",
+      "current_edge_pct": 3.29,
+      "event_start_time_utc": "2026-04-05T19:40:00Z",
+      "minutes_to_start": 1599.7,
+      "original_odds": "+160",
+      "current_odds": "+180",
+      "clv_cents": -20,
+      "original_edge_pct": 2.12,
+      "edge_decay": -1.17,
+      "time_to_game_start": 1599.7,
+      "stake_size": 2.5,
+      "bankroll": null,
+      "stake_pct_of_bankroll": null,
+      "meaningful_stake": false,
+      "is_live_market": false,
+      "market_type": "PREGAME",
+      "hedge_scan_frequency_mode": 3,
+      "hedge_thresholds_active": {
+        "consider_hedge": {
+          "clv_cents_min": 25,
+          "current_edge_pct_max": 0.25,
+          "time_to_start_minutes_max": 240
+        },
+        "strong_hedge": {
+          "clv_cents_min": 40,
+          "current_edge_pct_max": 0,
+          "time_to_start_minutes_max": 120
+        }
+      },
+      "meaningful_stake_rule": {
+        "pct_of_bankroll": 2,
+        "minimum_stake": 25
+      },
+      "decision": "LET RIDE",
+      "hedge_decision_reason": "edge_still_present",
+      "reason": [
+        "edge_still_present"
+      ],
+      "operator_output": "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: +180\nCLV: -20 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: 3.29%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
+    },
+    {
+      "execution_id": "execution::telegram-operator::1774551622795",
+      "run_id": "canonical-hunt::2026-03-26::1256",
+      "rec_id": "canonical-hunt::2026-03-26::1256::icehockey_nhl::0d07b0bc16914cd16d27e6efdda5709c::spreads::philadelphia-flyers-1-5::draftkings",
+      "event_label": "Chicago Blackhawks @ Philadelphia Flyers",
+      "selection": "Philadelphia Flyers -1.5",
+      "sportsbook": "DraftKings",
+      "execution_status": "APPROVED_EXECUTION",
+      "current_quote_source": "cache",
+      "current_book": "draftkings",
+      "current_odds_american": "+180",
+      "current_edge_pct": 3.29,
+      "event_start_time_utc": "2026-04-05T19:40:00Z",
+      "minutes_to_start": 1599.7,
+      "original_odds": "+160",
+      "current_odds": "+180",
+      "clv_cents": -20,
+      "original_edge_pct": 2.12,
+      "edge_decay": -1.17,
+      "time_to_game_start": 1599.7,
+      "stake_size": 4,
+      "bankroll": null,
+      "stake_pct_of_bankroll": null,
+      "meaningful_stake": false,
+      "is_live_market": false,
+      "market_type": "PREGAME",
+      "hedge_scan_frequency_mode": 3,
+      "hedge_thresholds_active": {
+        "consider_hedge": {
+          "clv_cents_min": 25,
+          "current_edge_pct_max": 0.25,
+          "time_to_start_minutes_max": 240
+        },
+        "strong_hedge": {
+          "clv_cents_min": 40,
+          "current_edge_pct_max": 0,
+          "time_to_start_minutes_max": 120
+        }
+      },
+      "meaningful_stake_rule": {
+        "pct_of_bankroll": 2,
+        "minimum_stake": 25
+      },
+      "decision": "LET RIDE",
+      "hedge_decision_reason": "edge_still_present",
+      "reason": [
+        "edge_still_present"
+      ],
+      "operator_output": "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: +180\nCLV: -20 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: 3.29%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
+    },
+    {
       "execution_id": "execution::telegram-operator::1774551629044",
       "run_id": "canonical-hunt::2026-03-26::1239",
       "rec_id": "canonical-hunt::2026-03-26::1239::icehockey_nhl::8642b100ab8ed115ed6acecb443e230e::spreads::ottawa-senators-1-5::draftkings",
@@ -345,16 +445,16 @@
       "execution_status": "STALE_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "+215",
-      "current_edge_pct": 6.25,
+      "current_odds_american": "+200",
+      "current_edge_pct": 4.67,
       "event_start_time_utc": "2026-04-04T17:10:00Z",
-      "minutes_to_start": 183.63,
+      "minutes_to_start": 9.7,
       "original_odds": "+170",
-      "current_odds": "+215",
-      "clv_cents": -45,
+      "current_odds": "+200",
+      "clv_cents": -30,
       "original_edge_pct": 2.01,
-      "edge_decay": -4.24,
-      "time_to_game_start": 183.63,
+      "edge_decay": -2.66,
+      "time_to_game_start": 9.7,
       "stake_size": 2.01,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -383,7 +483,7 @@
       "reason": [
         "edge_still_present"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +215\nCLV: -45 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 6.25%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
+      "operator_output": "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +200\nCLV: -30 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 4.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
     },
     {
       "execution_id": "execution::telegram-operator::1774723535709",
@@ -397,14 +497,14 @@
       "current_book": "betmgm",
       "current_odds_american": "-105",
       "current_edge_pct": 3.78,
-      "event_start_time_utc": "2026-04-04T19:10:00Z",
-      "minutes_to_start": 303.62,
+      "event_start_time_utc": "2026-04-04T19:15:00Z",
+      "minutes_to_start": 134.69,
       "original_odds": "-120",
       "current_odds": "-105",
       "clv_cents": -15,
       "original_edge_pct": 2.46,
       "edge_decay": -1.32,
-      "time_to_game_start": 303.62,
+      "time_to_game_start": 134.69,
       "stake_size": 24,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -447,14 +547,14 @@
       "current_book": "betmgm",
       "current_odds_american": "-105",
       "current_edge_pct": 3.78,
-      "event_start_time_utc": "2026-04-04T19:10:00Z",
-      "minutes_to_start": 303.62,
+      "event_start_time_utc": "2026-04-04T19:15:00Z",
+      "minutes_to_start": 134.69,
       "original_odds": "-120",
       "current_odds": "-105",
       "clv_cents": -15,
       "original_edge_pct": 2.46,
       "edge_decay": -1.32,
-      "time_to_game_start": 303.62,
+      "time_to_game_start": 134.69,
       "stake_size": 23,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -484,23 +584,230 @@
         "edge_still_present"
       ],
       "operator_output": "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -105\nCLV: -15 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: 3.78%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
+    },
+    {
+      "execution_id": "execution::telegram-operator::1775319726634",
+      "run_id": null,
+      "rec_id": null,
+      "event_label": "Houston Astros vs Oakland Athletics",
+      "selection": "Under 5",
+      "sportsbook": "BetMGM",
+      "execution_status": "OFF_PLAN_EXECUTION",
+      "current_quote_source": "network",
+      "current_book": "betmgm",
+      "current_odds_american": "+100",
+      "current_edge_pct": null,
+      "event_start_time_utc": "2026-04-04T23:11:00Z",
+      "minutes_to_start": 370.69,
+      "original_odds": "+110",
+      "current_odds": "+100",
+      "clv_cents": 10,
+      "original_edge_pct": null,
+      "edge_decay": null,
+      "time_to_game_start": 370.69,
+      "stake_size": 15,
+      "bankroll": null,
+      "stake_pct_of_bankroll": null,
+      "meaningful_stake": false,
+      "is_live_market": false,
+      "market_type": "PREGAME",
+      "hedge_scan_frequency_mode": 3,
+      "hedge_thresholds_active": {
+        "consider_hedge": {
+          "clv_cents_min": 25,
+          "current_edge_pct_max": 0.25,
+          "time_to_start_minutes_max": 240
+        },
+        "strong_hedge": {
+          "clv_cents_min": 40,
+          "current_edge_pct_max": 0,
+          "time_to_start_minutes_max": 120
+        }
+      },
+      "meaningful_stake_rule": {
+        "pct_of_bankroll": 2,
+        "minimum_stake": 25
+      },
+      "decision": "LET RIDE",
+      "hedge_decision_reason": "stake_too_small_to_manage",
+      "reason": [
+        "stake_too_small_to_manage"
+      ],
+      "operator_output": "POSITION UPDATE\n\nSelection: Under 5\nOriginal Odds: +110\nCurrent Odds: +100\nCLV: +10 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+    },
+    {
+      "execution_id": "execution::telegram-operator::1775320051340",
+      "run_id": null,
+      "rec_id": null,
+      "event_label": "Milwaukee Brewers vs Kansas City Royals",
+      "selection": "Over 5.5",
+      "sportsbook": "BetMGM",
+      "execution_status": "OFF_PLAN_EXECUTION",
+      "current_quote_source": "network",
+      "current_book": "betmgm",
+      "current_odds_american": "+110",
+      "current_edge_pct": null,
+      "event_start_time_utc": "2026-04-04T16:40:00Z",
+      "minutes_to_start": -20.32,
+      "original_odds": "+135",
+      "current_odds": "+110",
+      "clv_cents": 25,
+      "original_edge_pct": null,
+      "edge_decay": null,
+      "time_to_game_start": -20.32,
+      "stake_size": 10,
+      "bankroll": null,
+      "stake_pct_of_bankroll": null,
+      "meaningful_stake": false,
+      "is_live_market": true,
+      "market_type": "LIVE",
+      "hedge_scan_frequency_mode": 3,
+      "hedge_thresholds_active": {
+        "consider_hedge": {
+          "clv_cents_min": 25,
+          "current_edge_pct_max": 0.25,
+          "time_to_start_minutes_max": 240
+        },
+        "strong_hedge": {
+          "clv_cents_min": 40,
+          "current_edge_pct_max": 0,
+          "time_to_start_minutes_max": 120
+        }
+      },
+      "meaningful_stake_rule": {
+        "pct_of_bankroll": 2,
+        "minimum_stake": 25
+      },
+      "decision": "LET RIDE",
+      "hedge_decision_reason": "state_driven_live_movement",
+      "reason": [
+        "state_driven_live_movement",
+        "default_let_ride"
+      ],
+      "operator_output": "POSITION UPDATE\n\nSelection: Over 5.5\nOriginal Odds: +135\nCurrent Odds: +110\nCLV: +25 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: LIVE\n\nDecision: LET RIDE\n\nReason:\n- state_driven_live_movement\n- default_let_ride"
+    },
+    {
+      "execution_id": "execution::telegram-operator::1775320052150",
+      "run_id": null,
+      "rec_id": null,
+      "event_label": "Detroit Pistons vs Philadelphia 76ers",
+      "selection": "Philadelphia 76ers -2.5",
+      "sportsbook": "BetMGM",
+      "execution_status": "OFF_PLAN_EXECUTION",
+      "current_quote_source": "network",
+      "current_book": "betmgm",
+      "current_odds_american": "-115",
+      "current_edge_pct": null,
+      "event_start_time_utc": "2026-04-04T23:10:00Z",
+      "minutes_to_start": 369.68,
+      "original_odds": "+125",
+      "current_odds": "-115",
+      "clv_cents": 240,
+      "original_edge_pct": null,
+      "edge_decay": null,
+      "time_to_game_start": 369.68,
+      "stake_size": 10,
+      "bankroll": null,
+      "stake_pct_of_bankroll": null,
+      "meaningful_stake": false,
+      "is_live_market": false,
+      "market_type": "PREGAME",
+      "hedge_scan_frequency_mode": 3,
+      "hedge_thresholds_active": {
+        "consider_hedge": {
+          "clv_cents_min": 25,
+          "current_edge_pct_max": 0.25,
+          "time_to_start_minutes_max": 240
+        },
+        "strong_hedge": {
+          "clv_cents_min": 40,
+          "current_edge_pct_max": 0,
+          "time_to_start_minutes_max": 120
+        }
+      },
+      "meaningful_stake_rule": {
+        "pct_of_bankroll": 2,
+        "minimum_stake": 25
+      },
+      "decision": "LET RIDE",
+      "hedge_decision_reason": "stake_too_small_to_manage",
+      "reason": [
+        "stake_too_small_to_manage"
+      ],
+      "operator_output": "POSITION UPDATE\n\nSelection: Philadelphia 76ers -2.5\nOriginal Odds: +125\nCurrent Odds: -115\nCLV: +240 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+    },
+    {
+      "execution_id": "execution::telegram-operator::1775320052932",
+      "run_id": null,
+      "rec_id": null,
+      "event_label": "San Antonio Spurs vs Denver Nuggets",
+      "selection": "San Antonio Spurs -5.5",
+      "sportsbook": "BetMGM",
+      "execution_status": "OFF_PLAN_EXECUTION",
+      "current_quote_source": "cache",
+      "current_book": "betmgm",
+      "current_odds_american": "-118",
+      "current_edge_pct": null,
+      "event_start_time_utc": "2026-04-04T19:10:00Z",
+      "minutes_to_start": 129.68,
+      "original_odds": "+185",
+      "current_odds": "-118",
+      "clv_cents": 303,
+      "original_edge_pct": null,
+      "edge_decay": null,
+      "time_to_game_start": 129.68,
+      "stake_size": 10,
+      "bankroll": null,
+      "stake_pct_of_bankroll": null,
+      "meaningful_stake": false,
+      "is_live_market": false,
+      "market_type": "PREGAME",
+      "hedge_scan_frequency_mode": 3,
+      "hedge_thresholds_active": {
+        "consider_hedge": {
+          "clv_cents_min": 25,
+          "current_edge_pct_max": 0.25,
+          "time_to_start_minutes_max": 240
+        },
+        "strong_hedge": {
+          "clv_cents_min": 40,
+          "current_edge_pct_max": 0,
+          "time_to_start_minutes_max": 120
+        }
+      },
+      "meaningful_stake_rule": {
+        "pct_of_bankroll": 2,
+        "minimum_stake": 25
+      },
+      "decision": "LET RIDE",
+      "hedge_decision_reason": "stake_too_small_to_manage",
+      "reason": [
+        "stake_too_small_to_manage"
+      ],
+      "operator_output": "POSITION UPDATE\n\nSelection: San Antonio Spurs -5.5\nOriginal Odds: +185\nCurrent Odds: -118\nCLV: +303 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     }
   ],
   "hedge_summary": {
-    "total_positions": 8,
-    "let_ride_count": 8,
+    "total_positions": 14,
+    "let_ride_count": 14,
     "consider_hedge_count": 0,
     "strong_hedge_count": 0
   },
   "hedge_operator_output": [
-    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +215\nCLV: -45 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 6.25%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
-    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +215\nCLV: -45 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 6.25%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
-    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +215\nCLV: -45 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 6.25%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
+    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +200\nCLV: -30 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 4.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
+    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +200\nCLV: -30 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 4.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
+    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +200\nCLV: -30 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 4.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
     "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -143\nCLV: +287 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -17.85%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
     "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: -143\nCLV: +287 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -17.85%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +215\nCLV: -45 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 6.25%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
+    "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: +180\nCLV: -20 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: 3.29%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
+    "POSITION UPDATE\n\nSelection: Philadelphia Flyers -1.5\nOriginal Odds: +160\nCurrent Odds: +180\nCLV: -20 cents\n\nOriginal Edge: 2.12%\nCurrent Edge: 3.29%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
+    "POSITION UPDATE\n\nSelection: Ottawa Senators -1.5\nOriginal Odds: +170\nCurrent Odds: +200\nCLV: -30 cents\n\nOriginal Edge: 2.01%\nCurrent Edge: 4.67%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
     "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -105\nCLV: -15 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: 3.78%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
-    "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -105\nCLV: -15 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: 3.78%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
+    "POSITION UPDATE\n\nSelection: Dallas Stars ML\nOriginal Odds: -120\nCurrent Odds: -105\nCLV: -15 cents\n\nOriginal Edge: 2.46%\nCurrent Edge: 3.78%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
+    "POSITION UPDATE\n\nSelection: Under 5\nOriginal Odds: +110\nCurrent Odds: +100\nCLV: +10 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Over 5.5\nOriginal Odds: +135\nCurrent Odds: +110\nCLV: +25 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: LIVE\n\nDecision: LET RIDE\n\nReason:\n- state_driven_live_movement\n- default_let_ride",
+    "POSITION UPDATE\n\nSelection: Philadelphia 76ers -2.5\nOriginal Odds: +125\nCurrent Odds: -115\nCLV: +240 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: San Antonio Spurs -5.5\nOriginal Odds: +185\nCurrent Odds: -118\nCLV: +303 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
   ],
   "hedge_scan_frequency_mode": 3,
   "hedge_thresholds_active": {
