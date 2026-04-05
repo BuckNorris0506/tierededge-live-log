@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-04-04T23:00:07.759Z",
-  "ending_bankroll": 1452.21,
-  "annotated_count": 30,
+  "generated_at_utc": "2026-04-05T08:00:08.196Z",
+  "ending_bankroll": 1407.21,
+  "annotated_count": 34,
   "trace": [
     {
       "date": "2026-02-28",
@@ -395,6 +395,54 @@
       "bankroll_before": 1429.71,
       "bankroll_after": 1452.21,
       "realized_pl_contribution": 22.5,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-04-04",
+      "timestamp_ct": "2026-04-04T23:00:00.000Z",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "reconciliation::execution::telegram-operator::1775320052150::loss::1775368885520",
+      "bankroll_before": 1452.21,
+      "bankroll_after": 1442.21,
+      "realized_pl_contribution": -10,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-04-04",
+      "timestamp_ct": "2026-04-04T23:01:00.000Z",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "reconciliation::execution::telegram-operator::1775319726634::loss::1775368885733",
+      "bankroll_before": 1442.21,
+      "bankroll_after": 1427.21,
+      "realized_pl_contribution": -15,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-04-04",
+      "timestamp_ct": "2026-04-04T23:02:00.000Z",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "reconciliation::execution::telegram-operator::1775320052932::loss::1775368885909",
+      "bankroll_before": 1427.21,
+      "bankroll_after": 1417.21,
+      "realized_pl_contribution": -10,
+      "included_in_derived_bankroll": true,
+      "included_in_displayed_bankroll": true
+    },
+    {
+      "date": "2026-04-04",
+      "timestamp_ct": "2026-04-04T23:03:00.000Z",
+      "event_type": "GRADE",
+      "source_file": "grading-ledger",
+      "grading_id": "reconciliation::execution::telegram-operator::1775320051340::loss::1775368886151",
+      "bankroll_before": 1417.21,
+      "bankroll_after": 1407.21,
+      "realized_pl_contribution": -10,
       "included_in_derived_bankroll": true,
       "included_in_displayed_bankroll": true
     }

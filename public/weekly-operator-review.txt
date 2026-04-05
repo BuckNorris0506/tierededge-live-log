@@ -1,5 +1,5 @@
 WEEKLY OPERATOR REVIEW
-Generated: 2026-04-04T23:00:09.665Z
+Generated: 2026-04-05T08:00:10.068Z
 Window: last_7_days
 
 Valid runs: 14
