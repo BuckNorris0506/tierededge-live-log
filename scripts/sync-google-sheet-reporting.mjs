@@ -11,6 +11,7 @@ const REPORTING_STATE_PATH = path.join(ROOT, 'data', 'google-sheets-reporting.js
 const DEFAULT_SHEET_TITLE = 'TieredEdge OddsJam Trial Reporting';
 const REQUIRED_SHEETS = ['Open Bets', 'Settled Bets', 'Daily Summary', 'Dashboard'];
 const TRIAL_COST = 400;
+const TRIAL_START_DATE = '2026-04-01';
 const ENV_PATHS = [
   path.join(ROOT, '.env.google-sheets'),
   path.join(ROOT, '.env.google-sheets.local'),
@@ -108,6 +109,45 @@ function isProofOrTestRow(row) {
   );
 }
 
+function isRealTrial76ersOverride(row) {
+  return normalizeText(row?.ledger_date) === '2026-04-01'
+    && normalizeText(row?.ledger_sport) === 'NBA'
+    && normalizeText(row?.ledger_event) === 'Philadelphia 76ers vs Washington Wizards'
+    && normalizeText(row?.ledger_market) === 'Spread'
+    && normalizeText(row?.ledger_selection) === 'Philadelphia 76ers -17.5'
+    && normalizeText(row?.ledger_book) === 'BetMGM'
+    && normalizeMoney(row?.ledger_odds) === 150
+    && normalizeMoney(row?.ledger_stake) === 15
+    && (
+      normalizeText(row?.ledger_event_type) === 'BET PLACED'
+      || (
+        normalizeText(row?.ledger_event_type) === 'BET SETTLED'
+        && normalizeText(row?.ledger_result) === 'WIN'
+        && normalizeMoney(row?.ledger_payout) === 37.5
+        && normalizeMoney(row?.ledger_pl) === 22.5
+      )
+    );
+}
+
+function shouldExcludeProofOrTestRow(row) {
+  return isProofOrTestRow(row) && !isRealTrial76ersOverride(row);
+}
+
+function isTrialWindowRow(row) {
+  const ledgerDate = normalizeText(row?.ledger_date);
+  return /^\d{4}-\d{2}-\d{2}$/.test(ledgerDate) && ledgerDate >= TRIAL_START_DATE;
+}
+
+function isBadSaraDuplicate(row) {
+  return normalizeText(row?.ledger_event_type) === 'BET PLACED'
+    && normalizeText(row?.ledger_event) === 'Sara Bejlek vs Belinda Bencic'
+    && normalizeText(row?.ledger_selection) === 'Under 21.5'
+    && normalizeText(row?.ledger_book) === 'Bet365'
+    && normalizeMoney(row?.ledger_odds) === -120
+    && normalizeMoney(row?.ledger_stake) === 20
+    && normalizeText(row?.ledger_date) !== '2026-04-01';
+}
+
 function placedKey(row) {
   const executionId = normalizeText(row.execution_id);
   if (executionId) return `execution_id:${executionId}`;
@@ -134,10 +174,15 @@ function sortByDateThenSelection(rows, dateField = 'ledger_date') {
 
 function buildReportingRows() {
   const placed = sortByDateThenSelection(
-    readCanonicalBetPlacedLedger().filter((row) => !isProofOrTestRow(row))
+    readCanonicalBetPlacedLedger()
+      .filter((row) => !shouldExcludeProofOrTestRow(row))
+      .filter(isTrialWindowRow)
+      .filter((row) => !isBadSaraDuplicate(row))
   );
   const settled = sortByDateThenSelection(
-    readCanonicalBetSettledLedger().filter((row) => !isProofOrTestRow(row))
+    readCanonicalBetSettledLedger()
+      .filter((row) => !shouldExcludeProofOrTestRow(row))
+      .filter(isTrialWindowRow)
   );
 
   const settledKeys = new Set(settled.map((row) => placedKey(row)));
@@ -227,10 +272,11 @@ function buildReportingRows() {
   return {
     metadata: {
       generated_at_utc: new Date().toISOString(),
+      trial_start_date: TRIAL_START_DATE,
       total_bets_placed: totalBetsPlaced,
       total_open_bets: totalOpenBets,
       total_settled_bets: totalSettledBets,
-      excluded_rows_reason: 'schema-proof/test rows excluded by canonical filter',
+      excluded_rows_reason: 'schema-proof/test rows excluded and rows before trial start or with invalid ledger_date omitted',
     },
     tabs: {
       'Open Bets': [
