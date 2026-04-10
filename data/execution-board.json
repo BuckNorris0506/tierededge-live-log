@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-08T08:00:48.136Z",
+  "generated_at_utc": "2026-04-10T08:00:08.542Z",
   "run_classification": "post_mortem_required",
   "policy": {
     "stale_recommendation_hours": 8,
@@ -93,18 +93,18 @@
       "selection": "Texas Rangers ML",
       "sportsbook": "DraftKings",
       "execution_status": "APPROVED_EXECUTION",
-      "current_quote_source": "cache",
+      "current_quote_source": "network",
       "current_book": "draftkings",
-      "current_odds_american": "+109",
-      "current_edge_pct": -6.85,
-      "event_start_time_utc": "2026-04-08T18:36:00Z",
-      "minutes_to_start": 635.19,
+      "current_odds_american": "+194",
+      "current_edge_pct": 6.99,
+      "event_start_time_utc": "2026-04-11T02:11:00Z",
+      "minutes_to_start": 1090.82,
       "original_odds": "+144",
-      "current_odds": "+109",
-      "clv_cents": 35,
+      "current_odds": "+194",
+      "clv_cents": -50,
       "original_edge_pct": 2.26,
-      "edge_decay": 9.11,
-      "time_to_game_start": 635.19,
+      "edge_decay": -4.73,
+      "time_to_game_start": 1090.82,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -129,11 +129,11 @@
         "minimum_stake": 25
       },
       "decision": "LET RIDE",
-      "hedge_decision_reason": "stake_too_small_to_manage",
+      "hedge_decision_reason": "edge_still_present",
       "reason": [
-        "stake_too_small_to_manage"
+        "edge_still_present"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +109\nCLV: +35 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -6.85%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +194\nCLV: -50 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: 6.99%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
     },
     {
       "execution_id": "execution::telegram-operator::1774550462991",
@@ -145,16 +145,16 @@
       "execution_status": "APPROVED_EXECUTION",
       "current_quote_source": "cache",
       "current_book": "draftkings",
-      "current_odds_american": "+109",
-      "current_edge_pct": -6.85,
-      "event_start_time_utc": "2026-04-08T18:36:00Z",
-      "minutes_to_start": 635.19,
+      "current_odds_american": "+194",
+      "current_edge_pct": 6.99,
+      "event_start_time_utc": "2026-04-11T02:11:00Z",
+      "minutes_to_start": 1090.82,
       "original_odds": "+144",
-      "current_odds": "+109",
-      "clv_cents": 35,
+      "current_odds": "+194",
+      "clv_cents": -50,
       "original_edge_pct": 2.26,
-      "edge_decay": 9.11,
-      "time_to_game_start": 635.19,
+      "edge_decay": -4.73,
+      "time_to_game_start": 1090.82,
       "stake_size": 2,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -179,11 +179,11 @@
         "minimum_stake": 25
       },
       "decision": "LET RIDE",
-      "hedge_decision_reason": "stake_too_small_to_manage",
+      "hedge_decision_reason": "edge_still_present",
       "reason": [
-        "stake_too_small_to_manage"
+        "edge_still_present"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +109\nCLV: +35 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -6.85%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +194\nCLV: -50 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: 6.99%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present"
     },
     {
       "execution_id": "execution::telegram-operator::1775508715416",
@@ -193,18 +193,18 @@
       "selection": "Cleveland Cavaliers -17.5",
       "sportsbook": "DraftKings",
       "execution_status": "OFF_PLAN_EXECUTION",
-      "current_quote_source": "cache",
+      "current_quote_source": "network",
       "current_book": "draftkings",
-      "current_odds_american": "-108",
+      "current_odds_american": "-118",
       "current_edge_pct": null,
-      "event_start_time_utc": "2026-04-08T23:10:00Z",
-      "minutes_to_start": 909.19,
+      "event_start_time_utc": "2026-04-10T23:10:00Z",
+      "minutes_to_start": 909.81,
       "original_odds": "+165",
-      "current_odds": "-108",
-      "clv_cents": 273,
+      "current_odds": "-118",
+      "clv_cents": 283,
       "original_edge_pct": null,
       "edge_decay": null,
-      "time_to_game_start": 909.19,
+      "time_to_game_start": 909.81,
       "stake_size": 15,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -233,7 +233,7 @@
       "reason": [
         "stake_too_small_to_manage"
       ],
-      "operator_output": "POSITION UPDATE\n\nSelection: Cleveland Cavaliers -17.5\nOriginal Odds: +165\nCurrent Odds: -108\nCLV: +273 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
+      "operator_output": "POSITION UPDATE\n\nSelection: Cleveland Cavaliers -17.5\nOriginal Odds: +165\nCurrent Odds: -118\nCLV: +283 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage"
     },
     {
       "execution_id": "execution::telegram-operator::1775513517504",
@@ -243,18 +243,18 @@
       "selection": "San Antonio Spurs -11.5",
       "sportsbook": "BetMGM",
       "execution_status": "OFF_PLAN_EXECUTION",
-      "current_quote_source": "cache",
+      "current_quote_source": "network",
       "current_book": "betmgm",
       "current_odds_american": "-110",
       "current_edge_pct": null,
-      "event_start_time_utc": "2026-04-09T00:10:00Z",
-      "minutes_to_start": 969.19,
+      "event_start_time_utc": "2026-04-11T00:10:00Z",
+      "minutes_to_start": 969.8,
       "original_odds": "+195",
       "current_odds": "-110",
       "clv_cents": 305,
       "original_edge_pct": null,
       "edge_decay": null,
-      "time_to_game_start": 969.19,
+      "time_to_game_start": 969.8,
       "stake_size": 25,
       "bankroll": null,
       "stake_pct_of_bankroll": null,
@@ -293,9 +293,9 @@
     "strong_hedge_count": 0
   },
   "hedge_operator_output": [
-    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +109\nCLV: +35 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -6.85%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +109\nCLV: +35 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: -6.85%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
-    "POSITION UPDATE\n\nSelection: Cleveland Cavaliers -17.5\nOriginal Odds: +165\nCurrent Odds: -108\nCLV: +273 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
+    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +194\nCLV: -50 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: 6.99%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
+    "POSITION UPDATE\n\nSelection: Texas Rangers ML\nOriginal Odds: +144\nCurrent Odds: +194\nCLV: -50 cents\n\nOriginal Edge: 2.26%\nCurrent Edge: 6.99%\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- edge_still_present",
+    "POSITION UPDATE\n\nSelection: Cleveland Cavaliers -17.5\nOriginal Odds: +165\nCurrent Odds: -118\nCLV: +283 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- stake_too_small_to_manage",
     "POSITION UPDATE\n\nSelection: San Antonio Spurs -11.5\nOriginal Odds: +195\nCurrent Odds: -110\nCLV: +305 cents\n\nOriginal Edge: N/A\nCurrent Edge: N/A\n\nMarket Type: PREGAME\n\nDecision: LET RIDE\n\nReason:\n- too_early_to_manage"
   ],
   "hedge_scan_frequency_mode": 3,

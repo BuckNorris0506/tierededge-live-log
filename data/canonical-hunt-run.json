@@ -1,8 +1,8 @@
 {
   "schema": "tierededge_canonical_hunt_run_v1",
-  "run_id": "canonical-hunt::2026-04-06::1800",
-  "generated_at_utc": "2026-04-06T23:00:00.652Z",
-  "run_at_ct": "2026-04-06 18:00",
+  "run_id": "canonical-hunt::2026-04-09::1800",
+  "generated_at_utc": "2026-04-09T23:00:01.397Z",
+  "run_at_ct": "2026-04-09 18:00",
   "status": "failed",
   "message_type": "BLOCKED",
   "requires_state_sync": false,
@@ -11,5 +11,5 @@
   "invalidated": false,
   "plain_reason": "hunt_blocked:post_mortem_required:Integrity gate failed: Post-mortem required after realized_loss_streak (-10).",
   "transport_diagnostics": null,
-  "summary": "TIERED EDGE HUNT — 2026-04-06\nCANNOT_VERIFY_ODDS — SIT\nReason: hunt_blocked:post_mortem_required:Integrity gate failed: Post-mortem required after realized_loss_streak (-10)."
+  "summary": "TIERED EDGE HUNT — 2026-04-09\nCANNOT_VERIFY_ODDS — SIT\nReason: hunt_blocked:post_mortem_required:Integrity gate failed: Post-mortem required after realized_loss_streak (-10)."
 }
